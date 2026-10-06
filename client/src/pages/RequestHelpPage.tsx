@@ -1,0 +1,346 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Wrench, Battery, Droplets, MapPin, Navigation, AlertCircle, ChevronRight, ArrowLeft, Star, ShieldCheck, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import { getHelperProfiles, saveRequest, getBikes } from '../utils/appStorage';
+
+const CATEGORIES = [
+  { id: 'Puncture', icon: <AlertCircle />, label: 'Puncture', desc: 'Flat tyre or air leak' },
+  { id: 'Breakdown', icon: <Wrench />, label: 'Breakdown', desc: 'Engine stopped working' },
+  { id: 'Battery', icon: <Battery />, label: 'Battery', desc: 'Dead battery or electrical' },
+  { id: 'Fuel', icon: <Droplets />, label: 'Out of Fuel', desc: 'Need emergency petrol' },
+  { id: 'Towing', icon: <Navigation />, label: 'Towing', desc: 'Move bike to safety' },
+  { id: 'Accident', icon: <AlertCircle />, label: 'Accident', desc: 'Collision or crash' },
+];
+
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
+};
+
+export function RequestHelpPage() {
+  const [step, setStep] = useState(1);
+  const [category, setCategory] = useState('');
+  const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [providers, setProviders] = useState<any[]>([]);
+  const [selectedProvider, setSelectedProvider] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleNext = () => setStep(s => s + 1);
+  const handleBack = () => setStep(s => s - 1);
+
+  const requestLocation = () => {
+    setLocating(true);
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          setLocating(false);
+          handleNext();
+        },
+        _err => {
+          // Graceful fallback to default corridor coordinates (Siliguri/NH-10)
+          setLocation({ lat: 26.7271, lng: 88.3953 });
+          setLocating(false);
+          handleNext();
+        },
+        { timeout: 8000 }
+      );
+    } else {
+      setLocation({ lat: 26.7271, lng: 88.3953 });
+      setLocating(false);
+      handleNext();
+    }
+  };
+
+  const useDefaultLocation = () => {
+    setLocation({ lat: 26.7271, lng: 88.3953 });
+    handleNext();
+  };
+
+  const loadFallbackProviders = () => {
+    const helpers = getHelperProfiles();
+    const fallbackList = helpers.map((h, idx) => ({
+      id: h.id,
+      name: h.businessName || `Mechanic Hub #${idx + 1}`,
+      verified: h.verificationStatus === 'VERIFIED',
+      rating: h.rating || 4.9,
+      distance: `${(1.4 + idx * 1.2).toFixed(1)} km`,
+      estimatedArrival: `${10 + idx * 4}-${16 + idx * 4} mins`,
+      services: h.skills && h.skills.length > 0 ? h.skills : ['Breakdown Repair', 'Puncture Repair', 'Emergency Fuel'],
+      startingPrice: 250 + idx * 50,
+      isOpen: h.isAvailable ?? true
+    }));
+    setProviders(fallbackList);
+  };
+
+  useEffect(() => {
+    if (step === 3 && location) {
+      fetch(`http://localhost:5000/api/assistance/providers/nearby?lat=${location.lat}&lng=${location.lng}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.data && data.data.length > 0) {
+            setProviders(data.data);
+          } else {
+            loadFallbackProviders();
+          }
+        })
+        .catch(() => {
+          loadFallbackProviders();
+        });
+    }
+  }, [step, location]);
+
+  const submitRequest = async () => {
+    if (!category || !location || !selectedProvider) return;
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:5000/api/assistance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          problemCategory: category,
+          location: { coordinates: [location.lng, location.lat] },
+          providerId: selectedProvider.id
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.data?.requestId) {
+        navigate(`/requests/${data.data.requestId}`);
+        return;
+      }
+    } catch {
+      // Local fallback below
+    }
+
+    // Offline / Fallback Storage Integration
+    const userBikes = user ? getBikes(user.id) : [];
+    const activeBike = userBikes.find(b => b.isPrimary) || userBikes[0] || {
+      id: 'bike-def',
+      userId: user?.id || 'user-rider-1',
+      brand: 'KTM',
+      model: '390 Adventure',
+      registrationNumber: 'WB 74 AB 8921',
+      year: 2025,
+      fuelType: 'PETROL' as const
+    };
+
+    const newReqId = `REQ-${Date.now().toString().slice(-6)}`;
+    const newReq = {
+      id: newReqId,
+      riderId: user?.id || 'user-rider-1',
+      riderName: user?.name || 'Rider',
+      riderPhone: user?.phone || '+91 98765 43210',
+      bike: activeBike,
+      issue: category,
+      description: `${category} emergency assistance requested near coordinates (${location.lat.toFixed(4)}, ${location.lng.toFixed(4)})`,
+      status: 'OPEN' as const,
+      assignedHelperId: selectedProvider.id,
+      assignedHelperName: selectedProvider.name,
+      locationShared: true,
+      latitude: location.lat,
+      longitude: location.lng,
+      approximateLocation: `Siliguri Corridor (${location.lat.toFixed(3)}°N, ${location.lng.toFixed(3)}°E)`,
+      createdAt: new Date().toISOString()
+    };
+    saveRequest(newReq);
+    setLoading(false);
+    navigate(`/requests/${newReqId}`);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#090909] text-white pt-24 pb-12 font-sans overflow-x-hidden">
+      <div className="container mx-auto px-4 max-w-3xl">
+        
+        <header className="mb-8 relative z-20">
+          {step > 1 ? (
+            <button 
+              onClick={handleBack} 
+              aria-label="Go back to previous step"
+              className="flex items-center text-gray-300 hover:text-white mb-6 p-2 -ml-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFF174]"
+            >
+              <ArrowLeft className="mr-2" size={20} /> Back
+            </button>
+          ) : (
+            <div className="h-10 mb-2"></div>
+          )}
+          
+          {/* Progress Indicator */}
+          <div className="flex items-center justify-between mb-4" aria-label="Request help progress steps">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex-1 flex items-center">
+                <div 
+                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${step === i ? 'bg-[#FFF174] text-black ring-4 ring-[#FFF174]/20' : step > i ? 'bg-green-500 text-white' : 'bg-white/10 text-gray-400'}`}
+                  aria-current={step === i ? 'step' : undefined}
+                >
+                  {step > i ? '✓' : i}
+                </div>
+                {i < 3 && <div className={`flex-1 h-1 mx-2 rounded-full ${step > i ? 'bg-green-500' : 'bg-white/10'}`} />}
+              </div>
+            ))}
+          </div>
+        </header>
+
+        <main id="main-content">
+          <AnimatePresence mode="wait">
+            
+            {step === 1 && (
+              <motion.section key="step1" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+                <h1 className="text-4xl md:text-5xl font-black mb-3 text-gray-50">What do you need help with?</h1>
+                <p className="text-gray-300 text-lg mb-8">Select the category that best describes your issue.</p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" role="radiogroup" aria-label="Assistance categories">
+                  {CATEGORIES.map(cat => {
+                    const isSelected = category === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        role="radio"
+                        aria-checked={isSelected}
+                        onClick={() => { setCategory(cat.id); handleNext(); }}
+                        className={`p-6 rounded-2xl border text-left transition-all group ${isSelected ? 'border-[#FFF174] bg-[#FFF174]/10' : 'border-white/10 bg-[#111111] hover:border-white/30'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFF174]`}
+                      >
+                        <div className="flex items-center mb-3">
+                          <div className={`p-3 rounded-xl ${isSelected ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-white group-hover:bg-white/20'}`}>
+                            {cat.icon}
+                          </div>
+                          <h2 className="ml-4 font-bold text-xl">{cat.label}</h2>
+                        </div>
+                        <p className={`text-sm ${isSelected ? 'text-gray-200' : 'text-gray-400'}`}>{cat.desc}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.section>
+            )}
+
+            {step === 2 && (
+              <motion.section key="step2" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="text-center py-12">
+                <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-8 relative">
+                  {locating && (
+                    <motion.div 
+                      className="absolute inset-0 border-2 border-[#FFF174] rounded-full"
+                      animate={{ scale: [1, 1.5], opacity: [1, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    />
+                  )}
+                  <MapPin className="text-[#FFF174]" size={40} aria-hidden="true" />
+                </div>
+                
+                <h1 className="text-4xl md:text-5xl font-black mb-4 text-gray-50">Confirm Location</h1>
+                <p className="text-gray-300 text-lg mb-8 max-w-md mx-auto">We need your coordinates to dispatch the nearest provider accurately.</p>
+                
+                <div className="flex flex-col items-center gap-4">
+                  <button 
+                    onClick={requestLocation}
+                    disabled={locating}
+                    aria-busy={locating}
+                    className="inline-flex items-center justify-center px-8 py-5 bg-[#FFF174] text-black font-black text-lg rounded-xl hover:bg-yellow-400 hover:scale-105 transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/50 w-full sm:w-auto shadow-[0_0_30px_rgba(255,241,116,0.2)] disabled:opacity-70 disabled:hover:scale-100"
+                  >
+                    {locating ? (
+                      <><Loader2 className="animate-spin mr-3" size={24} /> LOCATING...</>
+                    ) : (
+                      <><Navigation className="mr-3" size={24} /> SHARE GPS LOCATION</>
+                    )}
+                  </button>
+
+                  <button 
+                    type="button"
+                    onClick={useDefaultLocation}
+                    className="text-sm text-gray-400 hover:text-[#FFF174] underline flex items-center gap-1.5 transition-colors"
+                  >
+                    <MapPin size={14} /> Or use Siliguri / NH-10 Highway Corridor (26.7271° N, 88.3953° E)
+                  </button>
+                </div>
+              </motion.section>
+            )}
+
+            {step === 3 && (
+              <motion.section key="step3" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+                <h1 className="text-4xl md:text-5xl font-black mb-3 text-gray-50">Select a Provider</h1>
+                <p className="text-gray-300 text-lg mb-8">Choose a mechanic or towing service to dispatch to your location.</p>
+                
+                {providers.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="animate-spin text-[#FFF174] mx-auto mb-4" size={40} />
+                    <p className="text-gray-400">Finding nearby mechanics...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4 mb-8" role="radiogroup" aria-label="Available providers">
+                    {providers.map(p => {
+                      const isSelected = selectedProvider?.id === p.id;
+                      return (
+                        <button 
+                          key={p.id}
+                          role="radio"
+                          aria-checked={isSelected}
+                          onClick={() => setSelectedProvider(p)}
+                          className={`w-full text-left p-6 rounded-2xl border transition-all ${isSelected ? 'border-[#FFF174] bg-[#FFF174]/10' : 'border-white/10 bg-[#111111] hover:border-white/30'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFF174]`}
+                        >
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <h3 className="text-xl font-bold flex items-center gap-2 text-gray-50">
+                                {p.name}
+                                {p.verified && <ShieldCheck size={18} className="text-[#22C55E]" aria-label="Verified Provider" />}
+                              </h3>
+                              <div className="flex items-center gap-4 text-sm text-gray-300 mt-1">
+                                <span className="flex items-center" aria-label={`Rating: ${p.rating} stars`}><Star size={14} className="text-[#FFF174] mr-1" aria-hidden="true" /> {p.rating}</span>
+                                <span>{p.distance} away</span>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm text-gray-400 uppercase tracking-wide">ETA</p>
+                              <p className="font-bold text-[#FFF174] text-lg">{p.estimatedArrival}</p>
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap gap-2 mb-4" aria-label="Services offered">
+                            {p.services.map((s: string) => (
+                              <span key={s} className="px-3 py-1 bg-white/10 text-xs font-bold rounded-lg text-gray-200">{s}</span>
+                            ))}
+                          </div>
+                          <div className="flex justify-between items-center pt-4 border-t border-white/10">
+                            <span className="text-sm font-bold text-gray-200">Starts from ₹{p.startingPrice}</span>
+                            <span className={`text-xs font-black tracking-widest uppercase px-3 py-1 rounded-lg ${p.isOpen ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                              {p.isOpen ? 'AVAILABLE' : 'CLOSED'}
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <AnimatePresence>
+                  {selectedProvider && (
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}>
+                      <button 
+                        onClick={submitRequest}
+                        disabled={loading || !selectedProvider.isOpen}
+                        aria-busy={loading}
+                        className="w-full flex items-center justify-center py-5 bg-[#FFF174] text-black font-black text-xl rounded-xl hover:bg-yellow-400 transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/50 shadow-[0_0_30px_rgba(255,241,116,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {loading ? (
+                          <><Loader2 className="animate-spin mr-3" size={24} /> REQUESTING...</>
+                        ) : !selectedProvider.isOpen ? (
+                          'PROVIDER IS CLOSED'
+                        ) : (
+                          <>REQUEST {selectedProvider.name.toUpperCase()} <ChevronRight className="ml-2" size={24} /></>
+                        )}
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.section>
+            )}
+            
+          </AnimatePresence>
+        </main>
+      </div>
+    </div>
+  );
+}

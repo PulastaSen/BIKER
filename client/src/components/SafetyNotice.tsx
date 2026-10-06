@@ -1,0 +1,2 @@
+import { TriangleAlert } from 'lucide-react';
+export function SafetyNotice({ accident = false }: { accident?: boolean }) { return <aside className={`safety-notice ${accident ? 'safety-notice--danger' : ''}`}><TriangleAlert aria-hidden="true" /><p>{accident ? 'For immediate danger, serious injury, or an accident, contact local emergency services first. MotoAssist does not replace emergency services.' : 'MotoAssist is a coordination platform, not an emergency service. If you are in immediate danger or seriously injured, contact local emergency services first.'}</p></aside>; }
