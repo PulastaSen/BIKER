@@ -5,7 +5,7 @@ export function SafetyPage() {
   return (
     <div className="safety-page">
       <section className="hero-premium">
-        <div className="hero-premium__bg" style={{ backgroundImage: "url('/src/assets/images/motoassist-hero.jpg')" }}>
+        <div className="hero-premium__bg" style={{ backgroundImage: "url('/images/motoassist-hero.jpg')" }}>
           <div className="hero-premium__overlay"></div>
         </div>
         <div className="shell hero-premium__content" style={{ justifyContent: 'center', textAlign: 'center' }}>

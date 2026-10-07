@@ -12,13 +12,22 @@ export function BikeCard({ bike, isSelected, onSelect }: BikeCardProps) {
   // Mapping for images
   const getBikeImage = (model: string) => {
     const lModel = model.toLowerCase();
+    if (lModel.includes('himalayan') || lModel.includes('royal enfield')) {
+      return '/images/bikes/himalayan-450/himalayan-450-main.jpg';
+    }
+    if (lModel.includes('transalp') || lModel.includes('750')) {
+      return '/images/bikes/transalp-750/transalp-750-main.jpg';
+    }
+    if (lModel.includes('tiger') || lModel.includes('triumph') || lModel.includes('900')) {
+      return '/images/bikes/tiger-900/tiger-900-main.jpg';
+    }
     if (lModel.includes('ktm') || lModel.includes('390')) {
-      return '/src/assets/images/bikes/ktm-390-adventure/ktm-390-adventure-main.jpg';
+      return '/images/bikes/ktm-390-adventure/ktm-390-adventure-main.jpg';
     }
     if (lModel.includes('pulsar') || lModel.includes('n160')) {
-      return '/src/assets/images/bikes/pulsar-n160/pulsar-n160-main.jpg';
+      return '/images/bikes/pulsar-n160/pulsar-n160-main.jpg';
     }
-    return '/src/assets/images/motoassist-hero.jpg';
+    return '/images/motoassist-hero.jpg';
   };
 
   return (

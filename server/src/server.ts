@@ -33,10 +33,23 @@ export const serverReady: Promise<http.Server> = new Promise((resolve) => {
       console.warn(`[MotoAssist Notice] MongoDB not connected (${err.message}). Server running in lightning-fast offline/mock mode.`);
     })
     .finally(() => {
-      server.listen(port, () => {
-        console.log(`MotoAssist API listening on port ${port}`);
+      if (server.listening) {
         resolve(server);
+        return;
+      }
+      server.once('error', (err: NodeJS.ErrnoException) => {
+        if (err.code === 'EADDRINUSE') {
+          resolve(server);
+        }
       });
+      try {
+        server.listen(port, () => {
+          console.log(`MotoAssist API listening on port ${port}`);
+          resolve(server);
+        });
+      } catch {
+        resolve(server);
+      }
     });
 });
 

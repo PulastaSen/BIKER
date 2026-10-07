@@ -5,7 +5,7 @@ export function BecomeHelperPage() {
   return (
     <div className="become-helper-page">
       <section className="hero-premium">
-        <div className="hero-premium__bg" style={{ backgroundImage: "url('/src/assets/images/mechanic-repair.jpg')" }}>
+        <div className="hero-premium__bg" style={{ backgroundImage: "url('/images/mechanic-repair.jpg')" }}>
           <div className="hero-premium__overlay"></div>
         </div>
         <div className="shell hero-premium__content">

@@ -51,7 +51,31 @@ const VERIFIED_PROVIDERS: Provider[] = [
     phone: '+91 98321 44556',
     rating: 4.7,
     open: true,
-    services: ['Himalayan 450 Specialists', 'Genuine Spares', 'Roadside Towing', 'Tubeless Repair']
+    services: ['Himalayan 450 Sherpa Diagnostics', 'Tubeless Spoke Rims Repair', 'Tripper Navigation Fix', 'Emergency Mountain Towing']
+  },
+  {
+    id: 'oem-honda',
+    name: 'Honda BigWing & Motorcycle Authorized Care',
+    type: 'oem',
+    address: 'Burdwan Road, Ward 11, Siliguri, WB 734005',
+    lat: 26.7180,
+    lng: 88.4250,
+    phone: '+91 98323 33445',
+    rating: 4.9,
+    open: true,
+    services: ['Honda BigWing Transalp 750 Care', 'CB350 Diagnostics', 'OEM Quickshifter & Ride Modes', 'Honda Genuine Spares']
+  },
+  {
+    id: 'oem-triumph',
+    name: 'Triumph Motorcycles Authorized Service & Care',
+    type: 'oem',
+    address: 'Sevoke Road, 3rd Mile near Vega Circle, Siliguri, WB 734008',
+    lat: 26.7450,
+    lng: 88.4350,
+    phone: '+91 98326 77890',
+    rating: 4.9,
+    open: true,
+    services: ['Tiger 900 / 1200 Specialists', 'Triumph Electronic Diagnostics', 'Brembo Stylema Brakes', 'High-Altitude ADV Setup']
   },
   {
     id: 'oem-bajaj',
@@ -64,18 +88,6 @@ const VERIFIED_PROVIDERS: Provider[] = [
     rating: 4.6,
     open: true,
     services: ['Dominar 400 OEM Care', 'Pulsar Diagnostics', 'Oil & Filter', 'Electricals']
-  },
-  {
-    id: 'oem-honda',
-    name: 'Honda BigWing & Motorcycle Authorized Care',
-    type: 'oem',
-    address: 'Burdwan Road, Ward 11, Siliguri, WB 734005',
-    lat: 26.7180,
-    lng: 88.4250,
-    phone: '+91 98323 33445',
-    rating: 4.9,
-    open: true,
-    services: ['CB350 / Transalp Care', 'Honda Genuine Parts', 'Express Service', 'Warranty Repairs']
   },
   {
     id: 'oem-yamaha',

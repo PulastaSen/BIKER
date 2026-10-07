@@ -830,7 +830,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   padding-block: 4rem;
-  background-image: linear-gradient(to right, rgba(16, 24, 39, 0.9) 0%, rgba(16, 24, 39, 0.4) 100%), url('/src/assets/images/motoassist-hero.jpg');
+  background-image: linear-gradient(to right, rgba(16, 24, 39, 0.9) 0%, rgba(16, 24, 39, 0.4) 100%), url('/images/motoassist-hero.jpg');
   background-size: cover;
   background-position: center;
   color: #FFFFFF;
@@ -1315,7 +1315,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   padding-block: 4rem;
-  background-image: linear-gradient(to right, rgba(16, 24, 39, 0.9) 0%, rgba(16, 24, 39, 0.4) 100%), url('/src/assets/images/mechanic-repair.jpg');
+  background-image: linear-gradient(to right, rgba(16, 24, 39, 0.9) 0%, rgba(16, 24, 39, 0.4) 100%), url('/images/mechanic-repair.jpg');
   background-size: cover;
   background-position: center;
   color: #FFFFFF;
@@ -1723,7 +1723,7 @@ textarea:focus {
    FOOTER
    ========================================================== */
 .site-footer {
-  background-image: linear-gradient(to top, rgba(16, 24, 39, 1) 0%, rgba(16, 24, 39, 0.9) 100%), url('/src/assets/images/footer-background.jpg');
+  background-image: linear-gradient(to top, rgba(16, 24, 39, 1) 0%, rgba(16, 24, 39, 0.9) 100%), url('/images/footer-background.jpg');
   background-size: cover;
   background-position: center;
   color: #E2E8F0;
@@ -3362,7 +3362,7 @@ textarea:focus {
 .hero-premium__bg {
   position: absolute;
   inset: 0;
-  background-image: url('/src/assets/images/motoassist-hero.jpg');
+  background-image: url('/images/motoassist-hero.jpg');
   background-size: cover;
   background-position: center 30%;
   z-index: 0;
@@ -4118,7 +4118,7 @@ textarea:focus {
 .visual-story__bg {
   position: absolute;
   inset: 0;
-  background-image: url('/src/assets/images/mechanic-repair.jpg');
+  background-image: url('/images/mechanic-repair.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

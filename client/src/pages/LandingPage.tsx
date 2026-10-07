@@ -135,7 +135,7 @@ export function LandingPage() {
               
               <SpatialCard maxTilt={8} perspective={900} className="step-card-spatial">
                 <div className="step-card premium-card">
-                  <img src="/src/assets/images/bikes/ktm-390-adventure/ktm-390-adventure-main.jpg" alt="Motorcycle rider beside a stopped motorcycle" className="step-card__img" />
+                  <img src="/images/bikes/himalayan-450/himalayan-450-main.jpg" alt="Motorcycle rider beside a stopped motorcycle" className="step-card__img" />
                   <div className="step-card__body">
                     <div className="step-card__number">01</div>
                     <h3>Create Request</h3>
@@ -150,7 +150,7 @@ export function LandingPage() {
 
               <SpatialCard maxTilt={8} perspective={900} className="step-card-spatial">
                 <div className="step-card premium-card">
-                  <img src="/src/assets/images/motoassist-hero.jpg" alt="Rider checking GPS" className="step-card__img" style={{ objectPosition: 'top' }} />
+                  <img src="/images/motoassist-hero.jpg" alt="Rider checking GPS" className="step-card__img" style={{ objectPosition: 'top' }} />
                   <div className="step-card__body">
                     <div className="step-card__number">02</div>
                     <h3>Share Location</h3>
@@ -165,7 +165,7 @@ export function LandingPage() {
 
               <SpatialCard maxTilt={8} perspective={900} className="step-card-spatial">
                 <div className="step-card premium-card">
-                  <img src="/src/assets/images/mechanic-repair.jpg" alt="Mechanic helping rider" className="step-card__img" />
+                  <img src="/images/mechanic-repair.jpg" alt="Mechanic helping rider" className="step-card__img" />
                   <div className="step-card__body">
                     <div className="step-card__number">03</div>
                     <h3>Connect Support</h3>
@@ -180,7 +180,7 @@ export function LandingPage() {
 
               <SpatialCard maxTilt={8} perspective={900} className="step-card-spatial">
                 <div className="step-card premium-card">
-                  <img src="/src/assets/images/roadside-support.jpg" alt="Rider continuing journey" className="step-card__img" />
+                  <img src="/images/roadside-support.jpg" alt="Rider continuing journey" className="step-card__img" />
                   <div className="step-card__body">
                     <div className="step-card__number">04</div>
                     <h3>Get Help & Resolve</h3>
