@@ -5,10 +5,13 @@ let socket: Socket | null = null;
 
 export const getSocket = () => {
   if (!socket) {
+    const shouldConnect = Boolean(import.meta.env.VITE_SOCKET_URL || !import.meta.env.PROD);
     socket = io(SOCKET_URL, {
+      autoConnect: shouldConnect,
       reconnectionDelayMax: 10000,
-      reconnectionAttempts: Infinity,
-      transports: ['websocket', 'polling']
+      reconnectionAttempts: 3,
+      timeout: 5000,
+      transports: ['websocket', 'polling'],
     });
 
     socket.on('connect', () => {
@@ -19,8 +22,8 @@ export const getSocket = () => {
       console.log('Disconnected from MotoAssist server:', reason);
     });
 
-    socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
+    socket.on('connect_error', () => {
+      // Graceful fallback for static serverless environments
     });
   }
   return socket;
