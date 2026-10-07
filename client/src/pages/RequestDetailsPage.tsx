@@ -13,10 +13,28 @@ const STATUS_FLOW = [
   'COMPLETED'
 ];
 
+interface AssistanceDetail {
+  requestId: string;
+  status: string;
+  problemCategory: string;
+  location: string | { address?: string; coordinates?: number[] };
+  provider?: {
+    name?: string;
+    phone?: string;
+    vehiclePlate?: string;
+    rating?: number;
+    reviewsCount?: number;
+  };
+  eta?: string;
+  createdAt?: string;
+  rating?: number;
+  review?: string;
+}
+
 export function RequestDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [request, setRequest] = useState<any>(null);
+  const [request, setRequest] = useState<AssistanceDetail | null>(null);
   const [rating, setRating] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
@@ -104,10 +122,10 @@ export function RequestDetailsPage() {
         updateRequestStatus(id, 'RESOLVED');
       }
 
-      setRequest((prev: any) => ({
+      setRequest(prev => (prev ? {
         ...prev,
         status: nextStatus
-      }));
+      } : null));
     }
   };
 
@@ -123,10 +141,10 @@ export function RequestDetailsPage() {
       // Offline fallback
     }
 
-    setRequest((prev: any) => ({
+    setRequest(prev => (prev ? {
       ...prev,
       rating
-    }));
+    } : null));
     alert('Thank you! Your feedback has been recorded.');
     navigate('/rider/requests');
   };

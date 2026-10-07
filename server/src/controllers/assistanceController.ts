@@ -215,6 +215,7 @@ export const rateAssistanceRequest = async (req: Request, res: Response): Promis
 
     res.status(200).json({ success: true, data: request });
   } catch (error) {
+    console.error('Error submitting rating:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };

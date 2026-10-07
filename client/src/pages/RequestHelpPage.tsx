@@ -20,13 +20,25 @@ const pageVariants = {
   exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
 };
 
+interface ServiceProvider {
+  id: string;
+  name: string;
+  verified?: boolean;
+  rating?: number;
+  distance?: string;
+  estimatedArrival?: string;
+  services?: string[];
+  startingPrice?: number;
+  isOpen?: boolean;
+}
+
 export function RequestHelpPage() {
   const [step, setStep] = useState(1);
   const [category, setCategory] = useState('');
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
   const [locating, setLocating] = useState(false);
-  const [providers, setProviders] = useState<any[]>([]);
-  const [selectedProvider, setSelectedProvider] = useState<any>(null);
+  const [providers, setProviders] = useState<ServiceProvider[]>([]);
+  const [selectedProvider, setSelectedProvider] = useState<ServiceProvider | null>(null);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -43,7 +55,7 @@ export function RequestHelpPage() {
           setLocating(false);
           handleNext();
         },
-        _err => {
+        () => {
           // Graceful fallback to default corridor coordinates (Siliguri/NH-10)
           setLocation({ lat: 26.7271, lng: 88.3953 });
           setLocating(false);
@@ -299,7 +311,7 @@ export function RequestHelpPage() {
                             </div>
                           </div>
                           <div className="flex flex-wrap gap-2 mb-4" aria-label="Services offered">
-                            {p.services.map((s: string) => (
+                            {p.services?.map((s: string) => (
                               <span key={s} className="px-3 py-1 bg-white/10 text-xs font-bold rounded-lg text-gray-200">{s}</span>
                             ))}
                           </div>

@@ -96,8 +96,9 @@ export function SOSPage() {
       } else {
         throw new Error('Geolocation not supported');
       }
-    } catch (err: any) {
-      console.warn('Geolocation failed:', err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn('Geolocation failed:', message);
       // We continue even if GPS fails (graceful fallback)
     }
 

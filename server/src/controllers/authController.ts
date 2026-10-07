@@ -219,7 +219,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       email: user.email,
       role: user.role
     } });
-  } catch (error) {
+  } catch {
     res.status(401).json({ success: false, message: 'Invalid token' });
   }
 };

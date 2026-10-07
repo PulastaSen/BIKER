@@ -1,8 +1,19 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { server, serverReady } from '../server.js';
 
 const BASE_URL = 'http://localhost:5000';
 
 describe('MotoAssist Backend Full API Test Suite', () => {
+  beforeAll(async () => {
+    await serverReady;
+  });
+
+  afterAll(async () => {
+    await new Promise<void>((resolve) => {
+      server.close(() => resolve());
+    });
+  });
+
   it('GET /api/health returns healthy status', async () => {
     const res = await fetch(`${BASE_URL}/api/health`);
     expect(res.status).toBe(200);
@@ -332,7 +343,7 @@ describe('MotoAssist Backend Full API Test Suite', () => {
       const body = await res.json();
       expect(body.success).toBe(true);
       expect(Array.isArray(body.data)).toBe(true);
-      expect(body.data.every((u: any) => u.role === 'RIDER')).toBe(true);
+      expect(body.data.every((u: { role: string }) => u.role === 'RIDER')).toBe(true);
     });
   });
 });

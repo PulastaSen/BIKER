@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import User from '../models/User.js';
+import User, { UserRole } from '../models/User.js';
 import ProviderProfile from '../models/ProviderProfile.js';
 import AssistanceRequest, { RequestStatus } from '../models/AssistanceRequest.js';
 import Bike from '../models/Bike.js';
@@ -104,7 +104,7 @@ export const verifyHelper = async (req: Request, res: Response): Promise<void> =
 
 export const getAdminUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    const role = req.query.role as string;
+    const role = req.query.role as UserRole | undefined;
     const isMongoConnected = mongoose.connection.readyState === 1;
 
     if (!isMongoConnected) {
@@ -117,7 +117,7 @@ export const getAdminUsers = async (req: Request, res: Response): Promise<void> 
     }
 
     const query = role ? { role } : {};
-    const users = await User.find(query as any).select('-passwordHash').sort({ createdAt: -1 });
+    const users = await User.find(query).select('-passwordHash').sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: users });
   } catch (error) {
     console.error('Error fetching admin users:', error);
