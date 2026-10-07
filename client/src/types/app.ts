@@ -23,6 +23,16 @@ export interface Bike {
   fuelType: FuelType;
   isPrimary?: boolean;
   notes?: string;
+  category?: string;
+  engine?: string;
+  power?: string;
+  torque?: string;
+  weight?: string;
+  tankCapacity?: string;
+  seatHeight?: string;
+  groundClearance?: string;
+  brakes?: string;
+  features?: string[];
 }
 
 export type RequestStatus =

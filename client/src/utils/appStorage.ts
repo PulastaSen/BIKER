@@ -46,17 +46,6 @@ export const DEMO_USERS: User[] = DEFAULT_USERS;
 // Verified Registered Bikes
 export const INITIAL_BIKES: Bike[] = [
   {
-    id: 'bike-1',
-    userId: 'user-rider-1',
-    brand: 'KTM',
-    model: '390 Adventure',
-    registrationNumber: 'WB 74 AB 8921',
-    year: 2025,
-    fuelType: 'PETROL',
-    isPrimary: true,
-    notes: 'Adventure touring motorcycle configured for Himalayan passes.',
-  },
-  {
     id: 'bike-re-450',
     userId: 'user-rider-1',
     brand: 'Royal Enfield',
@@ -64,8 +53,25 @@ export const INITIAL_BIKES: Bike[] = [
     registrationNumber: 'WB 74 H 4500',
     year: 2024,
     fuelType: 'PETROL',
-    isPrimary: false,
-    notes: 'Sherpa 450 liquid-cooled expedition motorcycle with tubeless spoked rims.',
+    isPrimary: true,
+    category: 'Adventure Tourer / Dual-Sport',
+    engine: '452cc Liquid-Cooled Single-Cylinder DOHC 4-Valve (Sherpa 450)',
+    power: '40.02 PS @ 8,000 RPM',
+    torque: '40 Nm @ 5,500 RPM',
+    weight: '196 kg Kerb Weight',
+    tankCapacity: '17 Litres (420+ km Range)',
+    seatHeight: '825 mm - 845 mm (Adjustable)',
+    groundClearance: '230 mm (High Clearance)',
+    brakes: '320mm Front & 270mm Rear Disc with Switchable Dual-Channel ABS',
+    features: [
+      'Ride-by-Wire with 4 Ride Modes',
+      '4" Round TFT with full Google Maps',
+      'Showa 43mm USD Forks (200mm Travel)',
+      '21" Front & 17" Rear Spoke Tubeless Rims',
+      'Slip & Assist 6-Speed Clutch',
+      'Integrated Tail-Lamp Blinkers',
+    ],
+    notes: 'Sherpa 450 liquid-cooled expedition adventure tourer equipped with cross-spoke tubeless rims.',
   },
   {
     id: 'bike-transalp',
@@ -76,7 +82,24 @@ export const INITIAL_BIKES: Bike[] = [
     year: 2024,
     fuelType: 'PETROL',
     isPrimary: false,
-    notes: 'Parallel-twin middleweight adventure tourer equipped for long-distance highway passes.',
+    category: 'Middleweight Adventure Tourer / All-Rounder',
+    engine: '755cc 270° Unicam Parallel-Twin 8-Valve Liquid-Cooled',
+    power: '91.8 HP @ 9,500 RPM',
+    torque: '75 Nm @ 7,250 RPM',
+    weight: '208 kg Kerb Weight',
+    tankCapacity: '16.9 Litres (Highway Tourer)',
+    seatHeight: '850 mm Seat Height',
+    groundClearance: '210 mm Clearance',
+    brakes: 'Dual 310mm Wave Front Discs with Axial Calipers, 256mm Rear',
+    features: [
+      '5 Riding Modes (Sport, Standard, Rain, Gravel, User)',
+      'Honda Selectable Torque Control (HSTC) & Wheelie Control',
+      '5" Full-Colour TFT Display with HSVC Voice Control',
+      'Showa 43mm SFF-CA Cartridge Forks (200mm Travel)',
+      'Pro-Link Rear Shock (190mm Travel)',
+      'Emergency Stop Signal (ESS) Auto-Hazards',
+    ],
+    notes: 'High-revving parallel-twin middleweight ADV tuned for trans-Himalayan long-distance tours.',
   },
   {
     id: 'bike-tiger-900',
@@ -87,7 +110,54 @@ export const INITIAL_BIKES: Bike[] = [
     year: 2024,
     fuelType: 'PETROL',
     isPrimary: false,
-    notes: 'Triple-cylinder flagship ADV with Showa suspension and Brembo Stylema brakes.',
+    category: 'Flagship Off-Road Adventure Tourer',
+    engine: '888cc Liquid-Cooled 12V DOHC In-line 3-Cyl (T-Plane Triple)',
+    power: '108 PS (106.5 bhp) @ 9,500 RPM',
+    torque: '90 Nm @ 6,850 RPM',
+    weight: '228 kg Kerb Weight',
+    tankCapacity: '20 Litres Long-Range Tank',
+    seatHeight: '860 mm - 880 mm (Adjustable)',
+    groundClearance: '240 mm (Rally Spec)',
+    brakes: 'Dual 320mm Discs with Brembo Stylema Monobloc Calipers',
+    features: [
+      '6 Ride Modes including Off-Road Pro',
+      'Triumph Shift Assist (Bi-Directional Quickshifter)',
+      'Showa 45mm Manual Fully-Adjustable Forks (240mm Travel)',
+      'Showa Rear Monoshock with Preload & Rebound (230mm Travel)',
+      '7" Full-Colour TFT Display with My Triumph Connectivity',
+      'Optimised Cornering ABS & Traction Control with IMU',
+      'Heated Rider & Pillion Seats + Heated Grips',
+      'TPMS (Tyre Pressure Monitoring System)',
+    ],
+    notes: 'Flagship triple-cylinder off-road rally tourer with Showa long-travel suspension and Brembo Stylema brakes.',
+  },
+  {
+    id: 'bike-1',
+    userId: 'user-rider-1',
+    brand: 'KTM',
+    model: '390 Adventure',
+    registrationNumber: 'WB 74 AB 8921',
+    year: 2025,
+    fuelType: 'PETROL',
+    isPrimary: false,
+    category: 'Sub-500cc Compact Dual-Sport ADV',
+    engine: '373.2cc Single-Cylinder Liquid-Cooled 4-Valve DOHC',
+    power: '43.5 PS @ 9,000 RPM',
+    torque: '37 Nm @ 7,000 RPM',
+    weight: '177 kg Kerb Weight',
+    tankCapacity: '14.5 Litres Tank',
+    seatHeight: '855 mm Seat Height',
+    groundClearance: '200 mm Clearance',
+    brakes: '320mm Front ByBre Caliper with Cornering & Offroad ABS',
+    features: [
+      'WP APEX 43mm USD Suspension (170mm Travel)',
+      'Cornering MTC (Motorcycle Traction Control)',
+      'Quickshifter+ (Bi-Directional Clutchless Shifting)',
+      '5" Colour TFT Screen with Turn-by-Turn Navigation',
+      'Ultra-Lightweight Tubular Steel Trellis Frame',
+      'PASC Slipper & Assist Clutch',
+    ],
+    notes: 'Lightweight high-agility adventure machine configured for rapid mountain twisties.',
   },
   {
     id: 'bike-2',
@@ -98,7 +168,23 @@ export const INITIAL_BIKES: Bike[] = [
     year: 2024,
     fuelType: 'PETROL',
     isPrimary: false,
-    notes: 'City commute bike.',
+    category: 'Naked Streetfighter / City Commuter',
+    engine: '164.82cc Oil-Cooled Single-Cylinder Twin-Spark DTS-i FI',
+    power: '16 PS @ 8,750 RPM',
+    torque: '14.65 Nm @ 6,750 RPM',
+    weight: '154 kg Kerb Weight',
+    tankCapacity: '14 Litres Tank',
+    seatHeight: '795 mm Seat Height',
+    groundClearance: '165 mm Clearance',
+    brakes: '300mm Front Disc & 230mm Rear Disc with Dual-Channel ABS',
+    features: [
+      'Dual-Channel ABS with 3 Riding ABS Modes (Road, Rain, Off-Road)',
+      'Bi-Functional LED Projector Headlamp with LED DRLs',
+      'Infinity Digital Display with Gear Position & Clock',
+      'USB Mobile Charging Port Near Tank Flap',
+      'Underbelly Exhaust with Center of Gravity Balance',
+    ],
+    notes: 'Agile daily city commuter with oil-cooling and dual-channel ABS safety.',
   },
 ];
 
@@ -217,7 +303,7 @@ export const INITIAL_CONTACTS: EmergencyContact[] = [
 const KEYS = {
   USERS: 'motoassist_users_v3',
   CURRENT_USER: 'motoassist_current_user_v3',
-  BIKES: 'motoassist_bikes_v4',
+  BIKES: 'motoassist_bikes_v5',
   HELPERS: 'motoassist_helpers_v3',
   REQUESTS: 'motoassist_requests_v3',
   CONTACTS: 'motoassist_contacts_v3',
@@ -248,9 +334,9 @@ export function initAppStorage(): void {
     setItem(KEYS.USERS, DEMO_USERS);
   }
   if (!localStorage.getItem(KEYS.BIKES)) {
-    const prevBikes = getItem<Bike[]>('motoassist_bikes_v3', []);
+    const prevBikes = getItem<Bike[]>('motoassist_bikes_v4', getItem<Bike[]>('motoassist_bikes_v3', []));
     if (prevBikes.length > 0) {
-      // Merge: retain all canonical bikes and keep user-created custom bikes
+      // Merge: retain all canonical bikes with newest specs and keep user-created custom bikes
       const canonicalIds = new Set(INITIAL_BIKES.map((b) => b.id));
       const customBikes = prevBikes.filter((b) => !canonicalIds.has(b.id));
       setItem(KEYS.BIKES, [...INITIAL_BIKES, ...customBikes]);
@@ -258,7 +344,7 @@ export function initAppStorage(): void {
       setItem(KEYS.BIKES, INITIAL_BIKES);
     }
   } else {
-    // Ensure all 5 canonical fleet bikes are present in v4 storage
+    // Ensure all 5 canonical fleet bikes are present in v5 storage
     const current = getItem<Bike[]>(KEYS.BIKES, []);
     const currentIds = new Set(current.map((b) => b.id));
     const missing = INITIAL_BIKES.filter((b) => !currentIds.has(b.id));
@@ -305,11 +391,27 @@ export function addUser(user: User): void {
 export function getBikes(userId?: string): Bike[] {
   initAppStorage();
   const all = getItem<Bike[]>(KEYS.BIKES, INITIAL_BIKES);
-  const sanitized = all.map((b) => ({
-    ...b,
-    brand: b.brand || 'Motorcycle',
-    model: b.model || 'Standard',
-  }));
+  const canonicalMap = new Map(INITIAL_BIKES.map((b) => [b.id, b]));
+
+  const sanitized = all.map((b) => {
+    const canonical = canonicalMap.get(b.id);
+    return {
+      ...canonical,
+      ...b,
+      brand: b.brand || canonical?.brand || 'Motorcycle',
+      model: b.model || canonical?.model || 'Standard',
+      category: b.category || canonical?.category || 'Motorcycle',
+      engine: b.engine || canonical?.engine,
+      power: b.power || canonical?.power,
+      torque: b.torque || canonical?.torque,
+      weight: b.weight || canonical?.weight,
+      tankCapacity: b.tankCapacity || canonical?.tankCapacity,
+      seatHeight: b.seatHeight || canonical?.seatHeight,
+      groundClearance: b.groundClearance || canonical?.groundClearance,
+      brakes: b.brakes || canonical?.brakes,
+      features: b.features || canonical?.features,
+    };
+  });
   return userId ? sanitized.filter((b) => b.userId === userId) : sanitized;
 }
 

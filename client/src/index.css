@@ -2383,154 +2383,7 @@ textarea:focus {
   gap: 2rem;
 }
 
-.bike-garage-card {
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: all var(--transition-normal);
-  color: #FFFFFF;
-}
 
-.bike-garage-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-  border-color: rgba(255, 241, 116, 0.3);
-}
-
-.bike-garage-card.is-primary {
-  border-color: #FFF174;
-  box-shadow: 0 4px 25px rgba(255, 241, 116, 0.15);
-}
-
-.bike-garage-card__image {
-  height: 240px;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  background-color: #1A1A1A;
-}
-
-.bike-garage-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform var(--transition-normal);
-}
-
-.bike-garage-card:hover .bike-garage-card__image img {
-  transform: scale(1.04);
-}
-
-.primary-badge-overlay {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: var(--color-primary);
-  color: #000000;
-  font-weight: 800;
-  font-size: 0.75rem;
-  padding: 0.4rem 0.75rem;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-}
-
-.bike-garage-card__body {
-  padding: 1.5rem;
-  flex: 1;
-}
-
-.bike-garage-card__body h3 {
-  margin-bottom: 0.5rem;
-  color: var(--color-navy);
-  font-weight: 800;
-}
-
-.reg-text {
-  font-family: monospace;
-  font-size: 1.1rem;
-  color: #FFF174;
-  background: #1A1A1A;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  display: inline-block;
-  margin-bottom: 1rem;
-}
-
-.meta-pills {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.meta-pills span {
-  background: #1A1A1A;
-  color: #94A3B8;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.25rem 0.6rem;
-  border-radius: 20px;
-}
-
-.notes-text {
-  font-size: 0.9rem;
-  font-style: italic;
-  color: #94A3B8;
-  margin-bottom: 0;
-}
-
-.bike-garage-card__footer {
-  padding: 1rem 1.5rem;
-  background: #161616;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.icon-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: #94A3B8;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.4rem 0.6rem;
-  border-radius: 8px;
-  transition: all var(--transition-fast);
-}
-
-.icon-action-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #FFFFFF;
-}
-
-.icon-action-btn--danger {
-  color: #EF4444;
-}
-.icon-action-btn--danger:hover {
-  background: rgba(239, 68, 68, 0.15);
-  color: #F87171;
-}
-
-.make-primary-btn {
-  color: #FFF174;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-decoration: underline;
-}
-
-.make-primary-btn:hover {
-  color: #FDE047;
-  text-decoration: none;
-}
 
 /* ==========================================================
    MODALS
@@ -2907,16 +2760,6 @@ textarea:focus {
   transform: scale(1.05);
 }
 
-.bike-garage-card__image::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 50%;
-  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
-}
-
 .primary-badge-overlay {
   position: absolute;
   top: 1.25rem;
@@ -2937,43 +2780,163 @@ textarea:focus {
 .bike-garage-card__body {
   padding: 1.5rem;
   flex: 1;
+  background: #FFFFFF;
 }
 
 .bike-garage-card__body h3,
 .bike-card-title {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   font-size: 1.4rem;
   font-weight: 800;
   color: var(--color-navy) !important;
   letter-spacing: -0.02em;
+  text-decoration: none !important;
 }
 
 .reg-text {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: var(--color-navy);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   font-family: monospace;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  display: inline-block;
+  text-decoration: none !important;
 }
 
 .meta-pills {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .meta-pills span {
   background: var(--color-surface-secondary);
   color: var(--color-muted);
-  padding: 0.3rem 0.85rem;
+  padding: 0.3rem 0.75rem;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
+/* Technical Specifications Grid */
+.bike-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin: 1rem 0;
+  background: #F8FAFC;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+}
+
+.bike-spec-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.bike-spec-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748B;
+}
+
+.bike-spec-value {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0F172A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Feature Badge Chips */
+.bike-feature-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.bike-feature-chip {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #F1F5F9;
+  color: #334155;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.bike-specs-toggle-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1E293B;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all var(--transition-fast);
+  text-decoration: none !important;
+}
+
+.bike-specs-toggle-btn:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+  text-decoration: none !important;
+}
+
+.bike-expanded-specs {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed #CBD5E1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bike-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 0.8rem;
+  gap: 1rem;
+}
+
+.bike-detail-label {
+  color: #64748B;
+  font-weight: 600;
+  shrink: 0;
+}
+
+.bike-detail-val {
+  color: #0F172A;
+  font-weight: 700;
+  text-align: right;
+}
+
 .notes-text {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: var(--color-muted);
-  line-height: 1.6;
+  line-height: 1.5;
+  margin-top: 0.5rem;
 }
 
 .make-primary-btn {
@@ -2986,16 +2949,19 @@ textarea:focus {
   font-weight: 700;
   cursor: pointer;
   transition: all var(--transition-fast);
+  text-decoration: none !important;
 }
 
 .make-primary-btn:hover {
   background: var(--color-primary);
   border-color: var(--color-primary);
+  text-decoration: none !important;
 }
 
 .bike-garage-card__footer {
   display: flex;
-  border-top: 1px solid var(--color-border);
+  background: #F8FAFC;
+  border-top: 1px solid #E2E8F0;
 }
 
 .icon-action-btn {
@@ -3004,15 +2970,16 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 1.1rem;
+  padding: 0.95rem;
   background: transparent;
   border: none;
-  border-right: 1px solid var(--color-border);
-  font-size: 0.9rem;
+  border-right: 1px solid #E2E8F0;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--color-muted);
   cursor: pointer;
   transition: all var(--transition-fast);
+  text-decoration: none !important;
 }
 
 .icon-action-btn:last-child {
@@ -3020,13 +2987,15 @@ textarea:focus {
 }
 
 .icon-action-btn:hover {
-  background: var(--color-surface-secondary);
+  background: #F1F5F9;
   color: var(--color-navy);
+  text-decoration: none !important;
 }
 
 .icon-action-btn--danger:hover {
   background: #FEE2E2;
   color: #DC2626;
+  text-decoration: none !important;
 }
 
 /* Modals */

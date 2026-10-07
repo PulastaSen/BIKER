@@ -191,7 +191,7 @@ export function BikeCard({ bike, isSelected, onSelect }: BikeCardProps) {
                 : `${bike.brand} ${bike.model}`}
             </strong>
 
-            <div style={{ marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
               <span
                 style={{
                   padding: '0.3rem 0.65rem',
@@ -206,7 +206,21 @@ export function BikeCard({ bike, isSelected, onSelect }: BikeCardProps) {
               >
                 {bike.registrationNumber}
               </span>
-              <span style={{ fontSize: '0.85rem', color: '#49627F', fontWeight: 600 }}>Active in Garage</span>
+              {bike.category && (
+                <span
+                  style={{
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    color: '#0369A1',
+                    background: '#E0F2FE',
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '10px',
+                    border: '1px solid #BAE6FD',
+                  }}
+                >
+                  {bike.category}
+                </span>
+              )}
             </div>
           </div>
 
