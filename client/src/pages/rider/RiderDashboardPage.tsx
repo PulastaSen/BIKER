@@ -11,8 +11,6 @@ import {
   Clock,
   ShieldCheck,
   ChevronRight,
-  User,
-  LogOut,
   Map as MapIcon,
   Bike as BikeIcon,
   PhoneCall,
@@ -21,7 +19,7 @@ import {
 } from 'lucide-react';
 
 export function RiderDashboardPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [activeRequest, setActiveRequest] = useState<HelpRequest | undefined>();
@@ -40,31 +38,10 @@ export function RiderDashboardPage() {
     }
   }, [user]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
   const primaryBike = bikes.find(b => b.isPrimary) || bikes[0];
 
   return (
     <div className="bg-[#090909] min-h-screen text-white pb-24 font-sans flex flex-col">
-      
-      {/* Mobile-Only Header (Hidden on Desktop because DashboardLayout Sidebar handles it) */}
-      <header className="md:hidden w-full px-6 py-4 flex justify-between items-center border-b border-white/5 sticky top-0 bg-[#090909]/95 backdrop-blur-md z-30">
-        <div>
-          <h1 className="text-xl font-black tracking-tight text-[#FFF174]">MotoAssist</h1>
-          <p className="text-xs text-gray-400 font-semibold">Rider Portal</p>
-        </div>
-        <div className="flex gap-3">
-          <Link to="/rider/profile" className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white" aria-label="Profile">
-            <User size={16} />
-          </Link>
-          <button onClick={handleLogout} className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-red-400" aria-label="Logout">
-            <LogOut size={16} />
-          </button>
-        </div>
-      </header>
 
       {/* Main Container: Mobile phone width on small screens, expands dynamically to max-w-6xl on desktop */}
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-12 flex-1 flex flex-col gap-6">

@@ -5,13 +5,13 @@ import { VideoCard } from '../components/VideoCard';
 import { MapSection } from '../components/MapSection';
 import { SpatialCard } from '../components/SpatialCard';
 import { InteractiveRadarHUD } from '../components/InteractiveRadarHUD';
-import { Shield, Zap, Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Shield, Zap, Clock, ArrowRight, CheckCircle2, ShieldAlert, Wrench, Map as MapIcon } from 'lucide-react';
 
 export function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div id="home" className="hidden md:block">
+    <div id="home" className="w-full">
       <main>
         {/* PREMIUM HERO SECTION WITH 3D ANTIGRAVITY RADAR HUD */}
         <section className="hero-premium">
@@ -20,7 +20,12 @@ export function LandingPage() {
           </div>
           <div className="shell hero-premium__content">
             <div className="hero-premium__text">
-              <div className="hero-emergency-badge" role="status">
+              <div 
+                className="hero-emergency-badge cursor-pointer hover:bg-red-900/40 transition-colors" 
+                role="status"
+                onClick={() => navigate('/sos')}
+                title="Tap for Emergency SOS"
+              >
                 <span className="hero-emergency-pulse" aria-hidden="true" />
                 <span>🚨 24/7 ROADSIDE SOS • SILIGURI & HIMALAYAS</span>
               </div>
@@ -32,15 +37,68 @@ export function LandingPage() {
                 Connect with verified mechanics, towing providers and rider helpers across Siliguri and Himalayan corridors. Fast, simple, and transparent roadside rescue.
               </p>
               
-              {/* Main Actions with High Tactile Affordance */}
-              <div className="hero__actions">
+              {/* Main Actions with High Tactile Affordance across Mobile, Tablet, and Desktop */}
+              <div className="hero__actions flex flex-wrap gap-3 items-center">
                 <Button glow={true} className="button button--primary button--large" onClick={() => navigate('/request-help')}>
                   <Zap size={20} />
                   <span>REQUEST HELP NOW</span>
                 </Button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/sos')}
+                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 active:scale-95 text-white font-black text-sm tracking-widest uppercase flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(220,38,38,0.5)] transition-all cursor-pointer border border-red-500/50"
+                >
+                  <ShieldAlert size={18} />
+                  <span>EMERGENCY SOS</span>
+                </button>
                 <Button variant="secondary" className="button button--ghost-white" onClick={() => navigate('/become-helper')}>
                   <span>BECOME A HELPER</span>
                 </Button>
+              </div>
+
+              {/* Fast Triage Cards - Immediate Action on Mobile, Tab, and Desktop */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6 w-full">
+                <button
+                  type="button"
+                  onClick={() => navigate('/sos')}
+                  className="p-4 rounded-2xl bg-red-950/40 border border-red-500/30 hover:border-red-500/70 hover:bg-red-900/40 flex items-center gap-3 text-left transition-all active:scale-[0.98] group cursor-pointer"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center shrink-0 text-white shadow-lg group-hover:scale-105 transition-transform">
+                    <ShieldAlert size={20} />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-black text-red-400 uppercase tracking-widest">Immediate Danger</span>
+                    <strong className="text-white text-sm font-black">Hold for SOS</strong>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate('/request-help')}
+                  className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-[#FFF174]/40 hover:bg-white/10 flex items-center gap-3 text-left transition-all active:scale-[0.98] group cursor-pointer"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-[#FFF174]/20 flex items-center justify-center shrink-0 text-[#FFF174] group-hover:scale-105 transition-transform">
+                    <Wrench size={20} />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Roadside Repair</span>
+                    <strong className="text-white text-sm font-black">Request Help</strong>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate('/nearby-services')}
+                  className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-white/10 flex items-center gap-3 text-left transition-all active:scale-[0.98] group cursor-pointer"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0 text-blue-400 group-hover:scale-105 transition-transform">
+                    <MapIcon size={20} />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Workshops & OEM</span>
+                    <strong className="text-white text-sm font-black">Nearby Services</strong>
+                  </div>
+                </button>
               </div>
 
               {/* Beginner Guidance Badges */}

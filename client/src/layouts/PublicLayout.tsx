@@ -120,7 +120,6 @@ export function PublicLayout() {
       </section>
       )}
 
-      {location.pathname !== '/' && (
       <footer className="site-footer">
         <div className="shell footer-grid">
           <div className="footer-brand">
@@ -166,7 +165,6 @@ export function PublicLayout() {
           <span>© {new Date().getFullYear()} MotoAssist. Built for safer rides.</span>
         </div>
       </footer>
-      )}
       <MobileBottomNav />
     </div>
   );
