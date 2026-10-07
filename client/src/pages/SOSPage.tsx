@@ -23,8 +23,8 @@ export function SOSPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [incident, setIncident] = useState<SOSIncident | null>(null);
   
-  const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const HOLD_DURATION = 3000; // 3 seconds
   const navigate = useNavigate();
 
