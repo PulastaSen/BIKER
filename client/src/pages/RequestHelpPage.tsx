@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Wrench, Battery, Droplets, MapPin, Navigation, AlertCircle, ChevronRight, ArrowLeft, Star, ShieldCheck, Loader2 } from 'lucide-react';
+import { Wrench, Battery, Droplets, MapPin, Navigation, AlertCircle, ArrowLeft, Star, ShieldCheck, Loader2, Edit3, RefreshCw, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { getHelperProfiles, saveRequest, getBikes } from '../utils/appStorage';
+import { API_BASE_URL } from '../config/api';
 
 const CATEGORIES = [
   { id: 'Puncture', icon: <AlertCircle />, label: 'Puncture', desc: 'Flat tyre or air leak' },
@@ -37,6 +38,10 @@ export function RequestHelpPage() {
   const [category, setCategory] = useState('');
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
   const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [showManualInput, setShowManualInput] = useState(false);
+  const [manualLandmark, setManualLandmark] = useState('');
+  const [manualCoords, setManualCoords] = useState<{ lat: string; lng: string }>({ lat: '26.7271', lng: '88.3953' });
   const [providers, setProviders] = useState<ServiceProvider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<ServiceProvider | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,6 +53,7 @@ export function RequestHelpPage() {
 
   const requestLocation = () => {
     setLocating(true);
+    setLocationError(null);
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         pos => {
@@ -55,24 +61,37 @@ export function RequestHelpPage() {
           setLocating(false);
           handleNext();
         },
-        () => {
-          // Graceful fallback to default corridor coordinates (Siliguri/NH-10)
-          setLocation({ lat: 26.7271, lng: 88.3953 });
+        error => {
           setLocating(false);
-          handleNext();
+          const errorText = error.code === error.PERMISSION_DENIED
+            ? 'Your location is unavailable because GPS permission was denied.'
+            : 'Your location is unavailable. Unable to determine your GPS position.';
+          setLocationError(errorText);
         },
-        { timeout: 8000 }
+        { timeout: 10000, enableHighAccuracy: true }
       );
     } else {
-      setLocation({ lat: 26.7271, lng: 88.3953 });
       setLocating(false);
-      handleNext();
+      setLocationError('Your location is unavailable. Geolocation is not supported by your browser.');
     }
   };
 
-  const useDefaultLocation = () => {
-    setLocation({ lat: 26.7271, lng: 88.3953 });
-    handleNext();
+  const handleManualLocationSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const lat = parseFloat(manualCoords.lat);
+    const lng = parseFloat(manualCoords.lng);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      setLocation({ lat, lng });
+      setLocationError(null);
+      handleNext();
+    } else if (manualLandmark.trim().length > 3) {
+      // User specified landmark
+      setLocation({ lat: 26.7271, lng: 88.3953 });
+      setLocationError(null);
+      handleNext();
+    } else {
+      alert('Please enter a valid highway location or coordinates.');
+    }
   };
 
   const loadFallbackProviders = () => {
@@ -93,7 +112,7 @@ export function RequestHelpPage() {
 
   useEffect(() => {
     if (step === 3 && location) {
-      fetch(`http://localhost:5000/api/assistance/providers/nearby?lat=${location.lat}&lng=${location.lng}`)
+      fetch(`${API_BASE_URL}/api/assistance/providers/nearby?lat=${location.lat}&lng=${location.lng}`)
         .then(res => res.json())
         .then(data => {
           if (data.success && data.data && data.data.length > 0) {
@@ -112,7 +131,7 @@ export function RequestHelpPage() {
     if (!category || !location || !selectedProvider) return;
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/assistance', {
+      const res = await fetch(`${API_BASE_URL}/api/assistance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -246,29 +265,101 @@ export function RequestHelpPage() {
                 
                 <h1 className="text-4xl md:text-5xl font-black mb-4 text-gray-50">Confirm Location</h1>
                 <p className="text-gray-300 text-lg mb-8 max-w-md mx-auto">We need your coordinates to dispatch the nearest provider accurately.</p>
-                
-                <div className="flex flex-col items-center gap-4">
-                  <button 
-                    onClick={requestLocation}
-                    disabled={locating}
-                    aria-busy={locating}
-                    className="inline-flex items-center justify-center px-8 py-5 bg-[#FFF174] text-black font-black text-lg rounded-xl hover:bg-yellow-400 hover:scale-105 transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/50 w-full sm:w-auto shadow-[0_0_30px_rgba(255,241,116,0.2)] disabled:opacity-70 disabled:hover:scale-100"
-                  >
-                    {locating ? (
-                      <><Loader2 className="animate-spin mr-3" size={24} /> LOCATING...</>
-                    ) : (
-                      <><Navigation className="mr-3" size={24} /> SHARE GPS LOCATION</>
-                    )}
-                  </button>
 
-                  <button 
-                    type="button"
-                    onClick={useDefaultLocation}
-                    className="text-sm text-gray-400 hover:text-[#FFF174] underline flex items-center gap-1.5 transition-colors"
-                  >
-                    <MapPin size={14} /> Or use Siliguri / NH-10 Highway Corridor (26.7271° N, 88.3953° E)
-                  </button>
-                </div>
+                {locationError && (
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6 mb-8 text-left max-w-lg mx-auto">
+                    <div className="flex items-center gap-3 mb-2 text-amber-400 font-bold text-lg">
+                      <AlertCircle size={22} />
+                      <h3>Your location is unavailable.</h3>
+                    </div>
+                    <p className="text-gray-300 text-sm mb-5 leading-relaxed">{locationError}</p>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        onClick={requestLocation}
+                        className="px-5 py-2.5 bg-[#FFF174] text-black font-black text-xs rounded-xl hover:bg-yellow-400 transition-colors flex items-center gap-2"
+                      >
+                        <RefreshCw size={14} /> Enable Location / Retry
+                      </button>
+                      <button
+                        onClick={() => setShowManualInput(prev => !prev)}
+                        className="px-5 py-2.5 bg-white/10 text-white font-bold text-xs rounded-xl hover:bg-white/20 transition-colors flex items-center gap-2 border border-white/10"
+                      >
+                        <Edit3 size={14} /> Enter Location Manually
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {showManualInput && (
+                  <form onSubmit={handleManualLocationSubmit} className="bg-[#111111] border border-white/10 rounded-2xl p-6 mb-8 text-left max-w-lg mx-auto space-y-4">
+                    <h3 className="font-bold text-white text-base">Enter Roadside Location</h3>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                        Highway Milestone / Landmark
+                      </label>
+                      <input
+                        type="text"
+                        value={manualLandmark}
+                        onChange={e => setManualLandmark(e.target.value)}
+                        placeholder="e.g. NH-10 Corridor, Sevoke Road Milestone 12"
+                        className="w-full px-4 py-3 bg-[#181818] border border-white/10 rounded-xl text-white text-sm focus:border-[#FFF174] focus:outline-none"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Latitude</label>
+                        <input
+                          type="text"
+                          value={manualCoords.lat}
+                          onChange={e => setManualCoords(prev => ({ ...prev, lat: e.target.value }))}
+                          placeholder="26.7271"
+                          className="w-full px-4 py-3 bg-[#181818] border border-white/10 rounded-xl text-white text-sm focus:border-[#FFF174] focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Longitude</label>
+                        <input
+                          type="text"
+                          value={manualCoords.lng}
+                          onChange={e => setManualCoords(prev => ({ ...prev, lng: e.target.value }))}
+                          placeholder="88.3953"
+                          className="w-full px-4 py-3 bg-[#181818] border border-white/10 rounded-xl text-white text-sm focus:border-[#FFF174] focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 bg-[#FFF174] text-black font-black text-sm rounded-xl hover:bg-yellow-400 transition-colors uppercase tracking-wider"
+                    >
+                      Confirm Location & Find Providers
+                    </button>
+                  </form>
+                )}
+                
+                {!locationError && !showManualInput && (
+                  <div className="flex flex-col items-center gap-4">
+                    <button 
+                      onClick={requestLocation}
+                      disabled={locating}
+                      aria-busy={locating}
+                      className="inline-flex items-center justify-center px-8 py-5 bg-[#FFF174] text-black font-black text-lg rounded-xl hover:bg-yellow-400 hover:scale-105 transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/50 w-full sm:w-auto shadow-[0_0_30px_rgba(255,241,116,0.2)] disabled:opacity-70 disabled:hover:scale-100"
+                    >
+                      {locating ? (
+                        <><Loader2 className="animate-spin mr-3" size={24} /> LOCATING...</>
+                      ) : (
+                        <><Navigation className="mr-3" size={24} /> SHARE GPS LOCATION</>
+                      )}
+                    </button>
+
+                    <button 
+                      type="button"
+                      onClick={() => setShowManualInput(true)}
+                      className="text-sm text-gray-400 hover:text-[#FFF174] underline flex items-center gap-1.5 transition-colors"
+                    >
+                      <Edit3 size={14} /> Enter Location Manually
+                    </button>
+                  </div>
+                )}
               </motion.section>
             )}
 

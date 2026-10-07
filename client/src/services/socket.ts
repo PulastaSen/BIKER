@@ -1,10 +1,11 @@
 import { io, Socket } from 'socket.io-client';
+import { SOCKET_URL } from '../config/api';
 
 let socket: Socket | null = null;
 
 export const getSocket = () => {
   if (!socket) {
-    socket = io('http://localhost:5000', {
+    socket = io(SOCKET_URL, {
       reconnectionDelayMax: 10000,
       reconnectionAttempts: Infinity,
       transports: ['websocket', 'polling']

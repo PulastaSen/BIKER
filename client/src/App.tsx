@@ -30,6 +30,7 @@ import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { AdminRequestsPage } from './pages/admin/AdminRequestsPage';
 import { AdminReportsPage } from './pages/admin/AdminReportsPage';
 import { ScrollToTop } from './components/ScrollToTop';
+import { OfflineNotice } from './components/OfflineNotice';
 
 const pageVariants = {
   initial: { opacity: 0, y: 10 },
@@ -90,6 +91,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
+        <OfflineNotice />
         <AppRoutes />
       </BrowserRouter>
     </AuthProvider>

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Star, Wrench, CheckCircle, Clock } from 'lucide-react';
 import { getSocket } from '../services/socket';
 import { getRequestById, getHelperProfileById, updateRequestStatus } from '../utils/appStorage';
+import { API_BASE_URL } from '../config/api';
 
 const STATUS_FLOW = [
   'REQUESTED',
@@ -41,7 +42,7 @@ export function RequestDetailsPage() {
   const fetchRequest = useCallback(async () => {
     if (!id) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/assistance/${id}`);
+      const res = await fetch(`${API_BASE_URL}/api/assistance/${id}`);
       const data = await res.json();
       if (data.success && data.data) {
         setRequest(data.data);
@@ -109,7 +110,7 @@ export function RequestDetailsPage() {
     if (currentIndex < STATUS_FLOW.length - 1) {
       const nextStatus = STATUS_FLOW[currentIndex + 1];
       try {
-        await fetch(`http://localhost:5000/api/assistance/${request.requestId}/status`, {
+        await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: nextStatus })
@@ -132,7 +133,7 @@ export function RequestDetailsPage() {
   const submitRating = async () => {
     if (!request) return;
     try {
-      await fetch(`http://localhost:5000/api/assistance/${request.requestId}/rate`, {
+      await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/rate`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating, review: 'Great rapid roadside service' })
@@ -170,6 +171,11 @@ export function RequestDetailsPage() {
   }
 
   const currentIndex = STATUS_FLOW.indexOf(request.status);
+  const mapQuery = (typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates.length === 2)
+    ? `${request.location.coordinates[1]},${request.location.coordinates[0]}`
+    : typeof request.location === 'string' && request.location
+    ? encodeURIComponent(request.location)
+    : '26.7271,88.3953';
 
   return (
     <div className="min-h-screen bg-[#090909] text-white pt-24 pb-12 font-sans selection:bg-[#FFF174] selection:text-black">
@@ -184,9 +190,10 @@ export function RequestDetailsPage() {
           {currentIndex < STATUS_FLOW.length - 1 && (
             <button 
               onClick={simulateNextStatus} 
-              className="px-4 py-2 bg-white/10 text-xs font-bold rounded-xl border border-white/20 hover:bg-white/20 text-[#FFF174]"
+              className="px-4 py-2 bg-yellow-500/10 text-xs font-bold rounded-xl border border-[#FFF174]/40 hover:bg-[#FFF174]/20 text-[#FFF174] flex items-center gap-1.5"
+              title="Test progression for evaluation and demo walkthroughs"
             >
-              Advance Dispatch Status →
+              <span className="px-1.5 py-0.5 rounded bg-[#FFF174] text-black text-[10px] font-black uppercase">DEMO MODE</span> Advance Dispatch Status →
             </button>
           )}
         </div>
@@ -235,7 +242,7 @@ export function RequestDetailsPage() {
                 title="Incident Location Map"
                 className="w-full h-full border-0"
                 loading="lazy"
-                src="https://maps.google.com/maps?q=26.7271,88.3953&z=14&output=embed"
+                src={`https://maps.google.com/maps?q=${mapQuery}&z=14&output=embed`}
               ></iframe>
             </div>
 

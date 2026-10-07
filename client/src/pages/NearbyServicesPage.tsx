@@ -198,15 +198,9 @@ export function NearbyServicesPage() {
           setLocating(false);
         },
         (err) => {
-          if (err.code === err.PERMISSION_DENIED) {
-            setPermState('denied');
-          } else {
-            // Default to central Siliguri corridor on timeout/fallback
-            setCoords({ lat: 26.7271, lng: 88.3953 });
-            setAccuracy(500);
-            setPermState('granted');
-          }
           setLocating(false);
+          setPermState('denied');
+          console.warn('Geolocation error:', err.message);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
       );
@@ -306,28 +300,38 @@ export function NearbyServicesPage() {
           </div>
           
           <h2 className="text-2xl font-black mb-3 text-white tracking-tight">
-            Location access was not enabled
+            Your location is unavailable.
           </h2>
           <p className="text-gray-400 mb-8 text-sm leading-relaxed">
-            You can still browse verified mechanics and OEM service centres along the Siliguri & Himalayan corridors.
+            GPS location permission was not granted or signal timed out. Please enable location permissions or enter your highway coordinates manually.
           </p>
           
           <div className="flex flex-col gap-3">
             <button 
-              onClick={() => {
-                setCoords({ lat: 26.7271, lng: 88.3953 });
-                setPermState('granted');
-              }}
-              className="w-full py-4 bg-[#FFF174] text-black font-black text-base rounded-xl flex justify-center items-center gap-2 hover:bg-yellow-400 transition-all cursor-pointer shadow-[0_0_20px_rgba(255,241,116,0.25)] min-h-[52px]"
-            >
-              BROWSE SILIGURI CORRIDOR
-            </button>
-            <button 
               onClick={requestLocation} 
               disabled={locating} 
-              className="w-full py-4 bg-white/5 text-gray-300 font-bold text-base rounded-xl flex justify-center items-center hover:bg-white/10 hover:text-white transition-colors cursor-pointer min-h-[52px]"
+              className="w-full py-4 bg-[#FFF174] text-black font-black text-base rounded-xl flex justify-center items-center gap-2 hover:bg-yellow-400 transition-all cursor-pointer shadow-[0_0_20px_rgba(255,241,116,0.25)] min-h-[52px]"
             >
-              {locating ? <RefreshCw className="animate-spin" size={20} /> : "RETRY LOCATION ACCESS"}
+              {locating ? <RefreshCw className="animate-spin" size={20} /> : "Enable Location"}
+            </button>
+            <button 
+              onClick={() => {
+                const manual = window.prompt("Enter coordinates (format: latitude, longitude):", "26.7271, 88.3953");
+                if (manual) {
+                  const [latStr, lngStr] = manual.split(',');
+                  const lat = parseFloat(latStr);
+                  const lng = parseFloat(lngStr);
+                  if (!isNaN(lat) && !isNaN(lng)) {
+                    setCoords({ lat, lng });
+                    setPermState('granted');
+                  } else {
+                    alert("Invalid coordinates format.");
+                  }
+                }
+              }}
+              className="w-full py-4 bg-white/5 text-gray-300 font-bold text-base rounded-xl flex justify-center items-center hover:bg-white/10 hover:text-white transition-colors cursor-pointer min-h-[52px] border border-white/10"
+            >
+              Enter Location Manually
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { AlertTriangle, MapPin, X, Phone, PhoneCall, Zap, Shield, Navigation } from 'lucide-react';
+import { AlertTriangle, MapPin, X, PhoneCall, Zap, Shield, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 
 type SOSStatus = 'IDLE' | 'HOLDING' | 'ACTIVATING' | 'ACTIVE' | 'ERROR';
 
@@ -8,6 +9,9 @@ interface SOSIncident {
   incidentId: string;
   status: string;
   notificationStatus: string;
+  contactsNotified?: boolean;
+  serverReceived?: boolean;
+  gpsAcquired?: boolean;
   location?: {
     coordinates: number[];
   };
@@ -28,11 +32,15 @@ export function SOSPage() {
     // Check if an SOS is already active when page loads
     const checkActiveSOS = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/sos/active');
+        const res = await fetch(`${API_BASE_URL}/api/sos/active`);
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.data) {
-            setIncident(data.data);
+            setIncident({
+              ...data.data,
+              serverReceived: true,
+              gpsAcquired: !!(data.data.location?.coordinates && data.data.location.coordinates.length === 2)
+            });
             setStatus('ACTIVE');
           }
         }
@@ -79,8 +87,9 @@ export function SOSPage() {
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     setHoldProgress(100);
 
-    let lat = null;
-    let lng = null;
+    let lat: number | null = null;
+    let lng: number | null = null;
+    let gpsAcquired = false;
 
     try {
       if ('geolocation' in navigator) {
@@ -93,17 +102,18 @@ export function SOSPage() {
         });
         lat = position.coords.latitude;
         lng = position.coords.longitude;
+        gpsAcquired = true;
       } else {
         throw new Error('Geolocation not supported');
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.warn('Geolocation failed:', message);
-      // We continue even if GPS fails (graceful fallback)
+      console.warn('Geolocation unavailable during SOS:', message);
+      gpsAcquired = false;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/sos', {
+      const response = await fetch(`${API_BASE_URL}/api/sos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ latitude: lat, longitude: lng })
@@ -111,22 +121,29 @@ export function SOSPage() {
       
       const data = await response.json();
       if (data.success) {
-        setIncident(data.data);
+        setIncident({
+          ...data.data,
+          serverReceived: true,
+          gpsAcquired
+        });
         setStatus('ACTIVE');
         return;
       }
     } catch {
-      // Offline / Local fallback: Immediately activate incident to prevent leaving rider with an error
+      // Local offline fallback
     }
 
-    // High-priority local emergency activation fallback
+    // High-priority local emergency activation fallback (truthful without fake coordinates)
     const fallbackIncident: SOSIncident = {
       incidentId: `SOS-${Math.floor(100000 + Math.random() * 900000)}`,
       status: 'ACTIVE',
-      notificationStatus: 'DISPATCH_BROADCAST_ACTIVE',
-      location: {
-        coordinates: [lng || 88.3953, lat || 26.7271]
-      }
+      notificationStatus: 'Offline Local Emergency Stored',
+      contactsNotified: false,
+      serverReceived: false,
+      gpsAcquired,
+      location: lat && lng ? {
+        coordinates: [lng, lat]
+      } : undefined
     };
     setIncident(fallbackIncident);
     setStatus('ACTIVE');
@@ -139,7 +156,7 @@ export function SOSPage() {
     if (!confirm) return;
 
     try {
-      await fetch(`http://localhost:5000/api/sos/${incident.incidentId}/cancel`, {
+      await fetch(`${API_BASE_URL}/api/sos/${incident.incidentId}/cancel`, {
         method: 'PUT'
       });
     } catch {
@@ -259,33 +276,82 @@ export function SOSPage() {
                 </div>
               </div>
 
-              <div className="space-y-4 mb-8">
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Navigation className="text-[#FFF174]" />
-                    <span className="font-medium">Location Status</span>
-                  </div>
-                  <span className="text-sm font-bold text-gray-300">
-                    {incident.location ? 'GPS Locked' : 'Location Unavailable'}
+              <div className="space-y-3 mb-6">
+                {/* Status 1: SOS Created */}
+                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-300">1. SOS Incident</span>
+                  <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                    <CheckCircle2 size={14} /> Created (#{incident.incidentId})
                   </span>
                 </div>
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Phone className="text-[#FFF174]" />
-                    <span className="font-medium">Emergency Contacts</span>
-                  </div>
-                  <span className="text-sm font-bold text-gray-400 text-right max-w-[150px]">
-                    {incident.notificationStatus}
-                  </span>
+
+                {/* Status 2: GPS Status */}
+                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-300">2. GPS Acquisition</span>
+                  {incident.gpsAcquired ? (
+                    <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                      <CheckCircle2 size={14} /> Coordinates Locked
+                    </span>
+                  ) : (
+                    <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                      <AlertCircle size={14} /> Unavailable (No GPS)
+                    </span>
+                  )}
+                </div>
+
+                {/* Status 3: Server Received */}
+                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-300">3. Backend Dispatch</span>
+                  {incident.serverReceived !== false ? (
+                    <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                      <CheckCircle2 size={14} /> Server Confirmed
+                    </span>
+                  ) : (
+                    <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                      <AlertCircle size={14} /> Local Device Stored
+                    </span>
+                  )}
+                </div>
+
+                {/* Status 4: Contacts Notification */}
+                <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-300">4. Emergency Contacts</span>
+                  {incident.contactsNotified ? (
+                    <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                      <CheckCircle2 size={14} /> Notified via SMS
+                    </span>
+                  ) : (
+                    <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                      <AlertCircle size={14} /> Gateway Pending (Call Direct)
+                    </span>
+                  )}
                 </div>
               </div>
 
+              {!incident.contactsNotified && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs mb-6 flex items-start gap-2.5 leading-relaxed">
+                  <AlertCircle size={18} className="shrink-0 text-amber-400 mt-0.5" />
+                  <p>
+                    <strong>Safety Notice:</strong> Automated SMS gateway requires live credentials. Please place a direct phone call to 112 or your emergency contacts below immediately.
+                  </p>
+                </div>
+              )}
+
               {/* ACTION BUTTONS */}
               <div className="space-y-3">
-                <a href="tel:112" className="w-full flex items-center justify-center gap-2 p-4 bg-[#EF4444] text-white font-black rounded-xl hover:bg-red-600 transition-colors">
+                <a href="tel:112" className="w-full flex items-center justify-center gap-2 p-4 bg-[#EF4444] text-white font-black rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-900/30">
                   <PhoneCall size={20} />
-                  CALL OFFICIAL EMERGENCY (112)
+                  CALL NATIONAL EMERGENCY (112)
                 </a>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <a href="tel:108" className="flex items-center justify-center gap-2 p-3 bg-white/10 text-white font-bold text-xs rounded-xl hover:bg-white/20 transition-colors border border-white/10">
+                    <PhoneCall size={16} className="text-rose-400" /> CALL AMBULANCE (108)
+                  </a>
+                  <a href="tel:100" className="flex items-center justify-center gap-2 p-3 bg-white/10 text-white font-bold text-xs rounded-xl hover:bg-white/20 transition-colors border border-white/10">
+                    <PhoneCall size={16} className="text-blue-400" /> CALL POLICE (100)
+                  </a>
+                </div>
                 
                 <button 
                   onClick={() => navigate('/request-help')}
