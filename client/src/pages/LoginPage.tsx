@@ -24,15 +24,23 @@ export function LoginPage() {
     
     setIsLoading(true);
     
-    const success = await login(email.trim(), password);
+    const loggedInUser = await login(email.trim(), password);
     
-    if (success) {
-      navigate('/rider/dashboard');
+    if (loggedInUser) {
+      if (loggedInUser.role === 'RIDER') navigate('/rider/dashboard');
+      else if (loggedInUser.role === 'HELPER') navigate('/helper/dashboard');
+      else navigate('/admin/dashboard');
     } else {
       setError('Invalid email or password. Please try again.');
     }
     
     setIsLoading(false);
+  };
+
+  const fillDemoAccount = (demoEmail: string) => {
+    setEmail(demoEmail);
+    setPassword('password123');
+    setError('');
   };
 
   return (
@@ -56,6 +64,34 @@ export function LoginPage() {
             <span>{error}</span>
           </div>
         )}
+
+        {/* Quick Demo Credentials */}
+        <div className="mb-6 p-3 bg-white/5 border border-white/10 rounded-2xl relative z-10">
+          <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">⚡ Quick 1-Click Demo Accounts</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => fillDemoAccount('rider@motoassist.in')}
+              className="text-xs px-2.5 py-1.5 rounded-lg bg-yellow-400/20 text-yellow-300 hover:bg-yellow-400/30 font-medium transition cursor-pointer"
+            >
+              Rider
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoAccount('helper@motoassist.in')}
+              className="text-xs px-2.5 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-medium transition cursor-pointer"
+            >
+              Helper
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoAccount('admin@motoassist.in')}
+              className="text-xs px-2.5 py-1.5 rounded-lg bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 font-medium transition cursor-pointer"
+            >
+              Admin
+            </button>
+          </div>
+        </div>
 
         <form onSubmit={handleLogin} className="space-y-5 relative z-10" noValidate>
           <div className="space-y-1.5">
@@ -130,3 +166,4 @@ export function LoginPage() {
     </div>
   );
 }
+

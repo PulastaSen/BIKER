@@ -4,7 +4,7 @@ import { getCurrentUser, setCurrentUser as persistCurrentUser, DEFAULT_USERS } f
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password?: string) => Promise<boolean>;
+  login: (email: string, password?: string) => Promise<User | null>;
   register: (data: {
     name: string;
     email: string;
@@ -22,10 +22,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(() => getCurrentUser());
   const [loading, setLoading] = useState(true);
 
+  // Sync state changes with localStorage
   useEffect(() => {
     persistCurrentUser(user);
-    
-    // Validate session with backend on load if token exists
+  }, [user]);
+
+  // Validate session with backend only ONCE on mount
+  useEffect(() => {
     const token = localStorage.getItem('auth_token');
     if (token) {
       fetch('http://localhost:5000/api/auth/me', {
@@ -33,23 +36,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       })
       .then(res => res.json())
       .then(data => {
-        if (data.success) {
+        if (data.success && data.user) {
           setUser(data.user);
         } else {
-          setUser(null);
           localStorage.removeItem('auth_token');
         }
       })
       .catch(() => {
-        setUser(null);
+        // Keep offline user if token verify fails
       })
       .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, []);
 
-  const login = async (email: string, password = 'password123'): Promise<boolean> => {
+  const login = async (email: string, password = 'password123'): Promise<User | null> => {
     try {
       const res = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
@@ -58,27 +60,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       const data = await res.json();
       
-      if (data.success) {
+      if (res.ok && data.success && data.user) {
         localStorage.setItem('auth_token', data.token);
         setUser(data.user);
-        return true;
+        return data.user;
       }
-      return false;
     } catch {
-      // Local fallback for demo / offline environment
-      const found = DEFAULT_USERS.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
-      if (found) {
-        setUser(found);
-        persistCurrentUser(found);
-        return true;
-      }
-      return false;
+      // Local fallback below
     }
+
+    // Local fallback for demo / offline environment
+    const found = DEFAULT_USERS.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+    if (found) {
+      setUser(found);
+      persistCurrentUser(found);
+      return found;
+    }
+    return null;
   };
 
   const register = async (data: { name: string; email: string; phone: string; password?: string; role: UserRole }): Promise<User | null> => {
     try {
-      // supply a default password for the demo if not provided
       const res = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -86,32 +88,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       const resData = await res.json();
       
-      if (resData.success) {
+      if (res.ok && resData.success && resData.user) {
         localStorage.setItem('auth_token', resData.token);
         setUser(resData.user);
         return resData.user;
       }
-      return null;
     } catch {
-      // Local fallback for offline demo registration
-      const newUser: User = {
-        id: `user-${Date.now()}`,
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        role: data.role,
-        createdAt: new Date().toISOString()
-      };
-      setUser(newUser);
-      persistCurrentUser(newUser);
-      return newUser;
+      // Local fallback below
     }
+
+    // Local fallback for offline demo registration
+    const newUser: User = {
+      id: `user-${Date.now()}`,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      role: data.role,
+      createdAt: new Date().toISOString()
+    };
+    setUser(newUser);
+    persistCurrentUser(newUser);
+    return newUser;
   };
 
   const logout = () => {
     localStorage.removeItem('auth_token');
     setUser(null);
   };
+
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout, loading }}>

@@ -21,12 +21,15 @@ io.on('connection', (socket) => {
   });
 });
 
-mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 2000 })
+// Disable command buffering so queries don't hang for 10 seconds if Mongo is offline
+mongoose.set('bufferCommands', false);
+
+mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 1500 })
   .then(() => {
     console.log('Connected to MongoDB (MotoAssist)');
   })
   .catch((err) => {
-    console.warn(`[MotoAssist Notice] MongoDB not connected (${err.message}). Server running in offline/mock mode.`);
+    console.warn(`[MotoAssist Notice] MongoDB not connected (${err.message}). Server running in lightning-fast offline/mock mode.`);
   })
   .finally(() => {
     server.listen(port, () => console.log(`MotoAssist API listening on port ${port}`));

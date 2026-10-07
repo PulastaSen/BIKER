@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import SOSIncident, { SOSStatus } from '../models/SOSIncident.js';
 import { io } from '../server.js';
 import crypto from 'crypto';
+import { mockStore } from '../services/mockStore.js';
 
 function generateIncidentId() {
   return `MA-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
@@ -11,17 +12,38 @@ function generateIncidentId() {
 export const createSOS = async (req: Request, res: Response): Promise<void> => {
   try {
     const { latitude, longitude } = req.body;
-    
-    // For now, mock a user ID if auth is not fully wired up.
-    // In production, this would be req.user._id
-    const userId = req.body.userId || '60d5ecb8b392d7001f3e9a01'; 
-
+    const userId = req.body.userId || 'user-rider-1';
     const incidentId = generateIncidentId();
     const hasLocation = latitude && longitude;
-
-    // We do not have real SMS/Email configured yet.
-    // So we honestly report the notification service is not configured.
     const notificationStatus = 'Notification service not configured';
+
+    const isMongoConnected = mongoose.connection.readyState === 1;
+
+    if (!isMongoConnected) {
+      const mockInc = mockStore.createSOS({
+        incidentId,
+        userId,
+        status: 'ACTIVE',
+        notificationStatus,
+        location: hasLocation ? {
+          type: 'Point',
+          coordinates: [longitude, latitude]
+        } : undefined
+      });
+
+      io.emit('sos:created', {
+        incidentId: mockInc.incidentId,
+        location: mockInc.location,
+        status: mockInc.status,
+        timestamp: mockInc.createdAt
+      });
+
+      res.status(201).json({
+        success: true,
+        data: mockInc
+      });
+      return;
+    }
 
     const incident = new SOSIncident({
       incidentId,
@@ -36,7 +58,6 @@ export const createSOS = async (req: Request, res: Response): Promise<void> => {
 
     await incident.save();
 
-    // Broadcast the SOS creation to admins/providers in the area
     io.emit('sos:created', {
       incidentId: incident.incidentId,
       location: incident.location,
@@ -56,7 +77,23 @@ export const createSOS = async (req: Request, res: Response): Promise<void> => {
 
 export const cancelSOS = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
+
+    const isMongoConnected = mongoose.connection.readyState === 1;
+
+    if (!isMongoConnected) {
+      const cancelled = mockStore.cancelSOS(id);
+      if (!cancelled) {
+        res.status(404).json({ success: false, message: 'Active SOS incident not found' });
+        return;
+      }
+      io.emit('sos:cancelled', { incidentId: cancelled.incidentId });
+      res.status(200).json({
+        success: true,
+        data: cancelled
+      });
+      return;
+    }
     
     const incident = await SOSIncident.findOne({ incidentId: id, status: SOSStatus.ACTIVE });
     if (!incident) {
@@ -81,7 +118,21 @@ export const cancelSOS = async (req: Request, res: Response): Promise<void> => {
 
 export const getActiveSOS = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Usually scoped to the requesting user: req.user._id
+    const isMongoConnected = mongoose.connection.readyState === 1;
+
+    if (!isMongoConnected) {
+      const active = mockStore.getActiveSOS();
+      if (!active) {
+        res.status(404).json({ success: false, message: 'No active SOS' });
+        return;
+      }
+      res.status(200).json({
+        success: true,
+        data: active
+      });
+      return;
+    }
+
     const userIdRaw = typeof req.query.userId === 'string' ? req.query.userId : '60d5ecb8b392d7001f3e9a01';
     const userId = mongoose.Types.ObjectId.isValid(userIdRaw) ? new mongoose.Types.ObjectId(userIdRaw) : new mongoose.Types.ObjectId('60d5ecb8b392d7001f3e9a01');
     const incident = await SOSIncident.findOne({ userId, status: SOSStatus.ACTIVE });
@@ -100,3 +151,4 @@ export const getActiveSOS = async (req: Request, res: Response): Promise<void> =
     res.status(500).json({ success: false, message: 'Server error fetching SOS' });
   }
 };
+
