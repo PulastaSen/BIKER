@@ -89,6 +89,19 @@ export function MyBikesPage() {
     loadBikes();
   };
 
+  // Helper function to format clear bike display name
+  const getBikeDisplayName = (bike: Bike) => {
+    const brand = (bike.brand || '').trim();
+    const model = (bike.model || '').trim();
+    if (!brand && !model) return 'Motorcycle';
+    if (!brand) return model;
+    if (!model) return brand;
+    if (model.toLowerCase().includes(brand.toLowerCase())) {
+      return model;
+    }
+    return `${brand} ${model}`;
+  };
+
   // Helper function to resolve dynamic image path
   const getBikeImage = (bike: Bike) => {
     const bModel = bike.model.toLowerCase();
@@ -149,7 +162,7 @@ export function MyBikesPage() {
           {bikes.map((b) => (
             <div key={b.id} className={`bike-garage-card ${b.isPrimary ? 'is-primary' : ''}`}>
               <div className="bike-garage-card__image">
-                <img src={getBikeImage(b)} alt={`${b.brand} ${b.model}`} loading="lazy" />
+                <img src={getBikeImage(b)} alt={getBikeDisplayName(b)} loading="lazy" />
                 {b.isPrimary && (
                   <div className="primary-badge-overlay">
                     <Star size={14} fill="currentColor" /> PRIMARY BIKE
@@ -157,16 +170,54 @@ export function MyBikesPage() {
                 )}
               </div>
               
-              <div className="bike-garage-card__body">
-                <h3>{b.brand} {b.model}</h3>
-                <p className="reg-text">
+              <div className="bike-garage-card__body" style={{ color: '#0F172A', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                  <span
+                    className="bike-brand-badge"
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: '#475569',
+                      background: '#F1F5F9',
+                      padding: '0.2rem 0.55rem',
+                      borderRadius: '5px',
+                      border: '1px solid #CBD5E1',
+                    }}
+                  >
+                    {b.brand || 'Motorcycle'}
+                  </span>
+                  <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
+                    Year {b.year}
+                  </span>
+                </div>
+
+                <h3
+                  className="bike-card-title"
+                  style={{
+                    fontSize: '1.4rem',
+                    fontWeight: 800,
+                    color: '#0F172A',
+                    lineHeight: 1.25,
+                    marginTop: '0.2rem',
+                    marginBottom: '0.65rem',
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  {getBikeDisplayName(b)}
+                </h3>
+
+                <p className="reg-text" style={{ marginBottom: '0.75rem' }}>
                   <strong>{b.registrationNumber}</strong>
                 </p>
-                <div className="meta-pills">
-                  <span>Year {b.year}</span>
+
+                <div className="meta-pills" style={{ marginBottom: '0.75rem' }}>
                   <span>{b.fuelType}</span>
+                  <span>{b.isPrimary ? 'Primary Ride' : 'Active Bike'}</span>
                 </div>
-                {b.notes && <p className="notes-text">{b.notes}</p>}
+
+                {b.notes && <p className="notes-text" style={{ color: '#475569', fontSize: '0.85rem' }}>{b.notes}</p>}
                 
                 {!b.isPrimary && (
                   <div style={{ marginTop: '1rem' }}>

@@ -217,7 +217,7 @@ export const INITIAL_CONTACTS: EmergencyContact[] = [
 const KEYS = {
   USERS: 'motoassist_users_v3',
   CURRENT_USER: 'motoassist_current_user_v3',
-  BIKES: 'motoassist_bikes_v3',
+  BIKES: 'motoassist_bikes_v4',
   HELPERS: 'motoassist_helpers_v3',
   REQUESTS: 'motoassist_requests_v3',
   CONTACTS: 'motoassist_contacts_v3',
@@ -248,7 +248,23 @@ export function initAppStorage(): void {
     setItem(KEYS.USERS, DEMO_USERS);
   }
   if (!localStorage.getItem(KEYS.BIKES)) {
-    setItem(KEYS.BIKES, INITIAL_BIKES);
+    const prevBikes = getItem<Bike[]>('motoassist_bikes_v3', []);
+    if (prevBikes.length > 0) {
+      // Merge: retain all canonical bikes and keep user-created custom bikes
+      const canonicalIds = new Set(INITIAL_BIKES.map((b) => b.id));
+      const customBikes = prevBikes.filter((b) => !canonicalIds.has(b.id));
+      setItem(KEYS.BIKES, [...INITIAL_BIKES, ...customBikes]);
+    } else {
+      setItem(KEYS.BIKES, INITIAL_BIKES);
+    }
+  } else {
+    // Ensure all 5 canonical fleet bikes are present in v4 storage
+    const current = getItem<Bike[]>(KEYS.BIKES, []);
+    const currentIds = new Set(current.map((b) => b.id));
+    const missing = INITIAL_BIKES.filter((b) => !currentIds.has(b.id));
+    if (missing.length > 0) {
+      setItem(KEYS.BIKES, [...current, ...missing]);
+    }
   }
   if (!localStorage.getItem(KEYS.HELPERS)) {
     setItem(KEYS.HELPERS, INITIAL_HELPERS);
@@ -289,7 +305,12 @@ export function addUser(user: User): void {
 export function getBikes(userId?: string): Bike[] {
   initAppStorage();
   const all = getItem<Bike[]>(KEYS.BIKES, INITIAL_BIKES);
-  return userId ? all.filter((b) => b.userId === userId) : all;
+  const sanitized = all.map((b) => ({
+    ...b,
+    brand: b.brand || 'Motorcycle',
+    model: b.model || 'Standard',
+  }));
+  return userId ? sanitized.filter((b) => b.userId === userId) : sanitized;
 }
 
 export function saveBike(bike: Bike): void {

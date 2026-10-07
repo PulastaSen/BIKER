@@ -2447,7 +2447,8 @@ textarea:focus {
 
 .bike-garage-card__body h3 {
   margin-bottom: 0.5rem;
-  color: #FFFFFF;
+  color: var(--color-navy);
+  font-weight: 800;
 }
 
 .reg-text {
@@ -2938,9 +2939,13 @@ textarea:focus {
   flex: 1;
 }
 
-.bike-garage-card__body h3 {
-  margin-bottom: 0.25rem;
-  font-size: 1.35rem;
+.bike-garage-card__body h3,
+.bike-card-title {
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-navy) !important;
+  letter-spacing: -0.02em;
 }
 
 .reg-text {

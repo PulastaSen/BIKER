@@ -163,17 +163,32 @@ export function BikeCard({ bike, isSelected, onSelect }: BikeCardProps) {
           }}
         >
           <div>
+            <span
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                color: '#64748B',
+                display: 'block',
+                marginBottom: '0.2rem',
+              }}
+            >
+              {bike.brand}
+            </span>
             <strong
               className="bike-card__title"
               style={{
-                fontSize: '1.3rem',
+                fontSize: '1.35rem',
                 color: 'var(--color-navy)',
                 display: 'block',
                 lineHeight: 1.25,
                 fontWeight: 800,
               }}
             >
-              {bike.brand} {bike.model}
+              {bike.model.toLowerCase().includes((bike.brand || '').toLowerCase())
+                ? bike.model
+                : `${bike.brand} ${bike.model}`}
             </strong>
 
             <div style={{ marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
