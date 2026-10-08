@@ -5,7 +5,7 @@ import { VideoCard } from '../components/VideoCard';
 import { MapSection } from '../components/MapSection';
 import { SpatialCard } from '../components/SpatialCard';
 import { InteractiveRadarHUD } from '../components/InteractiveRadarHUD';
-import { Shield, Zap, Clock, ArrowRight, CheckCircle2, ShieldAlert, Wrench, Map as MapIcon } from 'lucide-react';
+import { Shield, Zap, Clock, ArrowRight, CheckCircle2, ShieldAlert, Wrench, Map as MapIcon, Truck, Heart, Users, Sparkles, Navigation } from 'lucide-react';
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -39,66 +39,201 @@ export function LandingPage() {
               
               {/* Main Actions with High Tactile Affordance across Mobile, Tablet, and Desktop */}
               <div className="hero__actions flex flex-wrap gap-3 items-center">
-                <Button glow={true} className="button button--primary button--large" onClick={() => navigate('/request-help')}>
+                <button
+                  type="button"
+                  onClick={() => navigate('/im-stranded')}
+                  className="px-6 py-4 rounded-2xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 hover:from-red-500 hover:to-orange-500 active:scale-95 text-white font-black text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-[0_0_35px_rgba(220,38,38,0.5)] transition-all cursor-pointer border border-red-500/50"
+                >
                   <Zap size={20} />
-                  <span>REQUEST HELP NOW</span>
-                </Button>
+                  <span>I'M STRANDED</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/safe-ride')}
+                  className="px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-95 text-white font-black text-sm tracking-wider uppercase flex items-center justify-center gap-2 border border-white/20 transition-all cursor-pointer"
+                >
+                  <Navigation size={18} />
+                  <span>START SAFE RIDE</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => navigate('/sos')}
-                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 active:scale-95 text-white font-black text-sm tracking-widest uppercase flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(220,38,38,0.5)] transition-all cursor-pointer border border-red-500/50"
+                  className="px-5 py-4 rounded-2xl bg-red-950/60 hover:bg-red-900/60 border border-red-500/40 text-red-300 font-black text-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   <ShieldAlert size={18} />
                   <span>EMERGENCY SOS</span>
                 </button>
-                <Button variant="secondary" className="button button--ghost-white" onClick={() => navigate('/become-helper')}>
-                  <span>BECOME A HELPER</span>
-                </Button>
               </div>
 
-              {/* Fast Triage Cards - Immediate Action on Mobile, Tab, and Desktop */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6 w-full">
-                <button
-                  type="button"
-                  onClick={() => navigate('/sos')}
-                  className="p-4 rounded-2xl bg-red-950/40 border border-red-500/30 hover:border-red-500/70 hover:bg-red-900/40 flex items-center gap-3 text-left transition-all active:scale-[0.98] group cursor-pointer"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center shrink-0 text-white shadow-lg group-hover:scale-105 transition-transform">
-                    <ShieldAlert size={20} />
+              {/* Ecosystem 3-Pillar Quick Hub: Nearby Assistance, Safety Center, Bike & Road Intelligence */}
+              <div className="my-6 space-y-4 w-full">
+                {/* 1. Nearby Assistance Grid */}
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-amber-400">
+                      Nearby Assistance
+                    </span>
+                    <span className="text-[10px] text-gray-400">Siliguri & Himalayan Corridors</span>
                   </div>
-                  <div>
-                    <span className="block text-[10px] font-black text-red-400 uppercase tracking-widest">Immediate Danger</span>
-                    <strong className="text-white text-sm font-black">Hold for SOS</strong>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/nearby-services')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Wrench size={16} className="text-amber-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Mechanics</strong>
+                        <span className="text-[10px] text-gray-400">Verified repair</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/save-my-bike')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Truck size={16} className="text-blue-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Towing</strong>
+                        <span className="text-[10px] text-gray-400">Flatbed recovery</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/emergency-services')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Heart size={16} className="text-red-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Ambulance</strong>
+                        <span className="text-[10px] text-gray-400">Emergency 108</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/emergency-services')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Shield size={16} className="text-emerald-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Hospitals</strong>
+                        <span className="text-[10px] text-gray-400">Verified trauma</span>
+                      </div>
+                    </button>
                   </div>
-                </button>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => navigate('/request-help')}
-                  className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-[#FFF174]/40 hover:bg-white/10 flex items-center gap-3 text-left transition-all active:scale-[0.98] group cursor-pointer"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-[#FFF174]/20 flex items-center justify-center shrink-0 text-[#FFF174] group-hover:scale-105 transition-transform">
-                    <Wrench size={20} />
+                {/* 2. Safety Center Grid */}
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-red-400">
+                      Safety Center
+                    </span>
+                    <span className="text-[10px] text-gray-400">Proactive Protection</span>
                   </div>
-                  <div>
-                    <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Roadside Repair</span>
-                    <strong className="text-white text-sm font-black">Request Help</strong>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/sos')}
+                      className="p-2.5 rounded-xl bg-red-950/30 hover:bg-red-900/30 border border-red-500/20 flex items-center gap-2 text-left transition-all"
+                    >
+                      <ShieldAlert size={16} className="text-red-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">🚨 SOS</strong>
+                        <span className="text-[10px] text-gray-400">3-sec hold trigger</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/safety-circle')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Users size={16} className="text-blue-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Family Circle</strong>
+                        <span className="text-[10px] text-gray-400">Live ride sharing</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/medical-id')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Heart size={16} className="text-purple-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Medical ID</strong>
+                        <span className="text-[10px] text-gray-400">Blood group & Rx</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/women-safety')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Shield size={16} className="text-pink-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Women Safety</strong>
+                        <span className="text-[10px] text-gray-400">Stealth SOS & safe havens</span>
+                      </div>
+                    </button>
                   </div>
-                </button>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => navigate('/nearby-services')}
-                  className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-500/40 hover:bg-white/10 flex items-center gap-3 text-left transition-all active:scale-[0.98] group cursor-pointer"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0 text-blue-400 group-hover:scale-105 transition-transform">
-                    <MapIcon size={20} />
+                {/* 3. My Bike & Intelligence */}
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-emerald-400">
+                      My Bike & Intelligence
+                    </span>
+                    <span className="text-[10px] text-gray-400">Garage & Route Coverage</span>
                   </div>
-                  <div>
-                    <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Workshops & OEM</span>
-                    <strong className="text-white text-sm font-black">Nearby Services</strong>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/pre-ride-check')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Pre-Ride Check</strong>
+                        <span className="text-[10px] text-gray-400">11-point inspection</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/ai-bike-assistant')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Sparkles size={16} className="text-amber-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">AI Assistant</strong>
+                        <span className="text-[10px] text-gray-400">Symptom diagnosis</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/spare-parts')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <Wrench size={16} className="text-blue-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Spare Parts</strong>
+                        <span className="text-[10px] text-gray-400">Workshop inventory</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/route-coverage')}
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-2 text-left transition-all"
+                    >
+                      <MapIcon size={16} className="text-purple-400 shrink-0" />
+                      <div>
+                        <strong className="block text-xs text-white">Route Coverage</strong>
+                        <span className="text-[10px] text-gray-400">Himalayan support</span>
+                      </div>
+                    </button>
                   </div>
-                </button>
+                </div>
               </div>
 
               {/* Beginner Guidance Badges */}

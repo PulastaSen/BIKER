@@ -43,20 +43,20 @@ export function PublicLayout() {
             <NavLink to="/" end onClick={closeMenu} className={({ isActive }) => (isActive ? 'nav-link--active' : '')}>
               Home
             </NavLink>
-            <NavLink to="/how-it-works" onClick={closeMenu} className={({ isActive }) => (isActive ? 'nav-link--active' : '')}>
-              How It Works
-            </NavLink>
             <NavLink to="/safety" onClick={closeMenu} className={({ isActive }) => (isActive ? 'nav-link--active' : '')}>
               Safety
             </NavLink>
-            <NavLink to="/become-helper" onClick={closeMenu} className={({ isActive }) => (isActive ? 'nav-link--active' : '')}>
-              Become a Helper
+            <NavLink to="/safe-ride" onClick={closeMenu} className={({ isActive }) => (isActive ? 'nav-link--active' : '')}>
+              Safe Ride
+            </NavLink>
+            <NavLink to="/im-stranded" onClick={closeMenu} className={({ isActive }) => (isActive ? 'nav-link--active' : '')}>
+              I'm Stranded
             </NavLink>
             <NavLink to="/nearby-services" onClick={closeMenu} className={({ isActive }) => (isActive ? 'nav-link--active' : '')}>
-              Nearby Repair
+              Nearby
             </NavLink>
-            <NavLink to="/request-help" onClick={closeMenu} className="nav-help-link">
-              Request Help
+            <NavLink to="/route-coverage" onClick={closeMenu} className={({ isActive }) => (isActive ? 'nav-link--active' : '')}>
+              Corridor Hub
             </NavLink>
 
             {user ? (
@@ -134,35 +134,39 @@ export function PublicLayout() {
             </p>
           </div>
           <div className="footer-links">
-            <h4>Explore</h4>
+            <h4>Safety & SOS</h4>
             <ul>
-              <li><Link to="/how-it-works">How it works</Link></li>
-              <li><Link to="/nearby-services">Nearby Mechanics & OEM</Link></li>
-              <li><Link to="/request-help">Request help</Link></li>
-              <li><Link to="/become-helper">Become a helper</Link></li>
-              <li><Link to="/safety">Safety guidance</Link></li>
+              <li><Link to="/sos">🚨 Emergency SOS (Hold 3s)</Link></li>
+              <li><Link to="/women-safety">Women Rider Safety</Link></li>
+              <li><Link to="/safety-circle">Family Safety Circle</Link></li>
+              <li><Link to="/medical-id">Medical Clinical ID</Link></li>
+              <li><Link to="/emergency-services">112 / Hospital Directory</Link></li>
             </ul>
           </div>
           <div className="footer-links">
-            <h4>Account</h4>
+            <h4>Rescue & Garage</h4>
             <ul>
-              <li><Link to="/login">Login</Link></li>
-              <li><Link to="/register">Register</Link></li>
-              <li><Link to="/rider/dashboard">Rider Portal</Link></li>
-              <li><Link to="/helper/dashboard">Helper Portal</Link></li>
+              <li><Link to="/im-stranded">I'm Stranded (Fast Triage)</Link></li>
+              <li><Link to="/save-my-bike">Motorcycle Towing / Recovery</Link></li>
+              <li><Link to="/ai-bike-assistant">AI Breakdown Diagnosis</Link></li>
+              <li><Link to="/spare-parts">Verified Spare Parts</Link></li>
+              <li><Link to="/pre-ride-check">11-Point Pre-Ride Check</Link></li>
+              <li><Link to="/documents">Digital Document Wallet</Link></li>
             </ul>
           </div>
           <div className="footer-links">
-            <h4>Legal</h4>
+            <h4>Road Intelligence</h4>
             <ul>
-              <li><Link to="/safety">Terms of Service</Link></li>
-              <li><Link to="/safety">Privacy Policy</Link></li>
-              <li><Link to="/safety">Contact Support</Link></li>
+              <li><Link to="/safe-ride">Start Safe Ride HUD</Link></li>
+              <li><Link to="/route-coverage">Himalayan Route Coverage</Link></li>
+              <li><Link to="/road-hazards">Community Hazard Feed</Link></li>
+              <li><Link to="/accident-assistant">Accident Incident Mode</Link></li>
+              <li><Link to="/privacy">Privacy & Safety Center</Link></li>
             </ul>
           </div>
         </div>
         <div className="shell footer-bottom">
-          <span>© {new Date().getFullYear()} MotoAssist. Built for safer rides.</span>
+          <span>© {new Date().getFullYear()} MotoAssist. Engineered for Himalayan motorcycle safety & transparent roadside rescue.</span>
         </div>
       </footer>
       <MobileBottomNav />

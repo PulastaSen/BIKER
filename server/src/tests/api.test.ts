@@ -346,4 +346,257 @@ describe('MotoAssist Backend Full API Test Suite', () => {
       expect(body.data.every((u: { role: string }) => u.role === 'RIDER')).toBe(true);
     });
   });
+
+  describe('7. Emergency Medical ID API', () => {
+    it('GET /api/medical/profile returns medical profile for rider', async () => {
+      const res = await fetch(`${BASE_URL}/api/medical/profile?userId=user-rider-1`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.bloodGroup).toBeDefined();
+      expect(Array.isArray(body.data.allergies)).toBe(true);
+    });
+
+    it('PUT /api/medical/profile updates emergency medical details', async () => {
+      const res = await fetch(`${BASE_URL}/api/medical/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'user-rider-1',
+          fullName: 'Pulasta Sen',
+          bloodGroup: 'O+',
+          allergies: ['Penicillin'],
+          medications: ['None'],
+          doctorName: 'Dr. D. Sen',
+          doctorContact: '+91 98765 99999',
+          preferredHospital: 'Neotia Getwel, Siliguri',
+          sharingPreference: 'EMERGENCY_ONLY'
+        })
+      });
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.bloodGroup).toBe('O+');
+      expect(body.data.sharingPreference).toBe('EMERGENCY_ONLY');
+    });
+  });
+
+  describe('8. Family Safety Circle API', () => {
+    it('GET /api/family returns trusted circle members', async () => {
+      const res = await fetch(`${BASE_URL}/api/family?userId=user-rider-1`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
+    });
+
+    it('POST /api/family adds a new family member', async () => {
+      const res = await fetch(`${BASE_URL}/api/family`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'user-rider-1',
+          name: 'Rohan Sen',
+          relationship: 'SIBLING',
+          phone: '+91 98765 11111',
+          canViewLiveRide: true,
+          notifyOnSOS: true
+        })
+      });
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.name).toBe('Rohan Sen');
+    });
+  });
+
+  describe('9. Safe Ride & Safety Timer API', () => {
+    let createdRideId = '';
+
+    it('POST /api/rides/start initiates a safe ride session', async () => {
+      const res = await fetch(`${BASE_URL}/api/rides/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'user-rider-1',
+          destination: { coordinates: [88.6138, 27.3389], name: 'Gangtok Ridge' },
+          startLocation: { coordinates: [88.3953, 26.7271], address: 'Siliguri' },
+          estimatedDurationMinutes: 180,
+          sharedWithFamily: true,
+          safetyTimerEnabled: true
+        })
+      });
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.rideId).toBeDefined();
+      createdRideId = body.data.rideId;
+    });
+
+    it('PUT /api/rides/:id/location updates live coordinates', async () => {
+      const res = await fetch(`${BASE_URL}/api/rides/${createdRideId}/location`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ coordinates: [88.4200, 26.8500] })
+      });
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+    });
+
+    it('PUT /api/rides/:id/check-in confirms rider safety', async () => {
+      const res = await fetch(`${BASE_URL}/api/rides/${createdRideId}/check-in`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'SAFE_CONFIRMED' })
+      });
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.safetyTimerStatus).toBe('SAFE_CONFIRMED');
+    });
+
+    it('PUT /api/rides/:id/end completes the ride', async () => {
+      const res = await fetch(`${BASE_URL}/api/rides/${createdRideId}/end`, {
+        method: 'PUT'
+      });
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.status).toBe('COMPLETED');
+    });
+  });
+
+  describe('10. Road Hazards & Road Intelligence API', () => {
+    let createdHazardId = '';
+
+    it('GET /api/hazards retrieves verified road conditions', async () => {
+      const res = await fetch(`${BASE_URL}/api/hazards`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
+    });
+
+    it('POST /api/hazards reports a new road hazard', async () => {
+      const res = await fetch(`${BASE_URL}/api/hazards`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'user-rider-1',
+          hazardType: 'LANDSLIDE',
+          description: 'Rubble near Sevoke Railway Crossing',
+          severity: 'HIGH',
+          location: { coordinates: [88.4350, 26.8990], landmark: 'Sevoke' }
+        })
+      });
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      createdHazardId = body.data.id;
+    });
+
+    it('PUT /api/hazards/:id/upvote increments hazard confirmation votes', async () => {
+      const res = await fetch(`${BASE_URL}/api/hazards/${createdHazardId}/upvote`, {
+        method: 'PUT'
+      });
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.upvotes).toBeGreaterThan(1);
+    });
+  });
+
+  describe('11. Accident Assistant API', () => {
+    it('POST /api/accidents logs a structured accident report', async () => {
+      const res = await fetch(`${BASE_URL}/api/accidents`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'user-rider-1',
+          bikeId: 'bike-1',
+          location: { coordinates: [88.3953, 26.7271], address: 'NH-10 Siliguri' },
+          riderSafe: true,
+          bikeDamage: 'Right side fairing and mirror damage',
+          roadCondition: 'Wet mountain road',
+          towingRequested: true
+        })
+      });
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.reportId).toBeDefined();
+    });
+
+    it('GET /api/accidents returns user accident incident records', async () => {
+      const res = await fetch(`${BASE_URL}/api/accidents?userId=user-rider-1`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
+    });
+  });
+
+  describe('12. Digital Bike Document Wallet API', () => {
+    let createdDocId = '';
+
+    it('POST /api/documents adds a vehicle document', async () => {
+      const res = await fetch(`${BASE_URL}/api/documents`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'user-rider-1',
+          bikeId: 'bike-1',
+          docType: 'RC',
+          documentNumber: 'WB-74-AB-8921',
+          issuer: 'Siliguri RTO',
+          notes: 'Original smart card RC'
+        })
+      });
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      createdDocId = body.data.documentId;
+    });
+
+    it('GET /api/documents retrieves bike documents', async () => {
+      const res = await fetch(`${BASE_URL}/api/documents?bikeId=bike-1&userId=user-rider-1`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
+    });
+
+    it('DELETE /api/documents/:id deletes document securely', async () => {
+      const res = await fetch(`${BASE_URL}/api/documents/${createdDocId}`, {
+        method: 'DELETE'
+      });
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('13. Spare Parts Inventory API', () => {
+    it('GET /api/inventory queries genuine spare parts', async () => {
+      const res = await fetch(`${BASE_URL}/api/inventory?q=Brake`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThan(0);
+      expect(body.data[0].partName).toContain('Brake');
+    });
+  });
+
+  describe('14. Digital Service Receipts API', () => {
+    it('GET /api/receipts/:requestId retrieves itemized receipt', async () => {
+      const res = await fetch(`${BASE_URL}/api/receipts/REQ-TEST-1`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.total).toBeGreaterThan(0);
+      expect(Array.isArray(body.data.parts)).toBe(true);
+    });
+  });
 });

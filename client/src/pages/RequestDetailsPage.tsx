@@ -1,32 +1,62 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Star, Wrench, CheckCircle, Clock } from 'lucide-react';
+import { 
+  ShieldCheck, 
+  Star, 
+  CheckCircle, 
+  Clock, 
+  PhoneCall, 
+  MessageSquare, 
+  Navigation, 
+  FileText, 
+  AlertCircle,
+  X,
+  Receipt,
+  Download,
+  DollarSign,
+  Info
+} from 'lucide-react';
 import { getSocket } from '../services/socket';
 import { getRequestById, getHelperProfileById, updateRequestStatus } from '../utils/appStorage';
 import { API_BASE_URL } from '../config/api';
+import { fetchServiceReceipt } from '../services/ecosystemApi';
+import type { ServiceReceipt } from '../types/app';
 
 const STATUS_FLOW = [
-  'REQUESTED',
-  'ACCEPTED',
-  'EN_ROUTE',
-  'ARRIVED',
-  'IN_PROGRESS',
-  'COMPLETED'
+  { key: 'REQUESTED', label: 'REQUEST RECEIVED' },
+  { key: 'ASSIGNED', label: 'PROVIDER ASSIGNED' },
+  { key: 'ACCEPTED', label: 'PROVIDER ACCEPTED' },
+  { key: 'EN_ROUTE', label: 'EN ROUTE' },
+  { key: 'ARRIVED', label: 'ARRIVED' },
+  { key: 'IN_PROGRESS', label: 'ASSISTANCE STARTED' },
+  { key: 'COMPLETED', label: 'COMPLETED' }
 ];
 
 interface AssistanceDetail {
   requestId: string;
   status: string;
   problemCategory: string;
-  location: string | { address?: string; coordinates?: number[] };
+  location: string | { address?: string; coordinates?: number[]; accuracyMeters?: number };
   provider?: {
     name?: string;
     phone?: string;
     vehiclePlate?: string;
     rating?: number;
     reviewsCount?: number;
+    verified?: boolean;
+    verificationStatus?: string;
+    distance?: string;
+    averageResponseMinutes?: number;
   };
   eta?: string;
+  estimatedPrice?: {
+    calloutFee: number;
+    travelFee: number;
+    serviceFee: number;
+    estimatedTotal: number;
+    isAvailable: boolean;
+    disclaimer: string;
+  };
   createdAt?: string;
   rating?: number;
   review?: string;
@@ -37,7 +67,12 @@ export function RequestDetailsPage() {
   const navigate = useNavigate();
   const [request, setRequest] = useState<AssistanceDetail | null>(null);
   const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [showIssueModal, setShowIssueModal] = useState(false);
+  const [receiptData, setReceiptData] = useState<ServiceReceipt | null>(null);
+  const [issueText, setIssueText] = useState('');
 
   const fetchRequest = useCallback(async () => {
     if (!id) return;
@@ -71,18 +106,30 @@ export function RequestDetailsPage() {
         problemCategory: localReq.issue ? localReq.issue.replaceAll('_', ' ') : 'Roadside',
         location: localReq.approximateLocation || 'Siliguri NH-10 Highway Corridor',
         provider: {
-          name: helper?.businessName || 'Himalayan Moto Works & Towing',
+          name: helper?.businessName || 'Raj Motors & Mountain Towing',
           phone: '+91 98320 12345',
           vehiclePlate: 'WB 74 G 4501',
-          rating: helper?.rating || 4.9,
-          reviewsCount: 38
+          rating: helper?.rating || 4.8,
+          reviewsCount: 42,
+          verified: true,
+          verificationStatus: 'VERIFIED',
+          distance: '3.2 km away',
+          averageResponseMinutes: 12
         },
-        eta: '12-18 mins',
+        eta: '12 minutes',
+        estimatedPrice: {
+          calloutFee: 150,
+          travelFee: 100,
+          serviceFee: 100,
+          estimatedTotal: 350,
+          isAvailable: true,
+          disclaimer: 'Final price may change if additional parts or work are required.'
+        },
         createdAt: localReq.createdAt
       });
       setError(null);
     } else {
-      setError('Incident record not found in system.');
+      setError('Incident record not found in dispatch system.');
     }
   }, [id]);
 
@@ -104,16 +151,24 @@ export function RequestDetailsPage() {
     }
   }, [id, fetchRequest]);
 
+  useEffect(() => {
+    if (request && request.status === 'COMPLETED' && id) {
+      fetchServiceReceipt(id).then(r => {
+        if (r) setReceiptData(r);
+      });
+    }
+  }, [request, id]);
+
   const simulateNextStatus = async () => {
     if (!request) return;
-    const currentIndex = STATUS_FLOW.indexOf(request.status);
+    const currentIndex = STATUS_FLOW.findIndex(s => s.key === request.status);
     if (currentIndex < STATUS_FLOW.length - 1) {
-      const nextStatus = STATUS_FLOW[currentIndex + 1];
+      const nextStatus = STATUS_FLOW[currentIndex + 1].key;
       try {
         await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: nextStatus })
+          body: JSON.stringify({ status: nextStatus, notes: `Dev simulation advanced to ${nextStatus}` })
         });
       } catch {
         // Offline status advance
@@ -136,7 +191,7 @@ export function RequestDetailsPage() {
       await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/rate`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rating, review: 'Great rapid roadside service' })
+        body: JSON.stringify({ rating, review: reviewText || 'Timely roadside assistance' })
       });
     } catch {
       // Offline fallback
@@ -144,19 +199,20 @@ export function RequestDetailsPage() {
 
     setRequest(prev => (prev ? {
       ...prev,
-      rating
+      rating,
+      review: reviewText
     } : null));
-    alert('Thank you! Your feedback has been recorded.');
-    navigate('/rider/requests');
+    alert('Thank you! Your verified provider feedback has been recorded.');
   };
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#090909] flex flex-col items-center justify-center text-white px-4">
-        <h1 className="text-4xl font-black text-[#EF4444] mb-3">Incident Unavailable</h1>
-        <p className="text-gray-400 mb-6 text-center max-w-md">{error}</p>
-        <button onClick={() => navigate('/rider/requests')} className="px-6 py-3 bg-[#FFF174] text-black rounded-xl hover:bg-yellow-400 font-bold">
-          VIEW MY REQUESTS
+      <div className="min-h-screen bg-[#090D14] flex flex-col items-center justify-center text-white px-4">
+        <AlertCircle size={48} className="text-red-500 mb-3" />
+        <h1 className="text-2xl font-black text-red-500 mb-2">Incident Record Unavailable</h1>
+        <p className="text-gray-400 mb-6 text-center max-w-md text-sm">{error}</p>
+        <button onClick={() => navigate('/rider/requests')} className="px-6 py-3 bg-[#FFF174] text-black rounded-xl hover:bg-yellow-400 font-bold text-sm">
+          View My Requests
         </button>
       </div>
     );
@@ -164,13 +220,13 @@ export function RequestDetailsPage() {
 
   if (!request) {
     return (
-      <div className="min-h-screen bg-[#090909] flex items-center justify-center text-white">
+      <div className="min-h-screen bg-[#090D14] flex items-center justify-center text-white">
         <div className="animate-spin w-8 h-8 border-4 border-[#FFF174] border-t-transparent rounded-full"></div>
       </div>
     );
   }
 
-  const currentIndex = STATUS_FLOW.indexOf(request.status);
+  const currentIndex = Math.max(0, STATUS_FLOW.findIndex(s => s.key === request.status));
   const mapQuery = (typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates.length === 2)
     ? `${request.location.coordinates[1]},${request.location.coordinates[0]}`
     : typeof request.location === 'string' && request.location
@@ -178,54 +234,72 @@ export function RequestDetailsPage() {
     : '26.7271,88.3953';
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white pt-24 pb-12 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#090D14] text-white pt-20 pb-20 font-sans selection:bg-[#FFF174] selection:text-black">
       <div className="container mx-auto px-4 max-w-4xl">
         
-        <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
+        {/* Header Block */}
+        <div className="flex flex-wrap justify-between items-end gap-4 mb-6">
           <div>
-            <p className="text-[#FFF174] text-xs font-black tracking-wider uppercase mb-1">INCIDENT #{request.requestId}</p>
-            <h1 className="text-3xl font-black">{request.problemCategory} Assistance</h1>
-            <p className="text-gray-400 text-xs mt-1">Status: {request.status.replace('_', ' ')} • ETA: {request.eta || '15 mins'}</p>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[#FFF174] text-xs font-black tracking-wider uppercase">
+                REQUEST #{request.requestId}
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-black uppercase">
+                LIVE RESCUE TRACKER
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black">{request.problemCategory} Assistance</h1>
+            <p className="text-gray-400 text-xs mt-1">
+              Location: {typeof request.location === 'object' ? request.location.address || 'Himalayan Corridor' : request.location}
+            </p>
           </div>
+
+          {/* Explicit DEV/DEMO Status Button */}
           {currentIndex < STATUS_FLOW.length - 1 && (
             <button 
               onClick={simulateNextStatus} 
-              className="px-4 py-2 bg-yellow-500/10 text-xs font-bold rounded-xl border border-[#FFF174]/40 hover:bg-[#FFF174]/20 text-[#FFF174] flex items-center gap-1.5"
-              title="Test progression for evaluation and demo walkthroughs"
+              className="px-3.5 py-2 bg-yellow-500/10 text-xs font-bold rounded-xl border border-[#FFF174]/40 hover:bg-[#FFF174]/20 text-[#FFF174] flex items-center gap-1.5 cursor-pointer"
+              title="Development testing simulation only"
             >
-              <span className="px-1.5 py-0.5 rounded bg-[#FFF174] text-black text-[10px] font-black uppercase">DEMO MODE</span> Advance Dispatch Status →
+              <span className="px-1.5 py-0.5 rounded bg-[#FFF174] text-black text-[9px] font-black uppercase">DEV/DEMO</span>
+              Advance Status →
             </button>
           )}
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           
-          {/* Tracking Timeline */}
-          <div className="md:col-span-1 p-6 rounded-2xl bg-[#111111] border border-white/10">
-            <h3 className="text-sm font-black uppercase tracking-wider text-gray-400 mb-6">Status Timeline</h3>
+          {/* Section 2: Real-time Status Flow Tracker */}
+          <div className="lg:col-span-1 p-6 rounded-3xl bg-[#111622] border border-white/10">
+            <h3 className="text-xs font-black uppercase tracking-wider text-gray-400 mb-6">
+              RESCUE PROGRESSION
+            </h3>
             <div className="relative">
               <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-white/10"></div>
               
-              {STATUS_FLOW.map((status, index) => {
+              {STATUS_FLOW.map((flowStep, index) => {
                 const isCompleted = index < currentIndex;
                 const isActive = index === currentIndex;
                 const isFuture = index > currentIndex;
                 
                 return (
-                  <div key={status} className="relative flex items-center gap-4 mb-7 last:mb-0 z-10">
+                  <div key={flowStep.key} className="relative flex items-center gap-3.5 mb-5 last:mb-0 z-10">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors ${
-                      isCompleted ? 'bg-[#22C55E] border-[#22C55E] text-white' : 
+                      isCompleted ? 'bg-emerald-600 border-emerald-600 text-white' : 
                       isActive ? 'bg-[#FFF174] border-[#FFF174] text-black ring-4 ring-[#FFF174]/20 animate-pulse' : 
-                      'bg-[#161616] border-white/20 text-gray-500'
+                      'bg-[#161B26] border-white/20 text-gray-500'
                     }`}>
                       {isCompleted ? <CheckCircle size={16} /> : 
                        isActive ? <Clock size={16} /> : 
                        <div className="w-2 h-2 rounded-full bg-gray-500"></div>}
                     </div>
                     <div>
-                      <p className={`font-bold text-sm ${isActive ? 'text-[#FFF174]' : isFuture ? 'text-gray-500' : 'text-gray-300'}`}>
-                        {status.replace('_', ' ')}
+                      <p className={`font-bold text-xs leading-tight ${isActive ? 'text-[#FFF174]' : isFuture ? 'text-gray-500' : 'text-gray-300'}`}>
+                        {flowStep.label}
                       </p>
+                      {isActive && (
+                        <span className="text-[10px] text-gray-400 block mt-0.5">Active state</span>
+                      )}
                     </div>
                   </div>
                 );
@@ -233,84 +307,292 @@ export function RequestDetailsPage() {
             </div>
           </div>
 
-          {/* Details & Live Map */}
-          <div className="md:col-span-2 space-y-6">
+          {/* Details, Provider & Transparent Pricing */}
+          <div className="lg:col-span-2 space-y-5">
             
-            {/* Live Map Embed */}
-            <div className="h-64 rounded-2xl bg-[#111111] border border-white/10 relative overflow-hidden">
+            {/* Live Map Frame */}
+            <div className="h-60 rounded-3xl bg-[#111622] border border-white/10 relative overflow-hidden">
               <iframe
                 title="Incident Location Map"
                 className="w-full h-full border-0"
                 loading="lazy"
                 src={`https://maps.google.com/maps?q=${mapQuery}&z=14&output=embed`}
-              ></iframe>
+              />
             </div>
 
-            {/* Provider Info */}
-            <div className="p-6 rounded-2xl bg-[#111111] border border-white/10">
-              <h3 className="text-xs font-black uppercase tracking-wider text-gray-400 mb-4">DISPATCHED MECHANIC</h3>
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#FFF174]/10 text-[#FFF174] flex items-center justify-center shrink-0">
-                  <Wrench size={24} />
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-lg font-bold flex items-center gap-2">
-                    {request.provider?.name || 'Himalayan Moto Works & Towing'} 
-                    <ShieldCheck size={18} className="text-[#22C55E]" />
+            {/* Provider Info Card (Section 2 & 4 Trust Indicators) */}
+            <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 space-y-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block">
+                    ASSIGNED SERVICE PROVIDER
+                  </span>
+                  <h4 className="text-xl font-bold flex items-center gap-2 mt-0.5">
+                    {request.provider?.name || 'Raj Motors & Mountain Towing'}
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      <ShieldCheck size={14} /> Verified Provider
+                    </span>
                   </h4>
-                  <p className="text-gray-400 text-xs">
-                    {request.provider?.vehiclePlate ? `Vehicle: ${request.provider.vehiclePlate} • ` : ''} 
-                    {request.provider?.phone || '+91 98320 12345'}
-                  </p>
+                  <div className="flex items-center gap-3 text-xs text-gray-400 mt-1">
+                    <span className="flex items-center gap-1 text-[#FFF174] font-bold">
+                      <Star size={14} fill="#FFF174" /> {request.provider?.rating || 4.8}
+                    </span>
+                    <span>•</span>
+                    <span>{request.provider?.distance || '3.2 km away'}</span>
+                    <span>•</span>
+                    <strong className="text-white">ETA {request.eta || '12 minutes'}</strong>
+                  </div>
                 </div>
+              </div>
+
+              {/* Action Buttons: [Call] [Chat] [Track] */}
+              <div className="grid grid-cols-3 gap-2.5 pt-2">
                 <a 
                   href={`tel:${request.provider?.phone || '+919832012345'}`}
-                  className="px-4 py-2 bg-emerald-500/20 text-emerald-400 font-bold text-xs rounded-xl border border-emerald-500/30 hover:bg-emerald-500/30"
+                  className="py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
                 >
-                  Call
+                  <PhoneCall size={16} /> Call
                 </a>
+                <button
+                  type="button"
+                  onClick={() => alert(`Starting in-app secure masked communication with ${request.provider?.name || 'Provider'}`)}
+                  className="py-3 px-4 bg-white/10 hover:bg-white/15 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95"
+                >
+                  <MessageSquare size={16} /> Chat
+                </button>
+                <button
+                  type="button"
+                  onClick={() => alert('Live provider telemetry tracking active.')}
+                  className="py-3 px-4 bg-blue-600/30 hover:bg-blue-600/40 text-blue-300 font-bold text-xs rounded-2xl border border-blue-500/40 flex items-center justify-center gap-2 transition-all active:scale-95"
+                >
+                  <Navigation size={16} /> Track
+                </button>
               </div>
             </div>
 
-            {/* Completion & Rating State */}
+            {/* Section 3: Transparent Pricing Card */}
+            <div className="p-6 rounded-3xl bg-gradient-to-br from-[#151C2B] to-[#111622] border border-[#FFF174]/30 space-y-4">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <DollarSign size={18} className="text-[#FFF174]" />
+                  <h3 className="text-sm font-black uppercase tracking-wider text-white">Transparent Pricing</h3>
+                </div>
+                <span className="text-[11px] font-semibold text-gray-400">Fixed call-out policy</span>
+              </div>
+
+              {request.estimatedPrice?.isAvailable !== false ? (
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between text-gray-300">
+                    <span>CALL-OUT FEE</span>
+                    <span>₹{request.estimatedPrice?.calloutFee ?? 150}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-300">
+                    <span>TRAVEL</span>
+                    <span>₹{request.estimatedPrice?.travelFee ?? 100}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-300">
+                    <span>BASE SERVICE / PUNCTURE</span>
+                    <span>₹{request.estimatedPrice?.serviceFee ?? 100}</span>
+                  </div>
+                  <div className="border-t border-white/10 pt-2 flex justify-between font-black text-sm text-white">
+                    <span>ESTIMATED TOTAL</span>
+                    <span className="text-[#FFF174]">₹{request.estimatedPrice?.estimatedTotal ?? 350}</span>
+                  </div>
+                  <p className="text-[11px] text-gray-400 pt-1 flex items-start gap-1.5">
+                    <Info size={14} className="text-[#FFF174] shrink-0 mt-0.5" />
+                    Final price may change if additional parts or work are required.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-yellow-400 font-semibold">
+                  Price unavailable — confirm with provider.
+                </p>
+              )}
+
+              {/* Receipts Button after Completion */}
+              <div className="pt-2 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowReceiptModal(true)}
+                  className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs flex items-center gap-2 cursor-pointer"
+                >
+                  <Receipt size={16} /> View Digital Receipt
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowIssueModal(true)}
+                  className="px-4 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/40 text-red-300 font-bold text-xs border border-red-500/30 flex items-center gap-2 cursor-pointer"
+                >
+                  <AlertCircle size={16} /> Report Issue
+                </button>
+              </div>
+            </div>
+
+            {/* Completion Feedback & Rating */}
             {request.status === 'COMPLETED' && !request.rating && (
-              <div className="p-6 rounded-2xl bg-gradient-to-r from-[#FFF174]/10 to-transparent border border-[#FFF174]/30 animate-fade-in">
-                <h3 className="text-xl font-black text-[#FFF174] mb-2">Service Completed</h3>
-                <p className="text-gray-300 text-sm mb-4">How was your roadside assistance experience?</p>
+              <div className="p-6 rounded-3xl bg-[#151D2A] border border-[#FFF174]/40 space-y-4">
+                <h3 className="text-lg font-black text-[#FFF174]">Rate Service & Provider</h3>
+                <p className="text-gray-300 text-xs">Help other riders across Himalayan corridors make informed decisions.</p>
                 
-                <div className="flex gap-2 mb-6">
-                  {[1,2,3,4,5].map(star => (
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map(star => (
                     <button 
                       key={star} 
                       onClick={() => setRating(star)}
-                      className="p-1 transition-transform hover:scale-110"
+                      className="p-1 transition-transform hover:scale-110 cursor-pointer"
                       aria-label={`Rate ${star} stars`}
                     >
                       <Star size={32} fill={rating >= star ? '#FFF174' : 'transparent'} stroke={rating >= star ? '#FFF174' : '#64748B'} />
                     </button>
                   ))}
                 </div>
+
+                <input
+                  type="text"
+                  value={reviewText}
+                  onChange={e => setReviewText(e.target.value)}
+                  placeholder="Optional review note (e.g. fast arrival, genuine parts, polite mechanic)..."
+                  className="w-full bg-[#0F1420] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500"
+                />
                 
                 <button 
                   onClick={submitRating}
                   disabled={rating === 0}
-                  className="px-6 py-3 bg-[#FFF174] text-black font-black text-sm rounded-xl hover:bg-yellow-400 disabled:opacity-50"
+                  className="px-6 py-3 bg-[#FFF174] text-black font-black text-xs uppercase rounded-xl hover:bg-yellow-400 disabled:opacity-50 cursor-pointer"
                 >
-                  SUBMIT REVIEW
+                  Submit Verified Review
                 </button>
               </div>
             )}
 
             {request.rating && (
-              <div className="p-6 rounded-2xl bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#22C55E] flex items-center gap-3">
-                <CheckCircle size={20} />
-                <span className="font-bold text-sm">Thank you! Your feedback has been recorded.</span>
+              <div className="p-5 rounded-3xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 flex items-center gap-3">
+                <CheckCircle size={22} />
+                <span className="font-bold text-xs">Thank you! Your verified rating of {request.rating}★ has been saved.</span>
               </div>
             )}
 
           </div>
         </div>
       </div>
+
+      {/* Digital Service Receipt Modal */}
+      {showReceiptModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#111622] border border-white/20 rounded-3xl max-w-md w-full p-6 space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2.5">
+                <FileText size={20} className="text-[#FFF174]" />
+                <h3 className="text-base font-black text-white">DIGITAL SERVICE RECEIPT</h3>
+              </div>
+              <button onClick={() => setShowReceiptModal(false)} className="text-gray-400 hover:text-white">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="flex justify-between text-gray-400">
+                <span>Receipt Number:</span>
+                <span className="text-white font-mono">{receiptData?.receiptId || `RCP-${request.requestId.slice(-6)}`}</span>
+              </div>
+              <div className="flex justify-between text-gray-400">
+                <span>Provider:</span>
+                <span className="text-white font-bold">{request.provider?.name || 'Raj Motors'}</span>
+              </div>
+              <div className="flex justify-between text-gray-400">
+                <span>Service Date:</span>
+                <span className="text-white">{new Date().toLocaleDateString()}</span>
+              </div>
+
+              <div className="border-t border-b border-white/10 py-3 space-y-2">
+                <div className="flex justify-between text-gray-300">
+                  <span>Labour Fee</span>
+                  <span>₹{receiptData?.laborFee || 200}</span>
+                </div>
+                <div className="flex justify-between text-gray-300">
+                  <span>Parts (Puncture Seal & Valve)</span>
+                  <span>₹{receiptData?.partsFee || 150}</span>
+                </div>
+                <div className="flex justify-between text-gray-300">
+                  <span>Call-out & Travel</span>
+                  <span>₹{(receiptData?.calloutFee || 150) + (receiptData?.travelFee || 100)}</span>
+                </div>
+                <div className="flex justify-between text-gray-300">
+                  <span>Taxes (GST 18%)</span>
+                  <span>₹{receiptData?.taxes || 50}</span>
+                </div>
+              </div>
+
+              <div className="flex justify-between text-base font-black text-white">
+                <span>TOTAL PAID</span>
+                <span className="text-[#FFF174]">₹{receiptData?.total || 650}</span>
+              </div>
+            </div>
+
+            <div className="pt-2 flex gap-2">
+              <button
+                type="button"
+                onClick={() => alert('Receipt downloaded as PDF')}
+                className="flex-1 py-3 bg-[#FFF174] text-black font-bold text-xs rounded-xl flex items-center justify-center gap-2"
+              >
+                <Download size={16} /> Download PDF
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowReceiptModal(false)}
+                className="py-3 px-4 bg-white/10 text-white font-bold text-xs rounded-xl"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Issue Modal */}
+      {showIssueModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#111622] border border-red-500/30 rounded-3xl max-w-md w-full p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <h3 className="text-base font-black text-red-400 flex items-center gap-2">
+                <AlertCircle size={20} /> Report Pricing or Service Issue
+              </h3>
+              <button onClick={() => setShowIssueModal(false)} className="text-gray-400 hover:text-white">
+                <X size={20} />
+              </button>
+            </div>
+            <p className="text-xs text-gray-300">
+              Did the provider overcharge or fail to deliver assistance? MotoAssist Operations will investigate.
+            </p>
+            <textarea
+              value={issueText}
+              onChange={e => setIssueText(e.target.value)}
+              placeholder="Describe the complaint in detail..."
+              rows={4}
+              className="w-full bg-[#182030] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500"
+            />
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  alert('Your report has been logged with MotoAssist trust & safety moderation.');
+                  setShowIssueModal(false);
+                }}
+                className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 font-bold text-xs text-white rounded-xl"
+              >
+                Submit Complaint
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowIssueModal(false)}
+                className="py-2.5 px-4 bg-white/10 text-xs font-bold text-white rounded-xl"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

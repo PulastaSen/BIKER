@@ -10,14 +10,24 @@ const mongoUri = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/motoassis
 export const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL ?? 'http://localhost:5173'
+    origin: process.env.CLIENT_URL ?? 'http://localhost:5173',
+    credentials: true
   }
 });
 
 io.on('connection', (socket) => {
-  console.log('User connected to MotoAssist socket:', socket.id);
+  // Join incident tracking room
+  socket.on('join_incident', (incidentId: string) => {
+    if (incidentId) socket.join(`incident:${incidentId}`);
+  });
+
+  // Join ride tracking room
+  socket.on('join_ride', (rideId: string) => {
+    if (rideId) socket.join(`ride:${rideId}`);
+  });
+
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+    // client disconnect
   });
 });
 
@@ -52,4 +62,3 @@ export const serverReady: Promise<http.Server> = new Promise((resolve) => {
       }
     });
 });
-
