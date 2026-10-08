@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { fetchFamilyCircle, addFamilyMember, removeFamilyMember } from '../services/ecosystemApi';
 import type { FamilyMember } from '../types/app';
+import { BottomSheet } from '../components/BottomSheet';
 
 const RELATIONSHIPS = ['PARENT', 'PARTNER', 'SIBLING', 'FRIEND', 'CHILD', 'OTHER'] as const;
 
@@ -217,101 +218,100 @@ export function SafetyCirclePage() {
 
       </div>
 
-      {/* Add Member Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <form onSubmit={handleAddMember} className="bg-[#111622] border border-white/20 rounded-3xl max-w-md w-full p-6 space-y-4">
-            <h3 className="text-base font-black text-white flex items-center gap-2">
-              <UserPlus size={20} className="text-[#FFF174]" /> Add to Safety Circle
-            </h3>
+      {/* Add Member BottomSheet (Mobile-first sheet / Desktop modal) */}
+      <BottomSheet
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add to Safety Circle"
+        subtitle="Trusted contacts receive your live GPS ride beacon and emergency alerts."
+      >
+        <form onSubmit={handleAddMember} className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-gray-400 mb-1">Full Name</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="e.g. Anjali Sen"
+              className="w-full bg-[#182030] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#FFF174]"
+            />
+          </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-400 mb-1">Full Name</label>
+          <div>
+            <label className="block text-xs font-bold text-gray-400 mb-1">Relationship</label>
+            <select
+              value={relationship}
+              onChange={e => setRelationship(e.target.value)}
+              className="w-full bg-[#182030] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none"
+            >
+              {RELATIONSHIPS.map(rel => (
+                <option key={rel} value={rel}>{rel}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-400 mb-1">Phone Number</label>
+            <input
+              type="text"
+              required
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              placeholder="+91 98765 43210"
+              className="w-full bg-[#182030] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#FFF174]"
+            />
+          </div>
+
+          <div className="space-y-2 pt-2 text-xs text-gray-300">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
-                type="text"
-                required
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="e.g. Anjali Sen"
-                className="w-full bg-[#182030] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                type="checkbox"
+                checked={canViewLiveRide}
+                onChange={e => setCanViewLiveRide(e.target.checked)}
+                className="rounded text-purple-600"
               />
-            </div>
+              <span>Can view live ride location & ETA</span>
+            </label>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-400 mb-1">Relationship</label>
-              <select
-                value={relationship}
-                onChange={e => setRelationship(e.target.value)}
-                className="w-full bg-[#182030] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
-              >
-                {RELATIONSHIPS.map(rel => (
-                  <option key={rel} value={rel}>{rel}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-gray-400 mb-1">Phone Number</label>
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
-                type="text"
-                required
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                placeholder="+91 98765 43210"
-                className="w-full bg-[#182030] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                type="checkbox"
+                checked={notifyOnSOS}
+                onChange={e => setNotifyOnSOS(e.target.checked)}
+                className="rounded text-purple-600"
               />
-            </div>
+              <span>Receive automatic emergency SOS broadcasts</span>
+            </label>
 
-            <div className="space-y-2 pt-2 text-xs text-gray-300">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={canViewLiveRide}
-                  onChange={e => setCanViewLiveRide(e.target.checked)}
-                  className="rounded text-purple-600"
-                />
-                <span>Can view live ride location & ETA</span>
-              </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={notifyOnSafetyTimer}
+                onChange={e => setNotifyOnSafetyTimer(e.target.checked)}
+                className="rounded text-purple-600"
+              />
+              <span>Notify if safety timer check-in expires</span>
+            </label>
+          </div>
 
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={notifyOnSOS}
-                  onChange={e => setNotifyOnSOS(e.target.checked)}
-                  className="rounded text-purple-600"
-                />
-                <span>Receive automatic emergency SOS broadcasts</span>
-              </label>
-
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={notifyOnSafetyTimer}
-                  onChange={e => setNotifyOnSafetyTimer(e.target.checked)}
-                  className="rounded text-purple-600"
-                />
-                <span>Notify if safety timer check-in expires</span>
-              </label>
-            </div>
-
-            <div className="pt-2 flex gap-2">
-              <button
-                type="submit"
-                className="flex-1 py-3 bg-[#FFF174] text-black font-bold text-xs rounded-xl"
-              >
-                Add Member
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowAddModal(false)}
-                className="py-3 px-4 bg-white/10 text-white font-bold text-xs rounded-xl"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+          <div className="pt-2 flex gap-2">
+            <button
+              type="submit"
+              className="flex-1 py-3.5 bg-[#FFF174] hover:bg-[#FCEB50] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+            >
+              Add Member
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAddModal(false)}
+              className="py-3.5 px-4 bg-white/10 hover:bg-white/15 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </BottomSheet>
     </div>
   );
 }

@@ -1,12 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { getHelperProfileByUserId, toggleHelperAvailability, getRequests } from '../../utils/appStorage';
+import { getHelperProfileByUserId, toggleHelperAvailability, getRequests, updateRequestStatus } from '../../utils/appStorage';
 import type { HelperProfile, HelpRequest } from '../../types/app';
-import { Button } from '../../components/Button';
 import { StatusBadge } from '../../components/StatusBadge';
 import { EmptyState } from '../../components/EmptyState';
-import { Wrench, MapPin, Search, CheckCircle2, AlertCircle, ChevronRight } from 'lucide-react';
+import { 
+  MapPin, 
+  Search, 
+  CheckCircle2, 
+  AlertCircle, 
+  ChevronRight, 
+  PhoneCall, 
+  Navigation, 
+  Check
+} from 'lucide-react';
+import { IncidentTimeline } from '../../components/graphics';
 
 export function HelperDashboardPage() {
   const { user } = useAuth();
@@ -24,7 +33,9 @@ export function HelperDashboardPage() {
       const all = getRequests();
       setAvailableRequests(all.filter((r) => r.status === 'OPEN' || r.status === 'HELPER_OFFERED'));
       if (p) {
-        setAssignedRequests(all.filter((r) => r.assignedHelperId === p.id && r.status !== 'RESOLVED' && r.status !== 'CANCELLED'));
+        setAssignedRequests(
+          all.filter((r) => r.assignedHelperId === p.id && r.status !== 'RESOLVED' && r.status !== 'CANCELLED')
+        );
       }
     }
   };
@@ -41,140 +52,258 @@ export function HelperDashboardPage() {
     }
   };
 
+  const handleAcceptRequest = (requestId: string) => {
+    if (profile) {
+      updateRequestStatus(requestId, 'HELPER_OFFERED', { assignedHelperId: profile.id });
+      loadHelperData();
+      navigate(`/requests/${requestId}`);
+    }
+  };
+
+  const currentJob = assignedRequests[0];
+
+  const getJobStepIndex = (status: string) => {
+    switch (status) {
+      case 'OPEN':
+      case 'HELPER_OFFERED':
+        return 0; // Assigned
+      case 'IN_PROGRESS':
+        return 2; // En Route / Assistance
+      case 'RESOLVED':
+        return 4; // Complete
+      default:
+        return 1;
+    }
+  };
+
   return (
-    <div className="dashboard-page">
-      <header className="dashboard-header">
+    <div className="min-h-screen bg-[#090909] text-white p-4 sm:p-6 md:p-8 space-y-6 pb-28 md:pb-12 max-w-5xl mx-auto">
+      
+      {/* ========================================================
+          1. HEADER & AVAILABILITY TOGGLE (Section 21 & 24 Requirement)
+          ======================================================== */}
+      <header className="rounded-3xl bg-[#121212] border border-white/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <p className="eyebrow">HELPER PORTAL</p>
-          <h1>Welcome, {user?.name}</h1>
-          <p className="subtitle">
-            {profile?.businessName || 'Roadside Assistance Provider'} • {profile?.serviceAreas.join(', ')}
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#FFF174] block">
+            HELPER COMMAND DESK
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-0.5">
+            Good day, {user?.name || 'Helper'}
+          </h1>
+          <p className="text-xs text-gray-400 mt-1">
+            {profile?.businessName || 'Roadside Assistance Provider'} • {profile?.serviceAreas?.join(', ') || 'Siliguri & Corridors'}
           </p>
         </div>
 
-        {profile && (
-          <div className="availability-toggle-box">
-            <span className="toggle-label">Live Status:</span>
-            <button
-              type="button"
-              className={`availability-pill ${profile.isAvailable ? 'is-available' : 'is-unavailable'}`}
-              onClick={handleToggleAvailable}
-            >
-              <span className="status-dot" />
-              {profile.isAvailable ? 'AVAILABLE FOR ASSISTS' : 'UNAVAILABLE'}
-            </button>
-          </div>
-        )}
+        {/* Large Online/Offline Toggle */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleToggleAvailable}
+            className={`px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center gap-2.5 transition-all shadow-lg active:scale-95 ${
+              profile?.isAvailable
+                ? 'bg-emerald-500/15 border-2 border-emerald-500 text-emerald-400'
+                : 'bg-white/5 border border-white/10 text-gray-400'
+            }`}
+          >
+            <span
+              className={`w-3 h-3 rounded-full ${
+                profile?.isAvailable ? 'bg-emerald-400 animate-pulse' : 'bg-gray-500'
+              }`}
+            />
+            <span>{profile?.isAvailable ? '🟢 ONLINE & ACCEPTING' : '⚫ OFFLINE'}</span>
+          </button>
+        </div>
       </header>
 
       {/* Verification Warning if pending */}
       {profile?.verificationStatus === 'PENDING' && (
-        <div className="location-status location-status--warning" style={{ marginBottom: '1.5rem' }}>
-          <AlertCircle size={20} />
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-3">
+          <AlertCircle size={20} className="shrink-0 text-amber-400" />
           <div>
-            <strong>Helper Verification Pending</strong>
-            <span>
-              Your profile is being reviewed by MotoAssist Admins. You can view open requests and submit offers across the platform.
+            <strong className="block font-bold">Helper Verification In Review</strong>
+            <span className="text-amber-200/80">
+              Admin verification in progress. You can inspect nearby requests and test dispatch routing.
             </span>
           </div>
         </div>
       )}
 
-      {/* Metrics Row */}
-      <div className="helper-metrics-grid">
-        <div className="dash-card metric-card">
-          <span className="metric-card__title">Open Requests Nearby</span>
-          <strong className="metric-card__value">{availableRequests.length}</strong>
-          <span className="metric-card__sub">In Siliguri & Himalayan routes</span>
-        </div>
-
-        <div className="dash-card metric-card">
-          <span className="metric-card__title">Active Assignments</span>
-          <strong className="metric-card__value">{assignedRequests.length}</strong>
-          <span className="metric-card__sub">Requests assigned to you</span>
-        </div>
-
-        <div className="dash-card metric-card">
-          <span className="metric-card__title">Completed Assists</span>
-          <strong className="metric-card__value">{profile?.completedAssists || 0}</strong>
-          <span className="metric-card__sub">Rating: ⭐ {profile?.rating.toFixed(1) || '5.0'}</span>
-        </div>
-      </div>
-
-      {/* Assigned Requests Section */}
-      {assignedRequests.length > 0 && (
-        <section className="dashboard-section" style={{ marginTop: '2rem' }}>
-          <h2 className="section-title">
-            <Wrench size={20} /> Your Active Assignment
-          </h2>
-          {assignedRequests.map((req) => (
-            <div key={req.id} className="active-request-card">
-              <div className="active-request-card__header">
-                <div>
-                  <span className="request-id">{req.id}</span>
-                  <StatusBadge status={req.status} />
-                </div>
-                <span className="req-date">{new Date(req.createdAt).toLocaleTimeString()}</span>
-              </div>
-              <div className="active-request-card__body">
-                <div className="info-group">
-                  <label>Stranded Rider</label>
-                  <strong>{req.riderName} ({req.riderPhone})</strong>
-                </div>
-                <div className="info-group">
-                  <label>Motorcycle</label>
-                  <strong>{req.bike.brand} {req.bike.model} ({req.bike.registrationNumber})</strong>
-                </div>
-                <div className="info-group">
-                  <label>Location</label>
-                  <strong>{req.approximateLocation || 'Landmark not specified'}</strong>
-                </div>
-              </div>
-              <div className="active-request-card__footer">
-                <Button onClick={() => navigate(`/requests/${req.id}`)}>
-                  Open Request Details <ChevronRight size={18} />
-                </Button>
+      {/* ========================================================
+          2. ACTIVE JOB COCKPIT (Section 22 Requirement)
+          ======================================================== */}
+      {currentJob ? (
+        <section className="rounded-3xl bg-gradient-to-br from-[#1C180B] to-[#121212] border-2 border-[#FFF174]/40 p-5 sm:p-7 shadow-[0_10px_40px_rgba(255,241,116,0.15)] space-y-5">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="flex items-center gap-2.5">
+              <span className="w-3 h-3 rounded-full bg-[#FFF174] animate-ping" />
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#FFF174] block">
+                  CURRENT ACTIVE JOB
+                </span>
+                <strong className="text-lg font-black text-white">
+                  {currentJob.issue.replaceAll('_', ' ')}
+                </strong>
               </div>
             </div>
-          ))}
-        </section>
-      )}
+            <StatusBadge status={currentJob.status} />
+          </div>
 
-      {/* Available Requests Feed Preview */}
-      <section className="dashboard-section" style={{ marginTop: '2rem' }}>
-        <div className="section-header-row">
-          <h2 className="section-title">
-            <Search size={20} /> Available Requests Feed
-          </h2>
-          <Link to="/helper/available-requests" className="text-link">
-            View All ({availableRequests.length}) <ChevronRight size={16} />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-black/40 p-4 rounded-2xl border border-white/10">
+            <div>
+              <span className="text-[10px] text-gray-400 block font-bold uppercase">Stranded Rider</span>
+              <strong className="text-white text-sm block mt-0.5">{currentJob.riderName}</strong>
+              <span className="text-gray-400 text-[11px]">{currentJob.bike.brand} {currentJob.bike.model}</span>
+            </div>
+            <div>
+              <span className="text-[10px] text-gray-400 block font-bold uppercase">Location</span>
+              <strong className="text-white text-sm block mt-0.5 flex items-center gap-1">
+                <MapPin size={14} className="text-[#FFF174]" />
+                {currentJob.approximateLocation || 'Himalayan Corridor'}
+              </strong>
+              <span className="text-emerald-400 text-[11px]">~2.4 km away</span>
+            </div>
+            <div>
+              <span className="text-[10px] text-gray-400 block font-bold uppercase">Estimated Payout</span>
+              <strong className="text-[#FFF174] text-base block mt-0.5">₹350 – ₹600</strong>
+              <span className="text-gray-400 text-[11px]">Direct digital or cash receipt</span>
+            </div>
+          </div>
+
+          {/* Job Timeline Indicator */}
+          <div className="pt-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-2">
+              Dispatch Workflow
+            </span>
+            <IncidentTimeline currentStep={getJobStepIndex(currentJob.status)} />
+          </div>
+
+          {/* Next Action Buttons: Navigation, Call, Open */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                currentJob.approximateLocation || 'Siliguri'
+              )}`}
+              target="_blank"
+              rel="noreferrer"
+              className="py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold text-xs uppercase tracking-wider text-white flex items-center justify-center gap-2 active:scale-95 transition-all text-center"
+            >
+              <Navigation size={15} />
+              <span>Start Navigation</span>
+            </a>
+
+            <a
+              href={`tel:${currentJob.riderPhone}`}
+              className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/15 font-bold text-xs uppercase tracking-wider text-white flex items-center justify-center gap-2 active:scale-95 transition-all text-center"
+            >
+              <PhoneCall size={15} />
+              <span>Call Rider</span>
+            </a>
+
+            <button
+              type="button"
+              onClick={() => navigate(`/requests/${currentJob.id}`)}
+              className="py-3 px-4 rounded-xl bg-[#FFF174] hover:bg-[#FCEB50] font-black text-xs uppercase tracking-wider text-black flex items-center justify-center gap-2 active:scale-95 transition-all"
+            >
+              <span>Manage Job</span>
+              <ChevronRight size={15} />
+            </button>
+          </div>
+        </section>
+      ) : null}
+
+      {/* ========================================================
+          3. METRICS / EARNINGS ROW
+          ======================================================== */}
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
+          <span className="text-[10px] font-bold uppercase text-gray-400 block">Nearby Requests</span>
+          <strong className="text-2xl font-black text-white">{availableRequests.length}</strong>
+          <span className="text-[10px] text-gray-500 block">Waiting in service zone</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
+          <span className="text-[10px] font-bold uppercase text-gray-400 block">Completed Assists</span>
+          <strong className="text-2xl font-black text-emerald-400">{profile?.completedAssists || 0}</strong>
+          <span className="text-[10px] text-gray-500 block">Lifetime rescued</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
+          <span className="text-[10px] font-bold uppercase text-gray-400 block">Provider Rating</span>
+          <strong className="text-2xl font-black text-[#FFF174]">★ {profile?.rating?.toFixed(1) || '5.0'}</strong>
+          <span className="text-[10px] text-gray-500 block">Verified rider reviews</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
+          <span className="text-[10px] font-bold uppercase text-gray-400 block">Est. Day Earnings</span>
+          <strong className="text-2xl font-black text-white">₹{((profile?.completedAssists || 1) * 350).toLocaleString()}</strong>
+          <span className="text-[10px] text-emerald-400 block">Daily settlement active</span>
+        </div>
+      </section>
+
+      {/* ========================================================
+          4. NEW REQUESTS FEED (Section 21 Requirement)
+          ======================================================== */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
+              <Search size={16} className="text-[#FFF174]" /> Available Requests Feed
+            </h2>
+            <p className="text-xs text-gray-400">Stranded riders nearby requesting dispatch</p>
+          </div>
+          <Link
+            to="/helper/available-requests"
+            className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
+          >
+            <span>All ({availableRequests.length})</span>
+            <ChevronRight size={14} />
           </Link>
         </div>
 
         {availableRequests.length > 0 ? (
-          <div className="requests-list">
-            {availableRequests.slice(0, 3).map((req) => (
-              <div key={req.id} className="request-item-card">
-                <div className="request-item-card__header">
-                  <div>
-                    <strong className="req-id">{req.id}</strong>
-                    <StatusBadge status={req.status} />
-                  </div>
-                  <span className="req-date">{new Date(req.createdAt).toLocaleTimeString()}</span>
-                </div>
-                <div className="request-item-card__body">
-                  <strong>{req.bike.brand} {req.bike.model} — {req.issue.replaceAll('_', ' ')}</strong>
-                  <p>{req.description}</p>
-                  {req.approximateLocation && (
-                    <span className="location-tag">
-                      <MapPin size={14} /> {req.approximateLocation}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {availableRequests.slice(0, 4).map((req) => (
+              <div
+                key={req.id}
+                className="p-5 rounded-2xl bg-[#121212] border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between gap-4"
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-mono text-gray-400">REQ-{req.id.slice(-4)}</span>
+                    <span className="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
+                      Est. ₹350
                     </span>
-                  )}
+                  </div>
+                  <div>
+                    <strong className="text-base font-bold text-white block">
+                      {req.bike.brand} {req.bike.model} — {req.issue.replaceAll('_', ' ')}
+                    </strong>
+                    <p className="text-xs text-gray-400 mt-1 line-clamp-2">{req.description}</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-gray-400 pt-1">
+                    <MapPin size={13} className="text-[#FFF174]" />
+                    <span className="truncate">{req.approximateLocation || 'Siliguri Corridor'}</span>
+                  </div>
                 </div>
-                <div className="request-item-card__footer">
-                  <Button onClick={() => navigate(`/requests/${req.id}`)}>
-                    Review & Offer Support <ChevronRight size={16} />
-                  </Button>
+
+                <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                  <button
+                    type="button"
+                    onClick={() => handleAcceptRequest(req.id)}
+                    className="flex-1 py-2.5 rounded-xl bg-[#FFF174] hover:bg-[#FCEB50] font-black text-xs uppercase tracking-wider text-black flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <Check size={15} />
+                    <span>Accept Job</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/requests/${req.id}`)}
+                    className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 font-semibold text-xs text-gray-200 transition-colors"
+                  >
+                    Details
+                  </button>
                 </div>
               </div>
             ))}
@@ -182,8 +311,8 @@ export function HelperDashboardPage() {
         ) : (
           <EmptyState
             icon={CheckCircle2}
-            title="No Open Requests Right Now"
-            description="There are currently no active stranded rider requests waiting in your service area."
+            title="All Clear in Your Zone"
+            description="There are currently no open stranded rider requests waiting in your service radius."
           />
         )}
       </section>

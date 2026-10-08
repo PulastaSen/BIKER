@@ -1,87 +1,113 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Map as MapIcon, User, AlertTriangle, List } from 'lucide-react';
+import { Home, Wrench, Navigation, Bike, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export function MobileBottomNav() {
   const location = useLocation();
   const { user } = useAuth();
 
-  const getDashboardPath = () => {
+  // If in dedicated emergency mode, do not display standard navigation
+  const isEmergencyMode =
+    location.pathname === '/sos' || location.pathname === '/accident-assistant';
+
+  if (isEmergencyMode) {
+    return null;
+  }
+
+  const getProfilePath = () => {
     if (!user) return '/login';
     if (user.role === 'ADMIN') return '/admin/dashboard';
     if (user.role === 'HELPER') return '/helper/dashboard';
-    return '/rider/profile'; // Or profile page depending on the user's need.
+    return '/rider/profile';
   };
 
-  const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
+  const getGaragePath = () => {
+    if (user?.role === 'RIDER') return '/rider/bikes';
+    return '/save-my-bike';
   };
 
-  const isMapActive = location.pathname.startsWith('/nearby-services');
-  const isRequestsActive = location.pathname.startsWith('/rider/requests') || location.pathname.startsWith('/helper/available-requests');
-  const isProfileActive = location.pathname.startsWith('/rider/profile') || 
-                            location.pathname.startsWith('/helper/profile') || 
-                            location.pathname === '/login' || 
-                            location.pathname === '/register';
+  const isHomeActive = location.pathname === '/';
+  const isHelpActive =
+    location.pathname.startsWith('/nearby-services') ||
+    location.pathname.startsWith('/im-stranded') ||
+    location.pathname.startsWith('/request-help') ||
+    location.pathname.startsWith('/requests/');
+  const isRidesActive =
+    location.pathname.startsWith('/safe-ride') ||
+    location.pathname.startsWith('/route-coverage') ||
+    location.pathname.startsWith('/safety');
+  const isGarageActive =
+    location.pathname.startsWith('/save-my-bike') ||
+    location.pathname.startsWith('/rider/bikes') ||
+    location.pathname.startsWith('/ai-bike-assistant');
+  const isProfileActive =
+    location.pathname.startsWith('/rider/profile') ||
+    location.pathname.startsWith('/rider/dashboard') ||
+    location.pathname.startsWith('/helper/') ||
+    location.pathname.startsWith('/admin/') ||
+    location.pathname === '/login' ||
+    location.pathname === '/register';
 
   return (
-    <nav className="mobile-bottom-nav" aria-label="Mobile WebApp Navigation">
-      <Link 
-        to="/" 
-        className={`mobile-nav-item ${isActive('/') ? 'is-active' : ''}`}
+    <nav className="mobile-bottom-nav" aria-label="Mobile Bottom App Navigation">
+      {/* 1. Home */}
+      <Link
+        to="/"
+        className={`mobile-nav-item ${isHomeActive ? 'is-active' : ''}`}
         aria-label="Home"
       >
         <div className="mobile-nav-icon-wrap">
-          <Home size={24} />
+          <Home size={22} />
         </div>
         <span className="mobile-nav-label">Home</span>
       </Link>
 
-      <Link 
-        to="/nearby-services" 
-        className={`mobile-nav-item ${isMapActive ? 'is-active' : ''}`}
-        aria-label="Nearby Help"
+      {/* 2. Help / Assistance */}
+      <Link
+        to="/nearby-services"
+        className={`mobile-nav-item ${isHelpActive ? 'is-active' : ''}`}
+        aria-label="Help and Assistance"
       >
         <div className="mobile-nav-icon-wrap">
-          <MapIcon size={24} />
+          <Wrench size={22} />
         </div>
-        <span className="mobile-nav-label">Map</span>
+        <span className="mobile-nav-label">Help</span>
       </Link>
 
-      {/* Prominent Center Emergency / SOS Trigger */}
-      <Link 
-        to="/sos" 
-        className="mobile-nav-item mobile-nav-item--sos"
-        aria-label="Emergency SOS"
-      >
-        <div className="mobile-sos-circle" style={{ width: '64px', height: '64px', top: '-24px', backgroundColor: '#DC2626' }}>
-          <AlertTriangle size={28} className="text-white" />
-          <span className="mobile-sos-pulse" aria-hidden="true" style={{ borderColor: '#DC2626' }} />
-        </div>
-        <span className="mobile-nav-label mobile-sos-label" style={{ marginTop: '20px' }}>SOS</span>
-      </Link>
-
-      <Link 
-        to={user ? (user.role === 'HELPER' ? '/helper/available-requests' : '/rider/requests') : '/login'} 
-        className={`mobile-nav-item ${isRequestsActive ? 'is-active' : ''}`}
-        aria-label="Requests"
+      {/* 3. Rides */}
+      <Link
+        to="/safe-ride"
+        className={`mobile-nav-item ${isRidesActive ? 'is-active' : ''}`}
+        aria-label="Safe Rides and Navigation"
       >
         <div className="mobile-nav-icon-wrap">
-          <List size={24} />
+          <Navigation size={22} />
         </div>
-        <span className="mobile-nav-label">Activity</span>
+        <span className="mobile-nav-label">Rides</span>
       </Link>
 
-      <Link 
-        to={getDashboardPath()} 
+      {/* 4. Garage */}
+      <Link
+        to={getGaragePath()}
+        className={`mobile-nav-item ${isGarageActive ? 'is-active' : ''}`}
+        aria-label="Motorcycle Garage"
+      >
+        <div className="mobile-nav-icon-wrap">
+          <Bike size={22} />
+        </div>
+        <span className="mobile-nav-label">Garage</span>
+      </Link>
+
+      {/* 5. Profile */}
+      <Link
+        to={getProfilePath()}
         className={`mobile-nav-item ${isProfileActive ? 'is-active' : ''}`}
-        aria-label={user ? 'My Profile' : 'Login'}
+        aria-label={user ? 'Profile' : 'Login'}
       >
         <div className="mobile-nav-icon-wrap">
-          <User size={24} />
+          <User size={22} />
         </div>
-        <span className="mobile-nav-label">{user ? 'Profile' : 'Login'}</span>
+        <span className="mobile-nav-label">{user ? 'Profile' : 'Account'}</span>
       </Link>
     </nav>
   );

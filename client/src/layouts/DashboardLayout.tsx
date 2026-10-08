@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { MobileBottomNav } from '../components/MobileBottomNav';
+import { StickyEmergencySOS } from '../components/StickyEmergencySOS';
 
 export function DashboardLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -209,6 +210,9 @@ export function DashboardLayout() {
       <main className="flex-1 flex flex-col min-w-0 dashboard-content" key={location.pathname}>
         <Outlet />
       </main>
+
+      {/* Globally accessible Emergency SOS Action */}
+      <StickyEmergencySOS />
 
       {/* Mobile Bottom Navigation (Visible only on mobile) */}
       <MobileBottomNav />

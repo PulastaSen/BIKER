@@ -21,6 +21,7 @@ import {
   fetchFamilyCircle
 } from '../services/ecosystemApi';
 import type { SafeRideSession, FamilyMember } from '../types/app';
+import { RouteLine } from '../components/graphics';
 
 const POPULAR_DESTINATIONS = [
   { name: 'Gangtok, Sikkim (NH-10)', lat: 27.3389, lng: 88.6138, durationMins: 260 },
@@ -168,6 +169,11 @@ export function SafeRidePage() {
                 <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-black animate-pulse">
                   LIVE HUD
                 </span>
+              </div>
+
+              {/* Dynamic Visual Route Illustration */}
+              <div className="py-1">
+                <RouteLine animated={true} />
               </div>
 
               {/* Metrics Grid */}

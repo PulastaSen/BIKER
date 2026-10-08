@@ -6305,6 +6305,16 @@ textarea:focus {
   }
 }
 
+@keyframes routeDash {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+.animate-route-dash {
+  animation: routeDash 1.5s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
