@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Production builds & artifacts
+dist/
+build/
+coverage/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and cache
+*.log
+.vite/
+client/.vite/
+.vercel
+client/.vercel
+uploads/
+
+# Databases
+server/prisma/*.db
+server/prisma/*.db-journal
+*.sqlite
+*.sqlite3
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
