@@ -9,11 +9,13 @@ import {
   Navigation, 
   Eye, 
   EyeOff, 
-  Loader2 
+  Loader2,
+  MessageCircle
 } from 'lucide-react';
 import { fetchFamilyCircle, addFamilyMember, removeFamilyMember } from '../services/ecosystemApi';
 import type { FamilyMember } from '../types/app';
 import { BottomSheet } from '../components/BottomSheet';
+import { buildWhatsAppEmergencyAlertUrl } from '../utils/whatsappShare';
 
 const RELATIONSHIPS = ['PARENT', 'PARTNER', 'SIBLING', 'FRIEND', 'CHILD', 'OTHER'] as const;
 
@@ -194,10 +196,19 @@ export function SafetyCirclePage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <a
+                    href={buildWhatsAppEmergencyAlertUrl({ phone: member.phone, riderName: 'I' })}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-2.5 rounded-xl bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 transition-colors"
+                    title="Share via WhatsApp"
+                  >
+                    <MessageCircle size={16} />
+                  </a>
                   <a
                     href={`tel:${member.phone.replaceAll(' ', '')}`}
-                    className="p-2.5 rounded-xl bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 transition-colors"
+                    className="p-2.5 rounded-xl bg-white/10 text-white hover:bg-white/15 transition-colors"
                     title="Direct Call"
                   >
                     <PhoneCall size={16} />

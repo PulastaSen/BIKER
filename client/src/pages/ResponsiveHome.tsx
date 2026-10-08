@@ -5,34 +5,44 @@ import {
   ShieldAlert, 
   Zap, 
   Wrench, 
-  Truck, 
-  Fuel, 
-  BatteryCharging, 
-  Heart, 
-  Building2, 
-  Users, 
-  Shield, 
-  Bike, 
-  Clock, 
-  ChevronRight, 
-  User, 
-  CheckCircle2, 
   Radio, 
-  Sparkles
+  AlertTriangle,
+  User, 
+  MapPin, 
+  RefreshCw,
+  Search,
+  Bike,
+  Shield,
+  ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { getRequests, getBikes } from '../utils/appStorage';
-import type { HelpRequest, Bike as BikeType } from '../types/app';
-import { MountainBackground, RoadPattern, StatusIndicator } from '../components/graphics';
-import { OnboardingFlow } from '../components/OnboardingFlow';
+import { getRequests } from '../utils/appStorage';
+import type { HelpRequest } from '../types/app';
+import { useUserLocation } from '../hooks/useUserLocation';
+import { ActiveIncidentHUD } from '../components/ActiveIncidentHUD';
+import { FeelingUnsafeModal } from '../components/FeelingUnsafeModal';
+import { MedicalIdQuickModal } from '../components/MedicalIdQuickModal';
 
 export function ResponsiveHome() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const [activeRequest, setActiveRequest] = useState<HelpRequest | undefined>();
-  const [primaryBike, setPrimaryBike] = useState<BikeType | undefined>();
-  const [gpsReady, setGpsReady] = useState(false);
+  const [showUnsafeModal, setShowUnsafeModal] = useState(false);
+  const [showMedicalModal, setShowMedicalModal] = useState(false);
+  const [showLocationSearch, setShowLocationSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Real Geolocation hook without silent fallbacks
+  const {
+    accuracy,
+    status: locStatus,
+    errorReason,
+    updatedText,
+    requestLocation,
+    setSearchLocation,
+    address,
+  } = useUserLocation(true);
 
   useEffect(() => {
     // Check if user has active help requests
@@ -44,103 +54,46 @@ export function ResponsiveHome() {
           (r.status === 'OPEN' || r.status === 'HELPER_OFFERED' || r.status === 'IN_PROGRESS')
       );
       setActiveRequest(userReq);
-
-      const userBikes = getBikes(user.id);
-      if (userBikes.length > 0) {
-        setPrimaryBike(userBikes.find((b) => b.isPrimary) || userBikes[0]);
-      }
-    }
-
-    // Passive GPS check for status indicator
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        () => setGpsReady(true),
-        () => setGpsReady(false),
-        { timeout: 5000, maximumAge: 60000 }
-      );
     }
   }, [user]);
 
-  const quickActions = [
-    {
-      title: 'Mechanic',
-      sub: 'Verified repair',
-      icon: Wrench,
-      color: 'text-amber-400',
-      bg: 'bg-amber-400/10 border-amber-400/20',
-      path: '/nearby-services?type=Mechanic',
-    },
-    {
-      title: 'Towing',
-      sub: 'Flatbed recovery',
-      icon: Truck,
-      color: 'text-blue-400',
-      bg: 'bg-blue-400/10 border-blue-400/20',
-      path: '/save-my-bike',
-    },
-    {
-      title: 'Fuel Delivery',
-      sub: 'Emergency 3L/5L',
-      icon: Fuel,
-      color: 'text-emerald-400',
-      bg: 'bg-emerald-400/10 border-emerald-400/20',
-      path: '/nearby-services?type=Fuel',
-    },
-    {
-      title: 'Battery Jump',
-      sub: 'Start or swap',
-      icon: BatteryCharging,
-      color: 'text-yellow-400',
-      bg: 'bg-yellow-400/10 border-yellow-400/20',
-      path: '/nearby-services?type=Battery',
-    },
-    {
-      title: 'Ambulance',
-      sub: 'Emergency 108',
-      icon: Heart,
-      color: 'text-red-400',
-      bg: 'bg-red-400/10 border-red-400/20',
-      path: '/emergency-services',
-    },
-    {
-      title: 'Hospitals',
-      sub: 'Trauma care',
-      icon: Building2,
-      color: 'text-purple-400',
-      bg: 'bg-purple-400/10 border-purple-400/20',
-      path: '/emergency-services',
-    },
-  ];
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim().length > 2) {
+      setSearchLocation(searchQuery.trim());
+      setShowLocationSearch(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans relative selection:bg-[#FFF174] selection:text-black pb-28 md:pb-16">
-      {/* 4-Step Friendly Onboarding for First-time users */}
-      <OnboardingFlow />
+    <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans relative selection:bg-[#FFF174] selection:text-black pb-24 md:pb-16">
+      
+      {/* Feeling Unsafe Modal Flow */}
+      <FeelingUnsafeModal
+        isOpen={showUnsafeModal}
+        onClose={() => setShowUnsafeModal(false)}
+        primaryContactPhone="+91 98765 43210"
+        primaryContactName="Mom / Trusted Circle"
+      />
 
-      {/* TOP MOBILE APP HEADER */}
+      {/* Quick Medical ID Modal */}
+      <MedicalIdQuickModal
+        isOpen={showMedicalModal}
+        onClose={() => setShowMedicalModal(false)}
+      />
+
+      {/* TOP HEADER */}
       <header className="sticky top-0 z-30 bg-[#090909]/95 backdrop-blur-md border-b border-white/10 px-4 py-3 sm:px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
           {/* Logo & Brand */}
           <Link to="/" className="flex items-center gap-2 select-none group">
             <span className="w-8 h-8 rounded-xl bg-[#FFF174] text-black flex items-center justify-center font-black group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(255,241,116,0.3)]">
               <Navigation size={18} />
             </span>
-            <span className="font-black text-lg tracking-tight text-white">
-              Moto<span className="text-[#FFF174]">Assist</span>
+            <span className="font-black text-lg tracking-tight text-white uppercase">
+              MOTO<span className="text-[#FFF174]">ASSIST</span>
             </span>
           </Link>
-
-          {/* Location Status Pill */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs">
-            <span
-              className={`w-2 h-2 rounded-full ${
-                gpsReady ? 'bg-emerald-400 animate-pulse' : 'bg-[#FFF174]'
-              }`}
-            />
-            <span className="font-semibold text-gray-300 truncate max-w-[140px] sm:max-w-xs">
-              Siliguri & Himalayas
-            </span>
-          </div>
 
           {/* User Profile Avatar / Login */}
           <div className="flex items-center gap-2">
@@ -164,326 +117,265 @@ export function ResponsiveHome() {
         </div>
       </header>
 
-      {/* MAIN MOBILE-FIRST CONTENT CONTAINER */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-5 space-y-6">
-        {/* HERO SECTION */}
-        <section className="relative rounded-[32px] bg-gradient-to-br from-[#141414] via-[#101010] to-[#0A0A0A] border border-white/10 p-6 sm:p-8 overflow-hidden shadow-2xl">
-          <MountainBackground opacity={0.2} height={180} />
-          <RoadPattern opacity={0.1} />
-
-          <div className="relative z-10 space-y-4 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/60 border border-red-500/40 text-[11px] font-black uppercase tracking-wider text-red-300">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-              <span>24/7 Roadside Rescue Network</span>
+      {/* MAIN CONTAINER */}
+      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 pt-5 space-y-5">
+        
+        {/* ACTIVE INCIDENT HUD (if active request exists, it is the FIRST thing visible!) */}
+        {activeRequest ? (
+          <ActiveIncidentHUD
+            requestId={activeRequest.id}
+            issueCategory={activeRequest.issue.replaceAll('_', ' ')}
+            status={activeRequest.status === 'HELPER_OFFERED' ? 'ACCEPTED' : 'EN_ROUTE'}
+            distance="2.8 km"
+            eta="11 min"
+            providerName="Raj Motors & Towing"
+            providerPhone="+91 98320 12345"
+            onCancel={() => setActiveRequest(undefined)}
+          />
+        ) : (
+          /* GREEN "YOU'RE SAFE" STATUS BADGE */
+          <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-bold text-xs sm:text-sm text-emerald-300">
+                🟢 You're safe
+              </span>
             </div>
+            <span className="text-[11px] text-gray-400 hidden sm:inline">
+              Emergency dispatch on standby
+            </span>
+          </div>
+        )}
 
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-[1.08]">
-              Ride safer.<br />
-              <span className="text-[#FFF174]">Get help faster.</span>
-            </h1>
+        {/* LOCATION STATUS BAR (Section 6) */}
+        <section
+          className="p-3.5 rounded-2xl bg-[#121212] border border-white/10 text-xs text-gray-300 flex flex-wrap items-center justify-between gap-2.5"
+          aria-label="Location status"
+        >
+          <div className="flex items-center gap-2">
+            <MapPin size={16} className={locStatus === 'active' || locStatus === 'searched' ? 'text-emerald-400' : 'text-amber-400'} />
+            {locStatus === 'active' ? (
+              <span className="font-semibold text-white">
+                📍 Location Active
+                {accuracy ? ` • Accuracy: ±${accuracy}m` : ''}
+                {updatedText ? ` • Updated: ${updatedText}` : ''}
+              </span>
+            ) : locStatus === 'searched' ? (
+              <span className="font-semibold text-white">
+                📍 Location: {address || 'Custom Landmark'}
+              </span>
+            ) : locStatus === 'denied' ? (
+              <span className="text-amber-300 font-semibold">
+                Location access is turned off.
+              </span>
+            ) : (
+              <span className="text-gray-400 font-medium">
+                {errorReason || 'Acquiring your location...'}
+              </span>
+            )}
+          </div>
 
-            <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-              Immediate motorcycle roadside rescue, verified mechanics, flatbed towing, and live family safety across Himalayan highway corridors.
-            </p>
-
-            {/* PRIMARY HERO ACTIONS (SOS & I'M STRANDED - High Tactile Buttons) */}
-            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {/* PRIMARY 1: 🚨 SOS BUTTON */}
+          <div className="flex items-center gap-2">
+            {locStatus !== 'active' && (
               <button
                 type="button"
-                onClick={() => navigate('/sos')}
-                className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:scale-[0.98] text-white font-black text-base uppercase tracking-wider flex items-center justify-center gap-3 shadow-[0_0_35px_rgba(220,38,38,0.5)] border border-red-400/50 transition-all cursor-pointer group"
-                aria-label="Emergency SOS - Need Immediate Rescue"
+                onClick={() => requestLocation()}
+                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-[11px] font-bold text-[#FFF174] transition-colors flex items-center gap-1 cursor-pointer"
               >
-                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <ShieldAlert size={20} className="text-white" />
-                </div>
-                <div className="text-left leading-tight">
-                  <span className="block text-base sm:text-lg font-black tracking-wide">🚨 SOS EMERGENCY</span>
-                  <span className="block text-[10px] text-red-200 lowercase tracking-normal font-medium">
-                    hold or tap for immediate dispatch
-                  </span>
-                </div>
+                <RefreshCw size={12} />
+                <span>Enable Location</span>
               </button>
-
-              {/* PRIMARY 2: 🆘 I'M STRANDED BUTTON */}
-              <button
-                type="button"
-                onClick={() => navigate('/im-stranded')}
-                className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-[#FFF174] to-[#FCEB50] hover:from-[#FFF69B] hover:to-[#FFF174] active:scale-[0.98] text-black font-black text-base uppercase tracking-wider flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(255,241,116,0.35)] transition-all cursor-pointer group"
-                aria-label="I'm Stranded - Fast Breakdown Triage"
-              >
-                <div className="w-8 h-8 rounded-xl bg-black/15 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <Zap size={20} className="text-black" />
-                </div>
-                <div className="text-left leading-tight">
-                  <span className="block text-base sm:text-lg font-black tracking-wide">🆘 I'M STRANDED</span>
-                  <span className="block text-[10px] text-gray-800 lowercase tracking-normal font-semibold">
-                    puncture • towing • battery • fuel
-                  </span>
-                </div>
-              </button>
-            </div>
+            )}
+            <button
+              type="button"
+              onClick={() => setShowLocationSearch(!showLocationSearch)}
+              className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-bold text-gray-300 transition-colors flex items-center gap-1 cursor-pointer"
+            >
+              <Search size={12} />
+              <span>Search Location</span>
+            </button>
           </div>
         </section>
 
-        {/* CURRENT STATUS CARD */}
-        <section aria-label="Current Road Safety Status">
-          {activeRequest ? (
-            <div className="rounded-2xl p-4 sm:p-5 bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg">
-              <div className="flex items-center gap-3">
-                <span className="w-3.5 h-3.5 rounded-full bg-amber-400 animate-ping shrink-0" />
-                <div>
-                  <strong className="block text-sm sm:text-base font-black text-white">
-                    Assistance in Progress: {activeRequest.issue.replaceAll('_', ' ')}
-                  </strong>
-                  <p className="text-xs text-amber-200 mt-0.5">
-                    Provider assigned • Tap to view real-time location & helper contact
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => navigate(`/requests/${activeRequest.id}`)}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 text-black font-black text-xs uppercase tracking-wider hover:bg-amber-300 transition-colors flex items-center justify-center gap-1.5 shrink-0"
-              >
-                <span>Track Live</span>
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          ) : (
-            <div className="rounded-2xl p-4 sm:p-5 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between gap-3 shadow-md">
-              <div className="flex items-center gap-3">
-                <StatusIndicator state="online" size="sm" text="SAFE" />
-                <div>
-                  <span className="text-xs sm:text-sm font-bold text-white block">
-                    You're safe • No active incidents
-                  </span>
-                  <span className="text-[11px] text-gray-400 block mt-0.5">
-                    Himalayan corridor telemetry & Safety Circle active
-                  </span>
-                </div>
-              </div>
-              <Link
-                to="/safe-ride"
-                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-gray-200 transition-colors shrink-0 flex items-center gap-1"
-              >
-                <span>Start Ride</span>
-                <ChevronRight size={14} />
-              </Link>
-            </div>
-          )}
-        </section>
-
-        {/* QUICK ACTIONS: NEARBY HELP (6 Tactile Cards) */}
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-              <Wrench size={15} className="text-[#FFF174]" /> Nearby Assistance
-            </h2>
-            <Link to="/nearby-services" className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1">
-              <span>View Map</span>
-              <ChevronRight size={14} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
-            {quickActions.map((qa) => {
-              const Icon = qa.icon;
-              return (
-                <button
-                  key={qa.title}
-                  type="button"
-                  onClick={() => navigate(qa.path)}
-                  className={`p-3.5 rounded-2xl border text-left flex flex-col justify-between gap-2.5 transition-all hover:scale-[1.02] active:scale-95 bg-[#121212] ${qa.bg} cursor-pointer group`}
-                >
-                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <Icon size={20} className={qa.color} />
-                  </div>
-                  <div>
-                    <strong className="block text-xs sm:text-sm font-black text-white">
-                      {qa.title}
-                    </strong>
-                    <span className="text-[10px] text-gray-400 block mt-0.5 font-medium">
-                      {qa.sub}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* SAFETY CENTER (Family Circle, Safe Ride, Medical ID, Women Safety) */}
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-              <Shield size={15} className="text-[#FFF174]" /> Safety Center
-            </h2>
-            <Link to="/safety" className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1">
-              <span>All Protocols</span>
-              <ChevronRight size={14} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {/* Safety Circle */}
-            <div
-              onClick={() => navigate('/safety-circle')}
-              className="p-4 rounded-2xl bg-[#121212] border border-white/10 hover:border-emerald-500/40 transition-all cursor-pointer flex items-start gap-3.5 group"
+        {/* INLINE LOCATION SEARCH BAR IF TOGGLED */}
+        {showLocationSearch && (
+          <form onSubmit={handleSearchSubmit} className="flex gap-2 animate-in fade-in duration-150">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search place, town or highway landmark..."
+              className="flex-1 bg-[#161616] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+              autoFocus
+            />
+            <button
+              type="submit"
+              className="px-4 py-2.5 bg-[#FFF174] text-black font-bold text-xs rounded-xl hover:bg-yellow-400 cursor-pointer"
             >
-              <div className="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0 text-emerald-400 group-hover:scale-105 transition-transform">
-                <Users size={22} />
-              </div>
-              <div className="flex-1">
-                <strong className="text-sm font-bold text-white block group-hover:text-[#FFF174] transition-colors">
-                  Safety Circle
-                </strong>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Live location sharing with parents & trusted contacts during rides.
-                </p>
-              </div>
-            </div>
+              Set Place
+            </button>
+          </form>
+        )}
 
-            {/* Live Safe Ride */}
-            <div
-              onClick={() => navigate('/safe-ride')}
-              className="p-4 rounded-2xl bg-[#121212] border border-white/10 hover:border-[#FFF174]/40 transition-all cursor-pointer flex items-start gap-3.5 group"
-            >
-              <div className="w-11 h-11 rounded-xl bg-[#FFF174]/15 border border-[#FFF174]/30 flex items-center justify-center shrink-0 text-[#FFF174] group-hover:scale-105 transition-transform">
-                <Radio size={22} />
-              </div>
-              <div className="flex-1">
-                <strong className="text-sm font-bold text-white block group-hover:text-[#FFF174] transition-colors">
-                  Safe Ride HUD
-                </strong>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Route telemetry, arrival ETA countdown & deviation monitoring.
-                </p>
-              </div>
-            </div>
+        {/* "WHAT DO YOU NEED?" HEADLINE */}
+        <div className="pt-2">
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            What do you need?
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-400 mt-1">
+            Tap a primary action for instant response.
+          </p>
+        </div>
 
-            {/* Medical ID */}
-            <div
-              onClick={() => navigate('/medical-id')}
-              className="p-4 rounded-2xl bg-[#121212] border border-white/10 hover:border-red-500/40 transition-all cursor-pointer flex items-start gap-3.5 group"
-            >
-              <div className="w-11 h-11 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center shrink-0 text-red-400 group-hover:scale-105 transition-transform">
-                <Heart size={22} />
-              </div>
-              <div className="flex-1">
-                <strong className="text-sm font-bold text-white block group-hover:text-red-400 transition-colors">
-                  Medical ID
-                </strong>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Encrypted clinical blood group, allergy & emergency doctor data.
-                </p>
-              </div>
-            </div>
-
-            {/* Women Safety */}
-            <div
-              onClick={() => navigate('/women-safety')}
-              className="p-4 rounded-2xl bg-[#121212] border border-white/10 hover:border-purple-500/40 transition-all cursor-pointer flex items-start gap-3.5 group"
-            >
-              <div className="w-11 h-11 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center shrink-0 text-purple-400 group-hover:scale-105 transition-transform">
-                <Shield size={22} />
-              </div>
-              <div className="flex-1">
-                <strong className="text-sm font-bold text-white block group-hover:text-purple-400 transition-colors">
-                  Women Rider Safety
-                </strong>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Discreet SOS, verified night escorts & police safe havens.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* MY BIKE GARAGE PREVIEW */}
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-              <Bike size={15} className="text-[#FFF174]" /> My Machine
-            </h2>
-            <Link
-              to={user ? '/rider/bikes' : '/save-my-bike'}
-              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
-            >
-              <span>{primaryBike ? 'Manage' : 'Add Bike'}</span>
-              <ChevronRight size={14} />
-            </Link>
-          </div>
-
-          <div className="p-5 rounded-3xl bg-[#121212] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#FFF174] shrink-0">
-                <Bike size={24} />
+        {/* PRIMARY ACTIONS GRID (Section 3 Requirement) */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1" aria-label="Primary Emergency and Assistance Actions">
+          
+          {/* 1. 🚨 SOS */}
+          <button
+            type="button"
+            onClick={() => navigate('/sos')}
+            className="w-full p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:scale-[0.98] text-white font-black text-left flex items-center justify-between shadow-[0_0_30px_rgba(220,38,38,0.45)] border border-red-400/50 transition-all cursor-pointer group min-h-[82px]"
+            aria-label="🚨 SOS - Immediate emergency dispatch"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <ShieldAlert size={26} className="text-white" />
               </div>
               <div>
-                <strong className="text-base font-bold text-white block">
-                  {primaryBike ? `${primaryBike.brand} ${primaryBike.model}` : 'Royal Enfield Himalayan / KTM 390'}
-                </strong>
-                <div className="flex items-center gap-2.5 text-xs text-gray-400 mt-0.5">
-                  <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                    <CheckCircle2 size={13} /> Health 96%
-                  </span>
-                  <span>•</span>
-                  <span>{primaryBike?.registrationNumber || 'Himalayan Spec'}</span>
-                </div>
+                <span className="block text-lg sm:text-xl font-black tracking-wide">
+                  🚨 SOS
+                </span>
+                <span className="block text-[11px] text-red-200 font-medium">
+                  Hold 3s • Ambulance, 112 & Medical ID
+                </span>
               </div>
             </div>
+            <ChevronRight size={20} className="text-white/80 group-hover:translate-x-1 transition-transform" />
+          </button>
 
-            <div className="flex items-center gap-2">
-              <Link
-                to="/ai-bike-assistant"
-                className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-300 transition-colors flex items-center justify-center gap-1.5"
-              >
-                <Sparkles size={14} className="text-[#FFF174]" />
-                <span>AI Diagnostics</span>
-              </Link>
-              <Link
-                to="/pre-ride-check"
-                className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-300 transition-colors flex items-center justify-center gap-1.5"
-              >
-                <span>Pre-Ride Check</span>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* CORRIDOR ACTIVITY & HAZARDS */}
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-              <Clock size={15} className="text-[#FFF174]" /> Corridor Status
-            </h2>
-            <Link to="/road-hazards" className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1">
-              <span>Hazard Feed</span>
-              <ChevronRight size={14} />
-            </Link>
-          </div>
-
-          <div className="space-y-2">
-            {[
-              { route: 'NH-10 Sevoke Checkpost to Teesta', status: 'Clear Corridor', time: '5m ago', color: 'text-emerald-400', dot: 'bg-emerald-400' },
-              { route: 'Rohini Road (Kurseong ascent)', status: 'Patch roadwork active • Reduced speed', time: '22m ago', color: 'text-amber-400', dot: 'bg-amber-400' },
-              { route: 'Matigara & Bagdogra Bypass', status: '18 Verified helpers on standby', time: '1h ago', color: 'text-blue-400', dot: 'bg-blue-400' },
-            ].map((item, idx) => (
-              <div key={idx} className="p-3.5 rounded-2xl bg-[#121212] border border-white/5 flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2.5">
-                  <span className={`w-2 h-2 rounded-full ${item.dot} shrink-0`} />
-                  <div>
-                    <strong className="text-gray-200 block">{item.route}</strong>
-                    <span className={`${item.color} text-[11px]`}>{item.status}</span>
-                  </div>
-                </div>
-                <span className="text-gray-500 text-[11px] shrink-0">{item.time}</span>
+          {/* 2. 🆘 I'M STRANDED */}
+          <button
+            type="button"
+            onClick={() => navigate('/im-stranded')}
+            className="w-full p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#FFF174] to-[#FCEB50] hover:from-[#FFF69B] hover:to-[#FFF174] active:scale-[0.98] text-black font-black text-left flex items-center justify-between shadow-[0_0_25px_rgba(255,241,116,0.3)] transition-all cursor-pointer group min-h-[82px]"
+            aria-label="🆘 I'm Stranded - Fast breakdown triage"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-black/15 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Zap size={26} className="text-black" />
               </div>
-            ))}
-          </div>
+              <div>
+                <span className="block text-lg sm:text-xl font-black tracking-wide">
+                  🆘 I'm Stranded
+                </span>
+                <span className="block text-[11px] text-gray-800 font-semibold">
+                  Puncture, battery, fuel or towing
+                </span>
+              </div>
+            </div>
+            <ChevronRight size={20} className="text-black/80 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          {/* 3. ⚠️ FEELING UNSAFE */}
+          <button
+            type="button"
+            onClick={() => setShowUnsafeModal(true)}
+            className="w-full p-4 sm:p-5 rounded-3xl bg-[#1A1212] hover:bg-[#241717] active:scale-[0.98] text-white font-black text-left flex items-center justify-between border-2 border-amber-500/50 shadow-md transition-all cursor-pointer group min-h-[82px]"
+            aria-label="⚠️ Feeling Unsafe - Alert family, 112 and find safe place"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform border border-amber-500/30">
+                <AlertTriangle size={24} />
+              </div>
+              <div>
+                <span className="block text-base sm:text-lg font-black text-amber-300">
+                  ⚠️ Feeling Unsafe
+                </span>
+                <span className="block text-[11px] text-gray-400 font-medium">
+                  Alert family • Share location • Call 112
+                </span>
+              </div>
+            </div>
+            <ChevronRight size={20} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          {/* 4. 🔧 FIND HELP */}
+          <button
+            type="button"
+            onClick={() => navigate('/nearby-services')}
+            className="w-full p-4 sm:p-5 rounded-3xl bg-[#121212] hover:bg-[#181818] active:scale-[0.98] text-white font-black text-left flex items-center justify-between border border-white/10 shadow-md transition-all cursor-pointer group min-h-[82px]"
+            aria-label="🔧 Find Help - Browse nearby mechanics and workshops"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 text-[#FFF174] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Wrench size={24} />
+              </div>
+              <div>
+                <span className="block text-base sm:text-lg font-black text-white">
+                  🔧 Find Help
+                </span>
+                <span className="block text-[11px] text-gray-400 font-medium">
+                  Verified mechanics, OEM centers & towing
+                </span>
+              </div>
+            </div>
+            <ChevronRight size={20} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          {/* 5. 🏍️ START SAFE RIDE (Span full on desktop) */}
+          <button
+            type="button"
+            onClick={() => navigate('/safe-ride')}
+            className="sm:col-span-2 w-full p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#141A14] to-[#111611] hover:from-[#1A241A] hover:to-[#141C14] active:scale-[0.98] text-white font-black text-left flex items-center justify-between border border-emerald-500/30 shadow-md transition-all cursor-pointer group min-h-[78px]"
+            aria-label="🏍️ Start Safe Ride - Route telemetry, ETA and family share"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform border border-emerald-500/30">
+                <Radio size={24} />
+              </div>
+              <div>
+                <span className="block text-base sm:text-lg font-black text-emerald-300">
+                  🏍️ Start Safe Ride
+                </span>
+                <span className="block text-[11px] text-gray-400 font-medium">
+                  Share live route with family • Safety timer • ETA monitor
+                </span>
+              </div>
+            </div>
+            <ChevronRight size={20} className="text-emerald-400 group-hover:translate-x-1 transition-transform" />
+          </button>
         </section>
+
+        {/* CONTEXTUAL SECONDARY HUB (Compact 2-card row: Garage & Medical ID) */}
+        <section className="pt-2 grid grid-cols-2 gap-3 text-xs" aria-label="Contextual Shortcuts">
+          <Link
+            to="/save-my-bike"
+            className="p-3.5 rounded-2xl bg-[#121212] border border-white/10 hover:border-white/20 flex items-center gap-2.5 transition-colors group"
+          >
+            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-[#FFF174] shrink-0">
+              <Bike size={18} />
+            </div>
+            <div className="overflow-hidden">
+              <strong className="block text-gray-200 group-hover:text-white truncate">My Garage</strong>
+              <span className="text-[10px] text-gray-400 truncate block">Bikes, towing & tools</span>
+            </div>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setShowMedicalModal(true)}
+            className="p-3.5 rounded-2xl bg-[#121212] border border-white/10 hover:border-red-500/30 flex items-center gap-2.5 transition-colors text-left group cursor-pointer"
+          >
+            <div className="w-8 h-8 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 shrink-0">
+              <Shield size={18} />
+            </div>
+            <div className="overflow-hidden">
+              <strong className="block text-gray-200 group-hover:text-red-300 truncate">Medical ID</strong>
+              <span className="text-[10px] text-gray-400 truncate block">Emergency health data</span>
+            </div>
+          </button>
+        </section>
+
       </main>
     </div>
   );

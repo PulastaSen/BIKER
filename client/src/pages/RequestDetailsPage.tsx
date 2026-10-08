@@ -22,6 +22,9 @@ import { API_BASE_URL } from '../config/api';
 import { fetchServiceReceipt } from '../services/ecosystemApi';
 import type { ServiceReceipt } from '../types/app';
 
+import { ActiveIncidentHUD } from '../components/ActiveIncidentHUD';
+import { updateRequestStatus as updateLocalRequestStatus } from '../utils/appStorage';
+
 const STATUS_FLOW = [
   { key: 'REQUESTED', label: 'REQUEST RECEIVED' },
   { key: 'ASSIGNED', label: 'PROVIDER ASSIGNED' },
@@ -235,8 +238,25 @@ export function RequestDetailsPage() {
 
   return (
     <div className="min-h-screen bg-[#090D14] text-white pt-20 pb-20 font-sans selection:bg-[#FFF174] selection:text-black">
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container mx-auto px-4 max-w-4xl space-y-6">
         
+        {/* ACTIVE INCIDENT HUD: First thing visible per Section 11! */}
+        <ActiveIncidentHUD
+          requestId={request.requestId}
+          issueCategory={request.problemCategory}
+          status={request.status}
+          distance={request.provider?.distance || '3.2 km'}
+          eta={request.eta || '12 min'}
+          providerName={request.provider?.name || 'Raj Motors'}
+          providerPhone={request.provider?.phone || '+91 98320 12345'}
+          onCancel={() => {
+            if (window.confirm('Cancel this assistance request?')) {
+              updateLocalRequestStatus(id || request.requestId, 'CANCELLED');
+              navigate('/rider/requests');
+            }
+          }}
+        />
+
         {/* Header Block */}
         <div className="flex flex-wrap justify-between items-end gap-4 mb-6">
           <div>

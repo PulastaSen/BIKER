@@ -232,7 +232,7 @@ export function GoogleMapsLocator({
     }
 
     setIsLocating(true);
-    setLocationStatus('Acquiring precise GPS satellite fix...');
+    setLocationStatus('Acquiring your location...');
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -242,12 +242,12 @@ export function GoogleMapsLocator({
         });
         setGpsAccuracy(Math.round(pos.coords.accuracy));
         setIsLocating(false);
-        setLocationStatus(`GPS Locked (Accuracy: ±${Math.round(pos.coords.accuracy)}m)`);
+        setLocationStatus(`📍 Location Active (Accuracy: ±${Math.round(pos.coords.accuracy)}m)`);
       },
       (err) => {
-        console.warn('GPS location access denied or timeout:', err);
+        console.warn('Location access error:', err);
         setIsLocating(false);
-        setLocationStatus('Using Siliguri Hub Coordinates (GPS permission denied)');
+        setLocationStatus('Location access is turned off.');
       },
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
     );

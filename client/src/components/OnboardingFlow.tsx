@@ -36,7 +36,7 @@ const SCREENS = [
     bgBadge: 'bg-red-400/15 border-red-400/30',
     tag: 'CRITICAL EMERGENCY RESPONSE',
     title: 'Emergency? SOS gets you to the right help faster.',
-    desc: 'Press and hold SOS for 3 seconds. Dispatches your satellite coordinates, informs trauma centers, and triggers emergency contacts instantly.',
+    desc: 'Press and hold SOS for 3 seconds. Dispatches your phone\'s current location and coordinates with emergency responders.',
   },
 ];
 

@@ -1,10 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Wrench, Battery, Droplets, MapPin, Navigation, AlertCircle, ArrowLeft, Star, ShieldCheck, Loader2, Edit3, RefreshCw, ChevronRight } from 'lucide-react';
+import { 
+  Wrench, 
+  Battery, 
+  Droplets, 
+  MapPin, 
+  Navigation, 
+  AlertCircle, 
+  ArrowLeft, 
+  Star, 
+  ShieldCheck, 
+  Loader2, 
+  RefreshCw, 
+  Search,
+  ChevronRight
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { getHelperProfiles, saveRequest, getBikes } from '../utils/appStorage';
 import { API_BASE_URL } from '../config/api';
+import { useUserLocation } from '../hooks/useUserLocation';
 
 const CATEGORIES = [
   { id: 'Puncture', icon: <AlertCircle />, label: 'Puncture', desc: 'Flat tyre or air leak' },
@@ -15,16 +30,26 @@ const CATEGORIES = [
   { id: 'Accident', icon: <AlertCircle />, label: 'Accident', desc: 'Collision or crash' },
 ];
 
+const COMMON_LANDMARKS = [
+  'Sevoke Road Checkpost',
+  'Coronation Bridge (NH-10)',
+  'Bagdogra Airport Bypass',
+  'Sukna Forest Gate',
+  'Hill Cart Road / Darjeeling More',
+  'Matigara Highway Crossing'
+];
+
 const pageVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
+  initial: { opacity: 0, y: 15 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.25 } },
+  exit: { opacity: 0, y: -15, transition: { duration: 0.2 } }
 };
 
 interface ServiceProvider {
   id: string;
   name: string;
   verified?: boolean;
+  isDemo?: boolean;
   rating?: number;
   distance?: string;
   estimatedArrival?: string;
@@ -36,61 +61,37 @@ interface ServiceProvider {
 export function RequestHelpPage() {
   const [step, setStep] = useState(1);
   const [category, setCategory] = useState('');
-  const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [locating, setLocating] = useState(false);
-  const [locationError, setLocationError] = useState<string | null>(null);
-  const [showManualInput, setShowManualInput] = useState(false);
-  const [manualLandmark, setManualLandmark] = useState('');
-  const [manualCoords, setManualCoords] = useState<{ lat: string; lng: string }>({ lat: '26.7271', lng: '88.3953' });
+  const [searchPlace, setSearchPlace] = useState('');
   const [providers, setProviders] = useState<ServiceProvider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<ServiceProvider | null>(null);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const {
+    coords,
+    accuracy,
+    status: locStatus,
+    updatedText,
+    address,
+    requestLocation,
+    setSearchLocation,
+  } = useUserLocation(false);
+
   const handleNext = () => setStep(s => s + 1);
   const handleBack = () => setStep(s => s - 1);
 
-  const requestLocation = () => {
-    setLocating(true);
-    setLocationError(null);
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          setLocating(false);
-          handleNext();
-        },
-        error => {
-          setLocating(false);
-          const errorText = error.code === error.PERMISSION_DENIED
-            ? 'Your location is unavailable because GPS permission was denied.'
-            : 'Your location is unavailable. Unable to determine your GPS position.';
-          setLocationError(errorText);
-        },
-        { timeout: 10000, enableHighAccuracy: true }
-      );
-    } else {
-      setLocating(false);
-      setLocationError('Your location is unavailable. Geolocation is not supported by your browser.');
-    }
+  const handleSelectLandmark = (landmark: string) => {
+    setSearchLocation(landmark);
+    setSearchPlace(landmark);
+    handleNext();
   };
 
-  const handleManualLocationSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const lat = parseFloat(manualCoords.lat);
-    const lng = parseFloat(manualCoords.lng);
-    if (!isNaN(lat) && !isNaN(lng)) {
-      setLocation({ lat, lng });
-      setLocationError(null);
+    if (searchPlace.trim().length > 2) {
+      setSearchLocation(searchPlace.trim());
       handleNext();
-    } else if (manualLandmark.trim().length > 3) {
-      // User specified landmark
-      setLocation({ lat: 26.7271, lng: 88.3953 });
-      setLocationError(null);
-      handleNext();
-    } else {
-      alert('Please enter a valid highway location or coordinates.');
     }
   };
 
@@ -100,10 +101,11 @@ export function RequestHelpPage() {
       id: h.id,
       name: h.businessName || `Mechanic Hub #${idx + 1}`,
       verified: h.verificationStatus === 'VERIFIED',
-      rating: h.rating || 4.9,
+      isDemo: true,
+      rating: h.rating || 4.8,
       distance: `${(1.4 + idx * 1.2).toFixed(1)} km`,
       estimatedArrival: `${10 + idx * 4}-${16 + idx * 4} mins`,
-      services: h.skills && h.skills.length > 0 ? h.skills : ['Breakdown Repair', 'Puncture Repair', 'Emergency Fuel'],
+      services: h.skills && h.skills.length > 0 ? h.skills.slice(0, 3) : ['Breakdown Repair', 'Puncture Repair', 'Fuel Delivery'],
       startingPrice: 250 + idx * 50,
       isOpen: h.isAvailable ?? true
     }));
@@ -111,32 +113,43 @@ export function RequestHelpPage() {
   };
 
   useEffect(() => {
-    if (step === 3 && location) {
-      fetch(`${API_BASE_URL}/api/assistance/providers/nearby?lat=${location.lat}&lng=${location.lng}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success && data.data && data.data.length > 0) {
-            setProviders(data.data);
-          } else {
-            loadFallbackProviders();
-          }
-        })
-        .catch(() => {
-          loadFallbackProviders();
-        });
+    if (step === 3) {
+      if (coords) {
+        fetch(`${API_BASE_URL}/api/assistance/providers/nearby?lat=${coords.lat}&lng=${coords.lng}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success && data.data && data.data.length > 0) {
+              setProviders(data.data);
+            } else {
+              loadFallbackProviders();
+            }
+          })
+          .catch(() => loadFallbackProviders());
+      } else {
+        loadFallbackProviders();
+      }
     }
-  }, [step, location]);
+  }, [step, coords]);
 
   const submitRequest = async () => {
-    if (!category || !location || !selectedProvider) return;
+    if (!category || !selectedProvider) return;
     setLoading(true);
+
+    const effectiveAddress = address || searchPlace.trim() || 'Himalayan Corridor';
+    const effectiveCoords = coords ? [coords.lng, coords.lat] : undefined;
+
     try {
       const res = await fetch(`${API_BASE_URL}/api/assistance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           problemCategory: category,
-          location: { coordinates: [location.lng, location.lat] },
+          location: { 
+            type: 'Point',
+            coordinates: effectiveCoords || [88.3953, 26.7271],
+            address: effectiveAddress,
+            accuracyMeters: accuracy || 15
+          },
           providerId: selectedProvider.id
         })
       });
@@ -149,15 +162,14 @@ export function RequestHelpPage() {
       // Local fallback below
     }
 
-    // Offline / Fallback Storage Integration
     const userBikes = user ? getBikes(user.id) : [];
     const activeBike = userBikes.find(b => b.isPrimary) || userBikes[0] || {
       id: 'bike-def',
       userId: user?.id || 'user-rider-1',
-      brand: 'KTM',
-      model: '390 Adventure',
+      brand: 'Royal Enfield',
+      model: 'Himalayan',
       registrationNumber: 'WB 74 AB 8921',
-      year: 2025,
+      year: 2024,
       fuelType: 'PETROL' as const
     };
 
@@ -169,14 +181,14 @@ export function RequestHelpPage() {
       riderPhone: user?.phone || '+91 98765 43210',
       bike: activeBike,
       issue: category,
-      description: `${category} emergency assistance requested near coordinates (${location.lat.toFixed(4)}, ${location.lng.toFixed(4)})`,
+      description: `${category} emergency assistance requested at ${effectiveAddress}`,
       status: 'OPEN' as const,
       assignedHelperId: selectedProvider.id,
       assignedHelperName: selectedProvider.name,
       locationShared: true,
-      latitude: location.lat,
-      longitude: location.lng,
-      approximateLocation: `Siliguri Corridor (${location.lat.toFixed(3)}°N, ${location.lng.toFixed(3)}°E)`,
+      latitude: coords?.lat,
+      longitude: coords?.lng,
+      approximateLocation: effectiveAddress,
       createdAt: new Date().toISOString()
     };
     saveRequest(newReq);
@@ -185,47 +197,36 @@ export function RequestHelpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white pt-24 pb-12 font-sans overflow-x-hidden">
-      <div className="container mx-auto px-4 max-w-3xl">
+    <div className="min-h-screen bg-[#090909] text-white pt-4 pb-24 md:pb-16 font-sans">
+      <div className="container mx-auto px-4 max-w-2xl space-y-5">
         
-        <header className="mb-8 relative z-20">
-          {step > 1 ? (
-            <button 
-              onClick={handleBack} 
-              aria-label="Go back to previous step"
-              className="flex items-center text-gray-300 hover:text-white mb-6 p-2 -ml-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFF174]"
-            >
-              <ArrowLeft className="mr-2" size={20} /> Back
-            </button>
-          ) : (
-            <div className="h-10 mb-2"></div>
-          )}
+        {/* Step Navigation Header */}
+        <header className="flex items-center justify-between border-b border-white/10 pb-3">
+          <button 
+            type="button"
+            onClick={step > 1 ? handleBack : () => navigate('/')} 
+            className="flex items-center text-xs text-gray-400 hover:text-white transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="mr-1.5" size={16} /> Back
+          </button>
           
-          {/* Progress Indicator */}
-          <div className="flex items-center justify-between mb-4" aria-label="Request help progress steps">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="flex-1 flex items-center">
-                <div 
-                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${step === i ? 'bg-[#FFF174] text-black ring-4 ring-[#FFF174]/20' : step > i ? 'bg-green-500 text-white' : 'bg-white/10 text-gray-400'}`}
-                  aria-current={step === i ? 'step' : undefined}
-                >
-                  {step > i ? '✓' : i}
-                </div>
-                {i < 3 && <div className={`flex-1 h-1 mx-2 rounded-full ${step > i ? 'bg-green-500' : 'bg-white/10'}`} />}
-              </div>
-            ))}
+          <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
+            <span>Step {step} of 3</span>
           </div>
         </header>
 
         <main id="main-content">
           <AnimatePresence mode="wait">
             
+            {/* STEP 1: CATEGORY */}
             {step === 1 && (
-              <motion.section key="step1" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-                <h1 className="text-4xl md:text-5xl font-black mb-3 text-gray-50">What do you need help with?</h1>
-                <p className="text-gray-300 text-lg mb-8">Select the category that best describes your issue.</p>
+              <motion.section key="step1" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="space-y-4">
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-black text-white">What do you need help with?</h1>
+                  <p className="text-gray-400 text-xs sm:text-sm mt-1">Select the category that best describes your issue.</p>
+                </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" role="radiogroup" aria-label="Assistance categories">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Assistance categories">
                   {CATEGORIES.map(cat => {
                     const isSelected = category === cat.id;
                     return (
@@ -234,15 +235,15 @@ export function RequestHelpPage() {
                         role="radio"
                         aria-checked={isSelected}
                         onClick={() => { setCategory(cat.id); handleNext(); }}
-                        className={`p-6 rounded-2xl border text-left transition-all group ${isSelected ? 'border-[#FFF174] bg-[#FFF174]/10' : 'border-white/10 bg-[#111111] hover:border-white/30'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFF174]`}
+                        className={`p-4 rounded-2xl border text-left transition-all group cursor-pointer ${isSelected ? 'border-[#FFF174] bg-[#FFF174]/15' : 'border-white/10 bg-[#121212] hover:border-white/20'}`}
                       >
-                        <div className="flex items-center mb-3">
-                          <div className={`p-3 rounded-xl ${isSelected ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-white group-hover:bg-white/20'}`}>
+                        <div className="flex items-center mb-2">
+                          <div className={`p-2.5 rounded-xl ${isSelected ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-white group-hover:bg-white/20'}`}>
                             {cat.icon}
                           </div>
-                          <h2 className="ml-4 font-bold text-xl">{cat.label}</h2>
+                          <h2 className="ml-3 font-bold text-base text-white">{cat.label}</h2>
                         </div>
-                        <p className={`text-sm ${isSelected ? 'text-gray-200' : 'text-gray-400'}`}>{cat.desc}</p>
+                        <p className="text-xs text-gray-400">{cat.desc}</p>
                       </button>
                     );
                   })}
@@ -250,131 +251,133 @@ export function RequestHelpPage() {
               </motion.section>
             )}
 
+            {/* STEP 2: LOCATION (Per Section 5 & 6: Use My Location or Search place / landmark) */}
             {step === 2 && (
-              <motion.section key="step2" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="text-center py-12">
-                <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-8 relative">
-                  {locating && (
-                    <motion.div 
-                      className="absolute inset-0 border-2 border-[#FFF174] rounded-full"
-                      animate={{ scale: [1, 1.5], opacity: [1, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    />
-                  )}
-                  <MapPin className="text-[#FFF174]" size={40} aria-hidden="true" />
+              <motion.section key="step2" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="space-y-5">
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-black text-white">Confirm Location</h1>
+                  <p className="text-gray-400 text-xs sm:text-sm mt-1">Location access is needed to find nearby help.</p>
                 </div>
-                
-                <h1 className="text-4xl md:text-5xl font-black mb-4 text-gray-50">Confirm Location</h1>
-                <p className="text-gray-300 text-lg mb-8 max-w-md mx-auto">We need your coordinates to dispatch the nearest provider accurately.</p>
 
-                {locationError && (
-                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6 mb-8 text-left max-w-lg mx-auto">
-                    <div className="flex items-center gap-3 mb-2 text-amber-400 font-bold text-lg">
-                      <AlertCircle size={22} />
-                      <h3>Your location is unavailable.</h3>
-                    </div>
-                    <p className="text-gray-300 text-sm mb-5 leading-relaxed">{locationError}</p>
-                    <div className="flex flex-wrap gap-3">
-                      <button
-                        onClick={requestLocation}
-                        className="px-5 py-2.5 bg-[#FFF174] text-black font-black text-xs rounded-xl hover:bg-yellow-400 transition-colors flex items-center gap-2"
-                      >
-                        <RefreshCw size={14} /> Enable Location / Retry
-                      </button>
-                      <button
-                        onClick={() => setShowManualInput(prev => !prev)}
-                        className="px-5 py-2.5 bg-white/10 text-white font-bold text-xs rounded-xl hover:bg-white/20 transition-colors flex items-center gap-2 border border-white/10"
-                      >
-                        <Edit3 size={14} /> Enter Location Manually
-                      </button>
-                    </div>
-                  </div>
-                )}
+                {/* Option 1: Device GPS */}
+                <div className="p-4 rounded-3xl bg-[#121212] border border-white/10 space-y-3">
+                  <span className="text-xs font-black uppercase text-gray-300 tracking-wider block">
+                    Option 1: Device GPS
+                  </span>
 
-                {showManualInput && (
-                  <form onSubmit={handleManualLocationSubmit} className="bg-[#111111] border border-white/10 rounded-2xl p-6 mb-8 text-left max-w-lg mx-auto space-y-4">
-                    <h3 className="font-bold text-white text-base">Enter Roadside Location</h3>
-                    <div>
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-                        Highway Milestone / Landmark
-                      </label>
+                  {locStatus === 'active' ? (
+                    <div className="p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/40 text-xs text-emerald-200 flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-1.5 font-bold text-white text-sm">
+                          <MapPin size={16} className="text-emerald-400" />
+                          <span>📍 Location Active</span>
+                        </div>
+                        <span className="text-[11px] text-emerald-300/80">
+                          Accuracy: ±{accuracy || 12}m • Updated: {updatedText}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        className="px-4 py-2 bg-[#FFF174] text-black font-black text-xs rounded-xl hover:bg-yellow-400 cursor-pointer"
+                      >
+                        Use Location →
+                      </button>
+                    </div>
+                  ) : locStatus === 'denied' ? (
+                    <div className="p-3.5 rounded-2xl bg-amber-950/30 border border-amber-500/40 text-xs text-amber-200 space-y-2">
+                      <span className="font-bold block">Location access is turned off.</span>
+                      <span className="text-[11px] block text-amber-300/80">
+                        Enable permissions or search your place / landmark below.
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => requestLocation('Location access is needed to find nearby help.')}
+                        className="px-3 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs"
+                      >
+                        Enable Location
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        requestLocation('Location access is needed to find nearby help.');
+                      }}
+                      className="w-full py-4 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_0_20px_rgba(255,241,116,0.25)]"
+                    >
+                      {locStatus === 'requesting' ? (
+                        <>
+                          <RefreshCw size={16} className="animate-spin" />
+                          <span>Locating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Navigation size={16} />
+                          <span>Use My Location</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+
+                {/* Option 2: Search place / landmark */}
+                <div className="p-4 rounded-3xl bg-[#121212] border border-white/10 space-y-3">
+                  <span className="text-xs font-black uppercase text-gray-300 tracking-wider block">
+                    Option 2: Search place / landmark
+                  </span>
+
+                  <form onSubmit={handleSearchSubmit} className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Search size={15} className="absolute left-3.5 top-3.5 text-gray-400" />
                       <input
                         type="text"
-                        value={manualLandmark}
-                        onChange={e => setManualLandmark(e.target.value)}
-                        placeholder="e.g. NH-10 Corridor, Sevoke Road Milestone 12"
-                        className="w-full px-4 py-3 bg-[#181818] border border-white/10 rounded-xl text-white text-sm focus:border-[#FFF174] focus:outline-none"
+                        value={searchPlace}
+                        onChange={(e) => setSearchPlace(e.target.value)}
+                        placeholder="Search town, road or landmark..."
+                        className="w-full bg-[#181818] border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#FFF174]"
                       />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Latitude</label>
-                        <input
-                          type="text"
-                          value={manualCoords.lat}
-                          onChange={e => setManualCoords(prev => ({ ...prev, lat: e.target.value }))}
-                          placeholder="26.7271"
-                          className="w-full px-4 py-3 bg-[#181818] border border-white/10 rounded-xl text-white text-sm focus:border-[#FFF174] focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Longitude</label>
-                        <input
-                          type="text"
-                          value={manualCoords.lng}
-                          onChange={e => setManualCoords(prev => ({ ...prev, lng: e.target.value }))}
-                          placeholder="88.3953"
-                          className="w-full px-4 py-3 bg-[#181818] border border-white/10 rounded-xl text-white text-sm focus:border-[#FFF174] focus:outline-none"
-                        />
-                      </div>
                     </div>
                     <button
                       type="submit"
-                      className="w-full py-3.5 bg-[#FFF174] text-black font-black text-sm rounded-xl hover:bg-yellow-400 transition-colors uppercase tracking-wider"
+                      disabled={searchPlace.trim().length < 3}
+                      className="px-4 py-2.5 rounded-xl bg-[#FFF174] disabled:opacity-50 text-black font-bold text-xs transition-colors cursor-pointer"
                     >
-                      Confirm Location & Find Providers
+                      Continue
                     </button>
                   </form>
-                )}
-                
-                {!locationError && !showManualInput && (
-                  <div className="flex flex-col items-center gap-4">
-                    <button 
-                      onClick={requestLocation}
-                      disabled={locating}
-                      aria-busy={locating}
-                      className="inline-flex items-center justify-center px-8 py-5 bg-[#FFF174] text-black font-black text-lg rounded-xl hover:bg-yellow-400 hover:scale-105 transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/50 w-full sm:w-auto shadow-[0_0_30px_rgba(255,241,116,0.2)] disabled:opacity-70 disabled:hover:scale-100"
-                    >
-                      {locating ? (
-                        <><Loader2 className="animate-spin mr-3" size={24} /> LOCATING...</>
-                      ) : (
-                        <><Navigation className="mr-3" size={24} /> SHARE GPS LOCATION</>
-                      )}
-                    </button>
 
-                    <button 
-                      type="button"
-                      onClick={() => setShowManualInput(true)}
-                      className="text-sm text-gray-400 hover:text-[#FFF174] underline flex items-center gap-1.5 transition-colors"
-                    >
-                      <Edit3 size={14} /> Enter Location Manually
-                    </button>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {COMMON_LANDMARKS.map((lm) => (
+                      <button
+                        key={lm}
+                        type="button"
+                        onClick={() => handleSelectLandmark(lm)}
+                        className="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 transition-colors cursor-pointer"
+                      >
+                        {lm}
+                      </button>
+                    ))}
                   </div>
-                )}
+                </div>
               </motion.section>
             )}
 
+            {/* STEP 3: SELECT PROVIDER */}
             {step === 3 && (
-              <motion.section key="step3" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-                <h1 className="text-4xl md:text-5xl font-black mb-3 text-gray-50">Select a Provider</h1>
-                <p className="text-gray-300 text-lg mb-8">Choose a mechanic or towing service to dispatch to your location.</p>
+              <motion.section key="step3" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="space-y-4">
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-black text-white">Select a Provider</h1>
+                  <p className="text-gray-400 text-xs sm:text-sm mt-1">Choose a mechanic or towing partner near your location.</p>
+                </div>
                 
                 {providers.length === 0 ? (
                   <div className="text-center py-12">
-                    <Loader2 className="animate-spin text-[#FFF174] mx-auto mb-4" size={40} />
-                    <p className="text-gray-400">Finding nearby mechanics...</p>
+                    <Loader2 className="animate-spin text-[#FFF174] mx-auto mb-3" size={32} />
+                    <p className="text-gray-400 text-xs">Finding available responders...</p>
                   </div>
                 ) : (
-                  <div className="space-y-4 mb-8" role="radiogroup" aria-label="Available providers">
+                  <div className="space-y-3" role="radiogroup" aria-label="Available providers">
                     {providers.map(p => {
                       const isSelected = selectedProvider?.id === p.id;
                       return (
@@ -383,33 +386,42 @@ export function RequestHelpPage() {
                           role="radio"
                           aria-checked={isSelected}
                           onClick={() => setSelectedProvider(p)}
-                          className={`w-full text-left p-6 rounded-2xl border transition-all ${isSelected ? 'border-[#FFF174] bg-[#FFF174]/10' : 'border-white/10 bg-[#111111] hover:border-white/30'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFF174]`}
+                          className={`w-full text-left p-4 rounded-2xl border transition-all cursor-pointer ${isSelected ? 'border-[#FFF174] bg-[#FFF174]/10 shadow-[0_0_20px_rgba(255,241,116,0.15)]' : 'border-white/10 bg-[#121212] hover:border-white/20'}`}
                         >
-                          <div className="flex justify-between items-start mb-4">
+                          <div className="flex justify-between items-start mb-2">
                             <div>
-                              <h3 className="text-xl font-bold flex items-center gap-2 text-gray-50">
+                              <h3 className="text-base font-bold flex items-center gap-1.5 text-white">
                                 {p.name}
-                                {p.verified && <ShieldCheck size={18} className="text-[#22C55E]" aria-label="Verified Provider" />}
+                                {p.isDemo ? (
+                                  <span className="text-[9px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30">
+                                    DEMO
+                                  </span>
+                                ) : (
+                                  <ShieldCheck size={16} className="text-emerald-400" />
+                                )}
                               </h3>
-                              <div className="flex items-center gap-4 text-sm text-gray-300 mt-1">
-                                <span className="flex items-center" aria-label={`Rating: ${p.rating} stars`}><Star size={14} className="text-[#FFF174] mr-1" aria-hidden="true" /> {p.rating}</span>
-                                <span>{p.distance} away</span>
+                              <div className="flex items-center gap-2 text-xs text-gray-400 mt-1">
+                                <span className="flex items-center text-[#FFF174] font-bold"><Star size={12} fill="#FFF174" className="mr-0.5" /> {p.rating}</span>
+                                <span>•</span>
+                                <span className="text-white font-medium">{p.distance || 'Nearby'}</span>
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-sm text-gray-400 uppercase tracking-wide">ETA</p>
-                              <p className="font-bold text-[#FFF174] text-lg">{p.estimatedArrival}</p>
+                              <span className="text-[10px] text-gray-400 uppercase tracking-wider block">ETA</span>
+                              <strong className="text-sm font-bold text-[#FFF174]">{p.estimatedArrival || '15 min'}</strong>
                             </div>
                           </div>
-                          <div className="flex flex-wrap gap-2 mb-4" aria-label="Services offered">
-                            {p.services?.map((s: string) => (
-                              <span key={s} className="px-3 py-1 bg-white/10 text-xs font-bold rounded-lg text-gray-200">{s}</span>
+
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            {p.services?.slice(0, 3).map((s: string) => (
+                              <span key={s} className="px-2 py-0.5 bg-white/5 border border-white/10 text-[10px] rounded text-gray-300">{s}</span>
                             ))}
                           </div>
-                          <div className="flex justify-between items-center pt-4 border-t border-white/10">
-                            <span className="text-sm font-bold text-gray-200">Starts from ₹{p.startingPrice}</span>
-                            <span className={`text-xs font-black tracking-widest uppercase px-3 py-1 rounded-lg ${p.isOpen ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                              {p.isOpen ? 'AVAILABLE' : 'CLOSED'}
+
+                          <div className="flex justify-between items-center pt-2.5 border-t border-white/10 text-xs">
+                            <span className="text-gray-300 font-semibold">Starts from ₹{p.startingPrice || 350}</span>
+                            <span className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                              AVAILABLE
                             </span>
                           </div>
                         </button>
@@ -418,26 +430,22 @@ export function RequestHelpPage() {
                   </div>
                 )}
 
-                <AnimatePresence>
-                  {selectedProvider && (
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}>
-                      <button 
-                        onClick={submitRequest}
-                        disabled={loading || !selectedProvider.isOpen}
-                        aria-busy={loading}
-                        className="w-full flex items-center justify-center py-5 bg-[#FFF174] text-black font-black text-xl rounded-xl hover:bg-yellow-400 transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/50 shadow-[0_0_30px_rgba(255,241,116,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {loading ? (
-                          <><Loader2 className="animate-spin mr-3" size={24} /> REQUESTING...</>
-                        ) : !selectedProvider.isOpen ? (
-                          'PROVIDER IS CLOSED'
-                        ) : (
-                          <>REQUEST {selectedProvider.name.toUpperCase()} <ChevronRight className="ml-2" size={24} /></>
-                        )}
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* SUBMIT BUTTON */}
+                {selectedProvider && (
+                  <div className="pt-2">
+                    <button 
+                      onClick={submitRequest}
+                      disabled={loading}
+                      className="w-full flex items-center justify-center py-4 bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-base uppercase tracking-wider rounded-2xl transition-all shadow-[0_0_25px_rgba(255,241,116,0.3)] active:scale-98 cursor-pointer disabled:opacity-50"
+                    >
+                      {loading ? (
+                        <><Loader2 className="animate-spin mr-2" size={20} /> DISPATCHING...</>
+                      ) : (
+                        <>REQUEST {selectedProvider.name.toUpperCase()} <ChevronRight className="ml-1.5" size={20} /></>
+                      )}
+                    </button>
+                  </div>
+                )}
               </motion.section>
             )}
             

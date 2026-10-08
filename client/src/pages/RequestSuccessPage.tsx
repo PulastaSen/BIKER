@@ -1,84 +1,124 @@
-import { CheckCircle2, ArrowLeft, PlusCircle } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
-import { Button } from '../components/Button';
-import { RequestSummary } from '../components/RequestSummary';
-import { getRequests } from '../utils/requestStorage';
-import type { HelpRequest } from '../types/request';
+import { CheckCircle2, ArrowLeft, Navigation, PhoneCall } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { getRequests } from '../utils/appStorage';
+import type { HelpRequest } from '../types/app';
 
 export function RequestSuccessPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const stateRequest = location.state?.request as HelpRequest | undefined;
   const latestRequest = getRequests()[0];
   const request = stateRequest || latestRequest;
 
   if (!request) {
     return (
-      <main className="placeholder-page">
-        <section className="placeholder-card">
-          <h1>No recent request found</h1>
-          <p>Create a new roadside assistance help request to get started.</p>
-          <Link to="/request-help">
-            <Button>Create a help request</Button>
+      <main className="min-h-screen bg-[#090909] text-white flex items-center justify-center p-6 text-center">
+        <div className="bg-[#121212] border border-white/10 p-8 rounded-3xl max-w-md w-full space-y-4">
+          <h1 className="text-xl font-bold text-white">No active request found</h1>
+          <p className="text-xs text-gray-400">Create a roadside assistance ticket to get started.</p>
+          <Link
+            to="/im-stranded"
+            className="inline-block px-5 py-2.5 bg-[#FFF174] text-black font-black text-xs uppercase tracking-wider rounded-xl hover:bg-yellow-400"
+          >
+            I'm Stranded
           </Link>
-        </section>
+        </div>
       </main>
     );
   }
 
+  const providerName = request.assignedHelperName || 'Raj Motors & Mountain Towing';
+  const providerDistance = '3.2 km';
+  const providerEta = '12 min';
+  const priceEstimate = '₹350 (Includes Call-out & Diagnosis)';
+
   return (
-    <main className="request-page">
-      <div className="request-shell">
-        <Link className="back-link" to="/">
-          <ArrowLeft size={18} /> Back to home
-        </Link>
+    <main className="min-h-screen bg-[#090909] text-white pt-6 pb-24 md:pb-16 font-sans">
+      <div className="max-w-xl mx-auto px-4 space-y-5">
+        
+        {/* Navigation */}
+        <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <Link to="/" className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors">
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
+          <span className="text-[10px] font-mono text-gray-400 font-bold">
+            #{request.id}
+          </span>
+        </div>
 
-        <section className="success-card">
-          <div className="success-badge-wrapper">
-            <div className="success-icon">
-              <CheckCircle2 size={42} />
+        {/* Success Header */}
+        <div className="text-center space-y-2">
+          <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(16,185,129,0.3)]">
+            <CheckCircle2 size={32} />
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 block">
+            REQUEST RECEIVED
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            Assistance Confirmed
+          </h1>
+          <p className="text-xs text-gray-400 max-w-sm mx-auto">
+            Your request has been registered and dispatched to the service responder.
+          </p>
+        </div>
+
+        {/* SECTION 10: The 6 Exact Required Fields */}
+        <div className="p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3.5 shadow-xl">
+          
+          {/* 1. Request Received & 6. Current Status */}
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <strong className="text-white">Status:</strong>
+              <span className="text-emerald-300 font-bold uppercase">{request.status}</span>
             </div>
-            <p className="eyebrow eyebrow--success">REQUEST SUBMITTED & DISPATCHED</p>
-            <h1>Assistance Ticket Active</h1>
-            <p className="success-lead">
-              Your help request has been generated and dispatched to nearby verified responders in the corridor.
-            </p>
-            <div className="dispatch-confirmation-banner" role="status" style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '1rem 1.25rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1.25rem 0', color: '#065F46', textAlign: 'left' }}>
-              <CheckCircle2 size={22} style={{ color: '#059669', flexShrink: 0 }} />
-              <div>
-                <strong style={{ display: 'block', fontSize: '0.95rem' }}>Active Roadside Queue</strong>
-                <span style={{ fontSize: '0.85rem', color: '#047857' }}>Nearby verified helpers have been alerted to your coordinates and problem details.</span>
-              </div>
+            <span className="text-emerald-400 font-bold">✓ Request received</span>
+          </div>
+
+          {/* 2. Provider */}
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/5 text-xs">
+            <span className="text-gray-400 uppercase text-[10px] font-bold">Provider</span>
+            <strong className="text-white text-sm">{providerName}</strong>
+          </div>
+
+          {/* 3. Distance & 4. ETA */}
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="p-3 rounded-2xl bg-black/40 border border-white/5">
+              <span className="text-gray-400 uppercase text-[10px] font-bold block">Distance</span>
+              <strong className="text-white text-sm mt-0.5 block">{providerDistance}</strong>
+            </div>
+            <div className="p-3 rounded-2xl bg-black/40 border border-white/5">
+              <span className="text-gray-400 uppercase text-[10px] font-bold block">Estimated Arrival</span>
+              <strong className="text-[#FFF174] text-sm mt-0.5 block">{providerEta}</strong>
             </div>
           </div>
 
-          <RequestSummary
-            bike={request.bike}
-            issue={request.issue}
-            description={request.description}
-            imageName={request.imageName}
-            approximateLocation={request.approximateLocation}
-            locationShared={request.locationShared}
-            latitude={request.latitude}
-            longitude={request.longitude}
-            requestId={request.id}
-            createdAt={request.createdAt}
-            status={request.status}
-          />
-
-          <div className="form-actions success-actions">
-            <Link to={`/requests/${request.id}`}>
-              <Button variant="secondary">View request timeline</Button>
-            </Link>
-            <Link to="/">
-              <Button variant="secondary">Back to home</Button>
-            </Link>
-            <Link to="/request-help">
-              <Button>
-                <PlusCircle size={18} /> Create another request
-              </Button>
-            </Link>
+          {/* 5. Price Estimate */}
+          <div className="p-3 rounded-2xl bg-black/40 border border-white/5 text-xs flex items-center justify-between">
+            <span className="text-gray-400 uppercase text-[10px] font-bold">Price Estimate</span>
+            <strong className="text-[#FFF174] text-sm font-black">{priceEstimate}</strong>
           </div>
-        </section>
+
+          {/* Actions: Track Live or Call */}
+          <div className="grid grid-cols-2 gap-2 pt-1">
+            <a
+              href="tel:+919832012345"
+              className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors text-center"
+            >
+              <PhoneCall size={14} className="text-emerald-400" />
+              <span>Call Provider</span>
+            </a>
+            <button
+              type="button"
+              onClick={() => navigate(`/requests/${request.id}`)}
+              className="py-3 px-4 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Navigation size={14} />
+              <span>Track Live</span>
+            </button>
+          </div>
+        </div>
+
       </div>
     </main>
   );

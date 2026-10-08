@@ -8,7 +8,6 @@ import { EmptyState } from '../../components/EmptyState';
 import { 
   MapPin, 
   Search, 
-  CheckCircle2, 
   AlertCircle, 
   ChevronRight, 
   PhoneCall, 
@@ -213,42 +212,13 @@ export function HelperDashboardPage() {
       ) : null}
 
       {/* ========================================================
-          3. METRICS / EARNINGS ROW
-          ======================================================== */}
-      <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
-          <span className="text-[10px] font-bold uppercase text-gray-400 block">Nearby Requests</span>
-          <strong className="text-2xl font-black text-white">{availableRequests.length}</strong>
-          <span className="text-[10px] text-gray-500 block">Waiting in service zone</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
-          <span className="text-[10px] font-bold uppercase text-gray-400 block">Completed Assists</span>
-          <strong className="text-2xl font-black text-emerald-400">{profile?.completedAssists || 0}</strong>
-          <span className="text-[10px] text-gray-500 block">Lifetime rescued</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
-          <span className="text-[10px] font-bold uppercase text-gray-400 block">Provider Rating</span>
-          <strong className="text-2xl font-black text-[#FFF174]">★ {profile?.rating?.toFixed(1) || '5.0'}</strong>
-          <span className="text-[10px] text-gray-500 block">Verified rider reviews</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
-          <span className="text-[10px] font-bold uppercase text-gray-400 block">Est. Day Earnings</span>
-          <strong className="text-2xl font-black text-white">₹{((profile?.completedAssists || 1) * 350).toLocaleString()}</strong>
-          <span className="text-[10px] text-emerald-400 block">Daily settlement active</span>
-        </div>
-      </section>
-
-      {/* ========================================================
-          4. NEW REQUESTS FEED (Section 21 Requirement)
+          3. NEW REQUESTS FEED (Section 12: Prioritize NEW REQUEST)
           ======================================================== */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
-              <Search size={16} className="text-[#FFF174]" /> Available Requests Feed
+              <Search size={16} className="text-[#FFF174]" /> New Requests Feed
             </h2>
             <p className="text-xs text-gray-400">Stranded riders nearby requesting dispatch</p>
           </div>
@@ -283,7 +253,7 @@ export function HelperDashboardPage() {
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-400 pt-1">
                     <MapPin size={13} className="text-[#FFF174]" />
-                    <span className="truncate">{req.approximateLocation || 'Siliguri Corridor'}</span>
+                    <span className="truncate">{req.approximateLocation || 'Himalayan Corridor'}</span>
                   </div>
                 </div>
 
@@ -300,7 +270,7 @@ export function HelperDashboardPage() {
                   <button
                     type="button"
                     onClick={() => navigate(`/requests/${req.id}`)}
-                    className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 font-semibold text-xs text-gray-200 transition-colors"
+                    className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 font-semibold text-xs text-gray-200 transition-colors cursor-pointer"
                   >
                     Details
                   </button>
@@ -310,11 +280,42 @@ export function HelperDashboardPage() {
           </div>
         ) : (
           <EmptyState
-            icon={CheckCircle2}
-            title="All Clear in Your Zone"
-            description="There are currently no open stranded rider requests waiting in your service radius."
+            icon={Search}
+            title="No incoming rescue requests"
+            description="When riders near your location request roadside help, they will appear here in real time."
+            actionLabel="Refresh feed"
+            onAction={loadHelperData}
           />
         )}
+      </section>
+
+      {/* ========================================================
+          4. METRICS / EARNINGS ROW
+          ======================================================== */}
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
+          <span className="text-[10px] font-bold uppercase text-gray-400 block">Nearby Requests</span>
+          <strong className="text-2xl font-black text-white">{availableRequests.length}</strong>
+          <span className="text-[10px] text-gray-500 block">Waiting in service zone</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
+          <span className="text-[10px] font-bold uppercase text-gray-400 block">Completed Assists</span>
+          <strong className="text-2xl font-black text-emerald-400">{profile?.completedAssists || 0}</strong>
+          <span className="text-[10px] text-gray-500 block">Lifetime rescued</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
+          <span className="text-[10px] font-bold uppercase text-gray-400 block">Provider Rating</span>
+          <strong className="text-2xl font-black text-[#FFF174]">★ {profile?.rating?.toFixed(1) || '5.0'}</strong>
+          <span className="text-[10px] text-gray-500 block">Verified rider reviews</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-[#121212] border border-white/10 space-y-1">
+          <span className="text-[10px] font-bold uppercase text-gray-400 block">Est. Day Earnings</span>
+          <strong className="text-2xl font-black text-white">₹{((profile?.completedAssists || 1) * 350).toLocaleString()}</strong>
+          <span className="text-[10px] text-emerald-400 block">Daily settlement active</span>
+        </div>
       </section>
     </div>
   );

@@ -89,16 +89,61 @@ export function SaveMyBikePage() {
           </span>
         </div>
 
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 rounded-2xl bg-[#FFF174]/20 border border-[#FFF174]/40 text-[#FFF174] flex items-center justify-center shrink-0">
             <Truck size={24} />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black">SAVE MY BIKE</h1>
+            <h1 className="text-2xl sm:text-3xl font-black">GARAGE & TOWING</h1>
             <p className="text-gray-400 text-xs mt-0.5">
               Damage-free motorcycle towing, flatbeds and workshop transport across Himalayan highways.
             </p>
           </div>
+        </div>
+
+        {/* Contextual Advanced Garage Tools (Section 1 Requirement) */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            type="button"
+            className="px-3 py-1.5 rounded-xl bg-[#FFF174] text-black font-bold text-xs"
+          >
+            Towing & Transport
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/ai-bike-assistant')}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs border border-white/10 transition-colors"
+          >
+            AI Breakdown Diagnostics
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/spare-parts')}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs border border-white/10 transition-colors"
+          >
+            Spare Parts
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/diy-guides')}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs border border-white/10 transition-colors"
+          >
+            DIY Guides
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/pre-ride-check')}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs border border-white/10 transition-colors"
+          >
+            Pre-Ride Check
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/documents')}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-semibold text-xs border border-white/10 transition-colors"
+          >
+            Bike Documents
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
