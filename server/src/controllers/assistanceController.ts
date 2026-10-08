@@ -12,7 +12,19 @@ function generateRequestId() {
 
 export const createAssistanceRequest = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { problemCategory, location, providerId, description, towingDetails, estimatedPrice } = req.body;
+    const { 
+      problemCategory, 
+      helpCategory = 'MECHANICAL', 
+      subcategory, 
+      urgency = 'MEDIUM', 
+      location, 
+      providerId, 
+      description, 
+      towingDetails, 
+      estimatedPrice,
+      medicalDetails,
+      bikeId
+    } = req.body;
     const riderId = req.user?.id || req.body.riderId || 'user-rider-1';
     const requestId = generateRequestId();
 
@@ -39,8 +51,8 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
         description,
         location: {
           type: 'Point',
-          coordinates: location?.coordinates || [88.3953, 26.7271],
-          address: location?.address || 'Siliguri Highway Corridor',
+          coordinates: location?.coordinates || [0, 0],
+          address: location?.address || 'Rider Location',
           accuracyMeters: location?.accuracyMeters || 10
         },
         status: RequestStatus.REQUESTED,
@@ -48,17 +60,31 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
         towingDetails: towingDetails || undefined
       });
 
-      io.emit('assistance:new_request', mockReq);
-      io.emit('assistance:created', mockReq);
-      res.status(201).json({ success: true, data: mockReq });
+      // Augment mock with new fields
+      const fullMock = {
+        ...mockReq,
+        helpCategory,
+        subcategory,
+        urgency,
+        medicalDetails,
+        bikeId
+      };
+
+      io.emit('assistance:new_request', fullMock);
+      io.emit('assistance:created', fullMock);
+      res.status(201).json({ success: true, data: fullMock });
       return;
     }
 
     const incident = new AssistanceRequest({
       requestId,
       riderId,
+      bikeId,
       providerId: providerId || undefined,
-      problemCategory,
+      problemCategory: problemCategory || helpCategory,
+      helpCategory,
+      subcategory,
+      urgency,
       description,
       location: {
         type: 'Point',
@@ -66,6 +92,7 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
         address: location.address,
         accuracyMeters: location.accuracyMeters
       },
+      medicalDetails,
       status: RequestStatus.REQUESTED,
       estimatedPrice: finalPricing,
       towingDetails,
@@ -196,9 +223,20 @@ export const getNearbyProviders = async (req: Request, res: Response): Promise<v
     }
 
     const isMongoConnected = mongoose.connection.readyState === 1;
+    const categoryFilter = (req.query.category as string) || (req.query.helpCategory as string) || 'ALL';
 
     if (!isMongoConnected) {
-      const mockProviders = mockStore.getProviders();
+      let mockProviders = mockStore.getProviders();
+      if (categoryFilter && categoryFilter !== 'ALL' && categoryFilter !== 'BOTH') {
+        const lower = categoryFilter.toLowerCase();
+        mockProviders = mockProviders.filter((p) => {
+          if (lower === 'mechanical') return p.services.some(s => s.toLowerCase().includes('puncture') || s.toLowerCase().includes('engine') || s.toLowerCase().includes('chain') || s.toLowerCase().includes('mechanic'));
+          if (lower === 'towing' || lower === 'recovery') return p.services.some(s => s.toLowerCase().includes('tow'));
+          if (lower === 'battery') return p.services.some(s => s.toLowerCase().includes('battery'));
+          if (lower === 'fuel') return p.services.some(s => s.toLowerCase().includes('fuel'));
+          return true;
+        });
+      }
       res.status(200).json({ success: true, data: mockProviders });
       return;
     }

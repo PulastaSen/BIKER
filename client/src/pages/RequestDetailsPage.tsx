@@ -7,7 +7,6 @@ import {
   Clock, 
   PhoneCall, 
   MessageSquare, 
-  Navigation, 
   FileText, 
   AlertCircle,
   X,
@@ -24,6 +23,7 @@ import type { ServiceReceipt } from '../types/app';
 
 import { ActiveIncidentHUD } from '../components/ActiveIncidentHUD';
 import { updateRequestStatus as updateLocalRequestStatus } from '../utils/appStorage';
+import { EmergencyMap } from '../components/EmergencyMap';
 
 const STATUS_FLOW = [
   { key: 'REQUESTED', label: 'REQUEST RECEIVED' },
@@ -82,6 +82,18 @@ export function RequestDetailsPage() {
   const [improvements, setImprovements] = useState<string[]>([]);
   const [satisfactionSubmitted, setSatisfactionSubmitted] = useState(false);
   const [issueText, setIssueText] = useState('');
+
+  // Section 13 & 14: Realtime Helper Telemetry
+  const [liveHelperPos, setLiveHelperPos] = useState<{
+    lat: number;
+    lng: number;
+    heading?: number;
+    speed?: number;
+    timestamp?: number;
+    etaMinutes?: number;
+  } | null>(null);
+  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+  const [lastTelemetryUpdate, setLastTelemetryUpdate] = useState<string | null>(null);
 
   const fetchRequest = useCallback(async () => {
     if (!id) return;
@@ -147,13 +159,41 @@ export function RequestDetailsPage() {
     
     try {
       const socket = getSocket();
+      socket.emit('join_incident', id);
+
       const eventName = `assistance:updated:${id}`;
       socket.on(eventName, (updatedRequest) => {
         setRequest(updatedRequest);
       });
 
+      // Section 14: Realtime helper GPS updates via authenticated Socket.IO
+      const handleLocation = (data: { incidentId: string; providerId: string; latitude: number; longitude: number; heading?: number; speed?: number; timestamp?: number }) => {
+        if (data.latitude && data.longitude) {
+          setLiveHelperPos({
+            lat: data.latitude,
+            lng: data.longitude,
+            heading: data.heading,
+            speed: data.speed,
+            timestamp: data.timestamp,
+            etaMinutes: 8
+          });
+          setLastTelemetryUpdate('Just now');
+        }
+      };
+
+      const handleIncidentStatus = (data: { incidentId: string; status: string }) => {
+        if (data.status) {
+          setRequest(prev => prev ? { ...prev, status: data.status } : null);
+        }
+      };
+
+      socket.on('provider:location:update', handleLocation);
+      socket.on('incident:status:update', handleIncidentStatus);
+
       return () => {
         socket.off(eventName);
+        socket.off('provider:location:update', handleLocation);
+        socket.off('incident:status:update', handleIncidentStatus);
       };
     } catch {
       // Offline socket ignore
@@ -236,12 +276,6 @@ export function RequestDetailsPage() {
   }
 
   const currentIndex = STATUS_FLOW.findIndex(s => s.key === request.status);
-
-  const mapQuery = (typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates.length === 2 && request.location.coordinates[0] !== 0)
-    ? `${request.location.coordinates[1]},${request.location.coordinates[0]}`
-    : typeof request.location === 'string' && request.location
-    ? encodeURIComponent(request.location)
-    : encodeURIComponent('Roadside Assistance Location');
 
   return (
     <div className="min-h-screen bg-[#090D14] text-white pt-20 pb-20 font-sans selection:bg-[#FFF174] selection:text-black">
@@ -337,62 +371,132 @@ export function RequestDetailsPage() {
           {/* Details, Provider & Transparent Pricing */}
           <div className="lg:col-span-2 space-y-5">
             
-            {/* Live Map Frame */}
-            <div className="h-60 rounded-3xl bg-[#111622] border border-white/10 relative overflow-hidden">
-              <iframe
-                title="Incident Location Map"
-                className="w-full h-full border-0"
-                loading="lazy"
-                src={`https://maps.google.com/maps?q=${mapQuery}&z=14&output=embed`}
-              />
-            </div>
+            {/* SECTION 39 & 45: ACTIVE RESCUE HUD - "WHO IS COMING TO HELP ME?" */}
+            <div className="p-5 rounded-3xl bg-gradient-to-r from-[#141A28] to-[#111622] border-2 border-[#FFF174]/50 shadow-[0_0_30px_rgba(255,241,116,0.12)] space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  🚨 HELP IS ON THE WAY
+                </span>
+                <span className="text-[11px] font-black text-[#FFF174] bg-[#FFF174]/15 px-2.5 py-0.5 rounded-full border border-[#FFF174]/30">
+                  ETA {request.eta || '8 min'}
+                </span>
+              </div>
 
-            {/* Provider Info Card (Section 2 & 4 Trust Indicators) */}
-            <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 space-y-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block">
-                    ASSIGNED SERVICE PROVIDER
-                  </span>
-                  <h4 className="text-xl font-bold flex items-center gap-2 mt-0.5">
-                    {request.provider?.name || 'Raj Motors & Mountain Towing'}
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                      <ShieldCheck size={14} /> Verified Provider
-                    </span>
-                  </h4>
-                  <div className="flex items-center gap-3 text-xs text-gray-400 mt-1">
-                    <span className="flex items-center gap-1 text-[#FFF174] font-bold">
-                      <Star size={14} fill="#FFF174" /> {request.provider?.rating || 4.8}
-                    </span>
-                    <span>•</span>
-                    <span>{request.provider?.distance || '3.2 km away'}</span>
-                    <span>•</span>
-                    <strong className="text-white">ETA {request.eta || '12 minutes'}</strong>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-[#FFF174] text-black font-black flex items-center justify-center text-xl shrink-0 shadow-md">
+                    👨🔧
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-white flex items-center gap-2">
+                      {request.provider?.name || 'Raj Motors & Mountain Towing'}
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                        <ShieldCheck size={12} /> Verified
+                      </span>
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-2.5 text-xs text-gray-400 mt-0.5">
+                      <span className="text-[#FFF174] font-bold">🔧 {request.problemCategory}</span>
+                      <span>•</span>
+                      <span>📍 {request.provider?.distance || '2.4 km away'}</span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1 text-yellow-300 font-bold">
+                        <Star size={12} fill="#FFF174" /> {request.provider?.rating || 4.8}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons: [Call] [Chat] [Track] */}
-              <div className="grid grid-cols-3 gap-2.5 pt-2">
+              {/* Real-time telemetry notification */}
+              <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 text-[11px] text-gray-300 flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  Live GPS Telemetry: {lastTelemetryUpdate ? 'Transmitting active updates' : 'Awaiting helper device stream'}
+                </span>
+                <span className="text-[10px] text-gray-400 font-mono">
+                  {liveHelperPos ? `${liveHelperPos.lat.toFixed(4)}, ${liveHelperPos.lng.toFixed(4)}` : 'Corridor GPS'}
+                </span>
+              </div>
+            </div>
+
+            {/* SECTION 10 & 13: MOTOASSIST EMERGENCY MAP */}
+            <div className="space-y-2">
+              <EmergencyMap
+                riderCoords={
+                  typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates.length === 2 && request.location.coordinates[0] !== 0
+                    ? { lat: request.location.coordinates[1], lng: request.location.coordinates[0] }
+                    : { lat: 26.7271, lng: 88.4230 }
+                }
+                activeHelperCoords={
+                  liveHelperPos
+                    ? {
+                        lat: liveHelperPos.lat,
+                        lng: liveHelperPos.lng,
+                        name: request.provider?.name || 'Assigned Helper',
+                        phone: request.provider?.phone,
+                        etaMinutes: liveHelperPos.etaMinutes || 8
+                      }
+                    : request.status === 'ACCEPTED' || request.status === 'EN_ROUTE'
+                    ? {
+                        lat: (typeof request.location === 'object' && request.location?.coordinates ? request.location.coordinates[1] : 26.7271) + 0.012,
+                        lng: (typeof request.location === 'object' && request.location?.coordinates ? request.location.coordinates[0] : 88.4230) + 0.009,
+                        name: request.provider?.name || 'Raj Motors',
+                        phone: request.provider?.phone,
+                        etaMinutes: 10
+                      }
+                    : undefined
+                }
+                height="320px"
+                initialFilter="ALL"
+              />
+            </div>
+
+            {/* Provider Actions & WhatsApp Emergency Sharing (Section 18 & 19) */}
+            <div className="p-5 rounded-3xl bg-[#111622] border border-white/10 space-y-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <a 
                   href={`tel:${request.provider?.phone || '+919832012345'}`}
-                  className="py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+                  className="py-3 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
                 >
-                  <PhoneCall size={16} /> Call
+                  <PhoneCall size={15} /> Call Helper
                 </a>
                 <button
                   type="button"
-                  onClick={() => alert(`Starting in-app secure masked communication with ${request.provider?.name || 'Provider'}`)}
-                  className="py-3 px-4 bg-white/10 hover:bg-white/15 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95"
+                  onClick={() => alert(`Starting secure masked chat with ${request.provider?.name || 'Provider'}`)}
+                  className="py-3 px-3 bg-white/10 hover:bg-white/15 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
                 >
-                  <MessageSquare size={16} /> Chat
+                  <MessageSquare size={15} /> Chat
                 </button>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(
+                    `MOTOASSIST EMERGENCY ALERT\n\nRider: Pulasta Sen\nSituation: ${request.problemCategory} Assistance\nLocation: https://maps.google.com/?q=${
+                      typeof request.location === 'object' && request.location?.coordinates ? `${request.location.coordinates[1]},${request.location.coordinates[0]}` : '26.7271,88.4230'
+                    }\nTime: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\nMotoAssist status: Helper en route.`
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="py-3 px-3 bg-emerald-700/40 hover:bg-emerald-700/60 text-emerald-200 font-bold text-xs rounded-2xl border border-emerald-500/40 flex items-center justify-center gap-1.5 transition-all active:scale-95"
+                >
+                  <MessageSquare size={15} /> Share WhatsApp
+                </a>
+                <a
+                  href="tel:112"
+                  className="py-3 px-3 bg-red-600/40 hover:bg-red-600/60 text-red-200 font-bold text-xs rounded-2xl border border-red-500/40 flex items-center justify-center gap-1.5 transition-all active:scale-95"
+                >
+                  <PhoneCall size={15} /> Dial 112
+                </a>
+              </div>
+
+              {/* Transparent WhatsApp & Location Architecture Note */}
+              <div className="pt-1 flex items-center justify-between text-[10px] text-gray-400">
+                <span>📍 Real-time GPS location active</span>
                 <button
                   type="button"
-                  onClick={() => alert('Live provider telemetry tracking active.')}
-                  className="py-3 px-4 bg-blue-600/30 hover:bg-blue-600/40 text-blue-300 font-bold text-xs rounded-2xl border border-blue-500/40 flex items-center justify-center gap-2 transition-all active:scale-95"
+                  onClick={() => setShowWhatsAppModal(true)}
+                  className="text-[#FFF174] hover:underline cursor-pointer"
                 >
-                  <Navigation size={16} /> Track
+                  WhatsApp live-location guide →
                 </button>
               </div>
             </div>
@@ -729,6 +833,69 @@ export function RequestDetailsPage() {
                 className="py-2.5 px-4 bg-white/10 text-xs font-bold text-white rounded-xl"
               >
                 Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SECTION 18 & 19: WHATSAPP EMERGENCY SHARING & LIVE LOCATION GUIDE MODAL */}
+      {showWhatsAppModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#10141D] border border-emerald-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2">
+                <MessageSquare size={20} className="text-emerald-400" />
+                <h3 className="text-base font-black text-white">WHATSAPP SAFETY DISPATCH</h3>
+              </div>
+              <button onClick={() => setShowWhatsAppModal(false)} className="text-gray-400 hover:text-white cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs text-gray-300">
+              <div className="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200">
+                <strong className="block font-bold text-white mb-1">Architecture Disclosure:</strong>
+                <span>
+                  MotoAssist provides one-tap verified Google Maps emergency snapshot links. True continuous WhatsApp Live Location requires triggering from within WhatsApp's native client.
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                <strong className="text-white block">Step-by-step for continuous WhatsApp Live Tracking:</strong>
+                <ol className="list-decimal list-inside space-y-1 text-gray-400">
+                  <li>Tap the green button below to send your current emergency snapshot.</li>
+                  <li>In the opened WhatsApp chat, tap the <strong className="text-white">+ or Paperclip</strong> icon.</li>
+                  <li>Select <strong className="text-white">Location → Share Live Location</strong>.</li>
+                  <li>Choose duration (1 Hour / 8 Hours) for verified background sharing.</li>
+                </ol>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-black/50 border border-white/10 font-mono text-[11px] text-gray-400">
+                Status: One-tap Emergency Link ready • Automated server delivery awaiting confirmed webhook
+              </div>
+            </div>
+
+            <div className="pt-2 flex gap-2">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(
+                  `MOTOASSIST EMERGENCY ALERT\n\nRider: Pulasta Sen\nSituation: ${request.problemCategory} Assistance\nLocation: https://maps.google.com/?q=${
+                    typeof request.location === 'object' && request.location?.coordinates ? `${request.location.coordinates[1]},${request.location.coordinates[0]}` : '26.7271,88.4230'
+                  }\nTime: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\nMotoAssist status: Helper en route.`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setShowWhatsAppModal(false)}
+                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-md transition-all"
+              >
+                <MessageSquare size={16} /> Open WhatsApp Chat
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowWhatsAppModal(false)}
+                className="py-3 px-4 bg-white/10 text-white font-bold text-xs rounded-xl hover:bg-white/15"
+              >
+                Close
               </button>
             </div>
           </div>

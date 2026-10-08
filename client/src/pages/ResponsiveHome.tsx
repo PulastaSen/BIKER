@@ -21,6 +21,9 @@ import { useUserLocation } from '../hooks/useUserLocation';
 import { ActiveIncidentHUD } from '../components/ActiveIncidentHUD';
 import { FeelingUnsafeModal } from '../components/FeelingUnsafeModal';
 import { MedicalIdQuickModal } from '../components/MedicalIdQuickModal';
+import { CrashDetectionModal } from '../components/CrashDetectionModal';
+import { crashDetector } from '../services/crashDetection';
+import type { CrashDetectionEvent } from '../types/app';
 
 export function ResponsiveHome() {
   const navigate = useNavigate();
@@ -36,6 +39,9 @@ export function ResponsiveHome() {
   const [primaryBike, setPrimaryBike] = useState<Bike | null>(null);
   const [familyNames, setFamilyNames] = useState<string>('Mom • Dad • Partner');
 
+  // Section 22-25: Crash Detection state & listeners
+  const [detectedCrashEvent, setDetectedCrashEvent] = useState<CrashDetectionEvent | null>(null);
+
   // Real Geolocation hook without silent fallbacks
   const {
     accuracy,
@@ -44,6 +50,21 @@ export function ResponsiveHome() {
     setSearchLocation,
     address,
   } = useUserLocation(true);
+
+  useEffect(() => {
+    // Start active motion sensor monitoring for potential crash events
+    crashDetector.startMonitoring();
+    const unsubCrash = crashDetector.addListener((event) => {
+      // Trigger confirmation countdown for medium or high confidence events
+      if (event.confidence === 'HIGH' || event.confidence === 'MEDIUM') {
+        setDetectedCrashEvent(event);
+      }
+    });
+
+    return () => {
+      unsubCrash();
+    };
+  }, []);
 
   useEffect(() => {
     // Check if user has active help requests
@@ -101,6 +122,16 @@ export function ResponsiveHome() {
   return (
     <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans relative selection:bg-[#FFF174] selection:text-black pb-24 md:pb-16">
       
+      {/* SECTION 22-25: Crash Detection Modal (10s confirmation dial) */}
+      <CrashDetectionModal
+        event={detectedCrashEvent}
+        onDismiss={() => setDetectedCrashEvent(null)}
+        onEscalateSOS={() => {
+          setDetectedCrashEvent(null);
+          navigate('/sos');
+        }}
+      />
+
       {/* Feeling Unsafe Modal Flow */}
       <FeelingUnsafeModal
         isOpen={showUnsafeModal}

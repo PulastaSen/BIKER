@@ -8,44 +8,76 @@ import {
   ArrowLeft, 
   Save, 
   Plus, 
-  Trash2,
-  Check,
-  ShieldAlert
+  Trash2, 
+  Check, 
+  ShieldAlert,
+  FileText,
+  Lock,
+  Calendar,
+  ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getBikes, saveBike, addUser } from '../utils/appStorage';
-import { fetchMedicalProfile, saveMedicalProfile, fetchFamilyCircle, addFamilyMember, removeFamilyMember } from '../services/ecosystemApi';
-import type { Bike, MedicalProfile, FamilyMember } from '../types/app';
+import { 
+  fetchMedicalProfile, 
+  saveMedicalProfile, 
+  fetchFamilyCircle, 
+  addFamilyMember, 
+  removeFamilyMember,
+  fetchBikeDocuments,
+  addBikeDocument,
+  deleteBikeDocument
+} from '../services/ecosystemApi';
+import type { FamilyMember, RiderDocument, RiderDocumentType } from '../types/app';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'UNKNOWN'] as const;
+
+const DOCUMENT_TYPE_LABELS: Record<RiderDocumentType, { label: string; primary?: boolean }> = {
+  DRIVING_LICENSE: { label: 'Driving Licence', primary: true },
+  RC: { label: 'Vehicle Registration (RC)' },
+  INSURANCE: { label: 'Motorcycle Insurance' },
+  PUC: { label: 'Pollution Under Control (PUC)' },
+  GOVT_ID: { label: 'Government ID Proof' }
+};
 
 export function SafetyProfilePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Personal
+  // 1. Personal
   const [name, setName] = useState(user?.name || 'Pulasta Sen');
   const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
+  const [email, setEmail] = useState(user?.email || 'pulasta@example.com');
 
-  // Bike
+  // 2. Bike
   const [bikeBrand, setBikeBrand] = useState('KTM');
   const [bikeModel, setBikeModel] = useState('Adventure 250');
+  const [bikeYear, setBikeYear] = useState('2023');
   const [bikeReg, setBikeReg] = useState('WB-74-AX-1024');
 
-  // Medical
+  // 3. Medical
   const [bloodGroup, setBloodGroup] = useState<typeof BLOOD_GROUPS[number]>('B+');
   const [allergies, setAllergies] = useState('None declared');
   const [criticalInfo, setCriticalInfo] = useState('No pre-existing critical conditions');
+  const [medications, setMedications] = useState('None');
 
-  // Family Contacts
+  // 4. Family Contacts
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [newContactRel, setNewContactRel] = useState<'PARENT' | 'PARTNER' | 'FRIEND' | 'SIBLING'>('PARENT');
 
-  // Safety Preferences
+  // 5. Rider Documents
+  const [documents, setDocuments] = useState<RiderDocument[]>([]);
+  const [newDocType, setNewDocType] = useState<RiderDocumentType>('DRIVING_LICENSE');
+  const [newDocNumber, setNewDocNumber] = useState('');
+  const [newDocIssuer, setNewDocIssuer] = useState('');
+  const [newDocExpiry, setNewDocExpiry] = useState('');
+
+  // 6. Safety Preferences
   const [shareLocationAuto, setShareLocationAuto] = useState(true);
   const [autoEscalate112, setAutoEscalate112] = useState(false);
+  const [commChannel, setCommChannel] = useState<'WHATSAPP' | 'SMS' | 'PHONE'>('WHATSAPP');
 
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -57,6 +89,7 @@ export function SafetyProfilePage() {
       setBikeBrand(bikes[0].brand);
       setBikeModel(bikes[0].model);
       setBikeReg(bikes[0].registrationNumber);
+      if (bikes[0].year) setBikeYear(String(bikes[0].year));
     }
 
     // Load medical
@@ -65,6 +98,7 @@ export function SafetyProfilePage() {
         if (med.bloodGroup) setBloodGroup(med.bloodGroup as typeof BLOOD_GROUPS[number]);
         if (med.allergies && med.allergies.length > 0) setAllergies(med.allergies.join(', '));
         if (med.emergencyNotes) setCriticalInfo(med.emergencyNotes);
+        if (med.medications && med.medications.length > 0) setMedications(med.medications.join(', '));
       }
     });
 
@@ -73,7 +107,6 @@ export function SafetyProfilePage() {
       if (members && members.length > 0) {
         setFamilyMembers(members);
       } else {
-        // Default initial circle if empty
         setFamilyMembers([
           {
             id: 'fam-1',
@@ -112,6 +145,48 @@ export function SafetyProfilePage() {
       }
     });
 
+    // Load documents
+    fetchBikeDocuments('rider-personal').then((docs) => {
+      if (docs && docs.length > 0) {
+        setDocuments(docs as any);
+      } else {
+        // Initial verified default documents
+        setDocuments([
+          {
+            id: 'doc-dl-1',
+            documentId: 'DOC-DL-001',
+            docType: 'DRIVING_LICENSE',
+            documentNumber: 'WB-24-2018-009124',
+            issuer: 'Siliguri RTO',
+            expiryDate: '2038-06-15',
+            isVerified: true,
+            verificationStatus: 'VERIFIED'
+          },
+          {
+            id: 'doc-rc-2',
+            documentId: 'DOC-RC-002',
+            docType: 'RC',
+            documentNumber: 'WB-74-AX-1024',
+            issuer: 'Transport Dept West Bengal',
+            expiryDate: '2037-11-20',
+            isVerified: true,
+            verificationStatus: 'VERIFIED'
+          },
+          {
+            id: 'doc-ins-3',
+            documentId: 'DOC-INS-003',
+            docType: 'INSURANCE',
+            documentNumber: 'BA-2024-MOT-9912',
+            issuer: 'Bajaj Allianz General Insurance',
+            expiryDate: new Date(Date.now() + 24 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            isVerified: true,
+            verificationStatus: 'VERIFIED',
+            isExpiringSoon: true
+          }
+        ]);
+      }
+    });
+
     // Load safety preferences
     const prefs = localStorage.getItem('safety_profile_prefs');
     if (prefs) {
@@ -119,6 +194,7 @@ export function SafetyProfilePage() {
         const parsed = JSON.parse(prefs);
         if (parsed.shareLocationAuto !== undefined) setShareLocationAuto(parsed.shareLocationAuto);
         if (parsed.autoEscalate112 !== undefined) setAutoEscalate112(parsed.autoEscalate112);
+        if (parsed.commChannel) setCommChannel(parsed.commChannel);
       } catch {
         // ignore
       }
@@ -163,66 +239,108 @@ export function SafetyProfilePage() {
     setFamilyMembers((prev) => prev.filter((m) => m.id !== id));
   };
 
+  // Document Management (Section 2)
+  const handleAddDocument = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newDocNumber.trim()) return;
+
+    const res = await addBikeDocument({
+      bikeId: 'rider-personal',
+      docType: newDocType,
+      documentNumber: newDocNumber.trim(),
+      issuer: newDocIssuer.trim() || undefined,
+      expiryDate: newDocExpiry || undefined
+    });
+
+    const newDocObj: RiderDocument = {
+      id: res?.documentId || `doc-${Date.now()}`,
+      documentId: res?.documentId || `DOC-${Date.now()}`,
+      docType: newDocType,
+      documentNumber: newDocNumber.trim(),
+      issuer: newDocIssuer.trim() || 'RTO/Insurer',
+      expiryDate: newDocExpiry || undefined,
+      verificationStatus: 'PENDING_REVIEW',
+      isVerified: false
+    };
+
+    setDocuments((prev) => [...prev, newDocObj]);
+    setNewDocNumber('');
+    setNewDocIssuer('');
+    setNewDocExpiry('');
+  };
+
+  const handleDeleteDocument = async (id: string) => {
+    await deleteBikeDocument(id);
+    setDocuments((prev) => prev.filter((d) => d.id !== id && d.documentId !== id));
+  };
+
   const handleSaveAll = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
-    // 1. Personal
-    if (user) {
-      addUser({ ...user, name, phone });
+    try {
+      // 1. Personal & Bike
+      addUser({
+        id: user?.id || 'user-rider-1',
+        name,
+        email,
+        phone,
+        role: 'RIDER',
+        createdAt: user?.createdAt || new Date().toISOString()
+      });
+
+      saveBike({
+        id: 'primary-bike',
+        userId: user?.id || 'user-rider-1',
+        brand: bikeBrand,
+        model: bikeModel,
+        registrationNumber: bikeReg,
+        year: parseInt(bikeYear, 10) || 2023,
+        fuelType: 'PETROL',
+        isPrimary: true
+      });
+
+      // 2. Medical
+      await saveMedicalProfile({
+        bloodGroup,
+        allergies: allergies.split(',').map((s) => s.trim()).filter(Boolean),
+        medicalConditions: criticalInfo.split(',').map((s) => s.trim()).filter(Boolean),
+        medications: medications.split(',').map((s) => s.trim()).filter(Boolean),
+        emergencyNotes: criticalInfo
+      });
+
+      // 3. Safety Prefs
+      localStorage.setItem('safety_profile_prefs', JSON.stringify({
+        shareLocationAuto,
+        autoEscalate112,
+        commChannel
+      }));
+
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 4000);
+    } catch (err) {
+      console.error('Error saving profile:', err);
+    } finally {
+      setSaving(false);
     }
-
-    // 2. Bike
-    const bikes = getBikes();
-    const primaryBike: Bike = bikes.length > 0
-      ? { ...bikes[0], brand: bikeBrand, model: bikeModel, registrationNumber: bikeReg }
-      : {
-          id: 'bike-primary',
-          userId: user?.id || 'guest-rider',
-          brand: bikeBrand,
-          model: bikeModel,
-          registrationNumber: bikeReg,
-          year: 2023,
-          fuelType: 'PETROL',
-          isPrimary: true
-        };
-    saveBike(primaryBike);
-
-    // 3. Medical
-    const medPayload: Partial<MedicalProfile> = {
-      fullName: name,
-      bloodGroup,
-      allergies: allergies.split(',').map((s) => s.trim()).filter(Boolean),
-      emergencyNotes: criticalInfo
-    };
-    await saveMedicalProfile(medPayload);
-
-    // 4. Preferences
-    localStorage.setItem(
-      'safety_profile_prefs',
-      JSON.stringify({ shareLocationAuto, autoEscalate112 })
-    );
-
-    setSaving(false);
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 3000);
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white pt-4 pb-24 md:pb-16 font-sans selection:bg-[#FFF174] selection:text-black">
-      <div className="container mx-auto px-4 max-w-xl space-y-5">
+    <div className="min-h-screen bg-[#090909] text-white pt-6 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+      <div className="max-w-xl mx-auto px-4 sm:px-6 space-y-6">
         
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
+        {/* TOP BAR */}
+        <div className="flex items-center justify-between">
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors cursor-pointer"
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
           >
-            <ArrowLeft size={16} /> Back to Home
+            <ArrowLeft size={16} />
+            <span>Home</span>
           </button>
-          <span className="text-xs font-bold text-[#FFF174] bg-[#FFF174]/10 px-2.5 py-0.5 rounded-full border border-[#FFF174]/20">
-            ONE-TIME CONFIGURATION
+          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-1 rounded-full">
+            ● Setup Once • Auto-Emergency
           </span>
         </div>
 
@@ -253,7 +371,7 @@ export function SafetyProfilePage() {
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-gray-400 mb-1 font-semibold">Rider Name</label>
+                <label className="block text-gray-400 mb-1 font-semibold">Full Name</label>
                 <input
                   type="text"
                   value={name}
@@ -263,15 +381,26 @@ export function SafetyProfilePage() {
                 />
               </div>
 
-              <div>
-                <label className="block text-gray-400 mb-1 font-semibold">Phone Number</label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
-                  required
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-gray-400 mb-1 font-semibold">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1 font-semibold">Email Address</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                  />
+                </div>
               </div>
             </div>
           </section>
@@ -283,15 +412,14 @@ export function SafetyProfilePage() {
               <h2 className="text-sm font-bold uppercase tracking-wider">2. My Motorcycle</h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-3 gap-2.5 text-xs">
               <div>
                 <label className="block text-gray-400 mb-1 font-semibold">Brand</label>
                 <input
                   type="text"
                   value={bikeBrand}
                   onChange={(e) => setBikeBrand(e.target.value)}
-                  placeholder="e.g. KTM, Royal Enfield"
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
                   required
                 />
               </div>
@@ -302,23 +430,32 @@ export function SafetyProfilePage() {
                   type="text"
                   value={bikeModel}
                   onChange={(e) => setBikeModel(e.target.value)}
-                  placeholder="e.g. Adventure 250"
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
                   required
                 />
               </div>
 
-              <div className="col-span-2">
-                <label className="block text-gray-400 mb-1 font-semibold">Registration Number</label>
+              <div>
+                <label className="block text-gray-400 mb-1 font-semibold">Year</label>
                 <input
                   type="text"
-                  value={bikeReg}
-                  onChange={(e) => setBikeReg(e.target.value)}
-                  placeholder="e.g. WB-74-AX-1024"
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
-                  required
+                  value={bikeYear}
+                  onChange={(e) => setBikeYear(e.target.value)}
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
                 />
               </div>
+            </div>
+
+            <div className="text-xs">
+              <label className="block text-gray-400 mb-1 font-semibold">Vehicle Plate / Registration</label>
+              <input
+                type="text"
+                value={bikeReg}
+                onChange={(e) => setBikeReg(e.target.value)}
+                placeholder="e.g. WB-74-AX-1024"
+                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                required
+              />
             </div>
           </section>
 
@@ -327,13 +464,13 @@ export function SafetyProfilePage() {
             <div className="flex items-center justify-between text-white">
               <div className="flex items-center gap-2">
                 <Users size={18} className="text-blue-400" />
-                <h2 className="text-sm font-bold uppercase tracking-wider">3. Emergency Contacts</h2>
+                <h2 className="text-sm font-bold uppercase tracking-wider">3. Emergency Contacts (Safety Circle)</h2>
               </div>
-              <span className="text-[10px] text-gray-400">External SMS / WhatsApp</span>
+              <span className="text-[10px] text-gray-400">External WhatsApp / SMS</span>
             </div>
 
             <p className="text-[11px] text-gray-400">
-              Family members do NOT need the MotoAssist app to receive emergency alerts.
+              Family members do NOT need the MotoAssist app to receive alerts.
             </p>
 
             <div className="space-y-2">
@@ -404,13 +541,13 @@ export function SafetyProfilePage() {
               <h2 className="text-sm font-bold uppercase tracking-wider">4. Medical Emergency ID</h2>
             </div>
             <p className="text-[11px] text-gray-400">
-              Only disclosed during active emergencies for first responders. Not exposed publicly.
+              Only disclosed during active emergencies to verified first responders. Never exposed publicly or to mechanics.
             </p>
 
             <div className="space-y-3 text-xs">
               <div>
                 <label className="block text-gray-400 mb-1 font-semibold">Blood Group</label>
-                <div className="grid grid-cols-4 gap-1.5">
+                <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
                   {BLOOD_GROUPS.map((bg) => (
                     <button
                       key={bg}
@@ -449,14 +586,144 @@ export function SafetyProfilePage() {
                   className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
                 />
               </div>
+
+              <div>
+                <label className="block text-gray-400 mb-1 font-semibold">Current Medications</label>
+                <input
+                  type="text"
+                  value={medications}
+                  onChange={(e) => setMedications(e.target.value)}
+                  placeholder="e.g. Inhaler, Insulin, None"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                />
+              </div>
             </div>
           </section>
 
-          {/* 5. SAFETY & ESCALATION PREFERENCES */}
+          {/* 5. RIDER VERIFICATION & DOCUMENTS (Section 2 & 42) */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3.5">
+            <div className="flex items-center justify-between text-white">
+              <div className="flex items-center gap-2">
+                <FileText size={18} className="text-cyan-400" />
+                <h2 className="text-sm font-bold uppercase tracking-wider">5. Rider Verification & Documents</h2>
+              </div>
+              <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                <Lock size={12} className="text-emerald-400" /> Private & Protected
+              </span>
+            </div>
+
+            {/* Privacy Guarantee Notice (Section 2 & 42) */}
+            <div className="p-3 rounded-2xl bg-cyan-950/20 border border-cyan-500/20 text-cyan-200 text-xs flex items-start gap-2.5">
+              <ShieldCheck size={16} className="text-cyan-400 shrink-0 mt-0.5" />
+              <p className="leading-relaxed text-[11px]">
+                <strong>Document Privacy:</strong> Identity documents are never publicly visible, never stored in localStorage, and never accessible by roadside mechanics. Access is strictly audited.
+              </p>
+            </div>
+
+            {/* Document List */}
+            <div className="space-y-2">
+              {documents.map((doc) => {
+                const isExpiring = doc.isExpiringSoon || (doc.expiryDate && new Date(doc.expiryDate).getTime() - Date.now() < 30 * 24 * 60 * 60 * 1000);
+                return (
+                  <div
+                    key={doc.id || doc.documentId}
+                    className="p-3 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between text-xs"
+                  >
+                    <div className="space-y-0.5 min-w-0 pr-2">
+                      <div className="flex items-center gap-2">
+                        <strong className="text-white block font-bold truncate">
+                          {DOCUMENT_TYPE_LABELS[doc.docType]?.label || doc.docType}
+                        </strong>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                          doc.verificationStatus === 'VERIFIED'
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                        }`}>
+                          {doc.verificationStatus === 'VERIFIED' ? '✓ Verified' : '● Pending review'}
+                        </span>
+                      </div>
+                      <div className="text-gray-400 text-[11px] flex items-center gap-2">
+                        <span>No: {doc.documentNumber}</span>
+                        {doc.issuer && <span>• {doc.issuer}</span>}
+                      </div>
+                      {doc.expiryDate && (
+                        <div className="flex items-center gap-1 text-[10px]">
+                          <Calendar size={11} className={isExpiring ? 'text-amber-400' : 'text-gray-500'} />
+                          <span className={isExpiring ? 'text-amber-300 font-bold' : 'text-gray-400'}>
+                            Expires: {doc.expiryDate} {isExpiring && '(Expiring soon)'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteDocument(doc.id || doc.documentId)}
+                      className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 transition-colors cursor-pointer shrink-0"
+                      title="Remove document"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Add Document Form */}
+            <div className="pt-2 border-t border-white/10 space-y-2 text-xs">
+              <span className="text-[11px] text-gray-400 font-semibold block">Add / Replace Document:</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <select
+                  value={newDocType}
+                  onChange={(e) => setNewDocType(e.target.value as RiderDocumentType)}
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                >
+                  <option value="DRIVING_LICENSE">Driving Licence (Primary)</option>
+                  <option value="RC">Vehicle RC</option>
+                  <option value="INSURANCE">Insurance</option>
+                  <option value="PUC">PUC</option>
+                  <option value="GOVT_ID">Government ID Proof</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Document Number (e.g. DL-1420110)"
+                  value={newDocNumber}
+                  onChange={(e) => setNewDocNumber(e.target.value)}
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <input
+                  type="text"
+                  placeholder="Issuer (e.g. RTO / Acko)"
+                  value={newDocIssuer}
+                  onChange={(e) => setNewDocIssuer(e.target.value)}
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                />
+                <input
+                  type="date"
+                  placeholder="Expiry Date"
+                  value={newDocExpiry}
+                  onChange={(e) => setNewDocExpiry(e.target.value)}
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddDocument}
+                  className="col-span-2 sm:col-span-1 bg-white/10 hover:bg-white/15 text-white font-bold rounded-xl px-3 py-2 flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Plus size={14} /> Add Document
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* 6. SAFETY & ESCALATION PREFERENCES (Section 1) */}
           <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3 text-xs">
             <div className="flex items-center gap-2 text-white">
               <ShieldAlert size={18} className="text-amber-400" />
-              <h2 className="text-sm font-bold uppercase tracking-wider">5. Safety & Escalation</h2>
+              <h2 className="text-sm font-bold uppercase tracking-wider">6. Safety & Escalation Preferences</h2>
             </div>
 
             <div className="space-y-2.5">
@@ -485,6 +752,30 @@ export function SafetyProfilePage() {
                   className="w-4 h-4 accent-[#FFF174]"
                 />
               </label>
+
+              <div>
+                <label className="block text-gray-400 mb-1 font-semibold">Preferred Emergency Communication Channel</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { key: 'WHATSAPP', label: 'WhatsApp' },
+                    { key: 'SMS', label: 'Direct SMS' },
+                    { key: 'PHONE', label: 'Voice Call' }
+                  ].map((ch) => (
+                    <button
+                      key={ch.key}
+                      type="button"
+                      onClick={() => setCommChannel(ch.key as any)}
+                      className={`p-2.5 rounded-xl border font-bold text-center transition-colors cursor-pointer ${
+                        commChannel === ch.key
+                          ? 'bg-[#FFF174]/20 border-[#FFF174] text-[#FFF174]'
+                          : 'bg-[#181818] border-white/10 text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      {ch.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </section>
 

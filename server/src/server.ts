@@ -7,6 +7,8 @@ import app from './app.js';
 const port = Number(process.env.PORT ?? 5000);
 const mongoUri = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/motoassist';
 
+import { registerSocketHandlers } from './socket/trackingSocket.js';
+
 export const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
@@ -15,21 +17,7 @@ export const io = new Server(server, {
   }
 });
 
-io.on('connection', (socket) => {
-  // Join incident tracking room
-  socket.on('join_incident', (incidentId: string) => {
-    if (incidentId) socket.join(`incident:${incidentId}`);
-  });
-
-  // Join ride tracking room
-  socket.on('join_ride', (rideId: string) => {
-    if (rideId) socket.join(`ride:${rideId}`);
-  });
-
-  socket.on('disconnect', () => {
-    // client disconnect
-  });
-});
+registerSocketHandlers(io);
 
 // Disable command buffering so queries don't hang for 10 seconds if Mongo is offline
 mongoose.set('bufferCommands', false);

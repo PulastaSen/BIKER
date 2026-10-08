@@ -187,10 +187,14 @@ export async function endSafeRide(rideId: string): Promise<boolean> {
 // 4. Assistance & Stranded Rescue
 export async function createAssistanceRequest(data: {
   problemCategory: string;
+  helpCategory?: string;
+  subcategory?: string;
+  urgency?: string;
   description?: string;
   location: { coordinates: [number, number]; address?: string; accuracyMeters?: number };
   providerId?: string;
   towingDetails?: unknown;
+  medicalDetails?: unknown;
   estimatedPrice?: unknown;
 }): Promise<HelpRequest | null> {
   try {
@@ -345,6 +349,28 @@ export async function addBikeDocument(doc: {
     }
   } catch (err) {
     console.warn('[Ecosystem API] addBikeDocument error:', err);
+  }
+  return null;
+}
+
+export async function updateBikeDocument(id: string, doc: {
+  documentNumber?: string;
+  issuer?: string;
+  expiryDate?: string;
+  notes?: string;
+}): Promise<BikeDocument | null> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/documents/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(doc)
+    });
+    if (res.ok) {
+      const json = await res.json();
+      return json.data || null;
+    }
+  } catch (err) {
+    console.warn('[Ecosystem API] updateBikeDocument error:', err);
   }
   return null;
 }

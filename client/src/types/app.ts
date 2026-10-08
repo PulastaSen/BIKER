@@ -73,6 +73,61 @@ export interface RequestTimelineEvent {
   notes?: string;
 }
 
+export type HelpCategory = 
+  | 'MECHANICAL' 
+  | 'MEDICAL' 
+  | 'EMERGENCY' 
+  | 'RECOVERY' 
+  | 'FUEL' 
+  | 'BATTERY' 
+  | 'TOWING' 
+  | 'SAFETY' 
+  | 'BOTH' 
+  | 'UNKNOWN';
+
+export type RiderDocumentType = 'DRIVING_LICENSE' | 'RC' | 'INSURANCE' | 'PUC' | 'GOVT_ID';
+export type DocumentReviewStatus = 'NOT_SUBMITTED' | 'PENDING_REVIEW' | 'VERIFIED' | 'REJECTED' | 'EXPIRED';
+
+export interface RiderDocument {
+  id: string;
+  documentId: string;
+  docType: RiderDocumentType;
+  documentNumber: string;
+  issuer?: string;
+  issueDate?: string;
+  expiryDate?: string;
+  fileUrl?: string;
+  isVerified?: boolean;
+  verificationStatus: DocumentReviewStatus;
+  isExpiringSoon?: boolean;
+  notes?: string;
+  createdAt?: string;
+}
+
+export interface CrashDetectionEvent {
+  eventId: string;
+  confidence: 'LOW' | 'MEDIUM' | 'HIGH';
+  confidenceScore: number;
+  impactForceG?: number;
+  speedDeltaKmph?: number;
+  motionStopped: boolean;
+  userResponse: 'CONFIRMED_SAFE' | 'CONFIRMED_CRASH' | 'TIMEOUT_NO_RESPONSE' | 'DISMISSED';
+  timestamp: string;
+}
+
+export interface LiveHelperTelemetry {
+  requestId: string;
+  providerId: string;
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+  heading?: number;
+  speed?: number;
+  etaMinutes?: number;
+  distanceKm?: number;
+  timestamp: string;
+}
+
 export interface HelpRequest {
   id: string;
   requestId?: string;
@@ -81,6 +136,9 @@ export interface HelpRequest {
   riderPhone: string;
   bike: Bike;
   issue: string;
+  helpCategory?: HelpCategory;
+  subcategory?: string;
+  urgency?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   description: string;
   approximateLocation?: string;
   locationShared: boolean;
@@ -94,6 +152,21 @@ export interface HelpRequest {
   imageName?: string;
   status: RequestStatus;
   estimatedPrice?: EstimatedPrice;
+  medicalDetails?: {
+    medicalUrgency?: string;
+    injuryDescription?: string;
+    ambulanceStatus?: string;
+    hospitalTarget?: string;
+  };
+  liveTracking?: {
+    isTrackingActive: boolean;
+    lastProviderCoordinates?: [number, number];
+    heading?: number;
+    speed?: number;
+    etaMinutes?: number;
+    distanceKm?: number;
+    updatedAt?: string;
+  };
   receiptId?: string;
   timeline?: RequestTimelineEvent[];
   assignedHelperId?: string;

@@ -34,11 +34,36 @@ export interface IRequestTimelineEvent {
   notes?: string;
 }
 
+export type HelpCategoryType = 
+  | 'MECHANICAL' 
+  | 'MEDICAL' 
+  | 'EMERGENCY' 
+  | 'RECOVERY' 
+  | 'FUEL' 
+  | 'BATTERY' 
+  | 'TOWING' 
+  | 'SAFETY' 
+  | 'BOTH' 
+  | 'UNKNOWN';
+
+export interface IMedicalEmergencyDetails {
+  medicalUrgency?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  injuryDescription?: string;
+  medicalIdRef?: string;
+  emergencyContactStatus?: 'NOT_NOTIFIED' | 'PENDING' | 'ALERTED';
+  ambulanceStatus?: 'NONE' | 'REQUESTED' | 'DISPATCHED' | 'ARRIVED';
+  hospitalTarget?: string;
+}
+
 export interface IAssistanceRequest extends Document {
   requestId: string;
   riderId: mongoose.Types.ObjectId;
+  bikeId?: mongoose.Types.ObjectId;
   providerId?: mongoose.Types.ObjectId;
   problemCategory: string;
+  helpCategory?: HelpCategoryType;
+  subcategory?: string;
+  urgency?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   description?: string;
   location: {
     type: string;
@@ -49,6 +74,16 @@ export interface IAssistanceRequest extends Document {
   status: RequestStatus;
   estimatedPrice?: IEstimatedPrice;
   towingDetails?: ITowingDetails;
+  medicalDetails?: IMedicalEmergencyDetails;
+  liveTracking?: {
+    isTrackingActive: boolean;
+    lastProviderCoordinates?: number[];
+    heading?: number;
+    speed?: number;
+    etaMinutes?: number;
+    distanceKm?: number;
+    updatedAt?: Date;
+  };
   receiptId?: string;
   timeline: IRequestTimelineEvent[];
   paymentAmount?: number;
@@ -62,9 +97,35 @@ export interface IAssistanceRequest extends Document {
 const AssistanceRequestSchema: Schema = new Schema({
   requestId: { type: String, required: true, unique: true, index: true },
   riderId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  bikeId: { type: Schema.Types.ObjectId, ref: 'Bike', index: true },
   providerId: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   problemCategory: { type: String, required: true },
+  helpCategory: { 
+    type: String, 
+    enum: ['MECHANICAL', 'MEDICAL', 'EMERGENCY', 'RECOVERY', 'FUEL', 'BATTERY', 'TOWING', 'SAFETY', 'BOTH', 'UNKNOWN'],
+    default: 'MECHANICAL',
+    index: true 
+  },
+  subcategory: { type: String },
+  urgency: { type: String, enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'], default: 'MEDIUM' },
   description: { type: String },
+  medicalDetails: {
+    medicalUrgency: { type: String, enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] },
+    injuryDescription: { type: String },
+    medicalIdRef: { type: String },
+    emergencyContactStatus: { type: String, default: 'NOT_NOTIFIED' },
+    ambulanceStatus: { type: String, default: 'NONE' },
+    hospitalTarget: { type: String }
+  },
+  liveTracking: {
+    isTrackingActive: { type: Boolean, default: false },
+    lastProviderCoordinates: { type: [Number] },
+    heading: { type: Number },
+    speed: { type: Number },
+    etaMinutes: { type: Number },
+    distanceKm: { type: Number },
+    updatedAt: { type: Date }
+  },
   location: {
     type: { type: String, enum: ['Point'], required: true, default: 'Point' },
     coordinates: { type: [Number], required: true },

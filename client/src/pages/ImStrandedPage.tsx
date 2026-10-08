@@ -8,44 +8,25 @@ import {
   Fuel, 
   Wrench, 
   Truck, 
-  TriangleAlert, 
-  HelpCircle,
-  Link as ChainIcon,
-  ArrowRight,
-  ArrowLeft,
-  Search,
-  CheckCircle2,
-  Navigation,
-  Heart,
-  PhoneCall,
-  Loader2
+  ArrowRight, 
+  ArrowLeft, 
+  Search, 
+  CheckCircle2, 
+  Navigation, 
+  Heart, 
+  PhoneCall, 
+  Loader2,
+  Building2,
+  ShieldAlert,
+  Shuffle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useUserLocation } from '../hooks/useUserLocation';
 import { createAssistanceRequest } from '../services/ecosystemApi';
 import { saveRequest, getBikes } from '../utils/appStorage';
-import type { Bike } from '../types/app';
-
-// 8 Issues specified in Section 10
-const STRANDED_ISSUES = [
-  { id: 'Puncture', label: '🛞 Puncture', desc: 'Flat tyre, puncture or air leak', icon: Disc, color: 'text-amber-400' },
-  { id: 'Battery', label: '🔋 Battery', desc: 'Dead battery, won\'t crank', icon: BatteryCharging, color: 'text-yellow-400' },
-  { id: 'Fuel', label: '⛽ Out of Fuel', desc: 'Out of fuel on highway', icon: Fuel, color: 'text-emerald-400' },
-  { id: 'Bike Problem', label: '🔧 Bike Problem', desc: 'Engine stopped or strange noise', icon: Wrench, color: 'text-blue-400' },
-  { id: 'Chain Problem', label: '⛓️ Chain Problem', desc: 'Broken chain or sprocket jam', icon: ChainIcon, color: 'text-orange-400' },
-  { id: 'Towing', label: '🚚 Need Towing', desc: 'Flatbed or carrier rescue needed', icon: Truck, color: 'text-purple-400' },
-  { id: 'Accident', label: '💥 Accident', desc: 'Crash or collision on road', icon: TriangleAlert, color: 'text-red-400' },
-  { id: 'I Don\'t Know', label: '❓ I Don\'t Know', desc: 'Unsure, guided diagnosis', icon: HelpCircle, color: 'text-gray-300' }
-];
-
-const HELP_TYPES = [
-  { id: 'Mechanic', label: 'Mechanic', desc: 'On-site breakdown repair', icon: Wrench },
-  { id: 'Towing', label: 'Towing', desc: 'Flatbed or carrier transport', icon: Truck },
-  { id: 'Fuel', label: 'Fuel Delivery', desc: 'Emergency petrol to location', icon: Fuel },
-  { id: 'Battery', label: 'Battery Jump', desc: 'Jump start or fresh battery', icon: BatteryCharging },
-  { id: 'Medical', label: 'Medical Help', desc: 'Ambulance or first aid', icon: Heart },
-  { id: 'Emergency', label: 'Emergency 112', desc: 'Police or highway patrol', icon: PhoneCall },
-];
+import type { Bike, HelpCategory } from '../types/app';
+import { EmergencyTypeSelector } from '../components/EmergencyTypeSelector';
+import { EmergencyMap, type MapFilterCategory } from '../components/EmergencyMap';
 
 const COMMON_LANDMARKS = [
   'Sevoke Road Checkpost',
@@ -62,15 +43,15 @@ export function ImStrandedPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Steps: 1: WHAT HAPPENED? -> 2: WHERE ARE YOU? -> 3: WHAT HELP DO YOU NEED?
+  // Steps: 1: WHAT KIND OF HELP DO YOU NEED? -> 2: WHERE ARE YOU? -> 3: CONDITIONAL DISPATCH
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [selectedIssue, setSelectedIssue] = useState<string>('');
-  const [selectedHelp, setSelectedHelp] = useState<string>('Mechanic');
+  const [selectedCategory, setSelectedCategory] = useState<HelpCategory>('MECHANICAL');
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>('Motorcycle Mechanic');
   const [searchPlace, setSearchPlace] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // "I Don't Know" guided diagnosis questions (Section 11)
+  // Guided diagnosis state (Section 8: "I'M NOT SURE")
   const [showGuidedQuestions, setShowGuidedQuestions] = useState(false);
   const [bikeStarts, setBikeStarts] = useState<'YES' | 'NO' | null>(null);
   const [warningLight, setWarningLight] = useState<'YES' | 'NO' | 'NOT_SURE' | null>(null);
@@ -85,47 +66,48 @@ export function ImStrandedPage() {
     setSearchLocation,
   } = useUserLocation(false);
 
-  const handleSelectIssue = (issueId: string) => {
-    if (issueId === 'I Don\'t Know') {
+  const handleCategorySelect = (category: HelpCategory) => {
+    setSelectedCategory(category);
+    if (category === 'UNKNOWN') {
       setShowGuidedQuestions(true);
       return;
     }
-    setSelectedIssue(issueId);
-    // Pre-select appropriate help type
-    if (issueId === 'Towing') setSelectedHelp('Towing');
-    else if (issueId === 'Fuel') setSelectedHelp('Fuel');
-    else if (issueId === 'Battery') setSelectedHelp('Battery');
-    else if (issueId === 'Accident') setSelectedHelp('Towing');
-    else setSelectedHelp('Mechanic');
+    // Set appropriate default subcategory
+    if (category === 'MECHANICAL') setSelectedSubcategory('Motorcycle Mechanic');
+    else if (category === 'MEDICAL') setSelectedSubcategory('108 Ambulance Dispatch');
+    else if (category === 'SAFETY') setSelectedSubcategory('National Police (112)');
+    else if (category === 'RECOVERY') setSelectedSubcategory('Flatbed Towing Truck');
+    else if (category === 'BOTH') setSelectedSubcategory('Combined Medical & Towing Rescue');
+    
     setStep(2);
   };
 
   const handleFinishGuidedDiagnosis = () => {
-    let resolvedIssue = 'Bike Problem';
-    let resolvedHelp = 'Mechanic';
+    let resolvedCategory: HelpCategory = 'MECHANICAL';
+    let resolvedSub = 'Motorcycle Mechanic';
 
     if (bikeStarts === 'NO' && warningLight === 'NO') {
-      resolvedIssue = 'Battery';
-      resolvedHelp = 'Battery';
+      resolvedCategory = 'MECHANICAL';
+      resolvedSub = 'Battery Jump & Electrical';
     } else if (bikeStarts === 'NO' && warningLight === 'YES') {
-      resolvedIssue = 'Bike Problem';
-      resolvedHelp = 'Mechanic';
+      resolvedCategory = 'MECHANICAL';
+      resolvedSub = 'Motorcycle Mechanic';
     } else if (bikeStarts === 'YES') {
-      resolvedIssue = 'Bike Problem';
-      resolvedHelp = 'Mechanic';
+      resolvedCategory = 'MECHANICAL';
+      resolvedSub = 'Roadside Repair';
     } else {
-      resolvedIssue = 'Towing';
-      resolvedHelp = 'Towing';
+      resolvedCategory = 'RECOVERY';
+      resolvedSub = 'Flatbed Towing Truck';
     }
 
-    setSelectedIssue(resolvedIssue);
-    setSelectedHelp(resolvedHelp);
+    setSelectedCategory(resolvedCategory);
+    setSelectedSubcategory(resolvedSub);
     setShowGuidedQuestions(false);
     setStep(2);
   };
 
   const handleRequestUseLocation = () => {
-    requestLocation('Location access is needed to find nearby help.');
+    requestLocation('Location access is needed to find nearby emergency help.');
   };
 
   const handleSelectLandmark = (landmark: string) => {
@@ -142,20 +124,27 @@ export function ImStrandedPage() {
 
   const hasLocation = Boolean(coords || address || searchPlace.trim());
 
-  const handleProceedToHelp = () => {
+  const handleProceedToSubcategory = () => {
     if (!hasLocation) {
-      setErrorMsg('Please use your current location or search a place.');
+      setErrorMsg('Please activate GPS location or select a landmark.');
       return;
     }
     setErrorMsg(null);
     setStep(3);
   };
 
+  const mapFilterForCategory: MapFilterCategory = 
+    selectedCategory === 'MECHANICAL' ? 'MECHANICAL' :
+    selectedCategory === 'MEDICAL' ? 'MEDICAL' :
+    selectedCategory === 'SAFETY' ? 'EMERGENCY' :
+    selectedCategory === 'RECOVERY' ? 'TOWING' :
+    selectedCategory === 'BOTH' ? 'ALL' : 'ALL';
+
   const handleConfirmAndDispatch = async () => {
     setIsSubmitting(true);
     setErrorMsg(null);
 
-    const effectiveAddress = address || searchPlace.trim() || 'Highway Corridor';
+    const effectiveAddress = address || searchPlace.trim() || 'Himalayan Corridor Location';
     const effectiveCoords: [number, number] | undefined = coords
       ? [coords.lng, coords.lat]
       : undefined;
@@ -174,14 +163,22 @@ export function ImStrandedPage() {
 
     try {
       const res = await createAssistanceRequest({
-        problemCategory: selectedIssue,
-        description: `Stranded rider reported: ${selectedIssue} (Need: ${selectedHelp}) at ${effectiveAddress}`,
+        problemCategory: selectedSubcategory,
+        helpCategory: selectedCategory,
+        subcategory: selectedSubcategory,
+        urgency: selectedCategory === 'MEDICAL' || selectedCategory === 'BOTH' ? 'CRITICAL' : 'HIGH',
+        description: `Stranded rider request: [${selectedCategory}] - ${selectedSubcategory} at ${effectiveAddress}`,
         location: {
-          coordinates: effectiveCoords || [0, 0], // Never invent fake location
+          coordinates: effectiveCoords || [0, 0],
           address: effectiveAddress,
           accuracyMeters: accuracy || 15
         },
-        towingDetails: selectedHelp === 'Towing' ? { towingType: 'FLATBED', pickupAddress: effectiveAddress } : undefined
+        towingDetails: selectedCategory === 'RECOVERY' || selectedCategory === 'BOTH'
+          ? { towingType: 'FLATBED', pickupAddress: effectiveAddress }
+          : undefined,
+        medicalDetails: selectedCategory === 'MEDICAL' || selectedCategory === 'BOTH'
+          ? { medicalUrgency: 'HIGH', injuryDescription: 'Roadside medical assistance requested' }
+          : undefined
       });
 
       if (res && res.id) {
@@ -190,8 +187,9 @@ export function ImStrandedPage() {
           riderId: user?.id || 'guest-rider',
           riderName: user?.name || 'Rider',
           riderPhone: user?.phone || '+91 98765 43210',
-          issue: selectedIssue.toUpperCase().replace(/\s+/g, '_'),
-          description: `Stranded rider reported: ${selectedIssue} at ${effectiveAddress}`,
+          issue: selectedCategory,
+          helpCategory: selectedCategory,
+          description: `Stranded rider: [${selectedCategory}] - ${selectedSubcategory}`,
           bike: defaultBike,
           approximateLocation: effectiveAddress,
           locationShared: Boolean(coords),
@@ -203,7 +201,7 @@ export function ImStrandedPage() {
 
         navigate(`/requests/${res.id}`);
       } else {
-        throw new Error('Could not create assistance ticket');
+        throw new Error('Dispatch ticket creation failed');
       }
     } catch {
       // Local fallback ticket
@@ -213,8 +211,9 @@ export function ImStrandedPage() {
         riderId: user?.id || 'guest-rider',
         riderName: user?.name || 'Rider',
         riderPhone: user?.phone || '+91 98765 43210',
-        issue: selectedIssue.toUpperCase().replace(/\s+/g, '_'),
-        description: `Stranded rider reported: ${selectedIssue} at ${effectiveAddress}`,
+        issue: selectedCategory,
+        helpCategory: selectedCategory,
+        description: `Stranded rider: [${selectedCategory}] - ${selectedSubcategory}`,
         bike: defaultBike,
         approximateLocation: effectiveAddress,
         locationShared: Boolean(coords),
@@ -249,70 +248,38 @@ export function ImStrandedPage() {
           </button>
           
           <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-400">
-            <span className={step >= 1 ? 'text-[#FFF174]' : ''}>1. Issue</span>
+            <span className={step >= 1 ? 'text-[#FFF174]' : ''}>1. Help Type</span>
             <span>•</span>
-            <span className={step >= 2 ? 'text-[#FFF174]' : ''}>2. Location</span>
+            <span className={step >= 2 ? 'text-[#FFF174]' : ''}>2. Location & Map</span>
             <span>•</span>
             <span className={step === 3 ? 'text-[#FFF174]' : ''}>3. Dispatch</span>
           </div>
         </div>
 
         {/* ========================================================
-            STEP 1: WHAT HAPPENED? (Section 10)
+            STEP 1: WHAT KIND OF HELP DO YOU NEED? (Sections 7, 8, 9)
             ======================================================== */}
         {step === 1 && !showGuidedQuestions && (
-          <section className="space-y-3.5 animate-in fade-in duration-150">
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block">
-                STEP 1 OF 3
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-0.5">
-                What happened?
-              </h1>
-              <p className="text-xs text-gray-400 mt-1">
-                Tap your issue for immediate roadside triage.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {STRANDED_ISSUES.map((issue) => {
-                return (
-                  <button
-                    key={issue.id}
-                    type="button"
-                    onClick={() => handleSelectIssue(issue.id)}
-                    className="p-4 rounded-2xl bg-[#121212] hover:bg-[#181818] active:scale-[0.98] border border-white/10 hover:border-[#FFF174]/50 text-left transition-all cursor-pointer flex items-center justify-between group min-h-[64px]"
-                  >
-                    <div>
-                      <span className="block text-base font-black text-white group-hover:text-[#FFF174] transition-colors">
-                        {issue.label}
-                      </span>
-                      <span className="block text-[11px] text-gray-400 mt-0.5">
-                        {issue.desc}
-                      </span>
-                    </div>
-                    <ArrowRight size={16} className="text-gray-500 group-hover:text-[#FFF174] group-hover:translate-x-1 transition-all" />
-                  </button>
-                );
-              })}
-            </div>
+          <section className="space-y-4 animate-in fade-in duration-150">
+            <EmergencyTypeSelector
+              selectedCategory={selectedCategory}
+              onSelect={handleCategorySelect}
+            />
           </section>
         )}
 
-        {/* ========================================================
-            SECTION 11: "I DON'T KNOW" GUIDED DIAGNOSIS
-            ======================================================== */}
+        {/* GUIDED DIAGNOSIS MODAL/SECTION (When "I'M NOT SURE" chosen) */}
         {step === 1 && showGuidedQuestions && (
           <section className="p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-4 animate-in fade-in duration-150">
             <div>
               <span className="text-[10px] font-black uppercase tracking-wider text-[#FFF174] block">
-                GUIDED DIAGNOSIS
+                GUIDED SAFETY TRIAGE
               </span>
               <h2 className="text-xl font-black text-white mt-0.5">
                 Let's figure it out together
               </h2>
               <p className="text-xs text-gray-400 mt-1">
-                Answer two simple questions to identify what help you need.
+                Answer two simple questions to determine the appropriate rescue service.
               </p>
             </div>
 
@@ -393,7 +360,7 @@ export function ImStrandedPage() {
             {bikeStarts !== null && warningLight !== null && (
               <div className="p-3.5 rounded-2xl bg-[#1A1A1A] border border-[#FFF174]/30 space-y-2 text-xs">
                 <strong className="text-white block font-bold">
-                  Recommended: {bikeStarts === 'NO' ? 'Battery & Electrical Rescue' : 'Mechanic Inspection'}
+                  Recommended: {bikeStarts === 'NO' ? 'Battery & Electrical Rescue' : 'Roadside Mechanic'}
                 </strong>
                 <p className="text-gray-400">
                   {bikeStarts === 'NO'
@@ -413,8 +380,7 @@ export function ImStrandedPage() {
         )}
 
         {/* ========================================================
-            STEP 2: WHERE ARE YOU? (Section 10)
-            [USE MY CURRENT LOCATION] or [SEARCH LOCATION]
+            STEP 2: WHERE ARE YOU? + EMERGENCY MAP (Section 10 & 11)
             ======================================================== */}
         {step === 2 && (
           <section className="space-y-4 animate-in fade-in duration-150">
@@ -426,7 +392,7 @@ export function ImStrandedPage() {
                 Where are you?
               </h1>
               <p className="text-xs text-gray-400 mt-1">
-                Help dispatched to your exact phone location or landmark.
+                Pinpoint your location to locate nearby verified responders.
               </p>
             </div>
 
@@ -463,13 +429,13 @@ export function ImStrandedPage() {
 
               {locStatus === 'denied' && (
                 <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 text-xs text-amber-200">
-                  <span className="font-bold block">Location access is off.</span>
+                  <span className="font-bold block">Location permission off.</span>
                   <span>Please search your town, road or highway landmark below.</span>
                 </div>
               )}
             </div>
 
-            {/* OPTION 2: [SEARCH LOCATION] */}
+            {/* OPTION 2: SEARCH PLACE / LANDMARK */}
             <div className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3">
               <span className="text-xs font-black uppercase tracking-wider text-gray-300 block">
                 OPTION 2: SEARCH PLACE / LANDMARK
@@ -495,28 +461,35 @@ export function ImStrandedPage() {
                 </button>
               </form>
 
-              {/* Quick Landmarks */}
-              <div className="space-y-1.5 pt-1">
-                <span className="text-[10px] font-bold uppercase text-gray-400 block">
-                  Popular Highway Points:
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {COMMON_LANDMARKS.slice(0, 4).map((lm) => (
-                    <button
-                      key={lm}
-                      type="button"
-                      onClick={() => handleSelectLandmark(lm)}
-                      className={`text-[11px] px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
-                        searchPlace === lm
-                          ? 'bg-[#FFF174] text-black border-[#FFF174] font-bold'
-                          : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
-                      }`}
-                    >
-                      {lm}
-                    </button>
-                  ))}
-                </div>
+              {/* Popular landmarks */}
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {COMMON_LANDMARKS.slice(0, 4).map((lm) => (
+                  <button
+                    key={lm}
+                    type="button"
+                    onClick={() => handleSelectLandmark(lm)}
+                    className={`text-[11px] px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
+                      searchPlace === lm
+                        ? 'bg-[#FFF174] text-black border-[#FFF174] font-bold'
+                        : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
+                    }`}
+                  >
+                    {lm}
+                  </button>
+                ))}
               </div>
+            </div>
+
+            {/* SECTION 10 & 11: MOTOASSIST EMERGENCY MAP PREVIEW */}
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase tracking-wider text-gray-400 block">
+                NEARBY EMERGENCY MAP ({selectedCategory})
+              </label>
+              <EmergencyMap
+                riderCoords={coords ? { lat: coords.lat, lng: coords.lng } : undefined}
+                height="280px"
+                initialFilter={mapFilterForCategory}
+              />
             </div>
 
             {errorMsg && (
@@ -526,80 +499,239 @@ export function ImStrandedPage() {
               </div>
             )}
 
-            {/* CONTINUE BUTTON */}
             <button
               type="button"
-              onClick={handleProceedToHelp}
+              onClick={handleProceedToSubcategory}
               className="w-full py-4 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#FFF174]/15"
             >
-              <span>Next: Select Help Needed</span>
+              <span>Next: Confirm Specific Service</span>
               <ArrowRight size={16} />
             </button>
           </section>
         )}
 
         {/* ========================================================
-            STEP 3: WHAT HELP DO YOU NEED? (Section 10)
-            Mechanic • Towing • Fuel • Battery • Medical • Emergency
+            STEP 3: CONDITIONAL HELP FLOW (Sections 8 & 9)
             ======================================================== */}
         {step === 3 && (
           <section className="space-y-4 animate-in fade-in duration-150">
             <div>
               <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 block">
-                STEP 3 OF 3
+                STEP 3 OF 3: {selectedCategory}
               </span>
               <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-0.5">
-                What help do you need?
+                {selectedCategory === 'BOTH' ? 'Combined Medical & Bike Recovery' : 'Select Assistance Service'}
               </h1>
               <p className="text-xs text-gray-400 mt-1">
-                Choose the required service for instant dispatch.
+                {selectedCategory === 'BOTH'
+                  ? 'One unified incident coordinates both emergency medical triage and roadside recovery.'
+                  : 'Choose the exact resource you require for priority dispatch.'}
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
-              {HELP_TYPES.map((h) => {
-                const isSelected = selectedHelp === h.id;
-                const Icon = h.icon;
-                return (
+            {/* CONDITIONAL OPTIONS PER SELECTED CATEGORY */}
+            {selectedCategory === 'MECHANICAL' && (
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {[
+                  { label: 'Motorcycle Mechanic', desc: 'On-site breakdown repair', icon: <Wrench size={18} /> },
+                  { label: 'OEM Service Center', desc: 'Authorized diagnostics & spares', icon: <Building2 size={18} /> },
+                  { label: 'Tire / Puncture Shop', desc: 'Tubeless puncture & air leak', icon: <Disc size={18} /> },
+                  { label: 'Battery Assistance', desc: 'Jump start or fresh battery', icon: <BatteryCharging size={18} /> },
+                  { label: 'Emergency Fuel', desc: 'Highway petrol delivery', icon: <Fuel size={18} /> },
+                  { label: 'Flatbed Towing', desc: 'Secure carrier transport', icon: <Truck size={18} /> }
+                ].map((item) => (
                   <button
-                    key={h.id}
+                    key={item.label}
                     type="button"
-                    onClick={() => setSelectedHelp(h.id)}
-                    className={`p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                      isSelected
+                    onClick={() => setSelectedSubcategory(item.label)}
+                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                      selectedSubcategory === item.label
                         ? 'bg-[#FFF174]/20 border-[#FFF174] text-white shadow-md'
                         : 'bg-[#121212] border-white/10 text-gray-300 hover:border-white/30'
                     }`}
                   >
-                    <Icon size={20} className={isSelected ? 'text-[#FFF174]' : 'text-gray-400'} />
+                    <div className={selectedSubcategory === item.label ? 'text-[#FFF174]' : 'text-gray-400'}>
+                      {item.icon}
+                    </div>
                     <div className="mt-2">
-                      <strong className="block text-sm font-black text-white">{h.label}</strong>
-                      <span className="block text-[10px] text-gray-400 mt-0.5">{h.desc}</span>
+                      <strong className="block text-xs font-black text-white">{item.label}</strong>
+                      <span className="block text-[10px] text-gray-400 mt-0.5">{item.desc}</span>
                     </div>
                   </button>
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            )}
 
-            {/* SUMMARY SUMMARY */}
-            <div className="p-4 rounded-2xl bg-black/50 border border-white/10 text-xs space-y-1.5 text-gray-300">
+            {selectedCategory === 'MEDICAL' && (
+              <div className="space-y-2.5">
+                <div className="p-4 rounded-2xl bg-red-950/40 border border-red-500/40 text-xs space-y-2">
+                  <div className="flex items-center gap-2 text-red-300 font-bold">
+                    <Heart size={18} />
+                    <span>Immediate Medical Dispatch Resources:</span>
+                  </div>
+                  <p className="text-gray-300 text-[11px]">
+                    Official emergency services can be dialled immediately while MotoAssist alerts verified trauma centers.
+                  </p>
+                  <div className="flex gap-2 pt-1">
+                    <a
+                      href="tel:108"
+                      className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase rounded-xl flex items-center justify-center gap-1.5"
+                    >
+                      <PhoneCall size={14} /> Call 108 Ambulance
+                    </a>
+                    <a
+                      href="tel:112"
+                      className="flex-1 py-2.5 bg-white/10 hover:bg-white/15 text-white font-bold text-xs uppercase rounded-xl flex items-center justify-center gap-1.5"
+                    >
+                      <ShieldAlert size={14} /> Call 112 Police
+                    </a>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {[
+                    '108 Emergency Ambulance',
+                    'Nearest Trauma Hospital',
+                    '24/7 Pharmacy & First Aid',
+                    'Medical Emergency Escort'
+                  ].map((sub) => (
+                    <button
+                      key={sub}
+                      type="button"
+                      onClick={() => setSelectedSubcategory(sub)}
+                      className={`p-3 rounded-2xl border text-left cursor-pointer transition-all ${
+                        selectedSubcategory === sub
+                          ? 'bg-red-950/60 border-red-500 text-white ring-1 ring-red-500'
+                          : 'bg-[#141414] border-white/10 text-gray-300 hover:border-white/30'
+                      }`}
+                    >
+                      <strong className="block text-xs font-bold text-white">{sub}</strong>
+                      <span className="text-[10px] text-red-300">Priority triage</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedCategory === 'SAFETY' && (
+              <div className="space-y-2.5">
+                <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-500/40 text-xs space-y-2">
+                  <div className="flex items-center gap-2 text-amber-300 font-bold">
+                    <ShieldAlert size={18} />
+                    <span>Safety Escalation & Protection:</span>
+                  </div>
+                  <p className="text-gray-300 text-[11px]">
+                    If in immediate danger or feeling pursued, tap below to contact highway emergency services immediately.
+                  </p>
+                  <a
+                    href="tel:112"
+                    className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black font-black text-xs uppercase rounded-xl flex items-center justify-center gap-1.5 shadow-md"
+                  >
+                    <PhoneCall size={15} /> Immediate Call 112 Police
+                  </a>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {[
+                    'National Police (112)',
+                    'Alert Family Circle',
+                    'Safe Haven / Verified Beat',
+                    'Escort Support'
+                  ].map((sub) => (
+                    <button
+                      key={sub}
+                      type="button"
+                      onClick={() => setSelectedSubcategory(sub)}
+                      className={`p-3 rounded-2xl border text-left cursor-pointer transition-all ${
+                        selectedSubcategory === sub
+                          ? 'bg-amber-950/60 border-amber-500 text-white ring-1 ring-amber-500'
+                          : 'bg-[#141414] border-white/10 text-gray-300 hover:border-white/30'
+                      }`}
+                    >
+                      <strong className="block text-xs font-bold text-white">{sub}</strong>
+                      <span className="text-[10px] text-amber-300">Active monitoring</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedCategory === 'BOTH' && (
+              <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-500/40 text-xs space-y-3">
+                <div className="flex items-center gap-2 text-purple-300 font-bold">
+                  <Shuffle size={18} />
+                  <span>Section 9: Combined Crash Response Protocol</span>
+                </div>
+                <p className="text-gray-300 text-[11px] leading-relaxed">
+                  One single incident handles all aspects of your emergency. MotoAssist coordinates medical care first, followed by motorcycle recovery:
+                </p>
+                <div className="space-y-1 text-gray-300 text-[11px] pl-2 border-l-2 border-purple-500">
+                  <div>1. Immediate Medical Ambulance (108) priority</div>
+                  <div>2. Nearest Hospital Trauma Notification</div>
+                  <div>3. Trusted Family Safety Notification</div>
+                  <div>4. Flatbed Motorcycle Recovery & Towing</div>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <a
+                    href="tel:108"
+                    className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1"
+                  >
+                    Call 108
+                  </a>
+                  <a
+                    href="tel:112"
+                    className="flex-1 py-2.5 bg-white/10 hover:bg-white/15 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1"
+                  >
+                    Call 112
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {selectedCategory === 'RECOVERY' && (
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {[
+                  'Flatbed Towing Truck',
+                  'Mountain Carrier Recovery',
+                  'Ditch / Off-Road Winch',
+                  'Transport to OEM Workshop'
+                ].map((sub) => (
+                  <button
+                    key={sub}
+                    type="button"
+                    onClick={() => setSelectedSubcategory(sub)}
+                    className={`p-3 rounded-2xl border text-left cursor-pointer transition-all ${
+                      selectedSubcategory === sub
+                        ? 'bg-blue-950/60 border-blue-500 text-white ring-1 ring-blue-500'
+                        : 'bg-[#141414] border-white/10 text-gray-300 hover:border-white/30'
+                    }`}
+                  >
+                    <strong className="block text-xs font-bold text-white">{sub}</strong>
+                    <span className="text-[10px] text-blue-300">Carrier dispatch</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* INCIDENT SNAPSHOT SUMMARY (Section 6) */}
+            <div className="p-4 rounded-2xl bg-black/60 border border-white/10 text-xs space-y-1.5 text-gray-300">
               <div className="flex justify-between">
-                <span className="text-gray-400">Issue:</span>
-                <span className="font-bold text-white">{selectedIssue}</span>
+                <span className="text-gray-400">Emergency Type:</span>
+                <span className="font-bold text-white">{selectedCategory}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Service:</span>
+                <span className="font-bold text-[#FFF174]">{selectedSubcategory}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Location:</span>
                 <span className="font-bold text-white truncate max-w-[200px]">
-                  {address || searchPlace || 'Device Location'}
+                  {address || searchPlace || 'GPS Device Coordinates'}
                 </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Service:</span>
-                <span className="font-bold text-[#FFF174]">{selectedHelp}</span>
               </div>
             </div>
 
-            {/* CONFIRM AND DISPATCH BUTTON */}
+            {/* DISPATCH CONFIRMATION BUTTON */}
             <button
               type="button"
               disabled={isSubmitting}
@@ -609,11 +741,11 @@ export function ImStrandedPage() {
               {isSubmitting ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  <span>Finding Help Near You...</span>
+                  <span>Dispatching Responders...</span>
                 </>
               ) : (
                 <>
-                  <span>Dispatch Roadside Help</span>
+                  <span>Confirm & Dispatch Rescue</span>
                   <ArrowRight size={18} />
                 </>
               )}
