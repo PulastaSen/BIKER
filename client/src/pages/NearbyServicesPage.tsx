@@ -181,9 +181,9 @@ export function NearbyServicesPage() {
     ? encodeURIComponent(`${activeProvider.name}, ${activeProvider.address}`)
     : coords
     ? `${coords.lat},${coords.lng}`
-    : '26.7271,88.3953';
+    : encodeURIComponent('Motorcycle Assistance & Repair');
 
-  const mapSrc = `https://maps.google.com/maps?q=${mapQuery}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+  const mapSrc = `https://maps.google.com/maps?q=${mapQuery}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
 
   return (
     <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-black">

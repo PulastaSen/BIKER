@@ -195,19 +195,20 @@ interface GoogleMapsLocatorProps {
 }
 
 export function GoogleMapsLocator({
-  initialLat = 26.7271,
-  initialLng = 88.3953,
+  initialLat,
+  initialLng,
   height = '480px',
   onSelectService,
 }: GoogleMapsLocatorProps) {
-  // GPS State
-  const [coords, setCoords] = useState<{ latitude: number; longitude: number }>({
-    latitude: initialLat,
-    longitude: initialLng,
-  });
+  // GPS State - strictly user/device location without silent hardcoded coordinates (Section 8, 9 & 40)
+  const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(
+    initialLat && initialLng ? { latitude: initialLat, longitude: initialLng } : null
+  );
   const [gpsAccuracy, setGpsAccuracy] = useState<number | null>(null);
   const [isLocating, setIsLocating] = useState<boolean>(false);
-  const [locationStatus, setLocationStatus] = useState<string>('Defaulting to Siliguri Corridor');
+  const [locationStatus, setLocationStatus] = useState<string>(
+    initialLat && initialLng ? '📍 Location Ready' : '📍 Location Updating'
+  );
 
   // Search Filter State: strictly locked to MECHANIC or OEM or ALL
   const [filterType, setFilterType] = useState<ServiceFilterType>('ALL');
@@ -227,12 +228,12 @@ export function GoogleMapsLocator({
 
   const detectLiveGPS = () => {
     if (!navigator.geolocation) {
-      setLocationStatus('GPS not supported by this browser');
+      setLocationStatus('⚠️ Location unavailable');
       return;
     }
 
     setIsLocating(true);
-    setLocationStatus('Acquiring your location...');
+    setLocationStatus('📍 Location Updating');
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -242,12 +243,12 @@ export function GoogleMapsLocator({
         });
         setGpsAccuracy(Math.round(pos.coords.accuracy));
         setIsLocating(false);
-        setLocationStatus(`📍 Location Active (Accuracy: ±${Math.round(pos.coords.accuracy)}m)`);
+        setLocationStatus('📍 Location Ready');
       },
       (err) => {
         console.warn('Location access error:', err);
         setIsLocating(false);
-        setLocationStatus('Location access is turned off.');
+        setLocationStatus('⚠️ Location unavailable');
       },
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
     );
@@ -269,15 +270,21 @@ export function GoogleMapsLocator({
   // Construct mandatory Google Maps Embed Search URL
   // Includes required solution_id=gmp_git_agentskills_v1 per Google Maps Platform skill instructions
   const googleMapsEmbedUrl = apiKey
-    ? `https://www.google.com/maps/embed/v1/search?key=${apiKey}&solution_id=gmp_git_agentskills_v1&q=${encodeURIComponent(
-        lockedQuery + ` near ${coords.latitude},${coords.longitude}`
-      )}&center=${coords.latitude},${coords.longitude}&zoom=14`
+    ? coords
+      ? `https://www.google.com/maps/embed/v1/search?key=${apiKey}&solution_id=gmp_git_agentskills_v1&q=${encodeURIComponent(
+          lockedQuery + ` near ${coords.latitude},${coords.longitude}`
+        )}&center=${coords.latitude},${coords.longitude}&zoom=14`
+      : `https://www.google.com/maps/embed/v1/search?key=${apiKey}&solution_id=gmp_git_agentskills_v1&q=${encodeURIComponent(
+          lockedQuery
+        )}&zoom=12`
     : '';
 
   // Direct Google Maps Search Web Fallback URL
-  const googleMapsExternalUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    lockedQuery
-  )}&center=${coords.latitude},${coords.longitude}`;
+  const googleMapsExternalUrl = coords
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        lockedQuery
+      )}&center=${coords.latitude},${coords.longitude}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lockedQuery)}`;
 
   // Filter verified services and sort by live GPS distance
   const filteredServices = VERIFIED_SERVICES.filter((svc) => {
@@ -286,8 +293,10 @@ export function GoogleMapsLocator({
     return true;
   }).map((svc) => ({
     ...svc,
-    distanceKm: calculateDistance(coords.latitude, coords.longitude, svc.latitude, svc.longitude),
-  })).sort((a, b) => a.distanceKm - b.distanceKm);
+    distanceKm: coords
+      ? calculateDistance(coords.latitude, coords.longitude, svc.latitude, svc.longitude)
+      : undefined,
+  })).sort((a, b) => (a.distanceKm ?? 999) - (b.distanceKm ?? 999));
 
   const handleSaveApiKey = (e: React.FormEvent) => {
     e.preventDefault();
@@ -335,11 +344,19 @@ export function GoogleMapsLocator({
         <div className="gps-status-info">
           <MapPin size={16} className="gps-pin-icon" />
           <span>
-            <strong>Your GPS:</strong> {coords.latitude.toFixed(4)}° N, {coords.longitude.toFixed(4)}° E
+            {coords ? '📍 Location Ready' : locationStatus}
           </span>
-          <span className="gps-pill">{locationStatus}</span>
+          {coords && gpsAccuracy && <span className="gps-pill">±{gpsAccuracy}m</span>}
         </div>
-        {gpsAccuracy && <span className="gps-accuracy-tag">±{gpsAccuracy}m accuracy</span>}
+        {!coords && (
+          <button
+            type="button"
+            onClick={detectLiveGPS}
+            className="px-2.5 py-1 bg-[#FFF174] text-black text-xs font-bold rounded-lg cursor-pointer"
+          >
+            Enable Location
+          </button>
+        )}
       </div>
 
       {/* STRICTLY LOCKED SEARCH QUERY INTERFACE */}
@@ -398,7 +415,10 @@ export function GoogleMapsLocator({
             type="text"
             readOnly
             disabled
-            value={`Google Maps Query: "${lockedQuery}" near ${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`}
+            value={coords 
+              ? `Google Maps Query: "${lockedQuery}" near ${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`
+              : `Google Maps Query: "${lockedQuery}"`
+            }
             className="locked-search-input"
             aria-label="Locked search query"
           />
@@ -425,17 +445,17 @@ export function GoogleMapsLocator({
         ) : (
           <div className="interactive-map-container" style={{ height }}>
             <MapSection
-              center={[coords.latitude, coords.longitude]}
+              center={coords ? [coords.latitude, coords.longitude] : undefined}
               zoom={12}
               height="100%"
               interactive={true}
               markers={[
-                {
+                ...(coords ? [{
                   id: 'user-gps',
-                  position: [coords.latitude, coords.longitude],
+                  position: [coords.latitude, coords.longitude] as [number, number],
                   title: 'Your Live GPS Location',
-                  type: 'rider',
-                },
+                  type: 'rider' as const,
+                }] : []),
                 ...filteredServices.map((svc) => ({
                   id: svc.id,
                   position: [svc.latitude, svc.longitude] as [number, number],

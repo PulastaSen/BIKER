@@ -59,6 +59,13 @@ export function HelperDashboardPage() {
     }
   };
 
+  const handleAdvanceJobStatus = (nextStatus: any) => {
+    if (currentJob) {
+      updateRequestStatus(currentJob.id, nextStatus);
+      loadHelperData();
+    }
+  };
+
   const currentJob = assignedRequests[0];
 
   const getJobStepIndex = (status: string) => {
@@ -177,11 +184,67 @@ export function HelperDashboardPage() {
             <IncidentTimeline currentStep={getJobStepIndex(currentJob.status)} />
           </div>
 
+          {/* Status Progression Controls (Section 22) */}
+          <div className="p-3 rounded-2xl bg-black/60 border border-white/10 space-y-2">
+            <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block">
+              STATUS TRANSITION (1-TAP):
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => handleAdvanceJobStatus('EN_ROUTE')}
+                className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer ${
+                  currentJob.status === 'EN_ROUTE'
+                    ? 'bg-[#FFF174] text-black border-[#FFF174]'
+                    : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
+                }`}
+              >
+                ● EN ROUTE
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleAdvanceJobStatus('ARRIVED')}
+                className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer ${
+                  currentJob.status === 'ARRIVED'
+                    ? 'bg-blue-600 text-white border-blue-400'
+                    : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
+                }`}
+              >
+                ● ARRIVED
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleAdvanceJobStatus('IN_PROGRESS')}
+                className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer ${
+                  currentJob.status === 'IN_PROGRESS'
+                    ? 'bg-amber-600 text-white border-amber-400'
+                    : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
+                }`}
+              >
+                ● ASSISTANCE
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleAdvanceJobStatus('RESOLVED')}
+                className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer ${
+                  currentJob.status === 'RESOLVED' || currentJob.status === 'COMPLETED'
+                    ? 'bg-emerald-600 text-white border-emerald-400'
+                    : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
+                }`}
+              >
+                ✓ COMPLETED
+              </button>
+            </div>
+          </div>
+
           {/* Next Action Buttons: Navigation, Call, Open */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                currentJob.approximateLocation || 'Siliguri'
+                currentJob.approximateLocation || 'Roadside Location'
               )}`}
               target="_blank"
               rel="noreferrer"

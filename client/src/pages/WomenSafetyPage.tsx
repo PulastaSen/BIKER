@@ -198,7 +198,11 @@ export function WomenSafetyPage() {
 
             {/* 4. Find Safe Place */}
             <a
-              href={`https://www.google.com/maps/search/police+station+or+fuel+pump+near+me/@${lat || 26.7271},${lng || 88.3953},14z`}
+              href={
+                lat && lng
+                  ? `https://www.google.com/maps/search/police+station+or+fuel+pump+near+me/@${lat},${lng},14z`
+                  : `https://www.google.com/maps/search/police+station+or+fuel+pump+near+me`
+              }
               target="_blank"
               rel="noreferrer"
               className="p-3.5 rounded-2xl bg-[#121212] hover:bg-white/10 border border-white/15 text-left transition-all active:scale-95 flex items-center justify-between group"

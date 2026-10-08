@@ -75,6 +75,12 @@ export function RequestDetailsPage() {
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [receiptData, setReceiptData] = useState<ServiceReceipt | null>(null);
+  
+  // Section 42: Client Satisfaction
+  const [safeNow, setSafeNow] = useState<'YES' | 'NO' | null>(null);
+  const [solvedProblem, setSolvedProblem] = useState<'YES' | 'PARTLY' | 'NO' | null>(null);
+  const [improvements, setImprovements] = useState<string[]>([]);
+  const [satisfactionSubmitted, setSatisfactionSubmitted] = useState(false);
   const [issueText, setIssueText] = useState('');
 
   const fetchRequest = useCallback(async () => {
@@ -229,12 +235,13 @@ export function RequestDetailsPage() {
     );
   }
 
-  const currentIndex = Math.max(0, STATUS_FLOW.findIndex(s => s.key === request.status));
-  const mapQuery = (typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates.length === 2)
+  const currentIndex = STATUS_FLOW.findIndex(s => s.key === request.status);
+
+  const mapQuery = (typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates.length === 2 && request.location.coordinates[0] !== 0)
     ? `${request.location.coordinates[1]},${request.location.coordinates[0]}`
     : typeof request.location === 'string' && request.location
     ? encodeURIComponent(request.location)
-    : '26.7271,88.3953';
+    : encodeURIComponent('Roadside Assistance Location');
 
   return (
     <div className="min-h-screen bg-[#090D14] text-white pt-20 pb-20 font-sans selection:bg-[#FFF174] selection:text-black">
@@ -489,6 +496,120 @@ export function RequestDetailsPage() {
               <div className="p-5 rounded-3xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 flex items-center gap-3">
                 <CheckCircle size={22} />
                 <span className="font-bold text-xs">Thank you! Your verified rating of {request.rating}★ has been saved.</span>
+              </div>
+            )}
+
+            {/* SECTION 42: CLIENT SATISFACTION SURVEY */}
+            {(request.status === 'COMPLETED' || request.status === 'RESOLVED') && (
+              <div className="p-6 rounded-3xl bg-[#121620] border border-white/10 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                  <h3 className="text-sm font-black uppercase tracking-wider text-white">
+                    Incident Resolution & Safety Confirmation
+                  </h3>
+                  <span className="text-[10px] text-[#FFF174] font-bold">Feedback</span>
+                </div>
+
+                {!satisfactionSubmitted ? (
+                  <div className="space-y-4 text-xs">
+                    {/* 1. Are you safe now? */}
+                    <div className="space-y-2">
+                      <label className="text-gray-300 font-bold block">
+                        ARE YOU SAFE NOW?
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setSafeNow('YES')}
+                          className={`py-3 rounded-xl font-black text-xs border transition-all cursor-pointer ${
+                            safeNow === 'YES'
+                              ? 'bg-emerald-600/30 border-emerald-400 text-emerald-200'
+                              : 'bg-black/40 border-white/10 text-gray-400 hover:text-white'
+                          }`}
+                        >
+                          [YES]
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSafeNow('NO')}
+                          className={`py-3 rounded-xl font-black text-xs border transition-all cursor-pointer ${
+                            safeNow === 'NO'
+                              ? 'bg-red-600/30 border-red-400 text-red-200'
+                              : 'bg-black/40 border-white/10 text-gray-400 hover:text-white'
+                          }`}
+                        >
+                          [NO]
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 2. Did MotoAssist solve your problem? */}
+                    <div className="space-y-2">
+                      <label className="text-gray-300 font-bold block">
+                        DID MOTOASSIST SOLVE YOUR PROBLEM?
+                      </label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {(['YES', 'PARTLY', 'NO'] as const).map((opt) => (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => setSolvedProblem(opt)}
+                            className={`py-2.5 rounded-xl font-black text-xs border transition-all cursor-pointer ${
+                              solvedProblem === opt
+                                ? 'bg-[#FFF174]/20 border-[#FFF174] text-[#FFF174]'
+                                : 'bg-black/40 border-white/10 text-gray-400 hover:text-white'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 3. What could be improved? */}
+                    <div className="space-y-2">
+                      <label className="text-gray-300 font-bold block">
+                        What could be improved?
+                      </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                        {['Response time', 'Provider', 'Communication', 'Price', 'App usability', 'Other'].map((item) => {
+                          const isPicked = improvements.includes(item);
+                          return (
+                            <button
+                              key={item}
+                              type="button"
+                              onClick={() => {
+                                setImprovements(prev =>
+                                  isPicked ? prev.filter(i => i !== item) : [...prev, item]
+                                );
+                              }}
+                              className={`py-2 px-2.5 rounded-lg border text-[11px] font-semibold text-left transition-all cursor-pointer ${
+                                isPicked
+                                  ? 'bg-white/20 border-white text-white'
+                                  : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+                              }`}
+                            >
+                              {item}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setSatisfactionSubmitted(true)}
+                      disabled={!safeNow || !solvedProblem}
+                      className="w-full py-3 bg-[#FFF174] hover:bg-yellow-400 disabled:opacity-50 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer"
+                    >
+                      Save Safety & Service Feedback
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
+                    <CheckCircle size={18} />
+                    <span>Feedback saved. Thank you for helping keep the motorcycle network safe.</span>
+                  </div>
+                )}
               </div>
             )}
 

@@ -18,7 +18,6 @@ import { RiderDashboardPage } from './pages/rider/RiderDashboardPage';
 import { MyRequestsPage } from './pages/rider/MyRequestsPage';
 import { MyBikesPage } from './pages/rider/MyBikesPage';
 import { EmergencyContactsPage } from './pages/rider/EmergencyContactsPage';
-import { RiderProfilePage } from './pages/rider/RiderProfilePage';
 import { SettingsPage } from './pages/rider/SettingsPage';
 import { HelperDashboardPage } from './pages/helper/HelperDashboardPage';
 import { AvailableRequestsPage } from './pages/helper/AvailableRequestsPage';
@@ -43,6 +42,7 @@ import { DiyGuidesPage } from './pages/DiyGuidesPage';
 import { SparePartsPage } from './pages/SparePartsPage';
 import { AccidentAssistantPage } from './pages/AccidentAssistantPage';
 import { RiderRecoveryPage } from './pages/RiderRecoveryPage';
+import { SafetyProfilePage } from './pages/SafetyProfilePage';
 import { PreRideCheckPage } from './pages/PreRideCheckPage';
 import { BikeDocumentsPage } from './pages/BikeDocumentsPage';
 import { PrivacyCenterPage } from './pages/PrivacyCenterPage';
@@ -81,6 +81,7 @@ function AppRoutes() {
           <Route path="/medical-id" element={<PageTransition><MedicalIdPage /></PageTransition>} />
           <Route path="/road-hazards" element={<PageTransition><RoadHazardsPage /></PageTransition>} />
           <Route path="/route-coverage" element={<PageTransition><RouteCoveragePage /></PageTransition>} />
+          <Route path="/safety-profile" element={<PageTransition><SafetyProfilePage /></PageTransition>} />
           <Route path="/save-my-bike" element={<PageTransition><SaveMyBikePage /></PageTransition>} />
           <Route path="/ai-bike-assistant" element={<PageTransition><AiBikeAssistantPage /></PageTransition>} />
           <Route path="/diy-guides" element={<PageTransition><DiyGuidesPage /></PageTransition>} />
@@ -109,7 +110,7 @@ function AppRoutes() {
           <Route path="/rider/safe-ride" element={<PageTransition><SafeRidePage /></PageTransition>} />
           <Route path="/rider/documents" element={<PageTransition><BikeDocumentsPage /></PageTransition>} />
           <Route path="/rider/privacy" element={<PageTransition><PrivacyCenterPage /></PageTransition>} />
-          <Route path="/rider/profile" element={<PageTransition><RiderProfilePage /></PageTransition>} />
+          <Route path="/rider/profile" element={<PageTransition><SafetyProfilePage /></PageTransition>} />
           <Route path="/rider/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
           <Route path="/helper/dashboard" element={<PageTransition><HelperDashboardPage /></PageTransition>} />
           <Route path="/helper/available-requests" element={<PageTransition><AvailableRequestsPage /></PageTransition>} />

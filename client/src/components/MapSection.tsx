@@ -29,11 +29,13 @@ interface MapSectionProps {
 
 export function MapSection({
   markers = [],
-  center = [26.7271, 88.3953], // Siliguri default
+  center,
   zoom = 10,
   height = '400px',
   interactive = true,
 }: MapSectionProps) {
+  const effectiveCenter = center || (markers.length > 0 ? markers[0].position : [20.5937, 78.9629]);
+
   const getIcon = (type?: string, title?: string) => {
     let color = '#101827';
     let label = '';
@@ -46,7 +48,7 @@ export function MapSection({
   return (
     <div style={{ height, width: '100%', borderRadius: '16px', overflow: 'hidden', zIndex: 1, border: '1px solid var(--color-border)' }}>
       <MapContainer 
-        center={center} 
+        center={effectiveCenter} 
         zoom={zoom} 
         style={{ height: '100%', width: '100%' }}
         dragging={interactive}

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { WifiOff, PhoneCall, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { WifiOff, PhoneCall, RefreshCw, CheckCircle2, Users } from 'lucide-react';
+import { fetchFamilyCircle } from '../services/ecosystemApi';
 
 export function OfflineNotice() {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [reconnected, setReconnected] = useState(false);
+  const [familyPhone, setFamilyPhone] = useState('+91 98765 43210');
 
   useEffect(() => {
     const handleOnline = () => {
@@ -20,6 +22,12 @@ export function OfflineNotice() {
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+
+    fetchFamilyCircle().then((members) => {
+      if (members && members.length > 0 && members[0].phone) {
+        setFamilyPhone(members[0].phone);
+      }
+    });
 
     return () => {
       window.removeEventListener('online', handleOnline);
@@ -44,29 +52,33 @@ export function OfflineNotice() {
   return (
     <div 
       role="alert" 
-      className="fixed top-0 inset-x-0 z-[100] bg-[#EF4444] text-white px-4 py-2.5 text-xs font-bold shadow-xl flex flex-wrap items-center justify-between gap-3 animate-fade-in"
+      className="fixed top-0 inset-x-0 z-[100] bg-[#1A0E0E] border-b border-red-500/50 text-white px-4 py-2.5 text-xs font-medium shadow-2xl flex flex-wrap items-center justify-between gap-3 animate-in fade-in"
     >
-      <div className="flex items-center gap-2">
-        <WifiOff size={16} className="animate-pulse shrink-0" />
-        <span>You're offline. Live GPS dispatch is paused. If in immediate danger, call emergency services directly:</span>
+      <div className="flex items-center gap-2 text-red-200">
+        <WifiOff size={16} className="text-red-400 animate-pulse shrink-0" />
+        <span className="font-bold text-white">⚠️ LOW CONNECTIVITY</span>
+        <span className="hidden sm:inline text-gray-300">
+          • Live updates paused. Emergency phone dialers remain active.
+        </span>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 text-xs">
         <a 
           href="tel:112" 
-          className="px-2.5 py-1 bg-white text-black text-[11px] font-black rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-1 shadow-sm"
+          className="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-white text-[11px] font-black rounded-lg transition-colors flex items-center gap-1 shadow-sm"
         >
-          <PhoneCall size={12} className="text-[#EF4444]" /> Call 112
+          <PhoneCall size={12} /> Call 112
         </a>
         <a 
-          href="tel:108" 
-          className="px-2.5 py-1 bg-black/40 text-white text-[11px] font-bold rounded-lg hover:bg-black/60 transition-colors flex items-center gap-1 border border-white/20"
+          href={`tel:${familyPhone.replace(/[^0-9+]/g, '')}`} 
+          className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 border border-white/20"
         >
-          <PhoneCall size={12} /> Call 108
+          <Users size={12} className="text-[#FFF174]" /> Call Family
         </a>
         <button 
+          type="button"
           onClick={() => window.location.reload()}
-          className="px-2.5 py-1 bg-black/20 text-white text-[11px] font-bold rounded-lg hover:bg-black/40 transition-colors flex items-center gap-1"
+          className="px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
           title="Retry network connection"
         >
           <RefreshCw size={12} /> Retry

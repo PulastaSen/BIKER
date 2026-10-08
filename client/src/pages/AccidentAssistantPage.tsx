@@ -84,8 +84,8 @@ export function AccidentAssistantPage() {
     try {
       const payload: Partial<AccidentReport> = {
         location: {
-          coordinates: coords || [88.4312, 26.7271],
-          address: address || 'Siliguri Corridor'
+          coordinates: coords || [0, 0],
+          address: address || 'Highway Incident'
         },
         dateTime: new Date().toISOString(),
         injuryReported: isInjured === true,

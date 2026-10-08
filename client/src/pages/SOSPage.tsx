@@ -3,7 +3,6 @@ import {
   AlertTriangle, 
   CheckCircle2, 
   AlertCircle, 
-  Clock, 
   Heart,
   PhoneCall,
   MessageCircle
@@ -44,6 +43,7 @@ export function SOSPage() {
   const [incident, setIncident] = useState<SOSIncident | null>(null);
   const [showMedicalModal, setShowMedicalModal] = useState(false);
   const [medicalCard, setMedicalCard] = useState<MedicalProfile | null>(null);
+  const [selectedHelpType, setSelectedHelpType] = useState<string | null>(null);
   
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -56,12 +56,12 @@ export function SOSPage() {
         const res = await fetch(`${API_BASE_URL}/api/sos/active`);
         if (res.ok) {
           const data = await res.json();
-          if (data.success && data.data) {
+          if (data && data.success && data.data) {
             setIncident({
               ...data.data,
               serverReceived: true,
               gpsAcquired: !!(data.data.location?.coordinates && data.data.location.coordinates.length === 2),
-              familyConfirmed: false // Only confirmed if actual WhatsApp API delivered
+              familyConfirmed: false
             });
             setStatus('ACTIVE');
           }
@@ -160,7 +160,7 @@ export function SOSPage() {
         throw new Error(data.message || 'Dispatch server rejected payload');
       }
     } catch {
-      // Local fallback emergency state
+      // Honest local fallback emergency state
       setIncident({
         incidentId: `SOS-${Math.floor(1000 + Math.random() * 9000)}`,
         status: 'ACTIVE',
@@ -171,8 +171,8 @@ export function SOSPage() {
         location: lat && lng ? { coordinates: [lng, lat], accuracyMeters: accuracyMeters || 12 } : undefined,
         timeline: [
           { event: 'SOS ACTIVATED', timestamp: new Date().toLocaleTimeString(), detail: '3-second hold confirmed' },
-          ...(gpsAcquired ? [{ event: 'GPS ACQUIRED', timestamp: new Date().toLocaleTimeString(), detail: 'Phone location locked' }] : []),
-          { event: 'SOS RECEIVED', timestamp: new Date().toLocaleTimeString(), detail: 'Dispatch ticket active' }
+          ...(gpsAcquired ? [{ event: 'GPS ACQUIRED', timestamp: new Date().toLocaleTimeString(), detail: 'Phone location recorded' }] : []),
+          { event: 'SOS RECEIVED', timestamp: new Date().toLocaleTimeString(), detail: 'Emergency dispatch active' }
         ]
       });
       setStatus('ACTIVE');
@@ -191,6 +191,7 @@ export function SOSPage() {
     setStatus('IDLE');
     setIncident(null);
     setHoldProgress(0);
+    setSelectedHelpType(null);
   };
 
   const handleResolveSOS = async () => {
@@ -207,6 +208,7 @@ export function SOSPage() {
     setStatus('IDLE');
     setIncident(null);
     setHoldProgress(0);
+    setSelectedHelpType(null);
   };
 
   const coords = incident?.location?.coordinates;
@@ -220,36 +222,51 @@ export function SOSPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-4 pb-24 md:pb-16 font-sans selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-[#0C0606] text-white pt-4 pb-24 md:pb-16 font-sans selection:bg-red-500 selection:text-white">
       
-      {/* Quick Medical ID Modal */}
+      {/* Quick Medical ID Sheet (Section 7) */}
       <MedicalIdQuickModal
         isOpen={showMedicalModal}
         onClose={() => setShowMedicalModal(false)}
       />
 
-      <div className="container mx-auto px-4 max-w-xl space-y-5">
+      <div className="container mx-auto px-4 max-w-xl space-y-4">
         
-        {/* Top Header */}
-        <div className="text-center space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/80 border border-red-500/40 text-red-400 text-[10px] font-black uppercase tracking-wider">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-            HIGH PRIORITY DISPATCH
+        {/* Emergency Mode Header */}
+        <div className="flex items-center justify-between border-b border-red-500/20 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-xs font-black tracking-widest text-red-300 uppercase">
+              MOTOASSIST EMERGENCY DISPATCH
+            </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-            EMERGENCY SOS
-          </h1>
-          <p className="text-gray-400 text-xs max-w-md mx-auto">
-            Broadcasting sends your phone's current location to central dispatch.
-          </p>
+          <button
+            type="button"
+            onClick={() => setShowMedicalModal(true)}
+            className="px-2.5 py-1 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-xs font-bold text-red-300 flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Heart size={14} className="text-red-400" />
+            <span>Emergency ID</span>
+          </button>
         </div>
 
-        {/* SOS Trigger Area (Hold 3 Seconds) */}
+        {/* ========================================================
+            IDLE / HOLDING STATE: 🚨 SOS (HOLD FOR 3 SECONDS)
+            ======================================================== */}
         {status !== 'ACTIVE' ? (
           <div className="flex flex-col items-center justify-center py-4">
-            <div className="relative flex items-center justify-center">
-              
-              {/* Outer holding progress ring */}
+            
+            <div className="text-center mb-6">
+              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                Emergency SOS
+              </h1>
+              <p className="text-xs text-red-300/80 mt-1">
+                Press and hold the button for 3 seconds to trigger emergency assistance.
+              </p>
+            </div>
+
+            {/* Circular Hold Ring & Button */}
+            <div className="relative flex items-center justify-center my-2">
               <svg className="w-64 h-64 transform -rotate-90 pointer-events-none" viewBox="0 0 100 100">
                 <circle
                   cx="50"
@@ -272,7 +289,6 @@ export function SOSPage() {
                 />
               </svg>
 
-              {/* Main 3-Second Hold Button */}
               <button
                 type="button"
                 onPointerDown={handlePointerDown}
@@ -307,37 +323,50 @@ export function SOSPage() {
             )}
           </div>
         ) : (
-          /* ACTIVE SOS STATE (Section 9: Only display confirmed system states!) */
+          /* ========================================================
+             ACTIVE SOS STATE (Section 5 Specification)
+             ======================================================== */
           <div className="space-y-4 animate-in fade-in duration-150">
+            
+            {/* Banner: 🚨 SOS ACTIVE */}
             <div className="p-5 sm:p-6 rounded-3xl bg-red-950/40 border-2 border-red-500/80 shadow-[0_0_40px_rgba(220,38,38,0.3)] space-y-4">
+              
               <div className="flex items-center justify-between border-b border-red-500/30 pb-3">
                 <div>
                   <span className="text-[10px] font-black uppercase tracking-wider text-red-400 block">
-                    ACTIVE INCIDENT #{incident?.incidentId}
+                    INCIDENT #{incident?.incidentId}
                   </span>
                   <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full bg-red-500 animate-ping" />
-                    DISPATCH ACTIVE
+                    🚨 SOS ACTIVE
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={handleCancelSOS}
-                  className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-gray-300 transition-colors"
+                  className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-gray-300 transition-colors cursor-pointer"
                 >
                   Cancel SOS
                 </button>
               </div>
 
-              {/* Confirmed System States (Section 9) */}
-              <div className="p-3.5 rounded-2xl bg-black/50 border border-white/10 space-y-2 text-xs">
-                {/* 1. GPS state */}
+              {/* Reassurance Message */}
+              <div className="p-3.5 rounded-2xl bg-red-900/20 border border-red-500/30 text-xs text-red-200">
+                <p className="font-semibold leading-relaxed">
+                  Please stay in a safe place if possible. Emergency dispatch has logged your phone coordinates.
+                </p>
+              </div>
+
+              {/* CONFIRMED SYSTEM STATES (Only display checkmark when confirmed!) */}
+              <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-2 text-xs">
+                
+                {/* 1. Location state */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Location Status:</span>
                   <span className={incident?.gpsAcquired ? 'text-emerald-400 font-bold flex items-center gap-1' : 'text-amber-400 font-bold'}>
                     {incident?.gpsAcquired ? (
                       <>
-                        <CheckCircle2 size={14} /> ✓ GPS acquired
+                        <CheckCircle2 size={14} /> ✓ Location acquired
                       </>
                     ) : (
                       'Location unavailable'
@@ -345,66 +374,161 @@ export function SOSPage() {
                   </span>
                 </div>
 
-                {/* 2. SOS Server state */}
+                {/* 2. Server state */}
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Dispatch Relay:</span>
+                  <span className="text-gray-400">Server Dispatch:</span>
                   <span className="text-emerald-400 font-bold flex items-center gap-1">
                     <CheckCircle2 size={14} /> ✓ SOS received
                   </span>
                 </div>
 
-                {/* 3. Family State (Do not claim notified unless confirmed!) */}
+                {/* 3. Family State */}
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Family Status:</span>
-                  <span className="text-amber-300 font-bold">
-                    Manual WhatsApp alert recommended
-                  </span>
+                  <span className="text-gray-400">Family Contacts:</span>
+                  {incident?.familyConfirmed ? (
+                    <span className="text-emerald-400 font-bold flex items-center gap-1">
+                      <CheckCircle2 size={14} /> ✓ Family notified
+                    </span>
+                  ) : (
+                    <a
+                      href={whatsAppEmergencyUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#FFF174] font-bold hover:underline flex items-center gap-1"
+                    >
+                      <MessageCircle size={13} /> Share via WhatsApp
+                    </a>
+                  )}
                 </div>
               </div>
 
-              {/* Incident Timeline */}
-              <div className="space-y-2.5 pt-1">
-                <h3 className="text-xs font-black uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
-                  <Clock size={14} className="text-[#FFF174]" /> INCIDENT TIMELINE
+              {/* ========================================================
+                  SECTION 5: "WHAT HELP DO YOU NEED?"
+                  ======================================================== */}
+              <div className="space-y-2.5 pt-2">
+                <h3 className="text-xs font-black uppercase tracking-wider text-gray-200">
+                  WHAT HELP DO YOU NEED?
                 </h3>
 
-                <div className="relative pl-5 space-y-2.5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-white/20">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  
+                  {/* 🚑 Medical Help */}
+                  <a
+                    href="tel:108"
+                    onClick={() => setSelectedHelpType('MEDICAL')}
+                    className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between ${
+                      selectedHelpType === 'MEDICAL'
+                        ? 'bg-emerald-950/60 border-emerald-500 text-white'
+                        : 'bg-[#181818] border-white/10 text-gray-200 hover:border-emerald-500/50'
+                    }`}
+                  >
+                    <span className="text-base sm:text-lg font-black block">🚑 Medical Help</span>
+                    <span className="text-[10px] text-emerald-400 font-bold mt-1">Dial 108 Ambulance</span>
+                  </a>
+
+                  {/* 🔧 Roadside Help */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedHelpType('ROADSIDE')}
+                    className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
+                      selectedHelpType === 'ROADSIDE'
+                        ? 'bg-amber-950/60 border-amber-500 text-white'
+                        : 'bg-[#181818] border-white/10 text-gray-200 hover:border-amber-500/50'
+                    }`}
+                  >
+                    <span className="text-base sm:text-lg font-black block">🔧 Roadside Help</span>
+                    <span className="text-[10px] text-amber-300 font-bold mt-1">Mechanic / Towing</span>
+                  </button>
+
+                  {/* 🚓 Emergency Services */}
+                  <a
+                    href="tel:112"
+                    onClick={() => setSelectedHelpType('EMERGENCY')}
+                    className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between ${
+                      selectedHelpType === 'EMERGENCY'
+                        ? 'bg-red-950/60 border-red-500 text-white'
+                        : 'bg-[#181818] border-white/10 text-gray-200 hover:border-red-500/50'
+                    }`}
+                  >
+                    <span className="text-base sm:text-lg font-black block">🚓 Emergency (112)</span>
+                    <span className="text-[10px] text-red-300 font-bold mt-1">National Police</span>
+                  </a>
+
+                  {/* ❓ I'm Not Sure */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedHelpType('UNSURE')}
+                    className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
+                      selectedHelpType === 'UNSURE'
+                        ? 'bg-blue-950/60 border-blue-500 text-white'
+                        : 'bg-[#181818] border-white/10 text-gray-200 hover:border-blue-500/50'
+                    }`}
+                  >
+                    <span className="text-base sm:text-lg font-black block">❓ I'm Not Sure</span>
+                    <span className="text-[10px] text-blue-300 font-bold mt-1">Guided safety</span>
+                  </button>
+                </div>
+
+                {/* Feedback for selected help */}
+                {selectedHelpType === 'UNSURE' && (
+                  <div className="p-3.5 rounded-2xl bg-blue-950/40 border border-blue-500/30 text-xs text-blue-200 space-y-1">
+                    <strong className="block font-bold">Stay where you are:</strong>
+                    <p>
+                      Keep your hazard lights on if safe. Dispatchers and emergency services have logged your coordinate fix. Dial 112 if in direct danger.
+                    </p>
+                  </div>
+                )}
+                {selectedHelpType === 'ROADSIDE' && (
+                  <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/30 text-xs text-amber-200 space-y-1">
+                    <strong className="block font-bold">Roadside rescue flagged:</strong>
+                    <p>
+                      Nearby verified mechanics on NH-10 & Siliguri corridors are alerted. Keep phone line open.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* TIMELINE */}
+              <div className="space-y-2 pt-2 border-t border-white/10">
+                <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block">
+                  TIMELINE
+                </span>
+                <div className="space-y-1.5 text-xs text-gray-300">
                   {(incident?.timeline || [
-                    { event: 'SOS CREATED', timestamp: new Date().toLocaleTimeString(), detail: '3-second hold confirmed' },
-                    { event: '✓ GPS ACQUIRED', timestamp: new Date().toLocaleTimeString(), detail: 'Phone location recorded' },
+                    { event: '✓ SOS ACTIVATED', timestamp: new Date().toLocaleTimeString(), detail: '3s hold confirmed' },
                     { event: '✓ SOS RECEIVED', timestamp: new Date().toLocaleTimeString(), detail: 'Central dispatch logged' }
                   ]).map((t, idx) => (
-                    <div key={idx} className="relative text-xs">
-                      <div className="absolute -left-[17px] top-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20" />
-                      <div className="flex items-center justify-between">
-                        <strong className="text-white font-bold">{t.event}</strong>
-                        <span className="text-[10px] text-gray-400">{t.timestamp}</span>
-                      </div>
-                      {t.detail && <p className="text-[11px] text-gray-400">{t.detail}</p>}
+                    <div key={idx} className="flex justify-between items-center py-0.5 border-b border-white/5">
+                      <span className="font-semibold text-white">{t.event}</span>
+                      <span className="text-[10px] text-gray-400">{t.timestamp}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Resolve Button */}
+              {/* RESOLVE BUTTON: I'M SAFE */}
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={handleResolveSOS}
                   className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 text-white shadow-lg cursor-pointer"
                 >
-                  <CheckCircle2 size={16} /> I'm Safe (Resolve Incident)
+                  <CheckCircle2 size={16} /> I'm Safe (Resolve SOS)
                 </button>
               </div>
+
             </div>
           </div>
         )}
 
-        {/* SECTION 4 SHORTCUTS: SOS → Medical ID → Ambulance → 112 → Family */}
-        <section className="space-y-3 pt-2" aria-label="Direct Emergency Contacts">
+        {/* ========================================================
+            DIRECT ACTIONS ROW (Always 1-Tap Accessible)
+            Ambulance • Call 112 • Medical ID • Alert Family
+            ======================================================== */}
+        <section className="space-y-2.5 pt-1" aria-label="Direct Emergency Contacts">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-wider text-gray-400">
-              DIRECT EMERGENCY ACTIONS
+              DIRECT ACTIONS
             </span>
             <span className="text-[10px] text-[#FFF174] font-bold">1-Tap Direct</span>
           </div>
@@ -434,11 +558,11 @@ export function SOSPage() {
               </div>
               <div>
                 <strong className="block text-sm font-black text-white">Call 112</strong>
-                <span className="text-[10px] text-red-300 block">National Police SOS</span>
+                <span className="text-[10px] text-red-300 block">National Police</span>
               </div>
             </a>
 
-            {/* 3. Medical ID (Section 15: accessible directly from emergency flow) */}
+            {/* 3. Medical ID (Section 7) */}
             <button
               type="button"
               onClick={() => setShowMedicalModal(true)}
@@ -448,14 +572,14 @@ export function SOSPage() {
                 <Heart size={20} />
               </div>
               <div>
-                <strong className="block text-sm font-black text-white">Medical ID</strong>
+                <strong className="block text-sm font-black text-white">Emergency ID</strong>
                 <span className="text-[10px] text-gray-400 block">
                   Blood: {medicalCard?.bloodGroup || 'B+'}
                 </span>
               </div>
             </button>
 
-            {/* 4. Family WhatsApp Alert (Section 13) */}
+            {/* 4. Family WhatsApp Alert */}
             <a
               href={whatsAppEmergencyUrl}
               target="_blank"

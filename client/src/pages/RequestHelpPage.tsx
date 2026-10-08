@@ -146,7 +146,7 @@ export function RequestHelpPage() {
           problemCategory: category,
           location: { 
             type: 'Point',
-            coordinates: effectiveCoords || [88.3953, 26.7271],
+            coordinates: effectiveCoords || [0, 0],
             address: effectiveAddress,
             accuracyMeters: accuracy || 15
           },
