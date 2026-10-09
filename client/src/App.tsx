@@ -46,6 +46,10 @@ import { SafetyProfilePage } from './pages/SafetyProfilePage';
 import { PreRideCheckPage } from './pages/PreRideCheckPage';
 import { BikeDocumentsPage } from './pages/BikeDocumentsPage';
 import { PrivacyCenterPage } from './pages/PrivacyCenterPage';
+import { SmartEntryScreen } from './pages/SmartEntryScreen';
+import { EmergencyAssistPage } from './pages/EmergencyAssistPage';
+import { VerificationCenterPage } from './pages/VerificationCenterPage';
+import { useAuth } from './context/AuthContext';
 import { ScrollToTop } from './components/ScrollToTop';
 import { OfflineNotice } from './components/OfflineNotice';
 
@@ -63,13 +67,33 @@ function PageTransition({ children }: { children: React.ReactNode }) {
   );
 }
 
+function SmartEntryOrDashboard() {
+  const { user } = useAuth();
+  if (!user) {
+    return <SmartEntryScreen />;
+  }
+  if (user.role === 'HELPER') {
+    return <HelperDashboardPage />;
+  }
+  if (user.role === 'ADMIN') {
+    return <AdminDashboardPage />;
+  }
+  return <ResponsiveHome />;
+}
+
 function AppRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route element={<PublicLayout />}>
-          <Route path="/" element={<PageTransition><ResponsiveHome /></PageTransition>} />
+          <Route path="/" element={<PageTransition><SmartEntryOrDashboard /></PageTransition>} />
+          <Route path="/entry" element={<PageTransition><SmartEntryScreen /></PageTransition>} />
+          <Route path="/emergency" element={<PageTransition><EmergencyAssistPage /></PageTransition>} />
+          <Route path="/emergency-assist" element={<PageTransition><EmergencyAssistPage /></PageTransition>} />
+          <Route path="/verification" element={<PageTransition><VerificationCenterPage /></PageTransition>} />
+          <Route path="/rider/verification" element={<PageTransition><VerificationCenterPage /></PageTransition>} />
+          <Route path="/helper/verification" element={<PageTransition><VerificationCenterPage /></PageTransition>} />
           <Route path="/im-stranded" element={<PageTransition><ImStrandedPage /></PageTransition>} />
           <Route path="/sos" element={<PageTransition><SOSPage /></PageTransition>} />
           <Route path="/how-it-works" element={<PageTransition><HowItWorksPage /></PageTransition>} />
@@ -110,11 +134,13 @@ function AppRoutes() {
           <Route path="/rider/safe-ride" element={<PageTransition><SafeRidePage /></PageTransition>} />
           <Route path="/rider/documents" element={<PageTransition><BikeDocumentsPage /></PageTransition>} />
           <Route path="/rider/privacy" element={<PageTransition><PrivacyCenterPage /></PageTransition>} />
+          <Route path="/rider/verification" element={<PageTransition><VerificationCenterPage /></PageTransition>} />
           <Route path="/rider/profile" element={<PageTransition><SafetyProfilePage /></PageTransition>} />
           <Route path="/rider/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
           <Route path="/helper/dashboard" element={<PageTransition><HelperDashboardPage /></PageTransition>} />
           <Route path="/helper/available-requests" element={<PageTransition><AvailableRequestsPage /></PageTransition>} />
           <Route path="/helper/my-assists" element={<PageTransition><HelperAssistsPage /></PageTransition>} />
+          <Route path="/helper/verification" element={<PageTransition><VerificationCenterPage /></PageTransition>} />
           <Route path="/helper/profile" element={<PageTransition><HelperProfilePage /></PageTransition>} />
           <Route path="/admin/dashboard" element={<PageTransition><AdminDashboardPage /></PageTransition>} />
           <Route path="/admin/helpers" element={<PageTransition><AdminHelpersPage /></PageTransition>} />

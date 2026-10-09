@@ -15,6 +15,9 @@ export function StickyEmergencySOS() {
   // Hide on dedicated emergency pages to avoid redundancy
   const isEmergencyPage =
     location.pathname === '/sos' ||
+    location.pathname === '/emergency' ||
+    location.pathname === '/emergency-assist' ||
+    location.pathname === '/entry' ||
     location.pathname === '/accident-assistant';
 
   useEffect(() => {

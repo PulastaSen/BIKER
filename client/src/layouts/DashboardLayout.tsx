@@ -53,6 +53,7 @@ export function DashboardLayout() {
     { to: '/rider/requests', label: 'My Help Requests', icon: Clock },
     { to: '/rider/bikes', label: 'My Garage (Bikes)', icon: BikeIcon },
     { to: '/rider/emergency-contacts', label: 'Emergency Contacts', icon: PhoneCall },
+    { to: '/rider/verification', label: 'Verification & Docs', icon: ShieldCheck },
     { to: '/rider/profile', label: 'Rider Profile', icon: UserIcon },
     { to: '/rider/settings', label: 'Settings', icon: Settings },
   ];
@@ -61,6 +62,7 @@ export function DashboardLayout() {
     { to: '/helper/dashboard', label: 'Helper Dashboard', icon: LayoutDashboard },
     { to: '/helper/available-requests', label: 'Available Requests Feed', icon: Search },
     { to: '/helper/my-assists', label: 'My Assistance Log', icon: Clock },
+    { to: '/helper/verification', label: 'Identity Verification', icon: ShieldCheck },
     { to: '/helper/profile', label: 'Helper Profile & Skills', icon: Wrench },
   ];
 

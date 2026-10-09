@@ -6,9 +6,13 @@ export function MobileBottomNav() {
   const location = useLocation();
   const { user } = useAuth();
 
-  // If in dedicated emergency mode, do not display standard navigation
+  // If in dedicated emergency mode or initial decision screen, do not display standard navigation
   const isEmergencyMode =
-    location.pathname === '/sos' || location.pathname === '/accident-assistant';
+    location.pathname === '/sos' ||
+    location.pathname === '/emergency' ||
+    location.pathname === '/emergency-assist' ||
+    location.pathname === '/entry' ||
+    location.pathname === '/accident-assistant';
 
   if (isEmergencyMode) {
     return null;

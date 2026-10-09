@@ -18,6 +18,7 @@ import documentRoutes from './routes/documentRoutes.js';
 import inventoryRoutes from './routes/inventoryRoutes.js';
 import receiptRoutes from './routes/receiptRoutes.js';
 import crashRoutes from './routes/crashRoutes.js';
+import verificationRoutes from './routes/verificationRoutes.js';
 
 const app = express();
 
@@ -85,6 +86,7 @@ app.use('/api/documents', documentRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/receipts', receiptRoutes);
 app.use('/api/crash', crashRoutes);
+app.use('/api/verification', verificationRoutes);
 
 // Global Production-Safe Error Handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

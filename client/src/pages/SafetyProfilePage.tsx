@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   User, 
   Bike as BikeIcon, 
@@ -10,11 +10,14 @@ import {
   Plus, 
   Trash2, 
   Check, 
-  ShieldAlert,
-  FileText,
-  Lock,
-  Calendar,
-  ShieldCheck
+  ShieldAlert, 
+  FileText, 
+  Lock, 
+  Calendar, 
+  ShieldCheck, 
+  ChevronRight, 
+  Settings as SettingsIcon, 
+  MapPin 
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getBikes, saveBike, addUser } from '../utils/appStorage';
@@ -23,17 +26,18 @@ import {
   saveMedicalProfile, 
   fetchFamilyCircle, 
   addFamilyMember, 
-  removeFamilyMember,
+  removeFamilyMember, 
   fetchBikeDocuments,
   addBikeDocument,
   deleteBikeDocument
 } from '../services/ecosystemApi';
-import type { FamilyMember, RiderDocument, RiderDocumentType } from '../types/app';
+import { getVerificationStatus, type VerificationRecord } from '../services/verificationApi';
+import type { FamilyMember, RiderDocument, RiderDocumentType, FuelType } from '../types/app';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'UNKNOWN'] as const;
 
 const DOCUMENT_TYPE_LABELS: Record<RiderDocumentType, { label: string; primary?: boolean }> = {
-  DRIVING_LICENSE: { label: 'Driving Licence', primary: true },
+  DRIVING_LICENSE: { label: 'Driving Licence (ID)', primary: true },
   RC: { label: 'Vehicle Registration (RC)' },
   INSURANCE: { label: 'Motorcycle Insurance' },
   PUC: { label: 'Pollution Under Control (PUC)' },
@@ -44,40 +48,52 @@ export function SafetyProfilePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // 1. Personal
+  // 1. Personal Information
   const [name, setName] = useState(user?.name || 'Pulasta Sen');
   const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
   const [email, setEmail] = useState(user?.email || 'pulasta@example.com');
+  const [emergencyNotes, setEmergencyNotes] = useState('Solo touring rider. Blood donor registered.');
 
-  // 2. Bike
+  // 2. My Bike
   const [bikeBrand, setBikeBrand] = useState('KTM');
   const [bikeModel, setBikeModel] = useState('Adventure 250');
   const [bikeYear, setBikeYear] = useState('2023');
   const [bikeReg, setBikeReg] = useState('WB-74-AX-1024');
+  const [fuelType, setFuelType] = useState<FuelType>('PETROL');
 
-  // 3. Medical
-  const [bloodGroup, setBloodGroup] = useState<typeof BLOOD_GROUPS[number]>('B+');
-  const [allergies, setAllergies] = useState('None declared');
-  const [criticalInfo, setCriticalInfo] = useState('No pre-existing critical conditions');
-  const [medications, setMedications] = useState('None');
-
-  // 4. Family Contacts
+  // 3. Emergency Contacts
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [newContactRel, setNewContactRel] = useState<'PARENT' | 'PARTNER' | 'FRIEND' | 'SIBLING'>('PARENT');
 
-  // 5. Rider Documents
+  // 4. Medical ID
+  const [bloodGroup, setBloodGroup] = useState<typeof BLOOD_GROUPS[number]>('B+');
+  const [allergies, setAllergies] = useState('None declared');
+  const [criticalInfo, setCriticalInfo] = useState('No pre-existing critical conditions');
+  const [medications, setMedications] = useState('None');
+
+  // 5. Verification & Documents
+  const [verStatus, setVerStatus] = useState<VerificationRecord | null>(null);
   const [documents, setDocuments] = useState<RiderDocument[]>([]);
-  const [newDocType, setNewDocType] = useState<RiderDocumentType>('DRIVING_LICENSE');
+  const [newDocType, setNewDocType] = useState<RiderDocumentType>('RC');
   const [newDocNumber, setNewDocNumber] = useState('');
   const [newDocIssuer, setNewDocIssuer] = useState('');
   const [newDocExpiry, setNewDocExpiry] = useState('');
 
-  // 6. Safety Preferences
-  const [shareLocationAuto, setShareLocationAuto] = useState(true);
+  // 6. Family Safety
+  const [liveRideSharing, setLiveRideSharing] = useState(true);
+  const [safetyTimerAlert, setSafetyTimerAlert] = useState(true);
   const [autoEscalate112, setAutoEscalate112] = useState(false);
+
+  // 7. Privacy & Location
+  const [shareLocationAuto, setShareLocationAuto] = useState(true);
+  const [telemetryConsent, setTelemetryConsent] = useState(true);
+  const [highAccuracyGps, setHighAccuracyGps] = useState(true);
+
+  // 8. Settings
   const [commChannel, setCommChannel] = useState<'WHATSAPP' | 'SMS' | 'PHONE'>('WHATSAPP');
+  const [soundAlerts, setSoundAlerts] = useState(true);
 
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -90,6 +106,7 @@ export function SafetyProfilePage() {
       setBikeModel(bikes[0].model);
       setBikeReg(bikes[0].registrationNumber);
       if (bikes[0].year) setBikeYear(String(bikes[0].year));
+      if (bikes[0].fuelType) setFuelType(bikes[0].fuelType);
     }
 
     // Load medical
@@ -122,17 +139,6 @@ export function SafetyProfilePage() {
           {
             id: 'fam-2',
             userId: 'rider-1',
-            name: 'Dad',
-            relationship: 'PARENT',
-            phone: '+91 98765 22222',
-            canViewLiveRide: true,
-            notifyOnSOS: true,
-            notifyOnSafetyTimer: true,
-            createdAt: new Date().toISOString()
-          },
-          {
-            id: 'fam-3',
-            userId: 'rider-1',
             name: 'Partner',
             relationship: 'PARTNER',
             phone: '+91 98765 33333',
@@ -145,23 +151,17 @@ export function SafetyProfilePage() {
       }
     });
 
-    // Load documents
+    // Load verification status from backend
+    getVerificationStatus().then((record) => {
+      if (record) setVerStatus(record);
+    });
+
+    // Load vehicle documents
     fetchBikeDocuments('rider-personal').then((docs) => {
       if (docs && docs.length > 0) {
         setDocuments(docs as any);
       } else {
-        // Initial verified default documents
         setDocuments([
-          {
-            id: 'doc-dl-1',
-            documentId: 'DOC-DL-001',
-            docType: 'DRIVING_LICENSE',
-            documentNumber: 'WB-24-2018-009124',
-            issuer: 'Siliguri RTO',
-            expiryDate: '2038-06-15',
-            isVerified: true,
-            verificationStatus: 'VERIFIED'
-          },
           {
             id: 'doc-rc-2',
             documentId: 'DOC-RC-002',
@@ -187,7 +187,7 @@ export function SafetyProfilePage() {
       }
     });
 
-    // Load safety preferences
+    // Load saved preferences
     const prefs = localStorage.getItem('safety_profile_prefs');
     if (prefs) {
       try {
@@ -195,6 +195,11 @@ export function SafetyProfilePage() {
         if (parsed.shareLocationAuto !== undefined) setShareLocationAuto(parsed.shareLocationAuto);
         if (parsed.autoEscalate112 !== undefined) setAutoEscalate112(parsed.autoEscalate112);
         if (parsed.commChannel) setCommChannel(parsed.commChannel);
+        if (parsed.liveRideSharing !== undefined) setLiveRideSharing(parsed.liveRideSharing);
+        if (parsed.safetyTimerAlert !== undefined) setSafetyTimerAlert(parsed.safetyTimerAlert);
+        if (parsed.telemetryConsent !== undefined) setTelemetryConsent(parsed.telemetryConsent);
+        if (parsed.highAccuracyGps !== undefined) setHighAccuracyGps(parsed.highAccuracyGps);
+        if (parsed.soundAlerts !== undefined) setSoundAlerts(parsed.soundAlerts);
       } catch {
         // ignore
       }
@@ -239,7 +244,7 @@ export function SafetyProfilePage() {
     setFamilyMembers((prev) => prev.filter((m) => m.id !== id));
   };
 
-  // Document Management (Section 2)
+  // Vehicle Document Management
   const handleAddDocument = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newDocNumber.trim()) return;
@@ -296,24 +301,29 @@ export function SafetyProfilePage() {
         model: bikeModel,
         registrationNumber: bikeReg,
         year: parseInt(bikeYear, 10) || 2023,
-        fuelType: 'PETROL',
+        fuelType,
         isPrimary: true
       });
 
-      // 2. Medical
+      // 4. Medical
       await saveMedicalProfile({
         bloodGroup,
         allergies: allergies.split(',').map((s) => s.trim()).filter(Boolean),
         medicalConditions: criticalInfo.split(',').map((s) => s.trim()).filter(Boolean),
         medications: medications.split(',').map((s) => s.trim()).filter(Boolean),
-        emergencyNotes: criticalInfo
+        emergencyNotes: `${emergencyNotes} | Notes: ${criticalInfo}`
       });
 
-      // 3. Safety Prefs
+      // 6, 7, 8. Preferences
       localStorage.setItem('safety_profile_prefs', JSON.stringify({
         shareLocationAuto,
         autoEscalate112,
-        commChannel
+        commChannel,
+        liveRideSharing,
+        safetyTimerAlert,
+        telemetryConsent,
+        highAccuracyGps,
+        soundAlerts
       }));
 
       setSavedSuccess(true);
@@ -326,8 +336,8 @@ export function SafetyProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white pt-6 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
-      <div className="max-w-xl mx-auto px-4 sm:px-6 space-y-6">
+    <div className="min-h-screen bg-[#090909] text-white pt-6 pb-28 font-sans selection:bg-[#FFF174] selection:text-black">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 space-y-6">
         
         {/* TOP BAR */}
         <div className="flex items-center justify-between">
@@ -340,34 +350,35 @@ export function SafetyProfilePage() {
             <span>Home</span>
           </button>
           <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-1 rounded-full">
-            ● Setup Once • Auto-Emergency
+            ● Rider Safety Profile • 8 Groups
           </span>
         </div>
 
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            My Safety Profile
+            Rider Profile & Settings
           </h1>
           <p className="text-xs text-gray-400 mt-1">
-            Configured once. When you press SOS, MotoAssist already knows who you are, your bike, your contacts, and medical data.
+            Configure your personal details, bike, emergency contacts, medical ID, verification, family safety, privacy and settings.
           </p>
         </div>
 
         {savedSuccess && (
           <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-300 text-xs flex items-center gap-2">
             <Check size={16} />
-            <span>Safety profile saved! Ready for 1-tap emergency rescue.</span>
+            <span>Safety profile updated successfully! All emergency flows synchronized.</span>
           </div>
         )}
 
         <form onSubmit={handleSaveAll} className="space-y-6">
           
-          {/* 1. PERSONAL INFORMATION */}
-          <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3">
+          {/* GROUP 1: PERSONAL INFORMATION */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#111111] border border-white/10 space-y-3">
             <div className="flex items-center gap-2 text-white">
               <User size={18} className="text-[#FFF174]" />
               <h2 className="text-sm font-bold uppercase tracking-wider">1. Personal Information</h2>
             </div>
+            <p className="text-[11px] text-gray-400">Basic rider details used to identify you during emergency dispatches.</p>
 
             <div className="space-y-3 text-xs">
               <div>
@@ -381,7 +392,7 @@ export function SafetyProfilePage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-gray-400 mb-1 font-semibold">Phone Number</label>
                   <input
@@ -402,17 +413,35 @@ export function SafetyProfilePage() {
                   />
                 </div>
               </div>
+
+              <div>
+                <label className="block text-gray-400 mb-1 font-semibold">Rider Bio / Notes</label>
+                <input
+                  type="text"
+                  value={emergencyNotes}
+                  onChange={(e) => setEmergencyNotes(e.target.value)}
+                  placeholder="e.g. Solo rider, Long-distance tourer"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                />
+              </div>
             </div>
           </section>
 
-          {/* 2. MY BIKE */}
-          <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3">
-            <div className="flex items-center gap-2 text-white">
-              <BikeIcon size={18} className="text-emerald-400" />
-              <h2 className="text-sm font-bold uppercase tracking-wider">2. My Motorcycle</h2>
+          {/* GROUP 2: MY BIKE */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#111111] border border-white/10 space-y-3">
+            <div className="flex items-center justify-between text-white">
+              <div className="flex items-center gap-2">
+                <BikeIcon size={18} className="text-emerald-400" />
+                <h2 className="text-sm font-bold uppercase tracking-wider">2. My Bike</h2>
+              </div>
+              <Link to="/save-my-bike" className="text-[11px] text-[#FFF174] hover:underline flex items-center gap-1">
+                <span>Garage details</span>
+                <ChevronRight size={13} />
+              </Link>
             </div>
+            <p className="text-[11px] text-gray-400">Your primary motorcycle specifications for accurate roadside dispatch and spare parts.</p>
 
-            <div className="grid grid-cols-3 gap-2.5 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
               <div>
                 <label className="block text-gray-400 mb-1 font-semibold">Brand</label>
                 <input
@@ -444,10 +473,23 @@ export function SafetyProfilePage() {
                   className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
                 />
               </div>
+
+              <div>
+                <label className="block text-gray-400 mb-1 font-semibold">Fuel Type</label>
+                <select
+                  value={fuelType}
+                  onChange={(e) => setFuelType(e.target.value as FuelType)}
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                >
+                  <option value="PETROL">Petrol</option>
+                  <option value="ELECTRIC">Electric (EV)</option>
+                  <option value="HYBRID">Hybrid</option>
+                </select>
+              </div>
             </div>
 
             <div className="text-xs">
-              <label className="block text-gray-400 mb-1 font-semibold">Vehicle Plate / Registration</label>
+              <label className="block text-gray-400 mb-1 font-semibold">Vehicle Plate / Registration Number</label>
               <input
                 type="text"
                 value={bikeReg}
@@ -459,18 +501,17 @@ export function SafetyProfilePage() {
             </div>
           </section>
 
-          {/* 3. EMERGENCY CONTACTS (SAFETY CIRCLE) */}
-          <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3">
+          {/* GROUP 3: EMERGENCY CONTACTS */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#111111] border border-white/10 space-y-3">
             <div className="flex items-center justify-between text-white">
               <div className="flex items-center gap-2">
                 <Users size={18} className="text-blue-400" />
-                <h2 className="text-sm font-bold uppercase tracking-wider">3. Emergency Contacts (Safety Circle)</h2>
+                <h2 className="text-sm font-bold uppercase tracking-wider">3. Emergency Contacts</h2>
               </div>
-              <span className="text-[10px] text-gray-400">External WhatsApp / SMS</span>
+              <span className="text-[10px] text-gray-400">Direct WhatsApp / SMS</span>
             </div>
-
             <p className="text-[11px] text-gray-400">
-              Family members do NOT need the MotoAssist app to receive alerts.
+              Trusted guardians alerted automatically when you trigger SOS. They do NOT need the MotoAssist app.
             </p>
 
             <div className="space-y-2">
@@ -495,7 +536,7 @@ export function SafetyProfilePage() {
               ))}
             </div>
 
-            {/* Quick Add Contact Form */}
+            {/* Quick Add Form */}
             <div className="pt-2 border-t border-white/10">
               <span className="text-[11px] text-gray-400 font-semibold block mb-2">Add New Contact:</span>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
@@ -534,14 +575,20 @@ export function SafetyProfilePage() {
             </div>
           </section>
 
-          {/* 4. MEDICAL (EMERGENCY ID) */}
-          <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3">
-            <div className="flex items-center gap-2 text-white">
-              <Heart size={18} className="text-red-400" />
-              <h2 className="text-sm font-bold uppercase tracking-wider">4. Medical Emergency ID</h2>
+          {/* GROUP 4: MEDICAL ID */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#111111] border border-white/10 space-y-3">
+            <div className="flex items-center justify-between text-white">
+              <div className="flex items-center gap-2">
+                <Heart size={18} className="text-red-400" />
+                <h2 className="text-sm font-bold uppercase tracking-wider">4. Medical ID</h2>
+              </div>
+              <Link to="/medical-id" className="text-[11px] text-red-400 hover:underline flex items-center gap-1">
+                <span>Full Card</span>
+                <ChevronRight size={13} />
+              </Link>
             </div>
             <p className="text-[11px] text-gray-400">
-              Only disclosed during active emergencies to verified first responders. Never exposed publicly or to mechanics.
+              Only shared with verified medical responders during an active emergency. Never disclosed publicly or to mechanics.
             </p>
 
             <div className="space-y-3 text-xs">
@@ -577,7 +624,7 @@ export function SafetyProfilePage() {
               </div>
 
               <div>
-                <label className="block text-gray-400 mb-1 font-semibold">Critical Medical Information</label>
+                <label className="block text-gray-400 mb-1 font-semibold">Critical Medical Conditions</label>
                 <textarea
                   value={criticalInfo}
                   onChange={(e) => setCriticalInfo(e.target.value)}
@@ -600,137 +647,200 @@ export function SafetyProfilePage() {
             </div>
           </section>
 
-          {/* 5. RIDER VERIFICATION & DOCUMENTS (Section 2 & 42) */}
-          <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3.5">
+          {/* GROUP 5: VERIFICATION & DOCUMENTS */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#111111] border border-white/10 space-y-4">
             <div className="flex items-center justify-between text-white">
               <div className="flex items-center gap-2">
                 <FileText size={18} className="text-cyan-400" />
-                <h2 className="text-sm font-bold uppercase tracking-wider">5. Rider Verification & Documents</h2>
+                <h2 className="text-sm font-bold uppercase tracking-wider">5. Verification & Documents</h2>
               </div>
               <span className="text-[10px] text-gray-400 flex items-center gap-1">
                 <Lock size={12} className="text-emerald-400" /> Private & Protected
               </span>
             </div>
 
-            {/* Privacy Guarantee Notice (Section 2 & 42) */}
-            <div className="p-3 rounded-2xl bg-cyan-950/20 border border-cyan-500/20 text-cyan-200 text-xs flex items-start gap-2.5">
-              <ShieldCheck size={16} className="text-cyan-400 shrink-0 mt-0.5" />
-              <p className="leading-relaxed text-[11px]">
-                <strong>Document Privacy:</strong> Identity documents are never publicly visible, never stored in localStorage, and never accessible by roadside mechanics. Access is strictly audited.
-              </p>
-            </div>
-
-            {/* Document List */}
-            <div className="space-y-2">
-              {documents.map((doc) => {
-                const isExpiring = doc.isExpiringSoon || (doc.expiryDate && new Date(doc.expiryDate).getTime() - Date.now() < 30 * 24 * 60 * 60 * 1000);
-                return (
-                  <div
-                    key={doc.id || doc.documentId}
-                    className="p-3 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between text-xs"
-                  >
-                    <div className="space-y-0.5 min-w-0 pr-2">
-                      <div className="flex items-center gap-2">
-                        <strong className="text-white block font-bold truncate">
-                          {DOCUMENT_TYPE_LABELS[doc.docType]?.label || doc.docType}
-                        </strong>
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                          doc.verificationStatus === 'VERIFIED'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                        }`}>
-                          {doc.verificationStatus === 'VERIFIED' ? '✓ Verified' : '● Pending review'}
-                        </span>
-                      </div>
-                      <div className="text-gray-400 text-[11px] flex items-center gap-2">
-                        <span>No: {doc.documentNumber}</span>
-                        {doc.issuer && <span>• {doc.issuer}</span>}
-                      </div>
-                      {doc.expiryDate && (
-                        <div className="flex items-center gap-1 text-[10px]">
-                          <Calendar size={11} className={isExpiring ? 'text-amber-400' : 'text-gray-500'} />
-                          <span className={isExpiring ? 'text-amber-300 font-bold' : 'text-gray-400'}>
-                            Expires: {doc.expiryDate} {isExpiring && '(Expiring soon)'}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteDocument(doc.id || doc.documentId)}
-                      className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 transition-colors cursor-pointer shrink-0"
-                      title="Remove document"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Add Document Form */}
-            <div className="pt-2 border-t border-white/10 space-y-2 text-xs">
-              <span className="text-[11px] text-gray-400 font-semibold block">Add / Replace Document:</span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <select
-                  value={newDocType}
-                  onChange={(e) => setNewDocType(e.target.value as RiderDocumentType)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
-                >
-                  <option value="DRIVING_LICENSE">Driving Licence (Primary)</option>
-                  <option value="RC">Vehicle RC</option>
-                  <option value="INSURANCE">Insurance</option>
-                  <option value="PUC">PUC</option>
-                  <option value="GOVT_ID">Government ID Proof</option>
-                </select>
-                <input
-                  type="text"
-                  placeholder="Document Number (e.g. DL-1420110)"
-                  value={newDocNumber}
-                  onChange={(e) => setNewDocNumber(e.target.value)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
-                />
+            {/* Direct Entry to Verification Center */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-cyan-950/40 to-blue-950/30 border border-cyan-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-cyan-400" />
+                  <strong className="text-xs font-bold text-white">Personal Identity & Face Verification</strong>
+                  <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                    verStatus?.status === 'VERIFIED'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                      : verStatus?.status === 'UNDER_REVIEW'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                      : 'bg-white/10 text-gray-300 border border-white/20'
+                  }`}>
+                    {verStatus?.status || 'NOT_STARTED'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-300 mt-1">
+                  Upload your Driving Licence or Govt ID and complete camera face verification.
+                </p>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                <input
-                  type="text"
-                  placeholder="Issuer (e.g. RTO / Acko)"
-                  value={newDocIssuer}
-                  onChange={(e) => setNewDocIssuer(e.target.value)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
-                />
-                <input
-                  type="date"
-                  placeholder="Expiry Date"
-                  value={newDocExpiry}
-                  onChange={(e) => setNewDocExpiry(e.target.value)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddDocument}
-                  className="col-span-2 sm:col-span-1 bg-white/10 hover:bg-white/15 text-white font-bold rounded-xl px-3 py-2 flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <Plus size={14} /> Add Document
-                </button>
+              <Link
+                to="/rider/verification"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-black text-xs shrink-0 transition-colors"
+              >
+                <span>Open Verification Center</span>
+                <ChevronRight size={14} />
+              </Link>
+            </div>
+
+            {/* Vehicle Documents (Separated from personal identity) */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-300 uppercase tracking-wider">Vehicle Documents Wallet (RC, Insurance, PUC)</span>
+                <span className="text-[10px] text-gray-500">Separated from Personal ID</span>
+              </div>
+
+              <div className="space-y-2">
+                {documents.map((doc) => {
+                  const isExpiring = doc.isExpiringSoon || (doc.expiryDate && new Date(doc.expiryDate).getTime() - Date.now() < 30 * 24 * 60 * 60 * 1000);
+                  return (
+                    <div
+                      key={doc.id || doc.documentId}
+                      className="p-3 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between text-xs"
+                    >
+                      <div className="space-y-0.5 min-w-0 pr-2">
+                        <div className="flex items-center gap-2">
+                          <strong className="text-white block font-bold truncate">
+                            {DOCUMENT_TYPE_LABELS[doc.docType]?.label || doc.docType}
+                          </strong>
+                          <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                            doc.verificationStatus === 'VERIFIED'
+                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                              : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                          }`}>
+                            {doc.verificationStatus === 'VERIFIED' ? '✓ Valid' : '● In review'}
+                          </span>
+                        </div>
+                        <div className="text-gray-400 text-[11px] flex items-center gap-2">
+                          <span>No: {doc.documentNumber}</span>
+                          {doc.issuer && <span>• {doc.issuer}</span>}
+                        </div>
+                        {doc.expiryDate && (
+                          <div className="flex items-center gap-1 text-[10px]">
+                            <Calendar size={11} className={isExpiring ? 'text-amber-400' : 'text-gray-500'} />
+                            <span className={isExpiring ? 'text-amber-300 font-bold' : 'text-gray-400'}>
+                              Expires: {doc.expiryDate} {isExpiring && '(Expiring soon)'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDocument(doc.id || doc.documentId)}
+                        className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 transition-colors cursor-pointer shrink-0"
+                        title="Remove document"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Add Vehicle Doc Form */}
+              <div className="pt-2 border-t border-white/10 space-y-2 text-xs">
+                <span className="text-[11px] text-gray-400 font-semibold block">Add Vehicle Document:</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <select
+                    value={newDocType}
+                    onChange={(e) => setNewDocType(e.target.value as RiderDocumentType)}
+                    className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  >
+                    <option value="RC">Vehicle RC</option>
+                    <option value="INSURANCE">Insurance Policy</option>
+                    <option value="PUC">PUC Certificate</option>
+                    <option value="DRIVING_LICENSE">Driving Licence (Secondary)</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Document Number (e.g. WB-74-AX-1024)"
+                    value={newDocNumber}
+                    onChange={(e) => setNewDocNumber(e.target.value)}
+                    className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <input
+                    type="text"
+                    placeholder="Issuer (e.g. Siliguri RTO)"
+                    value={newDocIssuer}
+                    onChange={(e) => setNewDocIssuer(e.target.value)}
+                    className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  />
+                  <input
+                    type="date"
+                    placeholder="Expiry Date"
+                    value={newDocExpiry}
+                    onChange={(e) => setNewDocExpiry(e.target.value)}
+                    className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddDocument}
+                    className="col-span-2 sm:col-span-1 bg-white/10 hover:bg-white/15 text-white font-bold rounded-xl px-3 py-2 flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Plus size={14} /> Add
+                  </button>
+                </div>
               </div>
             </div>
           </section>
 
-          {/* 6. SAFETY & ESCALATION PREFERENCES (Section 1) */}
-          <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3 text-xs">
-            <div className="flex items-center gap-2 text-white">
-              <ShieldAlert size={18} className="text-amber-400" />
-              <h2 className="text-sm font-bold uppercase tracking-wider">6. Safety & Escalation Preferences</h2>
+          {/* GROUP 6: FAMILY SAFETY */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#111111] border border-white/10 space-y-3 text-xs">
+            <div className="flex items-center justify-between text-white">
+              <div className="flex items-center gap-2">
+                <ShieldAlert size={18} className="text-amber-400" />
+                <h2 className="text-sm font-bold uppercase tracking-wider">6. Family Safety</h2>
+              </div>
+              <Link to="/safety-circle" className="text-[11px] text-amber-400 hover:underline flex items-center gap-1">
+                <span>Safety Circle</span>
+                <ChevronRight size={13} />
+              </Link>
             </div>
+            <p className="text-[11px] text-gray-400">
+              Automated safeguards that keep your family informed during daily commutes or mountain touring.
+            </p>
 
             <div className="space-y-2.5">
               <label className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/10 cursor-pointer">
                 <div>
-                  <strong className="text-white block font-semibold">Auto-Share Location with Family on SOS</strong>
-                  <span className="text-gray-400 text-[11px]">Generate direct WhatsApp/SMS link when SOS is triggered</span>
+                  <strong className="text-white block font-semibold">Live Ride Sharing</strong>
+                  <span className="text-gray-400 text-[11px]">Generate live GPS tracking link for family contacts during rides</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={liveRideSharing}
+                  onChange={(e) => setLiveRideSharing(e.target.checked)}
+                  className="w-4 h-4 accent-[#FFF174]"
+                />
+              </label>
+
+              <label className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/10 cursor-pointer">
+                <div>
+                  <strong className="text-white block font-semibold">Safety Timer Alert Escalation</strong>
+                  <span className="text-gray-400 text-[11px]">Notify family if you do not check in after planned arrival time</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={safetyTimerAlert}
+                  onChange={(e) => setSafetyTimerAlert(e.target.checked)}
+                  className="w-4 h-4 accent-[#FFF174]"
+                />
+              </label>
+
+              <label className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/10 cursor-pointer">
+                <div>
+                  <strong className="text-white block font-semibold">Auto-Share Location on SOS</strong>
+                  <span className="text-gray-400 text-[11px]">Immediately send your exact location coordinates via WhatsApp/SMS</span>
                 </div>
                 <input
                   type="checkbox"
@@ -739,20 +849,68 @@ export function SafetyProfilePage() {
                   className="w-4 h-4 accent-[#FFF174]"
                 />
               </label>
+            </div>
+          </section>
 
+          {/* GROUP 7: PRIVACY & LOCATION */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#111111] border border-white/10 space-y-3 text-xs">
+            <div className="flex items-center justify-between text-white">
+              <div className="flex items-center gap-2">
+                <MapPin size={18} className="text-emerald-400" />
+                <h2 className="text-sm font-bold uppercase tracking-wider">7. Privacy & Location</h2>
+              </div>
+              <Link to="/privacy-center" className="text-[11px] text-emerald-400 hover:underline flex items-center gap-1">
+                <span>Privacy Center</span>
+                <ChevronRight size={13} />
+              </Link>
+            </div>
+            <p className="text-[11px] text-gray-400">
+              Manage telemetry permissions, location accuracy, and data retention.
+            </p>
+
+            <div className="space-y-2.5">
               <label className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/10 cursor-pointer">
                 <div>
-                  <strong className="text-white block font-semibold">Offer 112 Auto-Dial Prompt</strong>
-                  <span className="text-gray-400 text-[11px]">Prompt immediate National Police SOS if unconfirmed after 60s</span>
+                  <strong className="text-white block font-semibold">Location Telemetry Consent</strong>
+                  <span className="text-gray-400 text-[11px]">Only stream GPS while an active ride or rescue request is ongoing</span>
                 </div>
                 <input
                   type="checkbox"
-                  checked={autoEscalate112}
-                  onChange={(e) => setAutoEscalate112(e.target.checked)}
+                  checked={telemetryConsent}
+                  onChange={(e) => setTelemetryConsent(e.target.checked)}
                   className="w-4 h-4 accent-[#FFF174]"
                 />
               </label>
 
+              <label className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/10 cursor-pointer">
+                <div>
+                  <strong className="text-white block font-semibold">High-Accuracy GPS Mode</strong>
+                  <span className="text-gray-400 text-[11px]">Request hardware satellite lock for mountain road safety (uses slightly more battery)</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={highAccuracyGps}
+                  onChange={(e) => setHighAccuracyGps(e.target.checked)}
+                  className="w-4 h-4 accent-[#FFF174]"
+                />
+              </label>
+
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-[11px] text-gray-300">
+                <strong className="text-white block mb-0.5">Sensitive Data Protection</strong>
+                <span>Identity documents and medical data are never stored in localStorage, never shown publicly, and never accessible by roadside helpers.</span>
+              </div>
+            </div>
+          </section>
+
+          {/* GROUP 8: SETTINGS */}
+          <section className="p-4 sm:p-5 rounded-3xl bg-[#111111] border border-white/10 space-y-3 text-xs">
+            <div className="flex items-center gap-2 text-white">
+              <SettingsIcon size={18} className="text-[#FFF174]" />
+              <h2 className="text-sm font-bold uppercase tracking-wider">8. Settings</h2>
+            </div>
+            <p className="text-[11px] text-gray-400">Emergency communication and audio alert preferences.</p>
+
+            <div className="space-y-3">
               <div>
                 <label className="block text-gray-400 mb-1 font-semibold">Preferred Emergency Communication Channel</label>
                 <div className="grid grid-cols-3 gap-2">
@@ -776,6 +934,32 @@ export function SafetyProfilePage() {
                   ))}
                 </div>
               </div>
+
+              <label className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/10 cursor-pointer">
+                <div>
+                  <strong className="text-white block font-semibold">National 112 Auto-Dial Prompt</strong>
+                  <span className="text-gray-400 text-[11px]">Prompt immediate National Police 112 call if helper unconfirmed after 60s</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={autoEscalate112}
+                  onChange={(e) => setAutoEscalate112(e.target.checked)}
+                  className="w-4 h-4 accent-[#FFF174]"
+                />
+              </label>
+
+              <label className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/10 cursor-pointer">
+                <div>
+                  <strong className="text-white block font-semibold">Emergency Audio Tones</strong>
+                  <span className="text-gray-400 text-[11px]">Play audible beacon chime during active SOS rescue</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={soundAlerts}
+                  onChange={(e) => setSoundAlerts(e.target.checked)}
+                  className="w-4 h-4 accent-[#FFF174]"
+                />
+              </label>
             </div>
           </section>
 
@@ -787,7 +971,7 @@ export function SafetyProfilePage() {
               className="w-full py-4 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#FFF174]/15"
             >
               <Save size={18} />
-              <span>{saving ? 'Saving Safety Profile...' : 'Save Safety Profile'}</span>
+              <span>{saving ? 'Saving Profile...' : 'Save All Profile Settings'}</span>
             </button>
           </div>
         </form>

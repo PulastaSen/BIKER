@@ -8,12 +8,6 @@ describe('MotoAssist Backend Full API Test Suite', () => {
     await serverReady;
   });
 
-  afterAll(async () => {
-    await new Promise<void>((resolve) => {
-      server.close(() => resolve());
-    });
-  });
-
   it('GET /api/health returns healthy status', async () => {
     const res = await fetch(`${BASE_URL}/api/health`);
     expect(res.status).toBe(200);

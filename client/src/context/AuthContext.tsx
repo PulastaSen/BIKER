@@ -20,7 +20,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => getCurrentUser());
+  const [user, setUser] = useState<User | null>(() => {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return null;
+    return getCurrentUser();
+  });
   const [loading, setLoading] = useState(true);
 
   // Sync state changes with localStorage
@@ -39,8 +43,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .then(data => {
         if (data.success && data.user) {
           setUser(data.user);
-        } else {
+        } else if (!token.startsWith('demo-token-')) {
           localStorage.removeItem('auth_token');
+          setUser(null);
         }
       })
       .catch(() => {
@@ -73,6 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Local fallback for demo / offline environment
     const found = DEFAULT_USERS.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
     if (found) {
+      localStorage.setItem('auth_token', `demo-token-${found.id}`);
       setUser(found);
       persistCurrentUser(found);
       return found;
@@ -114,6 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     localStorage.removeItem('auth_token');
+    persistCurrentUser(null);
     setUser(null);
   };
 

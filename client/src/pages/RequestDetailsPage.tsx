@@ -125,7 +125,7 @@ export function RequestDetailsPage() {
         requestId: localReq.id,
         status: mappedStatus,
         problemCategory: localReq.issue ? localReq.issue.replaceAll('_', ' ') : 'Roadside',
-        location: localReq.approximateLocation || 'Siliguri NH-10 Highway Corridor',
+        location: localReq.approximateLocation || 'Location details pending',
         provider: {
           name: helper?.businessName || 'Raj Motors & Mountain Towing',
           phone: '+91 98320 12345',
@@ -426,7 +426,7 @@ export function RequestDetailsPage() {
                 riderCoords={
                   typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates.length === 2 && request.location.coordinates[0] !== 0
                     ? { lat: request.location.coordinates[1], lng: request.location.coordinates[0] }
-                    : { lat: 26.7271, lng: 88.4230 }
+                    : undefined
                 }
                 activeHelperCoords={
                   liveHelperPos
@@ -468,10 +468,14 @@ export function RequestDetailsPage() {
                 >
                   <MessageSquare size={15} /> Chat
                 </button>
-                <a
+                <a 
                   href={`https://wa.me/?text=${encodeURIComponent(
-                    `MOTOASSIST EMERGENCY ALERT\n\nRider: Pulasta Sen\nSituation: ${request.problemCategory} Assistance\nLocation: https://maps.google.com/?q=${
-                      typeof request.location === 'object' && request.location?.coordinates ? `${request.location.coordinates[1]},${request.location.coordinates[0]}` : '26.7271,88.4230'
+                    `MOTOASSIST EMERGENCY ALERT\n\nRider: Pulasta Sen\nSituation: ${request.problemCategory} Assistance\nLocation: ${
+                      typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates[0] !== 0
+                        ? `https://maps.google.com/?q=${request.location.coordinates[1]},${request.location.coordinates[0]}`
+                        : typeof request.location === 'string'
+                        ? request.location
+                        : 'Location coordinates pending'
                     }\nTime: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\nMotoAssist status: Helper en route.`
                   )}`}
                   target="_blank"
@@ -879,8 +883,12 @@ export function RequestDetailsPage() {
             <div className="pt-2 flex gap-2">
               <a
                 href={`https://wa.me/?text=${encodeURIComponent(
-                  `MOTOASSIST EMERGENCY ALERT\n\nRider: Pulasta Sen\nSituation: ${request.problemCategory} Assistance\nLocation: https://maps.google.com/?q=${
-                    typeof request.location === 'object' && request.location?.coordinates ? `${request.location.coordinates[1]},${request.location.coordinates[0]}` : '26.7271,88.4230'
+                  `MOTOASSIST EMERGENCY ALERT\n\nRider: Pulasta Sen\nSituation: ${request.problemCategory} Assistance\nLocation: ${
+                    typeof request.location === 'object' && request.location?.coordinates && request.location.coordinates[0] !== 0
+                      ? `https://maps.google.com/?q=${request.location.coordinates[1]},${request.location.coordinates[0]}`
+                      : typeof request.location === 'string'
+                      ? request.location
+                      : 'Location coordinates pending'
                   }\nTime: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\nMotoAssist status: Helper en route.`
                 )}`}
                 target="_blank"

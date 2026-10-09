@@ -14,6 +14,7 @@ export function PublicLayout() {
   const closeMenu = () => setMenuOpen(false);
 
   const isEmergencyMode = location.pathname === '/sos';
+  const isFullScreenMode = ['/emergency', '/emergency-assist', '/entry'].includes(location.pathname);
 
   // Informational pages where long scrolling, full footer, and marketing CTA are acceptable
   const isInformationalPage = [
@@ -35,6 +36,16 @@ export function PublicLayout() {
     if (user?.role === 'RIDER') return '/rider/bikes';
     return '/save-my-bike';
   };
+
+  if (isFullScreenMode) {
+    return (
+      <div className="public-layout min-h-screen flex flex-col bg-[#090909] text-white">
+        <main className="public-main flex-1">
+          <Outlet />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="public-layout min-h-screen flex flex-col bg-[#090909] text-white">
