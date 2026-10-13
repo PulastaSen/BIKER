@@ -620,6 +620,24 @@ export function SafetyProfilePage() {
               </p>
             </div>
 
+            {/* Dedicated Identity Verification Center Link */}
+            <div className="p-3.5 rounded-2xl bg-[#161616] border border-[#FFF174]/30 flex items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck size={18} className="text-[#FFF174] shrink-0" />
+                <div>
+                  <strong className="text-white block font-bold">Dedicated Identity Verification Center</strong>
+                  <span className="text-gray-400 text-[11px] block">Upload ID proof & complete selfie biometric challenge.</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate('/rider/verification')}
+                className="px-3.5 py-1.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
+              >
+                Open Center
+              </button>
+            </div>
+
             {/* Document List */}
             <div className="space-y-2">
               {documents.map((doc) => {

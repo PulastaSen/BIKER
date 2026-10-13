@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getHelperProfileByUserId, saveHelperProfile } from '../../utils/appStorage';
 import type { HelperProfile } from '../../types/app';
@@ -126,6 +127,23 @@ export function HelperProfilePage() {
           </span>
         </div>
       </header>
+
+      {/* DEDICATED HELPER VERIFICATION PORTAL BANNER */}
+      <div className="p-4 rounded-2xl bg-[#161616] border border-[#FFF174]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2.5">
+          <ShieldCheck size={20} className="text-[#FFF174]" />
+          <div>
+            <strong className="text-white block font-bold">Provider Verification Portal</strong>
+            <span className="text-gray-400 text-[11px] block">Submit Trade License, MSME certificate, and face liveness verification.</span>
+          </div>
+        </div>
+        <Link
+          to="/helper/verification"
+          className="px-4 py-2 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider shrink-0 transition-colors"
+        >
+          Verification Portal
+        </Link>
+      </div>
 
       {/* SECTION 4 & 5: THREE VERIFIED TRUST BADGES */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

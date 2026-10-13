@@ -14,6 +14,9 @@ export function PublicLayout() {
   const closeMenu = () => setMenuOpen(false);
 
   const isEmergencyMode = location.pathname === '/sos';
+  const isFullScreenMode =
+    ['/emergency', '/emergency-assist', '/entry'].includes(location.pathname) ||
+    (location.pathname === '/' && !user);
 
   // Informational pages where long scrolling, full footer, and marketing CTA are acceptable
   const isInformationalPage = [
@@ -23,6 +26,16 @@ export function PublicLayout() {
     '/privacy-center',
     '/become-helper',
   ].includes(location.pathname);
+
+  if (isFullScreenMode) {
+    return (
+      <div className="public-layout min-h-screen flex flex-col bg-[#090909] text-white">
+        <main className="public-main flex-1">
+          <Outlet />
+        </main>
+      </div>
+    );
+  }
 
   const getProfilePath = () => {
     if (!user) return '/login';

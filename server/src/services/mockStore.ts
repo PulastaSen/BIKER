@@ -554,6 +554,74 @@ const rideSessions = new Map<string, MockRideSession>();
 const serviceReceipts = new Map<string, MockServiceReceipt>();
 const accidentReports = new Map<string, MockAccidentReport>();
 const bikeDocuments = new Map<string, MockBikeDocument>();
+const identityVerifications = new Map<string, any>();
+
+// Seed initial verification records
+identityVerifications.set('user-rider-1', {
+  verificationId: 'VERIF-R-1001',
+  userId: 'user-rider-1',
+  role: 'RIDER',
+  status: 'UNDER_REVIEW',
+  identityType: 'DRIVING_LICENSE',
+  documentNumberMasked: 'DL-WB74-2023-****',
+  documentFrontKey: 'docs/user-rider-1/dl_front.enc',
+  documentBackKey: 'docs/user-rider-1/dl_back.enc',
+  documentExpiryDate: '2035-12-31T00:00:00.000Z',
+  documentStatus: 'SUBMITTED',
+  selfieKey: 'selfies/user-rider-1/live_selfie.enc',
+  faceLivenessStatus: 'PENDING',
+  faceMatchScore: null,
+  faceVerificationNotes: 'External biometric provider not configured. Queued for manual operator review.',
+  isBiometricProviderConfigured: false,
+  isDemoSimulation: true,
+  reviewNotes: 'Driving licence scan received. Operator face match in review.',
+  auditLogs: [
+    {
+      action: 'DOCUMENTS_SUBMITTED',
+      timestamp: new Date().toISOString(),
+      actorId: 'user-rider-1',
+      actorRole: 'RIDER',
+      details: 'Driving licence & selfie uploaded'
+    }
+  ],
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString()
+});
+
+identityVerifications.set('user-helper-1', {
+  verificationId: 'VERIF-H-2001',
+  userId: 'user-helper-1',
+  role: 'HELPER',
+  status: 'VERIFIED',
+  identityType: 'TRADE_LICENSE',
+  documentNumberMasked: 'TL-SIL-2022-****',
+  documentFrontKey: 'docs/user-helper-1/trade_cert.enc',
+  documentStatus: 'VERIFIED',
+  selfieKey: 'selfies/user-helper-1/workshop_photo.enc',
+  faceLivenessStatus: 'PASSED',
+  faceMatchScore: 98,
+  faceVerificationNotes: 'Operator verified with workshop trade register',
+  isBiometricProviderConfigured: false,
+  isDemoSimulation: false,
+  helperCategory: 'MECHANIC',
+  businessName: 'Siliguri Auto Care & Rescue',
+  serviceAddress: 'Sevoke Road 2nd Mile, Siliguri',
+  yearsOfExperience: 12,
+  reviewNotes: 'Authorized Himalayan breakdown rescue partner. All credentials confirmed.',
+  reviewedBy: 'user-admin-1',
+  reviewedAt: new Date().toISOString(),
+  auditLogs: [
+    {
+      action: 'ADMIN_VERIFIED',
+      timestamp: new Date().toISOString(),
+      actorId: 'user-admin-1',
+      actorRole: 'ADMIN',
+      details: 'Trade licence and physical garage location confirmed'
+    }
+  ],
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString()
+});
 
 const roadHazards: MockRoadHazard[] = [
   {
@@ -977,5 +1045,17 @@ export const mockStore = {
       totalRequests: allReqs.length,
       activeHazards: roadHazards.filter(h => h.status === 'ACTIVE').length
     };
+  },
+
+  // Identity Verification Store
+  getIdentityVerification: (userId: string) => {
+    return identityVerifications.get(userId) || null;
+  },
+  saveIdentityVerification: (verif: any) => {
+    identityVerifications.set(verif.userId, verif);
+    return verif;
+  },
+  getAllIdentityVerifications: () => {
+    return Array.from(identityVerifications.values());
   }
 };

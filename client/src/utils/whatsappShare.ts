@@ -136,3 +136,35 @@ export function buildWhatsAppImSafeUrl(options: { phone?: string; riderName?: st
   const baseUrl = cleanPhone ? `https://wa.me/${cleanPhone}` : 'https://wa.me/';
   return `${baseUrl}?text=${encodeURIComponent(message)}`;
 }
+
+/**
+ * Part 11: Dedicated Breakdown Alert message matching exact prompt format
+ */
+export function buildWhatsAppBreakdownAlertUrl(options: ShareLocationOptions & { situation?: string; status?: string }): string {
+  const { latitude, longitude, landmark, phone, riderName = 'Pulasta', situation = 'Motorcycle breakdown', status = 'Assistance requested.' } = options;
+
+  let mapLink = '';
+  if (latitude !== undefined && longitude !== undefined) {
+    mapLink = `https://maps.google.com/?q=${latitude},${longitude}`;
+  } else if (landmark) {
+    mapLink = landmark;
+  } else {
+    mapLink = 'Location pending';
+  }
+
+  const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const message = [
+    `MotoAssist Safety Alert`,
+    `${riderName} has requested assistance.`,
+    `Situation: ${situation}`,
+    `Location: ${mapLink}`,
+    `Time: ${timeStr}`,
+    `Status: ${status}`
+  ].join('\n');
+
+  const cleanPhone = phone ? phone.replace(/[^0-9]/g, '') : '';
+  const baseUrl = cleanPhone ? `https://wa.me/${cleanPhone}` : 'https://wa.me/';
+  return `${baseUrl}?text=${encodeURIComponent(message)}`;
+}
+
