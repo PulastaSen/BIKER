@@ -42,14 +42,14 @@ export function ResponsiveHome() {
   // Section 22-25: Crash Detection state & listeners
   const [detectedCrashEvent, setDetectedCrashEvent] = useState<CrashDetectionEvent | null>(null);
 
-  // Real Geolocation hook on-demand without silent fallbacks
+  // Real Geolocation hook without silent fallbacks
   const {
     accuracy,
     status: locStatus,
     requestLocation,
     setSearchLocation,
     address,
-  } = useUserLocation(false);
+  } = useUserLocation(true);
 
   useEffect(() => {
     // Start active motion sensor monitoring for potential crash events
@@ -214,9 +214,7 @@ export function ResponsiveHome() {
                   ? `📍 ${address || 'Location set'}`
                   : locStatus === 'denied'
                   ? '⚠️ Location access off'
-                  : locStatus === 'idle'
-                  ? '📍 Tap to find location'
-                  : '📍 Finding location...'}
+                  : '📍 Location updating...'}
               </span>
               {locStatus !== 'active' && (
                 <button
