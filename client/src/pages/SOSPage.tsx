@@ -165,14 +165,14 @@ export function SOSPage() {
         incidentId: `SOS-${Math.floor(1000 + Math.random() * 9000)}`,
         status: 'ACTIVE',
         notificationStatus: 'DISPATCHED',
-        serverReceived: true,
+        serverReceived: false,
         gpsAcquired,
         familyConfirmed: false,
         location: lat && lng ? { coordinates: [lng, lat], accuracyMeters: accuracyMeters || 12 } : undefined,
         timeline: [
           { event: 'SOS ACTIVATED', timestamp: new Date().toLocaleTimeString(), detail: '3-second hold confirmed' },
           ...(gpsAcquired ? [{ event: 'GPS ACQUIRED', timestamp: new Date().toLocaleTimeString(), detail: 'Phone location recorded' }] : []),
-          { event: 'SOS RECEIVED', timestamp: new Date().toLocaleTimeString(), detail: 'Emergency dispatch active' }
+          { event: 'OFFLINE STANDALONE MODE', timestamp: new Date().toLocaleTimeString(), detail: 'Server unreachable. Call 112 advised' }
         ]
       });
       setStatus('ACTIVE');
@@ -353,7 +353,9 @@ export function SOSPage() {
               {/* Reassurance Message */}
               <div className="p-3.5 rounded-2xl bg-red-900/20 border border-red-500/30 text-xs text-red-200">
                 <p className="font-semibold leading-relaxed">
-                  Please stay in a safe place if possible. Emergency dispatch has logged your phone coordinates.
+                  {incident?.serverReceived
+                    ? 'Please stay in a safe place if possible. Emergency dispatch has logged your phone coordinates.'
+                    : 'Device running in offline standalone mode. Server was unreachable. Please dial 112 directly below.'}
                 </p>
               </div>
 
@@ -377,9 +379,15 @@ export function SOSPage() {
                 {/* 2. Server state */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Server Dispatch:</span>
-                  <span className="text-emerald-400 font-bold flex items-center gap-1">
-                    <CheckCircle2 size={14} /> ✓ SOS received
-                  </span>
+                  {incident?.serverReceived ? (
+                    <span className="text-emerald-400 font-bold flex items-center gap-1">
+                      <CheckCircle2 size={14} /> ✓ SOS received
+                    </span>
+                  ) : (
+                    <span className="text-amber-400 font-bold flex items-center gap-1">
+                      <AlertCircle size={14} /> Offline / Standalone
+                    </span>
+                  )}
                 </div>
 
                 {/* 3. Family State */}

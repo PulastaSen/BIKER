@@ -42,9 +42,12 @@ app.use(cors({
 app.use(express.json({ limit: '2mb' }));
 
 // Rate Limiting
+const isTestEnv = process.env.NODE_ENV === 'test';
+
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 500,
+  skip: () => isTestEnv,
   message: { success: false, message: 'Too many requests. Please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -54,11 +57,22 @@ app.use('/api', globalLimiter);
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 60,
+  skip: () => isTestEnv,
   message: { success: false, message: 'Too many authentication attempts. Please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 app.use('/api/auth', authLimiter);
+
+const sosLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  skip: () => isTestEnv,
+  message: { success: false, message: 'Too many emergency SOS alerts initiated. For immediate help, dial 112 directly.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/sos', sosLimiter);
 
 // System Health Endpoints
 app.get('/health', (_request: Request, response: Response) => {

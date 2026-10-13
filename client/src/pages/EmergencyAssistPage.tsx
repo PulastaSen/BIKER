@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   Heart,
   ChevronRight,
-  CheckCircle2,
   Loader2,
   Wrench,
   Truck,
@@ -20,6 +19,8 @@ import { FeelingUnsafeModal } from '../components/FeelingUnsafeModal';
 import { MedicalIdQuickModal } from '../components/MedicalIdQuickModal';
 import { MountainContourPattern, AnimatedRoadLines } from '../components/graphics';
 import { buildWhatsAppBreakdownAlertUrl } from '../utils/whatsappShare';
+import { API_BASE_URL } from '../config/api';
+import { saveRequest, INITIAL_BIKES } from '../utils/appStorage';
 
 type HelpCategory = 'MEDICAL' | 'BIKE_PROBLEM' | 'UNSAFE' | 'TOWING' | 'BOTH' | 'NOT_SURE' | null;
 type MechanicalSubFilter = 'ALL' | 'MECHANICS' | 'OEM' | 'TYRE' | 'BATTERY' | 'FUEL' | 'TOWING' | 'PARTS';
@@ -232,6 +233,9 @@ export function EmergencyAssistPage() {
   // Immediate dispatch submission state
   const [dispatchPending, setDispatchPending] = useState(false);
   const [dispatchConfirmed, setDispatchConfirmed] = useState(false);
+  const [createdRequestId, setCreatedRequestId] = useState<string | null>(null);
+  const [serverDispatched, setServerDispatched] = useState(false);
+  const [dispatchedProvider, setDispatchedProvider] = useState<ProviderListing | null>(null);
   const [riderNote, setRiderNote] = useState('');
 
   // Geolocation hook
@@ -274,12 +278,68 @@ export function EmergencyAssistPage() {
     }
   };
 
-  const handleDispatchAssistance = () => {
+  const handleDispatchAssistance = async (provider?: ProviderListing) => {
     setDispatchPending(true);
-    setTimeout(() => {
-      setDispatchPending(false);
-      setDispatchConfirmed(true);
-    }, 1200);
+    const prov = provider || dispatchedProvider || MECHANICAL_PROVIDERS[0];
+    const problem = selectedCategory === 'MEDICAL' 
+      ? 'Medical' 
+      : selectedCategory === 'TOWING' 
+      ? 'Towing' 
+      : selectedCategory === 'UNSAFE' 
+      ? 'Safety' 
+      : 'Breakdown';
+
+    const reqId = `REQ-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    let serverOk = false;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/assistance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          problemCategory: problem,
+          helpCategory: selectedCategory === 'MEDICAL' ? 'MEDICAL' : 'MECHANICAL',
+          providerId: prov.id,
+          location: {
+            coordinates: coords ? [coords.lng, coords.lat] : undefined,
+            address: address || searchPlace.trim() || prov.address,
+            accuracyMeters: accuracy || 15
+          },
+          description: riderNote || `Emergency roadside dispatch for ${prov.name}`
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data?.success) {
+        serverOk = true;
+      }
+    } catch {
+      serverOk = false;
+    }
+
+    // Save to local storage for instant offline resilience and HUD tracking
+    saveRequest({
+      id: reqId,
+      riderId: 'user-rider-1',
+      riderName: 'MotoAssist Rider',
+      riderPhone: '+91 98000 00000',
+      bike: INITIAL_BIKES[0],
+      issue: selectedCategory === 'TOWING' ? 'TOWING' : selectedCategory === 'MEDICAL' ? 'ACCIDENT' : 'BREAKDOWN',
+      locationShared: !!coords,
+      description: riderNote || `Emergency roadside dispatch for ${prov.name}`,
+      approximateLocation: address || searchPlace.trim() || prov.address,
+      status: 'OPEN',
+      assignedHelperId: prov.id,
+      assignedHelperName: prov.name,
+      assignedHelperPhone: prov.phone,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+
+    setCreatedRequestId(reqId);
+    setServerDispatched(serverOk);
+    setDispatchedProvider(prov);
+    setDispatchPending(false);
+    setDispatchConfirmed(true);
   };
 
   const filteredMechanical = MECHANICAL_PROVIDERS.filter((p) => {
@@ -731,7 +791,7 @@ export function EmergencyAssistPage() {
                     </a>
                     <button
                       type="button"
-                      onClick={handleDispatchAssistance}
+                      onClick={() => handleDispatchAssistance(prov)}
                       className="px-3.5 py-2 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider transition-colors cursor-pointer"
                     >
                       Request
@@ -1056,45 +1116,86 @@ export function EmergencyAssistPage() {
             </div>
 
             {dispatchConfirmed ? (
-              <div className="p-5 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-center space-y-3">
-                <CheckCircle2 size={36} className="mx-auto text-emerald-400" />
-                <strong className="block text-base sm:text-lg font-black">
-                  Help is being dispatched!
-                </strong>
-                <p className="text-xs text-gray-300 max-w-md mx-auto">
-                  Nearest verified roadside partner alerted. Keep your mobile line clear for arrival coordinates.
-                </p>
-                <div className="pt-2 flex flex-wrap justify-center gap-3">
-                  <a
-                    href="tel:112"
-                    className="px-4 py-2 bg-red-600 text-white font-bold text-xs rounded-xl flex items-center gap-1.5"
+              <div className="p-5 sm:p-6 rounded-3xl bg-emerald-950/40 border-2 border-emerald-500/80 text-emerald-300 text-center space-y-4 shadow-[0_0_40px_rgba(16,185,129,0.25)]">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="text-[11px] font-black uppercase tracking-wider text-emerald-400">
+                    INCIDENT #{createdRequestId || 'ACTIVE'}
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <strong className="block text-xl sm:text-2xl font-black text-white">
+                    Emergency Help Dispatched
+                  </strong>
+                  <p className="text-xs text-gray-300 max-w-md mx-auto">
+                    {serverDispatched
+                      ? 'Dispatch server confirmed your emergency coordinates. Provider is preparing departure.'
+                      : 'Request recorded locally (Offline). Cellular network is active — please dial provider directly below.'}
+                  </p>
+                </div>
+
+                {dispatchedProvider && (
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 text-left text-xs space-y-1.5 max-w-md mx-auto">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Assigned Provider:</span>
+                      <span className="text-white font-bold">{dispatchedProvider.name}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Estimated Arrival:</span>
+                      <span className="text-[#FFF174] font-bold">{dispatchedProvider.eta}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-400">Contact Number:</span>
+                      <span className="text-white font-mono">{dispatchedProvider.phone}</span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-2 flex flex-wrap justify-center gap-2.5">
+                  {dispatchedProvider && (
+                    <a
+                      href={`tel:${dispatchedProvider.phone.replace(/[^0-9+]/g, '')}`}
+                      className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-md"
+                    >
+                      <PhoneCall size={14} />
+                      <span>Call Provider Now</span>
+                    </a>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => navigate(createdRequestId ? `/requests/${createdRequestId}` : '/')}
+                    className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all"
                   >
-                    <PhoneCall size={14} />
-                    <span>Call 112 if condition worsens</span>
-                  </a>
+                    <span>Track Live in Incident HUD</span>
+                    <ChevronRight size={14} />
+                  </button>
+
                   <a
                     href={getWhatsAppAlertUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 bg-[#25D366]/20 border border-[#25D366]/40 text-[#25D366] font-bold text-xs rounded-xl flex items-center gap-1.5"
+                    className="px-4 py-2.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all"
                   >
                     <MessageCircle size={14} />
-                    <span>Send WhatsApp update to family</span>
+                    <span>Share via WhatsApp</span>
                   </a>
-                  <button
-                    type="button"
-                    onClick={() => navigate('/')}
-                    className="px-4 py-2 bg-white/10 text-white font-bold text-xs rounded-xl hover:bg-white/20"
+
+                  <a
+                    href="tel:112"
+                    className="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all"
                   >
-                    View Status
-                  </button>
+                    <PhoneCall size={14} />
+                    <span>Call 112 (Police / EMS)</span>
+                  </a>
                 </div>
               </div>
             ) : (
               <div className="space-y-2">
                 <button
                   type="button"
-                  onClick={handleDispatchAssistance}
+                  onClick={() => handleDispatchAssistance()}
                   disabled={dispatchPending}
                   className="w-full py-4 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(255,241,116,0.3)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
                 >
