@@ -6,7 +6,8 @@ import {
   MapPin, 
   ArrowRight
 } from 'lucide-react';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
+import { getRequests, updateRequestStatus } from '../utils/appStorage';
 
 interface IncidentItem {
   requestId: string;
@@ -42,33 +43,69 @@ export function OperationsQueuePage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
+  const computeLocalQueue = useCallback((): OpsQueueData => {
+    const stored = getRequests();
+    const items: IncidentItem[] = stored.map(r => ({
+      requestId: r.requestId || r.id,
+      problemCategory: r.helpCategory || r.issue || 'MECHANICAL',
+      subcategory: r.subcategory || r.issue,
+      urgency: (r.urgency as any) || 'HIGH',
+      status: r.status,
+      providerId: r.assignedHelperId,
+      description: r.description || r.issue,
+      location: {
+        coordinates: (r.longitude != null && r.latitude != null) ? [r.longitude, r.latitude] : undefined,
+        address: r.approximateLocation || 'Himalayan Highway corridor',
+        accuracyMeters: r.accuracyMeters || 15
+      },
+      locationProvenance: 'GPS_FRESH',
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt || r.createdAt
+    }));
+
+    const unassigned = items.filter(i => ['SEARCHING', 'REQUESTED', 'OPEN'].includes(i.status));
+    const active = items.filter(i => ['ASSIGNED', 'ACCEPTED', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS', 'HELPER_OFFERED'].includes(i.status));
+    const delayed = items.filter(i => ['DELAYED'].includes(i.status));
+    const unfulfilled = items.filter(i => ['UNFULFILLED_NO_PROVIDER', 'UNFULFILLED', 'TIMEOUT'].includes(i.status));
+    const resolved = items.filter(i => ['RESOLVED', 'COMPLETED'].includes(i.status));
+    const cancelled = items.filter(i => ['CANCELLED'].includes(i.status));
+
+    return {
+      unassigned,
+      active,
+      delayed,
+      unfulfilled,
+      cancelled,
+      resolved,
+      total: items.length
+    };
+  }, []);
+
   const fetchQueue = useCallback(async () => {
     setLoading(true);
+    if (!hasBackendApi()) {
+      setQueue(computeLocalQueue());
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch(`${API_BASE_URL}/api/assistance/ops/queue`);
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {
           setQueue(json.data);
+          setLoading(false);
           return;
         }
       }
     } catch {
-      // Mock fallback if standalone client
+      // Mock fallback if network fails
     }
 
-    // Default empty queue fallback
-    setQueue({
-      unassigned: [],
-      active: [],
-      delayed: [],
-      unfulfilled: [],
-      cancelled: [],
-      resolved: [],
-      total: 0
-    });
+    setQueue(computeLocalQueue());
     setLoading(false);
-  }, []);
+  }, [computeLocalQueue]);
 
   useEffect(() => {
     fetchQueue();
@@ -77,6 +114,16 @@ export function OperationsQueuePage() {
   }, [fetchQueue]);
 
   const handleManualEscalation = async (requestId: string) => {
+    if (!hasBackendApi()) {
+      updateRequestStatus(requestId, 'CANCELLED', {
+        description: 'Operator escalated: No provider accepted within timeout threshold'
+      });
+      setActionMessage(`Incident #${requestId} escalated to UNFULFILLED_NO_PROVIDER.`);
+      fetchQueue();
+      setTimeout(() => setActionMessage(null), 4000);
+      return;
+    }
+
     try {
       await fetch(`${API_BASE_URL}/api/assistance/${requestId}/status`, {
         method: 'PUT',

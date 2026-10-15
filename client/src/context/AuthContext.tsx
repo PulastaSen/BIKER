@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { UserRole, User } from '../types/app';
-import { getCurrentUser, setCurrentUser as persistCurrentUser, DEFAULT_USERS } from '../utils/appStorage';
-import { API_BASE_URL } from '../config/api';
+import { getCurrentUser, setCurrentUser as persistCurrentUser, DEFAULT_USERS, getUsers, addUser } from '../utils/appStorage';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
 
 interface AuthContextType {
   user: User | null;
@@ -32,10 +32,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     persistCurrentUser(user);
   }, [user]);
 
-  // Validate session with backend only ONCE on mount
+  // Validate session with backend only ONCE on mount if backend is configured
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
-    if (token) {
+    if (token && hasBackendApi() && !token.startsWith('demo-token-')) {
       fetch(`${API_BASE_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .then(data => {
         if (data.success && data.user) {
           setUser(data.user);
-        } else if (!token.startsWith('demo-token-')) {
+        } else {
           localStorage.removeItem('auth_token');
           setUser(null);
         }
@@ -58,25 +58,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password = 'password123'): Promise<User | null> => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      
-      if (res.ok && data.success && data.user) {
-        localStorage.setItem('auth_token', data.token);
-        setUser(data.user);
-        return data.user;
+    if (hasBackendApi()) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        
+        if (res.ok && data.success && data.user) {
+          localStorage.setItem('auth_token', data.token);
+          setUser(data.user);
+          return data.user;
+        }
+      } catch {
+        // Fallback to local storage below
       }
-    } catch {
-      // Local fallback below
     }
 
-    // Local fallback for demo / offline environment
-    const found = DEFAULT_USERS.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+    // Local fallback for demo / offline environment (searches both default and custom created users)
+    const allUsers = [...getUsers(), ...DEFAULT_USERS];
+    const found = allUsers.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
     if (found) {
       localStorage.setItem('auth_token', `demo-token-${found.id}`);
       setUser(found);
@@ -87,21 +90,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const register = async (data: { name: string; email: string; phone: string; password?: string; role: UserRole }): Promise<User | null> => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, password: data.password || 'password123' })
-      });
-      const resData = await res.json();
-      
-      if (res.ok && resData.success && resData.user) {
-        localStorage.setItem('auth_token', resData.token);
-        setUser(resData.user);
-        return resData.user;
+    if (hasBackendApi()) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, password: data.password || 'password123' })
+        });
+        const resData = await res.json();
+        
+        if (res.ok && resData.success && resData.user) {
+          localStorage.setItem('auth_token', resData.token);
+          setUser(resData.user);
+          return resData.user;
+        }
+      } catch {
+        // Fallback to local storage below
       }
-    } catch {
-      // Local fallback below
     }
 
     // Local fallback for offline demo registration
@@ -113,6 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role: data.role,
       createdAt: new Date().toISOString()
     };
+    addUser(newUser);
     localStorage.setItem('auth_token', `demo-token-${newUser.id}`);
     setUser(newUser);
     persistCurrentUser(newUser);

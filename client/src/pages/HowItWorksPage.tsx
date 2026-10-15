@@ -13,6 +13,7 @@ import {
   Clock,
   UserCheck,
 } from 'lucide-react';
+import { getAssetUrl } from '../utils/assets';
 
 export function HowItWorksPage() {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ export function HowItWorksPage() {
 
           <div className="hiw-hero-premium__visual">
             <div className="hero-visual">
-              <img src="/images/motorcycle-breakdown.jpg" alt="Motorcycle stopped on Himalayan road" />
+              <img src={getAssetUrl('/images/motorcycle-breakdown.jpg')} alt="Motorcycle stopped on Himalayan road" />
               <div className="hero-status-card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-success)' }}></div>
@@ -92,7 +93,7 @@ export function HowItWorksPage() {
           <div className="four-steps-grid">
             
             <div className="step-card premium-card">
-              <img src="/images/bikes/himalayan-450/himalayan-450-main.jpg" alt="Motorcycle rider beside a stopped motorcycle" className="step-card__img" />
+              <img src={getAssetUrl('/images/bikes/himalayan-450/himalayan-450-main.jpg')} alt="Motorcycle rider beside a stopped motorcycle" className="step-card__img" />
               <div className="step-card__body">
                 <div className="step-card__number">01</div>
                 <h3>Create Request</h3>
@@ -105,7 +106,7 @@ export function HowItWorksPage() {
             </div>
 
             <div className="step-card premium-card">
-              <img src="/images/motoassist-hero.jpg" alt="Rider checking GPS" className="step-card__img" style={{ objectPosition: 'top' }} />
+              <img src={getAssetUrl('/images/motoassist-hero.jpg')} alt="Rider checking GPS" className="step-card__img" style={{ objectPosition: 'top' }} />
               <div className="step-card__body">
                 <div className="step-card__number">02</div>
                 <h3>Share Location</h3>
@@ -118,7 +119,7 @@ export function HowItWorksPage() {
             </div>
 
             <div className="step-card premium-card">
-              <img src="/images/mechanic-repair.jpg" alt="Mechanic helping rider" className="step-card__img" />
+              <img src={getAssetUrl('/images/mechanic-repair.jpg')} alt="Mechanic helping rider" className="step-card__img" />
               <div className="step-card__body">
                 <div className="step-card__number">03</div>
                 <h3>Connect Support</h3>
@@ -131,7 +132,7 @@ export function HowItWorksPage() {
             </div>
 
             <div className="step-card premium-card">
-              <img src="/images/roadside-support.jpg" alt="Rider continuing journey" className="step-card__img" />
+              <img src={getAssetUrl('/images/roadside-support.jpg')} alt="Rider continuing journey" className="step-card__img" />
               <div className="step-card__body">
                 <div className="step-card__number">04</div>
                 <h3>Get Help & Resolve</h3>

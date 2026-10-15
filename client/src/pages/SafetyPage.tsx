@@ -1,11 +1,12 @@
 import { ShieldAlert, PhoneCall, CheckCircle2, Lock, AlertTriangle } from 'lucide-react';
 import { SafetyNotice } from '../components/SafetyNotice';
+import { getAssetUrl } from '../utils/assets';
 
 export function SafetyPage() {
   return (
     <div className="safety-page">
       <section className="hero-premium">
-        <div className="hero-premium__bg" style={{ backgroundImage: "url('/images/motoassist-hero.jpg')" }}>
+        <div className="hero-premium__bg" style={{ backgroundImage: `url("${getAssetUrl('/images/motoassist-hero.jpg')}")` }}>
           <div className="hero-premium__overlay"></div>
         </div>
         <div className="shell hero-premium__content" style={{ justifyContent: 'center', textAlign: 'center' }}>

@@ -18,7 +18,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { getHelperProfiles, saveRequest, getBikes } from '../utils/appStorage';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
 import { useUserLocation } from '../hooks/useUserLocation';
 
 const CATEGORIES = [
@@ -114,7 +114,7 @@ export function RequestHelpPage() {
 
   useEffect(() => {
     if (step === 3) {
-      if (coords) {
+      if (coords && hasBackendApi()) {
         fetch(`${API_BASE_URL}/api/assistance/providers/nearby?lat=${coords.lat}&lng=${coords.lng}`)
           .then(res => res.json())
           .then(data => {
@@ -138,28 +138,30 @@ export function RequestHelpPage() {
     const effectiveAddress = address || searchPlace.trim() || 'Himalayan Corridor';
     const effectiveCoords = coords ? [coords.lng, coords.lat] : undefined;
 
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/assistance`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          problemCategory: category,
-          location: { 
-            type: 'Point',
-            coordinates: effectiveCoords || [0, 0],
-            address: effectiveAddress,
-            accuracyMeters: accuracy || 15
-          },
-          providerId: selectedProvider.id
-        })
-      });
-      const data = await res.json();
-      if (data.success && data.data?.requestId) {
-        navigate(`/requests/${data.data.requestId}`);
-        return;
+    if (hasBackendApi()) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/assistance`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            problemCategory: category,
+            location: { 
+              type: 'Point',
+              coordinates: effectiveCoords || [0, 0],
+              address: effectiveAddress,
+              accuracyMeters: accuracy || 15
+            },
+            providerId: selectedProvider.id
+          })
+        });
+        const data = await res.json();
+        if (data.success && data.data?.requestId) {
+          navigate(`/requests/${data.data.requestId}`);
+          return;
+        }
+      } catch {
+        // Local fallback below
       }
-    } catch {
-      // Local fallback below
     }
 
     const userBikes = user ? getBikes(user.id) : [];

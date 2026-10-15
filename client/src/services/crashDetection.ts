@@ -1,5 +1,5 @@
 import type { CrashDetectionEvent } from '../types/app';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
 
 export interface SensorStatus {
   supported: boolean;
@@ -90,14 +90,16 @@ class CrashDetectionManager {
       timestamp: new Date().toISOString()
     };
 
-    // Log to backend
-    fetch(`${API_BASE_URL}/api/crash/detect`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(event)
-    }).catch(() => {
-      // Offline fallback
-    });
+    // Log to backend if connected
+    if (hasBackendApi()) {
+      fetch(`${API_BASE_URL}/api/crash/detect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(event)
+      }).catch(() => {
+        // Offline fallback
+      });
+    }
 
     this.listeners.forEach((listener) => listener(event));
     return event;
@@ -169,11 +171,13 @@ class CrashDetectionManager {
         timestamp: new Date().toISOString()
       };
 
-      fetch(`${API_BASE_URL}/api/crash/detect`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(crashEvent)
-      }).catch(() => {});
+      if (hasBackendApi()) {
+        fetch(`${API_BASE_URL}/api/crash/detect`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(crashEvent)
+        }).catch(() => {});
+      }
 
       this.listeners.forEach((listener) => listener(crashEvent));
     }

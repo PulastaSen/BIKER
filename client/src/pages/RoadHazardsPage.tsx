@@ -40,7 +40,7 @@ export function RoadHazardsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const loadHazards = () => {
-    fetchRoadHazards().then(data => {
+    fetchRoadHazards().then((data: RoadHazard[]) => {
       setHazards(data);
       setLoading(false);
     });

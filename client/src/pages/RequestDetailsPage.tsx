@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { getSocket } from '../services/socket';
 import { getRequestById, getHelperProfileById, updateRequestStatus } from '../utils/appStorage';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
 import { fetchServiceReceipt } from '../services/ecosystemApi';
 import type { ServiceReceipt } from '../types/app';
 
@@ -99,16 +99,18 @@ export function RequestDetailsPage() {
 
   const fetchRequest = useCallback(async () => {
     if (!id) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/assistance/${id}`);
-      const data = await res.json();
-      if (data.success && data.data) {
-        setRequest(data.data);
-        setError(null);
-        return;
+    if (hasBackendApi()) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/assistance/${id}`);
+        const data = await res.json();
+        if (data.success && data.data) {
+          setRequest(data.data);
+          setError(null);
+          return;
+        }
+      } catch {
+        // Local fallback below
       }
-    } catch {
-      // Local fallback below
     }
 
     // Local Storage Fallback: Truthful, non-fabricated state
@@ -230,14 +232,16 @@ export function RequestDetailsPage() {
         averageResponseMinutes: 12
       }) : undefined;
 
-      try {
-        await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/status`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: nextStatus, providerId: 'provider-1', notes: `Dev simulation advanced to ${nextStatus}` })
-        });
-      } catch {
-        // Offline status advance
+      if (hasBackendApi()) {
+        try {
+          await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: nextStatus, providerId: 'provider-1', notes: `Dev simulation advanced to ${nextStatus}` })
+          });
+        } catch {
+          // Offline status advance
+        }
       }
 
       if (id && nextStatus === 'COMPLETED') {
@@ -254,14 +258,16 @@ export function RequestDetailsPage() {
 
   const submitRating = async () => {
     if (!request) return;
-    try {
-      await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/rate`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rating, review: reviewText || 'Timely roadside assistance' })
-      });
-    } catch {
-      // Offline fallback
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/rate`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rating, review: reviewText || 'Timely roadside assistance' })
+        });
+      } catch {
+        // Offline fallback
+      }
     }
 
     setRequest(prev => (prev ? {

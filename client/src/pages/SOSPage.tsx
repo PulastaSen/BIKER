@@ -7,7 +7,7 @@ import {
   PhoneCall,
   MessageCircle
 } from 'lucide-react';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
 import { fetchMedicalProfile } from '../services/ecosystemApi';
 import type { MedicalProfile } from '../types/app';
 import { buildWhatsAppEmergencyAlertUrl } from '../utils/whatsappShare';
@@ -52,22 +52,39 @@ export function SOSPage() {
   useEffect(() => {
     // Check if an SOS is already active when page loads
     const checkActiveSOS = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/sos/active`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.success && data.data) {
-            setIncident({
-              ...data.data,
-              serverReceived: true,
-              gpsAcquired: !!(data.data.location?.coordinates && data.data.location.coordinates.length === 2),
-              familyConfirmed: false
-            });
+      if (hasBackendApi()) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/sos/active`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.success && data.data) {
+              setIncident({
+                ...data.data,
+                serverReceived: true,
+                gpsAcquired: !!(data.data.location?.coordinates && data.data.location.coordinates.length === 2),
+                familyConfirmed: false
+              });
+              setStatus('ACTIVE');
+              return;
+            }
+          }
+        } catch (err) {
+          console.error('Failed to check active SOS:', err);
+        }
+      }
+
+      // Check local storage
+      const raw = localStorage.getItem('motoassist_active_sos');
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.status === 'ACTIVE') {
+            setIncident(parsed);
             setStatus('ACTIVE');
           }
+        } catch {
+          // ignore
         }
-      } catch (err) {
-        console.error('Failed to check active SOS:', err);
       }
     };
     checkActiveSOS();
@@ -136,57 +153,67 @@ export function SOSPage() {
       // Continue without GPS if permission denied or unavailable
     }
 
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/sos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          latitude: lat, 
-          longitude: lng,
-          accuracyMeters: accuracyMeters || undefined
-        })
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setIncident({
-          ...data.data,
-          serverReceived: true,
-          gpsAcquired,
-          familyConfirmed: false
+    if (hasBackendApi()) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/sos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            latitude: lat, 
+            longitude: lng,
+            accuracyMeters: accuracyMeters || undefined
+          })
         });
-        setStatus('ACTIVE');
-      } else {
-        throw new Error(data.message || 'Dispatch server rejected payload');
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          const inc: SOSIncident = {
+            ...data.data,
+            serverReceived: true,
+            gpsAcquired,
+            familyConfirmed: false
+          };
+          localStorage.setItem('motoassist_active_sos', JSON.stringify(inc));
+          setIncident(inc);
+          setStatus('ACTIVE');
+          return;
+        }
+      } catch {
+        // Fall back to honest offline emergency state
       }
-    } catch {
-      // Honest local fallback emergency state
-      setIncident({
-        incidentId: `SOS-${Math.floor(1000 + Math.random() * 9000)}`,
-        status: 'ACTIVE',
-        notificationStatus: 'DISPATCHED',
-        serverReceived: false,
-        gpsAcquired,
-        familyConfirmed: false,
-        location: lat && lng ? { coordinates: [lng, lat], accuracyMeters: accuracyMeters || 12 } : undefined,
-        timeline: [
-          { event: 'SOS ACTIVATED', timestamp: new Date().toLocaleTimeString(), detail: '3-second hold confirmed' },
-          ...(gpsAcquired ? [{ event: 'GPS ACQUIRED', timestamp: new Date().toLocaleTimeString(), detail: 'Phone location recorded' }] : []),
-          { event: 'OFFLINE STANDALONE MODE', timestamp: new Date().toLocaleTimeString(), detail: 'Server unreachable. Call 112 advised' }
-        ]
-      });
-      setStatus('ACTIVE');
     }
+
+    // Honest local emergency state (no failed network requests on static hosting)
+    const fallbackIncident: SOSIncident = {
+      incidentId: `SOS-${Math.floor(1000 + Math.random() * 9000)}`,
+      status: 'ACTIVE',
+      notificationStatus: 'DISPATCHED',
+      serverReceived: false,
+      gpsAcquired,
+      familyConfirmed: false,
+      location: lat && lng ? { coordinates: [lng, lat], accuracyMeters: accuracyMeters || 12 } : undefined,
+      timeline: [
+        { event: 'SOS ACTIVATED', timestamp: new Date().toLocaleTimeString(), detail: '3-second hold confirmed' },
+        ...(gpsAcquired ? [{ event: 'GPS ACQUIRED', timestamp: new Date().toLocaleTimeString(), detail: 'Phone location recorded' }] : []),
+        { event: 'LOCAL EMERGENCY MODE', timestamp: new Date().toLocaleTimeString(), detail: 'Immediate 112 & WhatsApp dispatch ready' }
+      ]
+    };
+    localStorage.setItem('motoassist_active_sos', JSON.stringify(fallbackIncident));
+    setIncident(fallbackIncident);
+    setStatus('ACTIVE');
   };
 
   const handleCancelSOS = async () => {
     if (!incident) return;
     if (!window.confirm('Cancel this emergency SOS?')) return;
 
-    try {
-      await fetch(`${API_BASE_URL}/api/sos/${incident.incidentId}/cancel`, { method: 'PUT' });
-    } catch {
-      // ignore
+    localStorage.removeItem('motoassist_active_sos');
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/sos/${incident.incidentId}/cancel`, { method: 'PUT' });
+      } catch {
+        // ignore
+      }
     }
     setStatus('IDLE');
     setIncident(null);
@@ -196,14 +223,17 @@ export function SOSPage() {
 
   const handleResolveSOS = async () => {
     if (!incident) return;
-    try {
-      await fetch(`${API_BASE_URL}/api/sos/${incident.incidentId}/resolve`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes: 'Rider confirmed safety and resolved incident.' })
-      });
-    } catch {
-      // ignore
+    localStorage.removeItem('motoassist_active_sos');
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/sos/${incident.incidentId}/resolve`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notes: 'Rider confirmed safety and resolved incident.' })
+        });
+      } catch {
+        // ignore
+      }
     }
     setStatus('IDLE');
     setIncident(null);

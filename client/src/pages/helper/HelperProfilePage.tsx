@@ -11,7 +11,7 @@ import {
   Star, 
   CheckCircle2
 } from 'lucide-react';
-import { API_BASE_URL } from '../../config/api';
+import { API_BASE_URL, hasBackendApi } from '../../config/api';
 
 export function HelperProfilePage() {
   const { user } = useAuth();
@@ -56,15 +56,17 @@ export function HelperProfilePage() {
         setSelectedSkills(['Puncture repair', 'Battery jump-start', 'Chain repair', 'Towing', 'Fuel delivery']);
       }
 
-      // Fetch helper verification status from API
-      fetch(`${API_BASE_URL}/api/helpers/verification`)
-        .then((r) => r.json())
-        .then((d) => {
-          if (d?.data?.status) {
-            setVerificationStatus(d.data.status);
-          }
-        })
-        .catch(() => {});
+      // Fetch helper verification status from API if backend is connected
+      if (hasBackendApi()) {
+        fetch(`${API_BASE_URL}/api/helpers/verification`)
+          .then((r) => r.json())
+          .then((d) => {
+            if (d?.data?.status) {
+              setVerificationStatus(d.data.status);
+            }
+          })
+          .catch(() => {});
+      }
     }
   }, [user]);
 
@@ -91,20 +93,22 @@ export function HelperProfilePage() {
       setProfile(updated);
     }
 
-    try {
-      await fetch(`${API_BASE_URL}/api/helpers/verification`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          businessName,
-          ownerName,
-          phone,
-          businessRegistrationNumber: businessReg,
-          tradeLicenseNumber: tradeLicense
-        })
-      });
-    } catch {
-      // offline fallback
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/helpers/verification`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            businessName,
+            ownerName,
+            phone,
+            businessRegistrationNumber: businessReg,
+            tradeLicenseNumber: tradeLicense
+          })
+        });
+      } catch {
+        // Local state preserved
+      }
     }
 
     setSaved(true);

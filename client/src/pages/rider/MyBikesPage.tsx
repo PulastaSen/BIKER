@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from 'lucide-react';
+import { getAssetUrl } from '../../utils/assets';
 
 export function MyBikesPage() {
   const { user } = useAuth();
@@ -137,21 +138,21 @@ export function MyBikesPage() {
     const bModel = bike.model.toLowerCase();
     const bBrand = (bike.brand || '').toLowerCase();
     if (bModel.includes('himalayan') || bBrand.includes('royal enfield')) {
-      return '/images/bikes/himalayan-450/himalayan-450-main.jpg';
+      return getAssetUrl('/images/bikes/himalayan-450/himalayan-450-main.jpg');
     }
     if (bModel.includes('transalp') || (bBrand.includes('honda') && bModel.includes('750'))) {
-      return '/images/bikes/transalp-750/transalp-750-main.jpg';
+      return getAssetUrl('/images/bikes/transalp-750/transalp-750-main.jpg');
     }
     if (bModel.includes('tiger') || bBrand.includes('triumph')) {
-      return '/images/bikes/tiger-900/tiger-900-main.jpg';
+      return getAssetUrl('/images/bikes/tiger-900/tiger-900-main.jpg');
     }
     if (bModel.includes('390 adventure') || bModel.includes('ktm') || bBrand.includes('ktm')) {
-      return '/images/bikes/ktm-390-adventure/ktm-390-adventure-main.jpg';
+      return getAssetUrl('/images/bikes/ktm-390-adventure/ktm-390-adventure-main.jpg');
     }
     if (bModel.includes('pulsar') || bModel.includes('n160') || bBrand.includes('bajaj')) {
-      return '/images/bikes/pulsar-n160/pulsar-n160-main.jpg';
+      return getAssetUrl('/images/bikes/pulsar-n160/pulsar-n160-main.jpg');
     }
-    return '/images/motoassist-hero.jpg';
+    return getAssetUrl('/images/motoassist-hero.jpg');
   };
 
   return (

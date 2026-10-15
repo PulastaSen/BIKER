@@ -12,7 +12,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useUserLocation } from '../hooks/useUserLocation';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
 
 export type ProviderFilter = 'all' | 'mechanic' | 'oem';
 
@@ -124,9 +124,9 @@ export function NearbyServicesPage() {
   const [searchPlace, setSearchPlace] = useState('');
   const [mobileSheetOpen, setMobileSheetOpen] = useState(true);
 
-  // Fetch real backend providers if location is known
+  // Fetch real backend providers if location is known and backend is active
   useEffect(() => {
-    if (coords) {
+    if (coords && hasBackendApi()) {
       fetch(`${API_BASE_URL}/api/assistance/providers/nearby?lat=${coords.lat}&lng=${coords.lng}`)
         .then((res) => res.json())
         .then((data) => {

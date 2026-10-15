@@ -30,7 +30,7 @@ import { FeelingUnsafeModal } from '../components/FeelingUnsafeModal';
 import { MedicalIdQuickModal } from '../components/MedicalIdQuickModal';
 import { MountainContourPattern, AnimatedRoadLines } from '../components/graphics';
 import { buildWhatsAppBreakdownAlertUrl } from '../utils/whatsappShare';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
 import { saveRequest, INITIAL_BIKES } from '../utils/appStorage';
 import { MotorcycleTroubleshooter } from '../components/MotorcycleTroubleshooter';
 import { queueOfflineIncident } from '../utils/offlineQueue';
@@ -424,33 +424,35 @@ export function EmergencyAssistPage() {
     const effectiveAddress = address || searchPlace.trim() || prov.address || 'Location coordinates logged';
     const descriptionText = towingWinchNeeded ? `${towingBikeModel} (Mountain Winch Needed)` : towingBikeModel || `Emergency roadside dispatch for ${prov.name}`;
 
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/assistance`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Idempotency-Key': reqId
-        },
-        body: JSON.stringify({
-          problemCategory: problem,
-          helpCategory: selectedCategory === 'MEDICAL' ? 'MEDICAL' : 'MECHANICAL',
-          providerId: prov.id,
-          location: {
-            coordinates,
-            address: effectiveAddress,
-            accuracyMeters: accuracy || 15
+    if (hasBackendApi()) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/assistance`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Idempotency-Key': reqId
           },
-          locationProvenance,
-          idempotencyKey: reqId,
-          description: descriptionText
-        })
-      });
-      const data = await res.json();
-      if (res.ok && data?.success) {
-        serverOk = true;
+          body: JSON.stringify({
+            problemCategory: problem,
+            helpCategory: selectedCategory === 'MEDICAL' ? 'MEDICAL' : 'MECHANICAL',
+            providerId: prov.id,
+            location: {
+              coordinates,
+              address: effectiveAddress,
+              accuracyMeters: accuracy || 15
+            },
+            locationProvenance,
+            idempotencyKey: reqId,
+            description: descriptionText
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data?.success) {
+          serverOk = true;
+        }
+      } catch {
+        serverOk = false;
       }
-    } catch {
-      serverOk = false;
     }
 
     if (!serverOk) {

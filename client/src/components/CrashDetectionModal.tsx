@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AlertTriangle, PhoneCall, Check, BellRing } from 'lucide-react';
 import type { CrashDetectionEvent } from '../types/app';
-import { API_BASE_URL } from '../config/api';
+import { API_BASE_URL, hasBackendApi } from '../config/api';
 
 interface CrashDetectionModalProps {
   event: CrashDetectionEvent | null;
@@ -42,14 +42,16 @@ export function CrashDetectionModal({ event, onDismiss, onEscalateSOS }: CrashDe
 
   const handleTimeoutEscalation = async () => {
     setEscalated(true);
-    try {
-      await fetch(`${API_BASE_URL}/api/crash/${event.eventId}/respond`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userResponse: 'TIMEOUT_NO_RESPONSE', notes: '10s countdown expired without rider input' })
-      });
-    } catch {
-      // offline
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/crash/${event.eventId}/respond`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userResponse: 'TIMEOUT_NO_RESPONSE', notes: '10s countdown expired without rider input' })
+        });
+      } catch {
+        // offline
+      }
     }
     // Auto-prompt emergency escalation
     onEscalateSOS();
@@ -57,27 +59,31 @@ export function CrashDetectionModal({ event, onDismiss, onEscalateSOS }: CrashDe
 
   const handleImOk = async () => {
     setIsDismissing(true);
-    try {
-      await fetch(`${API_BASE_URL}/api/crash/${event.eventId}/respond`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userResponse: 'CONFIRMED_SAFE', notes: 'False alarm - rider confirmed safe' })
-      });
-    } catch {
-      // offline
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/crash/${event.eventId}/respond`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userResponse: 'CONFIRMED_SAFE', notes: 'False alarm - rider confirmed safe' })
+        });
+      } catch {
+        // offline
+      }
     }
     onDismiss();
   };
 
   const handleSendSOS = async () => {
-    try {
-      await fetch(`${API_BASE_URL}/api/crash/${event.eventId}/respond`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userResponse: 'CONFIRMED_CRASH', notes: 'Rider confirmed emergency assistance needed' })
-      });
-    } catch {
-      // offline
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/crash/${event.eventId}/respond`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userResponse: 'CONFIRMED_CRASH', notes: 'Rider confirmed emergency assistance needed' })
+        });
+      } catch {
+        // offline
+      }
     }
     onEscalateSOS();
   };

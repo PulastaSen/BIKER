@@ -5,7 +5,7 @@ let socket: Socket | null = null;
 
 export const getSocket = () => {
   if (!socket) {
-    const shouldConnect = Boolean(import.meta.env.VITE_SOCKET_URL || !import.meta.env.PROD);
+    const shouldConnect = Boolean(SOCKET_URL && (import.meta.env.VITE_SOCKET_URL || !import.meta.env.PROD));
     socket = io(SOCKET_URL, {
       autoConnect: shouldConnect,
       reconnectionDelayMax: 10000,

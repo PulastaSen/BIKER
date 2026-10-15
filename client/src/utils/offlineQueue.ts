@@ -83,6 +83,7 @@ export function clearOfflineQueue(): void {
 }
 
 export async function flushOfflineQueue(apiBaseUrl: string): Promise<{ synced: number; failed: number }> {
+  if (!apiBaseUrl) return { synced: 0, failed: 0 };
   const queue = getOfflineQueue();
   if (queue.length === 0) return { synced: 0, failed: 0 };
 
