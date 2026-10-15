@@ -46,63 +46,64 @@ export function SmartEntryScreen() {
         {/* Rapid Call 112 Access */}
         <a
           href="tel:112"
-          className="px-3.5 py-1.5 rounded-xl bg-red-500/15 hover:bg-red-500/25 border border-red-500/40 text-red-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(239,68,68,0.2)]"
+          className="px-3.5 py-2 min-h-[44px] rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-200 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(239,68,68,0.25)]"
           title="Direct Emergency Dial 112"
+          aria-label="Direct Emergency Dial 112"
         >
-          <PhoneCall size={13} className="text-red-400" />
+          <PhoneCall size={14} className="text-red-400" />
           <span>Call 112</span>
         </a>
       </header>
 
       {/* Main Full-Screen Decision Interface */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 max-w-2xl mx-auto w-full text-center">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-3.5 sm:px-6 py-6 sm:py-8 max-w-2xl mx-auto w-full text-center">
         
         {/* Subtle Category Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-gray-300 mb-6 backdrop-blur-md">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-xs font-semibold text-gray-300 mb-5 sm:mb-6 backdrop-blur-md">
           <span className="w-2 h-2 rounded-full bg-[#FFF174] animate-pulse" />
           <span>Motorcycle Safety, Emergency Assistance & Roadside Rescue</span>
         </div>
 
         {/* Primary Question */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight mb-3">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight mb-2.5 sm:mb-3">
           Are you in trouble right now?
         </h1>
 
         {/* Supporting Text */}
-        <p className="text-sm sm:text-base text-gray-300 max-w-md mx-auto mb-8 sm:mb-10 font-normal leading-relaxed">
+        <p className="text-xs sm:text-base text-gray-300 max-w-md mx-auto mb-6 sm:mb-10 font-normal leading-relaxed">
           Tell us what you need. We'll help you find the next step.
         </p>
 
         {/* Two Large Visually Distinct Options */}
-        <div className="w-full space-y-4 sm:space-y-5">
+        <div className="w-full space-y-3.5 sm:space-y-5">
           
           {/* OPTION A: YES, I NEED HELP */}
           <button
             type="button"
             onClick={handleSelectHelp}
-            className="w-full p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#1C0D0D] via-[#160A0A] to-[#110808] hover:from-[#251010] hover:to-[#180A0A] active:scale-[0.99] border-2 border-red-500/60 shadow-[0_0_35px_rgba(239,68,68,0.3)] transition-all cursor-pointer group text-left relative overflow-hidden min-h-[110px]"
+            className="w-full p-4 sm:p-7 rounded-3xl bg-gradient-to-br from-[#1C0D0D] via-[#160A0A] to-[#110808] hover:from-[#251010] hover:to-[#180A0A] active:scale-[0.99] border-2 border-red-500/60 shadow-[0_0_35px_rgba(239,68,68,0.3)] transition-all cursor-pointer group text-left relative overflow-hidden min-h-[96px] sm:min-h-[110px]"
             aria-label="YES, I NEED HELP - Emergency, medical help or motorcycle breakdown"
           >
             {/* Red shimmer corner accent */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/15 rounded-full blur-2xl pointer-events-none group-hover:bg-red-600/25 transition-all" />
 
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4 sm:gap-5">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-red-600 text-white flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(220,38,38,0.6)] group-hover:scale-105 transition-transform border border-red-400">
-                  <ShieldAlert size={32} className="animate-pulse" />
+            <div className="flex items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 sm:gap-5 min-w-0">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-red-600 text-white flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(220,38,38,0.6)] group-hover:scale-105 transition-transform border border-red-400">
+                  <ShieldAlert size={28} className="sm:w-8 sm:h-8 animate-pulse" />
                 </div>
-                <div>
-                  <span className="block text-xl sm:text-2xl font-black tracking-wide text-white uppercase group-hover:text-red-200 transition-colors">
+                <div className="min-w-0">
+                  <span className="block text-lg sm:text-2xl font-black tracking-wide text-white uppercase group-hover:text-red-200 transition-colors truncate">
                     YES — I NEED HELP
                   </span>
-                  <span className="block text-xs sm:text-sm text-red-200/90 font-medium mt-1">
+                  <span className="block text-[11px] sm:text-sm text-red-200/90 font-medium mt-0.5 sm:mt-1 leading-snug">
                     Emergency, medical help or motorcycle breakdown.
                   </span>
                 </div>
               </div>
 
-              <div className="w-10 h-10 rounded-full bg-red-500/20 border border-red-500/40 text-red-300 flex items-center justify-center shrink-0 group-hover:translate-x-1 transition-transform">
-                <ArrowRight size={20} />
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-500/20 border border-red-500/40 text-red-300 flex items-center justify-center shrink-0 group-hover:translate-x-1 transition-transform">
+                <ArrowRight size={18} />
               </div>
             </div>
           </button>
@@ -111,26 +112,26 @@ export function SmartEntryScreen() {
           <button
             type="button"
             onClick={handleSelectOk}
-            className="w-full p-5 sm:p-6 rounded-3xl bg-[#141414] hover:bg-[#1A1A1A] active:scale-[0.99] border border-white/15 hover:border-[#FFF174]/50 shadow-md transition-all cursor-pointer group text-left relative min-h-[96px]"
+            className="w-full p-4 sm:p-6 rounded-3xl bg-[#141414] hover:bg-[#1A1A1A] active:scale-[0.99] border border-white/15 hover:border-[#FFF174]/50 shadow-md transition-all cursor-pointer group text-left relative min-h-[88px] sm:min-h-[96px]"
             aria-label="NO, I'M OK - Log in, create an account or explore MotoAssist"
           >
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4 sm:gap-5">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/10 text-[#FFF174] flex items-center justify-center shrink-0 group-hover:bg-[#FFF174]/15 border border-white/10 transition-colors">
-                  <Navigation size={24} />
+            <div className="flex items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 sm:gap-5 min-w-0">
+                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/10 text-[#FFF174] flex items-center justify-center shrink-0 group-hover:bg-[#FFF174]/15 border border-white/10 transition-colors">
+                  <Navigation size={22} className="sm:w-6 sm:h-6" />
                 </div>
-                <div>
-                  <span className="block text-lg sm:text-xl font-black tracking-wide text-white group-hover:text-[#FFF174] transition-colors">
+                <div className="min-w-0">
+                  <span className="block text-base sm:text-xl font-black tracking-wide text-white group-hover:text-[#FFF174] transition-colors truncate">
                     NO — I'M OK
                   </span>
-                  <span className="block text-xs sm:text-sm text-gray-300 font-normal mt-0.5">
+                  <span className="block text-[11px] sm:text-sm text-gray-300 font-normal mt-0.5 leading-snug">
                     Log in, create an account or explore MotoAssist.
                   </span>
                 </div>
               </div>
 
-              <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 text-gray-400 group-hover:text-white flex items-center justify-center shrink-0 group-hover:translate-x-1 transition-transform">
-                <ArrowRight size={20} />
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/5 border border-white/10 text-gray-400 group-hover:text-white flex items-center justify-center shrink-0 group-hover:translate-x-1 transition-transform">
+                <ArrowRight size={18} />
               </div>
             </div>
           </button>
