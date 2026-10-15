@@ -104,8 +104,18 @@ export interface MockTimelineItem {
   notes?: string;
 }
 
+export interface MockAuditEvent {
+  actor: 'RIDER' | 'PROVIDER' | 'OPERATOR' | 'SYSTEM';
+  action: string;
+  previousStatus?: string;
+  newStatus?: string;
+  timestamp: string;
+  notes?: string;
+}
+
 export interface MockAssistanceRequest {
   requestId: string;
+  idempotencyKey?: string;
   riderId: string;
   providerId?: string;
   problemCategory: string;
@@ -116,7 +126,9 @@ export interface MockAssistanceRequest {
     address?: string;
     accuracyMeters?: number;
   };
+  locationProvenance?: 'GPS_FRESH' | 'GPS_STALE' | 'MANUAL_LANDMARK' | 'UNAVAILABLE';
   status: string;
+  cancellationReason?: string;
   estimatedPrice?: {
     calloutFee: number;
     travelFee: number;
@@ -134,6 +146,7 @@ export interface MockAssistanceRequest {
   };
   receiptId?: string;
   timeline?: MockTimelineItem[];
+  auditEvents?: MockAuditEvent[];
   paymentAmount?: number;
   paymentStatus?: 'PENDING' | 'PAID';
   rating?: number;
@@ -847,12 +860,27 @@ export const mockStore = {
 
   // Assistance Requests
   getAllRequests: () => Array.from(assistanceRequests.values()),
+  findRequestByIdempotencyKey: (key: string) => {
+    if (!key) return null;
+    return Array.from(assistanceRequests.values()).find(r => r.idempotencyKey === key) || null;
+  },
   createAssistanceRequest: (req: Omit<MockAssistanceRequest, 'createdAt' | 'updatedAt'>) => {
     const now = new Date().toISOString();
     const newReq: MockAssistanceRequest = {
       ...req,
+      status: req.status || 'SUBMITTED',
+      locationProvenance: req.locationProvenance || (req.location?.coordinates?.[0] ? 'GPS_FRESH' : 'UNAVAILABLE'),
       timeline: [
-        { status: 'REQUESTED', timestamp: now, notes: 'Incident request submitted by rider' }
+        { status: req.status || 'SUBMITTED', timestamp: now, notes: 'Incident request submitted by rider' }
+      ],
+      auditEvents: [
+        {
+          actor: 'RIDER',
+          action: 'INCIDENT_SUBMITTED',
+          newStatus: req.status || 'SUBMITTED',
+          timestamp: now,
+          notes: 'Incident request submitted by rider'
+        }
       ],
       createdAt: now,
       updatedAt: now
@@ -861,16 +889,74 @@ export const mockStore = {
     return newReq;
   },
   getRequestById: (id: string) => assistanceRequests.get(id) || null,
-  updateRequestStatus: (id: string, status: string, providerId?: string, notes?: string) => {
+  updateRequestStatus: (
+    id: string, 
+    status: string, 
+    providerId?: string, 
+    notes?: string, 
+    actor: 'RIDER' | 'PROVIDER' | 'OPERATOR' | 'SYSTEM' = 'SYSTEM'
+  ) => {
     const req = assistanceRequests.get(id);
     if (!req) return null;
+    const previousStatus = req.status;
     req.status = status;
     if (providerId) req.providerId = providerId;
     const now = new Date().toISOString();
     req.updatedAt = now;
     if (!req.timeline) req.timeline = [];
     req.timeline.push({ status, timestamp: now, notes: notes || `Status advanced to ${status}` });
+    if (!req.auditEvents) req.auditEvents = [];
+    req.auditEvents.push({
+      actor,
+      action: 'STATUS_TRANSITION',
+      previousStatus,
+      newStatus: status,
+      timestamp: now,
+      notes: notes || `Status changed from ${previousStatus} to ${status}`
+    });
     return req;
+  },
+  cancelAssistanceRequest: (
+    id: string, 
+    reason: string, 
+    actor: 'RIDER' | 'PROVIDER' | 'OPERATOR' | 'SYSTEM' = 'RIDER'
+  ) => {
+    const req = assistanceRequests.get(id);
+    if (!req) return null;
+    const previousStatus = req.status;
+    req.status = 'CANCELLED';
+    req.cancellationReason = reason;
+    const now = new Date().toISOString();
+    req.updatedAt = now;
+    if (!req.timeline) req.timeline = [];
+    req.timeline.push({ status: 'CANCELLED', timestamp: now, notes: `Cancelled: ${reason}` });
+    if (!req.auditEvents) req.auditEvents = [];
+    req.auditEvents.push({
+      actor,
+      action: 'INCIDENT_CANCELLED',
+      previousStatus,
+      newStatus: 'CANCELLED',
+      timestamp: now,
+      notes: reason
+    });
+    return req;
+  },
+  getOperationsQueue: () => {
+    const all = Array.from(assistanceRequests.values());
+    const now = Date.now();
+    return {
+      unassigned: all.filter(r => ['SUBMITTED', 'REQUESTED', 'ACKNOWLEDGED', 'SEARCHING', 'OFFERED', 'ASSIGNED'].includes(r.status)),
+      active: all.filter(r => ['ACCEPTED', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS'].includes(r.status)),
+      delayed: all.filter(r => {
+        if (!['ACCEPTED', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS'].includes(r.status)) return false;
+        const updatedTime = new Date(r.updatedAt).getTime();
+        return (now - updatedTime) > 15 * 60 * 1000;
+      }),
+      unfulfilled: all.filter(r => r.status === 'UNFULFILLED_NO_PROVIDER'),
+      cancelled: all.filter(r => r.status === 'CANCELLED'),
+      resolved: all.filter(r => ['RESOLVED', 'COMPLETED'].includes(r.status)),
+      total: all.length
+    };
   },
   rateRequest: (id: string, rating: number, review?: string) => {
     const req = assistanceRequests.get(id);

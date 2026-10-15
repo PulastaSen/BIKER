@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
 import mongoose from 'mongoose';
-import AssistanceRequest, { RequestStatus } from '../models/AssistanceRequest.js';
+import AssistanceRequest, { 
+  RequestStatus, 
+  canTransition, 
+  ALLOWED_TRANSITIONS, 
+  normalizeStatus,
+  LocationProvenance
+} from '../models/AssistanceRequest.js';
 import ProviderProfile from '../models/ProviderProfile.js';
 import { io } from '../server.js';
 import { mockStore } from '../services/mockStore.js';
@@ -23,12 +29,42 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
       towingDetails, 
       estimatedPrice,
       medicalDetails,
-      bikeId
+      bikeId,
+      locationProvenance: provInput
     } = req.body;
+
+    const idempotencyKey = (req.headers['idempotency-key'] as string) || req.body.idempotencyKey;
+    const isMongoConnected = mongoose.connection.readyState === 1;
+
+    // Automotive Idempotency Check: prevent duplicate dispatch on network retries
+    if (idempotencyKey) {
+      if (!isMongoConnected) {
+        const existing = mockStore.findRequestByIdempotencyKey(idempotencyKey);
+        if (existing) {
+          res.status(200).json({ success: true, data: existing, idempotentReplay: true });
+          return;
+        }
+      } else {
+        const existing = await AssistanceRequest.findOne({ idempotencyKey });
+        if (existing) {
+          res.status(200).json({ success: true, data: existing, idempotentReplay: true });
+          return;
+        }
+      }
+    }
+
     const riderId = req.user?.id || req.body.riderId || 'user-rider-1';
     const requestId = generateRequestId();
 
-    const isMongoConnected = mongoose.connection.readyState === 1;
+    // Truthful Location Provenance: never invent coordinates
+    const coordinates = location?.coordinates && location.coordinates.length === 2 && (location.coordinates[0] !== 0 || location.coordinates[1] !== 0)
+      ? location.coordinates
+      : [0, 0];
+    
+    const locationProvenance: LocationProvenance = provInput || (
+      coordinates[0] !== 0 ? (location?.accuracyMeters ? 'GPS_FRESH' : 'GPS_STALE') :
+      (location?.address ? 'MANUAL_LANDMARK' : 'UNAVAILABLE')
+    );
 
     // Price calculation
     const defaultPricing = {
@@ -45,22 +81,23 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
     if (!isMongoConnected) {
       const mockReq = mockStore.createAssistanceRequest({
         requestId,
+        idempotencyKey,
         riderId,
         providerId: providerId || undefined,
         problemCategory: problemCategory || 'Breakdown',
         description,
         location: {
           type: 'Point',
-          coordinates: location?.coordinates || [0, 0],
-          address: location?.address || 'Rider Location',
-          accuracyMeters: location?.accuracyMeters || 10
+          coordinates,
+          address: location?.address || (coordinates[0] === 0 ? 'Location pending' : 'Rider Location'),
+          accuracyMeters: location?.accuracyMeters
         },
-        status: RequestStatus.REQUESTED,
+        locationProvenance,
+        status: RequestStatus.SUBMITTED,
         estimatedPrice: finalPricing,
         towingDetails: towingDetails || undefined
       });
 
-      // Augment mock with new fields
       const fullMock = {
         ...mockReq,
         helpCategory,
@@ -78,6 +115,7 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
 
     const incident = new AssistanceRequest({
       requestId,
+      idempotencyKey,
       riderId,
       bikeId,
       providerId: providerId || undefined,
@@ -88,16 +126,26 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
       description,
       location: {
         type: 'Point',
-        coordinates: location.coordinates,
-        address: location.address,
-        accuracyMeters: location.accuracyMeters
+        coordinates,
+        address: location?.address,
+        accuracyMeters: location?.accuracyMeters
       },
+      locationProvenance,
       medicalDetails,
-      status: RequestStatus.REQUESTED,
+      status: RequestStatus.SUBMITTED,
       estimatedPrice: finalPricing,
       towingDetails,
       timeline: [
-        { status: 'REQUESTED', timestamp: new Date(), notes: 'Assistance request logged' }
+        { status: 'SUBMITTED', timestamp: new Date(), notes: 'Incident request submitted by rider' }
+      ],
+      auditEvents: [
+        {
+          actor: 'RIDER',
+          action: 'INCIDENT_SUBMITTED',
+          newStatus: 'SUBMITTED',
+          timestamp: new Date(),
+          notes: 'Incident created via mobile client'
+        }
       ]
     });
 
@@ -115,7 +163,7 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
 export const updateAssistanceStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const id = req.params.id as string;
-    const { status, providerId, notes } = req.body;
+    const { status, providerId, notes, actor = 'SYSTEM' } = req.body;
 
     const validStatuses = Object.values(RequestStatus);
     if (!validStatuses.includes(status)) {
@@ -141,14 +189,37 @@ export const updateAssistanceStatus = async (req: Request, res: Response): Promi
         case RequestStatus.IN_PROGRESS:
           io.emit('assistance:started', payload);
           break;
+        case RequestStatus.RESOLVED:
         case RequestStatus.COMPLETED:
           io.emit('assistance:completed', payload);
+          break;
+        case RequestStatus.CANCELLED:
+          io.emit('assistance:cancelled', payload);
           break;
       }
     };
 
     if (!isMongoConnected) {
-      const updated = mockStore.updateRequestStatus(id, status, providerId, notes);
+      const current = mockStore.getRequestById(id);
+      if (!current) {
+        res.status(404).json({ success: false, message: 'Request not found' });
+        return;
+      }
+
+      // Automotive State Machine Enforcement: verify transition
+      if (!canTransition(current.status, status)) {
+        const allowed = ALLOWED_TRANSITIONS[current.status] || ALLOWED_TRANSITIONS[normalizeStatus(current.status)] || [];
+        res.status(409).json({ 
+          success: false, 
+          message: `Invalid state transition from ${current.status} to ${status}. Allowed: ${allowed.join(', ') || 'None (terminal)'}`,
+          currentStatus: current.status,
+          attemptedStatus: status,
+          allowedTransitions: allowed
+        });
+        return;
+      }
+
+      const updated = mockStore.updateRequestStatus(id, status, providerId, notes, actor);
       if (!updated) {
         res.status(404).json({ success: false, message: 'Request not found' });
         return;
@@ -164,6 +235,20 @@ export const updateAssistanceStatus = async (req: Request, res: Response): Promi
       return;
     }
 
+    // Automotive State Machine Enforcement
+    if (!canTransition(request.status, status)) {
+      const allowed = ALLOWED_TRANSITIONS[request.status] || ALLOWED_TRANSITIONS[normalizeStatus(request.status)] || [];
+      res.status(409).json({ 
+        success: false, 
+        message: `Invalid state transition from ${request.status} to ${status}. Allowed: ${allowed.join(', ') || 'None (terminal)'}`,
+        currentStatus: request.status,
+        attemptedStatus: status,
+        allowedTransitions: allowed
+      });
+      return;
+    }
+
+    const previousStatus = request.status;
     request.status = status;
     if (providerId) {
       request.providerId = providerId;
@@ -173,6 +258,15 @@ export const updateAssistanceStatus = async (req: Request, res: Response): Promi
       timestamp: new Date(),
       notes: notes || `Status updated to ${status}`
     });
+    if (!request.auditEvents) request.auditEvents = [];
+    request.auditEvents.push({
+      actor: actor as any,
+      action: 'STATUS_TRANSITION',
+      previousStatus,
+      newStatus: status,
+      timestamp: new Date(),
+      notes: notes || `Status changed from ${previousStatus} to ${status}`
+    });
     await request.save();
 
     emitStatusSpecificEvents(request);
@@ -180,6 +274,87 @@ export const updateAssistanceStatus = async (req: Request, res: Response): Promi
   } catch (error) {
     console.error('Error updating status:', error);
     res.status(500).json({ success: false, message: 'Failed to update status' });
+  }
+};
+
+export const cancelAssistanceRequest = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    const { reason = 'Cancelled by user', actor = 'RIDER' } = req.body;
+    const isMongoConnected = mongoose.connection.readyState === 1;
+
+    if (!isMongoConnected) {
+      const cancelled = mockStore.cancelAssistanceRequest(id, reason, actor as any);
+      if (!cancelled) {
+        res.status(404).json({ success: false, message: 'Request not found' });
+        return;
+      }
+      io.emit(`assistance:updated:${id}`, cancelled);
+      io.emit('assistance:cancelled', cancelled);
+      res.status(200).json({ success: true, data: cancelled });
+      return;
+    }
+
+    const request = await AssistanceRequest.findOne({ requestId: id });
+    if (!request) {
+      res.status(404).json({ success: false, message: 'Request not found' });
+      return;
+    }
+
+    const prevStatus = request.status;
+    request.status = RequestStatus.CANCELLED;
+    request.cancellationReason = reason;
+    request.timeline.push({ status: 'CANCELLED', timestamp: new Date(), notes: `Cancelled: ${reason}` });
+    if (!request.auditEvents) request.auditEvents = [];
+    request.auditEvents.push({
+      actor: actor as any,
+      action: 'INCIDENT_CANCELLED',
+      previousStatus: prevStatus,
+      newStatus: 'CANCELLED',
+      timestamp: new Date(),
+      notes: reason
+    });
+    await request.save();
+
+    io.emit(`assistance:updated:${id}`, request);
+    io.emit('assistance:cancelled', request);
+    res.status(200).json({ success: true, data: request });
+  } catch (error) {
+    console.error('Error cancelling request:', error);
+    res.status(500).json({ success: false, message: 'Failed to cancel request' });
+  }
+};
+
+export const getOperationsQueue = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const isMongoConnected = mongoose.connection.readyState === 1;
+
+    if (!isMongoConnected) {
+      const queue = mockStore.getOperationsQueue();
+      res.status(200).json({ success: true, data: queue });
+      return;
+    }
+
+    const all = await AssistanceRequest.find().sort({ createdAt: -1 }).limit(100);
+    const now = Date.now();
+    const queue = {
+      unassigned: all.filter(r => ['SUBMITTED', 'REQUESTED', 'ACKNOWLEDGED', 'SEARCHING', 'OFFERED', 'ASSIGNED'].includes(r.status)),
+      active: all.filter(r => ['ACCEPTED', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS'].includes(r.status)),
+      delayed: all.filter(r => {
+        if (!['ACCEPTED', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS'].includes(r.status)) return false;
+        const updatedTime = new Date(r.updatedAt).getTime();
+        return (now - updatedTime) > 15 * 60 * 1000;
+      }),
+      unfulfilled: all.filter(r => r.status === 'UNFULFILLED_NO_PROVIDER'),
+      cancelled: all.filter(r => r.status === 'CANCELLED'),
+      resolved: all.filter(r => ['RESOLVED', 'COMPLETED'].includes(r.status)),
+      total: all.length
+    };
+
+    res.status(200).json({ success: true, data: queue });
+  } catch (error) {
+    console.error('Error fetching operations queue:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch operations queue' });
   }
 };
 

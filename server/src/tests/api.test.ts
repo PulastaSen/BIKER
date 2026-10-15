@@ -232,13 +232,79 @@ describe('MotoAssist Backend Full API Test Suite', () => {
       const res = await fetch(`${BASE_URL}/api/assistance/${requestId}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'ARRIVED' })
+        body: JSON.stringify({ status: 'ACCEPTED', providerId: 'provider-1' })
       });
 
       expect(res.status).toBe(200);
       const body = await res.json();
       expect(body.success).toBe(true);
-      expect(body.data.status).toBe('ARRIVED');
+      expect(body.data.status).toBe('ACCEPTED');
+    });
+
+    it('PUT /api/assistance/:id/status rejects invalid transitions with 409 Conflict', async () => {
+      // Attempting invalid backward transition from ACCEPTED to SUBMITTED
+      const res = await fetch(`${BASE_URL}/api/assistance/${requestId}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'SUBMITTED' })
+      });
+
+      expect(res.status).toBe(409);
+      const body = await res.json();
+      expect(body.success).toBe(false);
+      expect(body.allowedTransitions).toContain('EN_ROUTE');
+    });
+
+    it('POST /api/assistance honors idempotency-key to prevent duplicate requests', async () => {
+      const testKey = `IDEM-TEST-${Date.now()}`;
+      const payload = {
+        problemCategory: 'Puncture',
+        location: { coordinates: [88.3953, 26.7271], address: 'Sevoke Road', accuracyMeters: 8 },
+        idempotencyKey: testKey
+      };
+
+      const res1 = await fetch(`${BASE_URL}/api/assistance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      expect(res1.status).toBe(201);
+      const body1 = await res1.json();
+      const firstReqId = body1.data.requestId;
+
+      // Re-send with same idempotency key
+      const res2 = await fetch(`${BASE_URL}/api/assistance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      expect(res2.status).toBe(200);
+      const body2 = await res2.json();
+      expect(body2.idempotentReplay).toBe(true);
+      expect(body2.data.requestId).toBe(firstReqId);
+    });
+
+    it('GET /api/assistance/ops/queue returns automotive operations dispatch queue', async () => {
+      const res = await fetch(`${BASE_URL}/api/assistance/ops/queue`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.unassigned).toBeInstanceOf(Array);
+      expect(body.data.active).toBeInstanceOf(Array);
+      expect(body.data.total).toBeGreaterThanOrEqual(1);
+    });
+
+    it('POST /api/assistance/:id/cancel cancels incident with reason and audit log', async () => {
+      const res = await fetch(`${BASE_URL}/api/assistance/${requestId}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: 'Self resolved flat tyre with CO2 canister' })
+      });
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.status).toBe('CANCELLED');
+      expect(body.data.cancellationReason).toBe('Self resolved flat tyre with CO2 canister');
     });
 
     it('POST /api/sos triggers emergency incident', async () => {

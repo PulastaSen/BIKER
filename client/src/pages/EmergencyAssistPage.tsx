@@ -32,6 +32,8 @@ import { MountainContourPattern, AnimatedRoadLines } from '../components/graphic
 import { buildWhatsAppBreakdownAlertUrl } from '../utils/whatsappShare';
 import { API_BASE_URL } from '../config/api';
 import { saveRequest, INITIAL_BIKES } from '../utils/appStorage';
+import { MotorcycleTroubleshooter } from '../components/MotorcycleTroubleshooter';
+import { queueOfflineIncident } from '../utils/offlineQueue';
 
 export type HelpCategory = 'MEDICAL' | 'BIKE_PROBLEM' | 'UNSAFE' | 'TOWING' | 'BOTH' | 'NOT_SURE';
 export type BikeProblemType = 'ALL' | 'TYRE' | 'BATTERY' | 'CHAIN' | 'ENGINE' | 'FUEL' | 'ELECTRICAL' | 'OTHER';
@@ -274,6 +276,7 @@ export function EmergencyAssistPage() {
   // Modals
   const [showUnsafeModal, setShowUnsafeModal] = useState(false);
   const [showMedicalModal, setShowMedicalModal] = useState(false);
+  const [showTroubleshooter, setShowTroubleshooter] = useState(false);
 
   // Manual landmark search state
   const [searchPlace, setSearchPlace] = useState('');
@@ -413,20 +416,33 @@ export function EmergencyAssistPage() {
     const reqId = `REQ-${Date.now().toString(36).toUpperCase().slice(-6)}`;
     let serverOk = false;
 
+    const locationProvenance = coords 
+      ? ((accuracy || 0) < 100 ? 'GPS_FRESH' : 'GPS_STALE')
+      : (address || searchPlace.trim() ? 'MANUAL_LANDMARK' : 'UNAVAILABLE');
+
+    const coordinates: [number, number] = coords ? [coords.lng, coords.lat] : [0, 0];
+    const effectiveAddress = address || searchPlace.trim() || prov.address || 'Location coordinates logged';
+    const descriptionText = towingWinchNeeded ? `${towingBikeModel} (Mountain Winch Needed)` : towingBikeModel || `Emergency roadside dispatch for ${prov.name}`;
+
     try {
       const res = await fetch(`${API_BASE_URL}/api/assistance`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Idempotency-Key': reqId
+        },
         body: JSON.stringify({
           problemCategory: problem,
           helpCategory: selectedCategory === 'MEDICAL' ? 'MEDICAL' : 'MECHANICAL',
           providerId: prov.id,
           location: {
-            coordinates: coords ? [coords.lng, coords.lat] : undefined,
-            address: address || searchPlace.trim() || prov.address,
+            coordinates,
+            address: effectiveAddress,
             accuracyMeters: accuracy || 15
           },
-          description: towingWinchNeeded ? `${towingBikeModel} (Mountain Winch Needed)` : towingBikeModel || `Emergency roadside dispatch for ${prov.name}`
+          locationProvenance,
+          idempotencyKey: reqId,
+          description: descriptionText
         })
       });
       const data = await res.json();
@@ -437,6 +453,20 @@ export function EmergencyAssistPage() {
       serverOk = false;
     }
 
+    if (!serverOk) {
+      queueOfflineIncident({
+        problemCategory: problem,
+        urgency: selectedCategory === 'MEDICAL' ? 'CRITICAL' : 'HIGH',
+        location: {
+          coordinates,
+          address: effectiveAddress,
+          accuracyMeters: accuracy || 15
+        },
+        locationProvenance,
+        description: descriptionText
+      });
+    }
+
     saveRequest({
       id: reqId,
       riderId: 'user-rider-1',
@@ -445,8 +475,8 @@ export function EmergencyAssistPage() {
       bike: INITIAL_BIKES[0],
       issue: selectedCategory === 'TOWING' ? 'TOWING' : selectedCategory === 'MEDICAL' ? 'ACCIDENT' : 'BREAKDOWN',
       locationShared: !!coords,
-      description: towingWinchNeeded ? `${towingBikeModel} (Mountain Winch Needed)` : towingBikeModel || `Emergency roadside dispatch for ${prov.name}`,
-      approximateLocation: address || searchPlace.trim() || prov.address,
+      description: descriptionText,
+      approximateLocation: effectiveAddress,
       status: 'OPEN',
       assignedHelperId: prov.id,
       assignedHelperName: prov.name,
@@ -1061,6 +1091,43 @@ export function EmergencyAssistPage() {
                     </button>
                   ))}
                 </div>
+
+                {/* Troubleshooter Toggle Button */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowTroubleshooter(!showTroubleshooter)}
+                    className="w-full p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 to-[#FFF174]/10 border border-[#FFF174]/30 hover:border-[#FFF174] text-left flex items-center justify-between gap-3 transition-all cursor-pointer min-h-[48px]"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="p-1.5 rounded-lg bg-[#FFF174] text-black">
+                        <Wrench size={14} />
+                      </span>
+                      <div>
+                        <strong className="text-xs font-bold text-white block">
+                          Unsure of root cause? Run Cautious Diagnostic Assistant
+                        </strong>
+                        <span className="text-[10px] text-gray-400 block">
+                          One question at a time • Identifies dangerous ride-stop conditions
+                        </span>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className={`text-[#FFF174] transition-transform ${showTroubleshooter ? 'rotate-90' : ''}`} />
+                  </button>
+                </div>
+
+                {/* Inline Troubleshooter Component */}
+                {showTroubleshooter && (
+                  <div className="pt-2">
+                    <MotorcycleTroubleshooter
+                      onSelectCategory={(cat) => {
+                        setShowTroubleshooter(false);
+                        selectCategory(cat === 'Towing' ? 'TOWING' : cat === 'Medical' ? 'MEDICAL' : cat === 'Safety' ? 'UNSAFE' : 'BIKE_PROBLEM');
+                      }}
+                      onClose={() => setShowTroubleshooter(false)}
+                    />
+                  </div>
+                )}
               </section>
 
               {/* Towing & Share Location Rapid Shortcuts */}

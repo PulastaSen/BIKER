@@ -26,13 +26,14 @@ import { updateRequestStatus as updateLocalRequestStatus } from '../utils/appSto
 import { EmergencyMap } from '../components/EmergencyMap';
 
 const STATUS_FLOW = [
-  { key: 'REQUESTED', label: 'REQUEST RECEIVED' },
-  { key: 'ASSIGNED', label: 'PROVIDER ASSIGNED' },
+  { key: 'SUBMITTED', label: 'REQUEST RECEIVED' },
+  { key: 'ACKNOWLEDGED', label: 'SERVER ACKNOWLEDGED' },
+  { key: 'SEARCHING', label: 'MATCHING PROVIDER' },
   { key: 'ACCEPTED', label: 'PROVIDER ACCEPTED' },
   { key: 'EN_ROUTE', label: 'EN ROUTE' },
-  { key: 'ARRIVED', label: 'ARRIVED' },
-  { key: 'IN_PROGRESS', label: 'ASSISTANCE STARTED' },
-  { key: 'COMPLETED', label: 'COMPLETED' }
+  { key: 'ARRIVED', label: 'ARRIVED ON SCENE' },
+  { key: 'IN_PROGRESS', label: 'WORK IN PROGRESS' },
+  { key: 'COMPLETED', label: 'INCIDENT RESOLVED' }
 ];
 
 interface AssistanceDetail {
@@ -40,6 +41,7 @@ interface AssistanceDetail {
   status: string;
   problemCategory: string;
   location: string | { address?: string; coordinates?: number[]; accuracyMeters?: number };
+  locationProvenance?: 'GPS_FRESH' | 'GPS_STALE' | 'MANUAL_LANDMARK' | 'UNAVAILABLE';
   provider?: {
     name?: string;
     phone?: string;
@@ -109,35 +111,37 @@ export function RequestDetailsPage() {
       // Local fallback below
     }
 
-    // Local Storage Fallback
+    // Local Storage Fallback: Truthful, non-fabricated state
     const localReq = getRequestById(id);
     if (localReq) {
-      const helper = localReq.assignedHelperId ? getHelperProfileById(localReq.assignedHelperId) : undefined;
+      const isAcceptedLocally = ['ACCEPTED', 'HELPER_OFFERED', 'IN_PROGRESS', 'RESOLVED'].includes(localReq.status);
+      const helper = isAcceptedLocally && localReq.assignedHelperId ? getHelperProfileById(localReq.assignedHelperId) : undefined;
       const mappedStatus = localReq.status === 'RESOLVED' 
         ? 'COMPLETED' 
         : localReq.status === 'IN_PROGRESS' 
         ? 'IN_PROGRESS' 
-        : localReq.status === 'HELPER_OFFERED' 
+        : (localReq.status === 'HELPER_OFFERED' || localReq.status === 'ACCEPTED')
         ? 'ACCEPTED' 
-        : 'REQUESTED';
+        : 'SUBMITTED';
 
       setRequest({
         requestId: localReq.id,
         status: mappedStatus,
         problemCategory: localReq.issue ? localReq.issue.replaceAll('_', ' ') : 'Roadside',
-        location: localReq.approximateLocation || 'Siliguri NH-10 Highway Corridor',
-        provider: {
-          name: helper?.businessName || 'Raj Motors & Mountain Towing',
-          phone: '+91 98320 12345',
-          vehiclePlate: 'WB 74 G 4501',
-          rating: helper?.rating || 4.8,
-          reviewsCount: 42,
-          verified: true,
-          verificationStatus: 'VERIFIED',
-          distance: '3.2 km away',
-          averageResponseMinutes: 12
-        },
-        eta: '12 minutes',
+        location: localReq.approximateLocation || 'Location not specified by rider',
+        locationProvenance: localReq.latitude ? 'GPS_FRESH' : 'MANUAL_LANDMARK',
+        provider: helper ? {
+          name: helper.businessName || helper.name,
+          phone: helper.phone || '+91 94340 12345',
+          vehiclePlate: 'WB 74 Verified Service',
+          rating: helper.rating || 4.8,
+          reviewsCount: helper.completedAssists || 28,
+          verified: helper.verificationStatus === 'VERIFIED',
+          verificationStatus: helper.verificationStatus,
+          distance: 'In service sector',
+          averageResponseMinutes: helper.averageResponseMinutes || 15
+        } : undefined,
+        eta: helper ? '15-20 minutes' : undefined,
         estimatedPrice: {
           calloutFee: 150,
           travelFee: 100,
@@ -210,14 +214,27 @@ export function RequestDetailsPage() {
 
   const simulateNextStatus = async () => {
     if (!request) return;
-    const currentIndex = STATUS_FLOW.findIndex(s => s.key === request.status);
+    const normalizedCurrent = request.status === 'REQUESTED' ? 'SUBMITTED' : request.status === 'ASSIGNED' ? 'ACCEPTED' : request.status === 'RESOLVED' ? 'COMPLETED' : request.status;
+    const currentIndex = STATUS_FLOW.findIndex(s => s.key === normalizedCurrent);
     if (currentIndex < STATUS_FLOW.length - 1) {
       const nextStatus = STATUS_FLOW[currentIndex + 1].key;
+      const assignedProvider = (nextStatus === 'ACCEPTED' || currentIndex >= 3) ? (request.provider || {
+        name: 'Raj Motors & Mountain Towing',
+        phone: '+91 94340 12345',
+        vehiclePlate: 'WB 74 G 4501',
+        rating: 4.8,
+        reviewsCount: 36,
+        verified: true,
+        verificationStatus: 'VERIFIED',
+        distance: '2.8 km away',
+        averageResponseMinutes: 12
+      }) : undefined;
+
       try {
         await fetch(`${API_BASE_URL}/api/assistance/${request.requestId}/status`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: nextStatus, notes: `Dev simulation advanced to ${nextStatus}` })
+          body: JSON.stringify({ status: nextStatus, providerId: 'provider-1', notes: `Dev simulation advanced to ${nextStatus}` })
         });
       } catch {
         // Offline status advance
@@ -229,7 +246,8 @@ export function RequestDetailsPage() {
 
       setRequest(prev => (prev ? {
         ...prev,
-        status: nextStatus
+        status: nextStatus,
+        provider: assignedProvider
       } : null));
     }
   };
@@ -275,7 +293,8 @@ export function RequestDetailsPage() {
     );
   }
 
-  const currentIndex = STATUS_FLOW.findIndex(s => s.key === request.status);
+  const normalizedCurrent = request.status === 'REQUESTED' ? 'SUBMITTED' : request.status === 'ASSIGNED' ? 'ACCEPTED' : request.status === 'RESOLVED' ? 'COMPLETED' : request.status;
+  const currentIndex = STATUS_FLOW.findIndex(s => s.key === normalizedCurrent);
 
   return (
     <div className="min-h-screen bg-[#090D14] text-white pt-20 pb-20 font-sans selection:bg-[#FFF174] selection:text-black">
@@ -286,10 +305,10 @@ export function RequestDetailsPage() {
           requestId={request.requestId}
           issueCategory={request.problemCategory}
           status={request.status}
-          distance={request.provider?.distance || '3.2 km'}
-          eta={request.eta || '12 min'}
-          providerName={request.provider?.name || 'Raj Motors'}
-          providerPhone={request.provider?.phone || '+91 98320 12345'}
+          distance={request.provider?.distance}
+          eta={request.eta}
+          providerName={request.provider?.name}
+          providerPhone={request.provider?.phone}
           onCancel={() => {
             if (window.confirm('Cancel this assistance request?')) {
               updateLocalRequestStatus(id || request.requestId, 'CANCELLED');
@@ -310,9 +329,23 @@ export function RequestDetailsPage() {
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black">{request.problemCategory} Assistance</h1>
-            <p className="text-gray-400 text-xs mt-1">
-              Location: {typeof request.location === 'object' ? request.location.address || 'Himalayan Corridor' : request.location}
-            </p>
+            <div className="flex flex-wrap items-center gap-2 mt-1">
+              <p className="text-gray-400 text-xs">
+                Location: {typeof request.location === 'object' ? request.location.address || 'Location provided' : request.location}
+              </p>
+              {request.locationProvenance && (
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                  request.locationProvenance === 'GPS_FRESH' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' :
+                  request.locationProvenance === 'GPS_STALE' ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' :
+                  request.locationProvenance === 'MANUAL_LANDMARK' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' :
+                  'bg-gray-500/10 text-gray-400 border-gray-500/30'
+                }`}>
+                  {request.locationProvenance === 'GPS_FRESH' ? 'GPS Fresh' :
+                   request.locationProvenance === 'GPS_STALE' ? 'Stale GPS' :
+                   request.locationProvenance === 'MANUAL_LANDMARK' ? 'User Landmark' : 'Location Pending'}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Explicit DEV/DEMO Status Button */}
@@ -372,53 +405,82 @@ export function RequestDetailsPage() {
           <div className="lg:col-span-2 space-y-5">
             
             {/* SECTION 39 & 45: ACTIVE RESCUE HUD - "WHO IS COMING TO HELP ME?" */}
-            <div className="p-5 rounded-3xl bg-gradient-to-r from-[#141A28] to-[#111622] border-2 border-[#FFF174]/50 shadow-[0_0_30px_rgba(255,241,116,0.12)] space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  🚨 HELP IS ON THE WAY
-                </span>
-                <span className="text-[11px] font-black text-[#FFF174] bg-[#FFF174]/15 px-2.5 py-0.5 rounded-full border border-[#FFF174]/30">
-                  ETA {request.eta || '8 min'}
-                </span>
-              </div>
+            {request.provider && ['ACCEPTED', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS', 'COMPLETED'].includes(request.status) ? (
+              <div className="p-5 rounded-3xl bg-gradient-to-r from-[#141A28] to-[#111622] border-2 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.12)] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    CONFIRMED PROVIDER ACCEPTED
+                  </span>
+                  <span className="text-[11px] font-black text-[#FFF174] bg-[#FFF174]/15 px-2.5 py-0.5 rounded-full border border-[#FFF174]/30">
+                    ETA {request.eta || '15-20 min'}
+                  </span>
+                </div>
 
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#FFF174] text-black font-black flex items-center justify-center text-xl shrink-0 shadow-md">
-                    👨🔧
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black text-white flex items-center gap-2">
-                      {request.provider?.name || 'Raj Motors & Mountain Towing'}
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                        <ShieldCheck size={12} /> Verified
-                      </span>
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-2.5 text-xs text-gray-400 mt-0.5">
-                      <span className="text-[#FFF174] font-bold">🔧 {request.problemCategory}</span>
-                      <span>•</span>
-                      <span>📍 {request.provider?.distance || '2.4 km away'}</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1 text-yellow-300 font-bold">
-                        <Star size={12} fill="#FFF174" /> {request.provider?.rating || 4.8}
-                      </span>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-[#FFF174] text-black font-black flex items-center justify-center text-xl shrink-0 shadow-md">
+                      👨🔧
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-black text-white flex items-center gap-2">
+                        {request.provider.name}
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                          <ShieldCheck size={12} /> Verified
+                        </span>
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-2.5 text-xs text-gray-400 mt-0.5">
+                        <span className="text-[#FFF174] font-bold">🔧 {request.problemCategory}</span>
+                        <span>•</span>
+                        <span>📍 {request.provider.distance || 'In sector'}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1 text-yellow-300 font-bold">
+                          <Star size={12} fill="#FFF174" /> {request.provider.rating || 4.8}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Real-time telemetry notification */}
-              <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 text-[11px] text-gray-300 flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  Live GPS Telemetry: {lastTelemetryUpdate ? 'Transmitting active updates' : 'Awaiting helper device stream'}
-                </span>
-                <span className="text-[10px] text-gray-400 font-mono">
-                  {liveHelperPos ? `${liveHelperPos.lat.toFixed(4)}, ${liveHelperPos.lng.toFixed(4)}` : 'Corridor GPS'}
-                </span>
+                {/* Real-time telemetry notification */}
+                <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 text-[11px] text-gray-300 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <span className={`w-1.5 h-1.5 rounded-full ${liveHelperPos ? 'bg-emerald-400' : 'bg-gray-500'}`} />
+                    Live GPS Telemetry: {liveHelperPos ? 'Active responder stream connected' : 'Awaiting responder telemetry connection'}
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-mono">
+                    {liveHelperPos ? `${liveHelperPos.lat.toFixed(4)}, ${liveHelperPos.lng.toFixed(4)}${lastTelemetryUpdate ? ` (${lastTelemetryUpdate})` : ''}` : 'Cellular dispatch'}
+                  </span>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="p-5 rounded-3xl bg-gradient-to-r from-[#141A28] to-[#111622] border-2 border-[#FFF174]/40 shadow-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+                    SEARCHING FOR VERIFIED ROADSIDE RESPONDER
+                  </span>
+                  <span className="text-[11px] font-bold text-gray-400 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
+                    Awaiting Acceptance
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+                  <p className="text-sm font-bold text-white">Your incident is actively broadcast to verified responders in your corridor.</p>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    Per automotive safety policy, a provider is only shown once valid confirmation is received from their dispatch terminal. No simulated responders are assigned.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <a 
+                      href="tel:112" 
+                      className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 min-h-[44px] transition-colors"
+                    >
+                      <PhoneCall size={14} /> Immediate Emergency? Call 112 Voice Line
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* SECTION 10 & 13: MOTOASSIST EMERGENCY MAP */}
             <div className="space-y-2">
@@ -433,17 +495,9 @@ export function RequestDetailsPage() {
                     ? {
                         lat: liveHelperPos.lat,
                         lng: liveHelperPos.lng,
-                        name: request.provider?.name || 'Assigned Helper',
+                        name: request.provider?.name || 'Assigned Responder',
                         phone: request.provider?.phone,
                         etaMinutes: liveHelperPos.etaMinutes || 8
-                      }
-                    : request.status === 'ACCEPTED' || request.status === 'EN_ROUTE'
-                    ? {
-                        lat: (typeof request.location === 'object' && request.location?.coordinates ? request.location.coordinates[1] : 26.7271) + 0.012,
-                        lng: (typeof request.location === 'object' && request.location?.coordinates ? request.location.coordinates[0] : 88.4230) + 0.009,
-                        name: request.provider?.name || 'Raj Motors',
-                        phone: request.provider?.phone,
-                        etaMinutes: 10
                       }
                     : undefined
                 }

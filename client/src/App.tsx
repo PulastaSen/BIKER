@@ -49,6 +49,9 @@ import { PrivacyCenterPage } from './pages/PrivacyCenterPage';
 import { SmartEntryScreen } from './pages/SmartEntryScreen';
 import { EmergencyAssistPage } from './pages/EmergencyAssistPage';
 import { VerificationCenterPage } from './pages/VerificationCenterPage';
+import { RemoteReadinessPage } from './pages/RemoteReadinessPage';
+import { OperationsQueuePage } from './pages/OperationsQueuePage';
+import { MotorcycleTroubleshooter } from './components/MotorcycleTroubleshooter';
 import { ScrollToTop } from './components/ScrollToTop';
 import { OfflineNotice } from './components/OfflineNotice';
 
@@ -122,8 +125,12 @@ function AppRoutes() {
           <Route path="/request-success" element={<PageTransition><RequestSuccessPage /></PageTransition>} />
           <Route path="/requests/:id" element={<PageTransition><RequestDetailsPage /></PageTransition>} />
           <Route path="/nearby-services" element={<PageTransition><NearbyServicesPage /></PageTransition>} />
+          <Route path="/remote-readiness" element={<PageTransition><RemoteReadinessPage /></PageTransition>} />
+          <Route path="/ops" element={<PageTransition><OperationsQueuePage /></PageTransition>} />
+          <Route path="/troubleshoot" element={<PageTransition><div className="min-h-screen bg-[#090909] pt-20 pb-20 px-4 max-w-3xl mx-auto"><MotorcycleTroubleshooter onSelectCategory={(cat) => window.location.hash = `#/emergency-assist?cat=${cat === 'Towing' ? 'TOWING' : cat === 'Medical' ? 'MEDICAL' : cat === 'Safety' ? 'UNSAFE' : 'BIKE_PROBLEM'}`} /></div></PageTransition>} />
         </Route>
         <Route element={<DashboardLayout />}>
+          <Route path="/admin/ops" element={<PageTransition><OperationsQueuePage /></PageTransition>} />
           <Route path="/rider/dashboard" element={<PageTransition><RiderDashboardPage /></PageTransition>} />
           <Route path="/rider/requests" element={<PageTransition><MyRequestsPage /></PageTransition>} />
           <Route path="/rider/bikes" element={<PageTransition><MyBikesPage /></PageTransition>} />

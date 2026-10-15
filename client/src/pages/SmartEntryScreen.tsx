@@ -138,8 +138,32 @@ export function SmartEntryScreen() {
 
         </div>
 
-        {/* Discreet Explore Link */}
-        <div className="mt-8 text-xs text-gray-300">
+        {/* Quick Resilience & Safety Links */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs text-gray-300">
+          <button
+            type="button"
+            onClick={() => navigate('/remote-readiness')}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-[#FFF174] font-bold border border-white/10 transition-colors cursor-pointer"
+          >
+            🧭 Remote & Mountain Readiness
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/troubleshoot')}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-200 font-bold border border-white/10 transition-colors cursor-pointer"
+          >
+            🔧 Bike Diagnostic Guide
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/ops')}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white font-medium border border-white/10 transition-colors cursor-pointer"
+          >
+            📡 Ops Desk
+          </button>
+        </div>
+
+        <div className="mt-3 text-xs text-gray-400">
           Want to learn how it works first?{' '}
           <button
             type="button"
@@ -153,7 +177,7 @@ export function SmartEntryScreen() {
 
       {/* Minimal Non-Intrusive Footer */}
       <footer className="relative z-10 w-full max-w-4xl mx-auto px-4 py-4 text-center text-[11px] text-gray-400 border-t border-white/5">
-        <span>No account required for immediate roadside & medical emergency response.</span>
+        <span>No account required for immediate roadside & medical emergency response. Zero fake dispatches.</span>
       </footer>
     </div>
   );

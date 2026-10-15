@@ -120,7 +120,33 @@ export function PublicLayout() {
                 Help
               </NavLink>
 
-              {/* 3. RIDES */}
+              {/* 3. REMOTE READINESS */}
+              <NavLink
+                to="/remote-readiness"
+                onClick={closeMenu}
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
+                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  }`
+                }
+              >
+                Remote
+              </NavLink>
+
+              {/* 4. OPS DESK */}
+              <NavLink
+                to="/ops"
+                onClick={closeMenu}
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
+                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  }`
+                }
+              >
+                Ops Desk
+              </NavLink>
+
+              {/* 5. RIDES */}
               <NavLink
                 to="/safe-ride"
                 onClick={closeMenu}
