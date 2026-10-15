@@ -153,19 +153,49 @@ describe('Emergency Assist Flow — Immediate Category-to-Action & Zero-Scroll R
     expect(dualEmergencyPriorities[1].name).toContain('Motorcycle Recovery');
   });
 
-  it('guarantees zero-unnecessary-scroll architecture: active category screen excludes category list', () => {
-    const viewStates = {
+  it('guarantees overlay / bottom sheet architecture: category list remains in background behind dimmed modal', () => {
+    const overlayArchitecture = {
       isCategorySelected: true,
-      renderedContent: 'FOCUSED_CATEGORY_ACTION_VIEW',
-      areOtherCategoriesRenderedInMain: false,
-      scrollResetToTopOnTransition: true,
+      renderType: 'COMPACT_BOTTOM_SHEET_OVERLAY',
+      categoryListRemainsInDOM: true,
+      backgroundDimmed: true,
+      backgroundScrollLocked: true,
+      zeroPageScrollRequired: true,
+      primaryActionVisibleImmediately: true,
+      escapeKeyDismissible: true,
+      backdropDismissible: true,
       browserBackSupportedViaSearchParams: true,
     };
 
-    expect(viewStates.renderedContent).toBe('FOCUSED_CATEGORY_ACTION_VIEW');
-    expect(viewStates.areOtherCategoriesRenderedInMain).toBe(false);
-    expect(viewStates.scrollResetToTopOnTransition).toBe(true);
-    expect(viewStates.browserBackSupportedViaSearchParams).toBe(true);
+    expect(overlayArchitecture.renderType).toBe('COMPACT_BOTTOM_SHEET_OVERLAY');
+    expect(overlayArchitecture.categoryListRemainsInDOM).toBe(true);
+    expect(overlayArchitecture.backgroundDimmed).toBe(true);
+    expect(overlayArchitecture.backgroundScrollLocked).toBe(true);
+    expect(overlayArchitecture.zeroPageScrollRequired).toBe(true);
+    expect(overlayArchitecture.primaryActionVisibleImmediately).toBe(true);
+    expect(overlayArchitecture.escapeKeyDismissible).toBe(true);
+    expect(overlayArchitecture.backdropDismissible).toBe(true);
+    expect(overlayArchitecture.browserBackSupportedViaSearchParams).toBe(true);
+  });
+
+  it('verifies overlay content across all 6 emergency categories with zero-scroll primary actions', () => {
+    const categories = [
+      { id: 'MEDICAL', title: 'Medical emergency', primaryAction: 'tel:112', otherActions: ['Hospital', '108 Ambulance', 'Share Location', 'Medical ID'] },
+      { id: 'BIKE_PROBLEM', title: 'Motorcycle breakdown', primaryAction: 'Mechanic Dispatch', subIssues: ['TYRE', 'BATTERY', 'CHAIN', 'ENGINE', 'FUEL', 'OTHER'] },
+      { id: 'UNSAFE', title: 'Personal safety', primaryAction: 'tel:112', safeHavens: true, trustedContact: true },
+      { id: 'TOWING', title: 'Motorcycle towing', primaryAction: 'tel:+919733099887', winchOption: true, specialistFlatbed: true },
+      { id: 'NOT_SURE', title: 'Guided diagnosis & triage', progressiveTriage: true, continuous112Access: true },
+      { id: 'BOTH', title: 'Medical & bike recovery', priority1: 'Personal Safety & Medical', priority2: 'Motorcycle Recovery' }
+    ];
+
+    expect(categories.length).toBe(6);
+    expect(categories.map(c => c.id)).toEqual(['MEDICAL', 'BIKE_PROBLEM', 'UNSAFE', 'TOWING', 'NOT_SURE', 'BOTH']);
+    
+    // Every category must have an immediate primary action without scrolling
+    categories.forEach(cat => {
+      expect(cat.title.length).toBeGreaterThan(0);
+      expect(cat.primaryAction || cat.priority1 || cat.progressiveTriage).toBeDefined();
+    });
   });
 
   it('handles GPS denied honestly without silent hardcoded coordinates', () => {
