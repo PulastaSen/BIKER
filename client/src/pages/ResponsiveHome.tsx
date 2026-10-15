@@ -120,7 +120,7 @@ export function ResponsiveHome() {
   const riderDisplayName = user?.name ? user.name.split(' ')[0] : 'Pulasta';
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans relative selection:bg-[#FFF174] selection:text-black pb-24 md:pb-16">
+    <div className="min-h-screen bg-[#151515] text-white flex flex-col font-sans relative selection:bg-[#FFF174] selection:text-black pb-28 md:pb-16">
       
       {/* SECTION 22-25: Crash Detection Modal (10s confirmation dial) */}
       <CrashDetectionModal
@@ -147,7 +147,7 @@ export function ResponsiveHome() {
       />
 
       {/* TOP HEADER */}
-      <header className="sticky top-0 z-30 bg-[#090909]/95 backdrop-blur-md border-b border-white/10 px-4 py-3 sm:px-6">
+      <header className="sticky top-0 z-30 bg-[#1D1D1D]/95 backdrop-blur-md border-b border-white/10 px-4 py-3 sm:px-6">
         <div className="max-w-xl mx-auto flex items-center justify-between gap-3">
           {/* Logo & Brand */}
           <Link to="/" className="flex items-center gap-2 select-none group">

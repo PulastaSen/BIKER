@@ -199,7 +199,7 @@ export function RequestHelpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white pt-4 pb-24 md:pb-16 font-sans">
+    <div className="min-h-screen bg-[#151515] text-white pt-4 pb-28 md:pb-16 font-sans">
       <div className="container mx-auto px-4 max-w-2xl space-y-5">
         
         {/* Step Navigation Header */}

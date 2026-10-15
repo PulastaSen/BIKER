@@ -180,7 +180,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#151515] text-white pt-20 pb-28 font-sans selection:bg-[#FFF174] selection:text-black">
       <div className="container mx-auto px-4 max-w-4xl space-y-7">
         
         {/* Header Block */}

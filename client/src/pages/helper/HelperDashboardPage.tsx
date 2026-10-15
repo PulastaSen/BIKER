@@ -83,12 +83,12 @@ export function HelperDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white p-4 sm:p-6 md:p-8 space-y-6 pb-28 md:pb-12 max-w-5xl mx-auto">
+    <div className="min-h-screen bg-[#151515] text-white p-4 sm:p-6 md:p-8 space-y-6 pb-28 md:pb-12 max-w-5xl mx-auto">
       
       {/* ========================================================
           1. HEADER & AVAILABILITY TOGGLE (Section 21 & 24 Requirement)
           ======================================================== */}
-      <header className="rounded-3xl bg-[#121212] border border-white/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <header className="rounded-3xl bg-[#1D1D1D] border border-white/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
         <div>
           <span className="text-[10px] font-black uppercase tracking-widest text-[#FFF174] block">
             HELPER COMMAND DESK

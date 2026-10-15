@@ -22,13 +22,17 @@ export function MobileBottomNav() {
   const getProfilePath = () => {
     if (!user) return '/login';
     if (user.role === 'ADMIN') return '/admin/dashboard';
-    if (user.role === 'HELPER') return '/helper/dashboard';
+    if (user.role === 'HELPER') return '/helper/profile';
     return '/rider/profile';
   };
 
   const getGaragePath = () => {
     if (user?.role === 'RIDER') return '/rider/bikes';
     return '/save-my-bike';
+  };
+
+  const resetScroll = () => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const isHomeActive = location.pathname === '/';
@@ -58,6 +62,7 @@ export function MobileBottomNav() {
       {/* 1. Home */}
       <Link
         to="/"
+        onClick={resetScroll}
         className={`mobile-nav-item ${isHomeActive ? 'is-active' : ''}`}
         aria-label="Home"
       >
@@ -70,6 +75,7 @@ export function MobileBottomNav() {
       {/* 2. Help / Assistance */}
       <Link
         to="/nearby-services"
+        onClick={resetScroll}
         className={`mobile-nav-item ${isHelpActive ? 'is-active' : ''}`}
         aria-label="Help and Assistance"
       >
@@ -82,6 +88,7 @@ export function MobileBottomNav() {
       {/* 3. Rides */}
       <Link
         to="/safe-ride"
+        onClick={resetScroll}
         className={`mobile-nav-item ${isRidesActive ? 'is-active' : ''}`}
         aria-label="Safe Rides and Navigation"
       >
@@ -94,6 +101,7 @@ export function MobileBottomNav() {
       {/* 4. Garage */}
       <Link
         to={getGaragePath()}
+        onClick={resetScroll}
         className={`mobile-nav-item ${isGarageActive ? 'is-active' : ''}`}
         aria-label="Motorcycle Garage"
       >
@@ -106,6 +114,7 @@ export function MobileBottomNav() {
       {/* 5. Profile */}
       <Link
         to={getProfilePath()}
+        onClick={resetScroll}
         className={`mobile-nav-item ${isProfileActive ? 'is-active' : ''}`}
         aria-label={user ? 'Profile' : 'Login'}
       >

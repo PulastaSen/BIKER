@@ -4,10 +4,12 @@ import { getUsers, getHelperProfiles, getRequests, getSafetyReports } from '../.
 import type { User, HelperProfile, HelpRequest, SafetyReport } from '../../types/app';
 import { Button } from '../../components/Button';
 import { StatusBadge } from '../../components/StatusBadge';
-import { ShieldCheck, Users, Clock, AlertTriangle, ChevronRight } from 'lucide-react';
+import { ShieldCheck, Users, Clock, AlertTriangle, ChevronRight, LogOut, Loader2 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export function AdminDashboardPage() {
   const navigate = useNavigate();
+  const { user, logout, isLoggingOut } = useAuth();
 
   const [users, setUsers] = useState<User[]>([]);
   const [helpers, setHelpers] = useState<HelperProfile[]>([]);
@@ -24,14 +26,45 @@ export function AdminDashboardPage() {
   const pendingHelpers = helpers.filter((h) => h.verificationStatus === 'PENDING');
   const openRequests = requests.filter((r) => r.status === 'OPEN' || r.status === 'HELPER_OFFERED' || r.status === 'IN_PROGRESS');
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
+
   return (
-    <div className="dashboard-page">
-      <header className="dashboard-header">
+    <div className="dashboard-page max-w-6xl mx-auto px-4 py-8 space-y-6">
+      <header className="dashboard-header flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <p className="eyebrow">ADMINISTRATION PORTAL</p>
-          <h1>Platform Operations Dashboard</h1>
-          <p className="subtitle">Overview of Riders, Verified Helpers, System Requests, and Safety Reports.</p>
+          <p className="eyebrow text-xs font-black uppercase text-[#FFF174] tracking-wider">ADMINISTRATION PORTAL</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-white">Platform Operations Dashboard</h1>
+          <p className="text-xs text-[#C5C5C5] mt-1">Overview of Riders, Verified Helpers, System Requests, and Safety Reports.</p>
         </div>
+
+        {user && (
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1.5 rounded-xl">
+              ADMIN ACTIVE
+            </span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="px-3.5 py-1.5 rounded-xl bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-red-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer min-h-[38px]"
+            >
+              {isLoggingOut ? (
+                <>
+                  <Loader2 size={14} className="animate-spin" />
+                  <span>Logging out…</span>
+                </>
+              ) : (
+                <>
+                  <LogOut size={14} />
+                  <span>Log Out</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </header>
 
       {/* Metrics Grid */}

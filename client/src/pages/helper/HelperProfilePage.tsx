@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getHelperProfileByUserId, saveHelperProfile } from '../../utils/appStorage';
 import type { HelperProfile } from '../../types/app';
@@ -9,12 +9,15 @@ import {
   ShieldCheck, 
   Building2, 
   Star, 
-  CheckCircle2
+  CheckCircle2,
+  LogOut,
+  Loader2
 } from 'lucide-react';
 import { API_BASE_URL, hasBackendApi } from '../../config/api';
 
 export function HelperProfilePage() {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout, isLoggingOut } = useAuth();
   const [profile, setProfile] = useState<HelperProfile | undefined>();
   const [businessName, setBusinessName] = useState('');
   const [ownerName, setOwnerName] = useState('Rajesh Sharma');
@@ -334,6 +337,48 @@ export function HelperProfilePage() {
             </button>
           </div>
         </form>
+
+        {/* PROVIDER ACCOUNT SECURITY & LOGOUT */}
+        {user && (
+          <section className="p-6 rounded-3xl bg-[#1D1D1D] border border-white/10 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block">
+                  PROVIDER SESSION & CREDENTIALS
+                </span>
+                <strong className="text-base font-bold text-white block mt-0.5">
+                  {user.name} ({profile?.businessName || 'Roadside Assistance Provider'})
+                </strong>
+                <span className="text-xs text-[#C5C5C5] block">{user.email} • Authenticated as HELPER</span>
+              </div>
+              <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ACTIVE
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={async () => {
+                await logout();
+                navigate('/login');
+              }}
+              disabled={isLoggingOut}
+              className="w-full py-3.5 rounded-2xl bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-red-300 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 min-h-[46px]"
+            >
+              {isLoggingOut ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Logging out from Provider Desk…</span>
+                </>
+              ) : (
+                <>
+                  <LogOut size={16} />
+                  <span>Log Out from Provider Desk</span>
+                </>
+              )}
+            </button>
+          </section>
+        )}
       </div>
     </div>
   );

@@ -41,13 +41,13 @@ export function RiderDashboardPage() {
   const primaryBike = bikes.find(b => b.isPrimary) || bikes[0];
 
   return (
-    <div className="bg-[#090909] min-h-screen text-white pb-24 font-sans flex flex-col">
+    <div className="bg-[#151515] min-h-screen text-white pb-28 font-sans flex flex-col">
 
       {/* Main Container: Mobile phone width on small screens, expands dynamically to max-w-6xl on desktop */}
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-12 flex-1 flex flex-col gap-6">
         
         {/* Desktop Welcome Banner */}
-        <div className="hidden md:flex items-center justify-between bg-[#111111] border border-white/10 rounded-2xl p-6">
+        <div className="hidden md:flex items-center justify-between bg-[#1D1D1D] border border-white/10 rounded-2xl p-6 shadow-xl">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-[#FFF174]">RIDER COMMAND CENTER</span>
             <h1 className="text-2xl font-black tracking-tight mt-1">Welcome back, {user?.name || 'Rider'}</h1>

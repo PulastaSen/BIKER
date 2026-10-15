@@ -5326,16 +5326,16 @@ textarea:focus {
     left: 0;
     right: 0;
     z-index: 1000;
-    height: calc(62px + env(safe-area-inset-bottom, 0px));
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    background: rgba(11, 19, 43, 0.94);
+    height: calc(64px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: max(6px, env(safe-area-inset-bottom, 0px));
+    background: rgba(29, 29, 29, 0.96);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     display: flex;
     align-items: center;
     justify-content: space-around;
-    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6);
   }
 
   .mobile-nav-item {
@@ -5344,14 +5344,14 @@ textarea:focus {
     align-items: center;
     justify-content: center;
     gap: 3px;
-    color: #94A3B8;
+    color: #C5C5C5;
     text-decoration: none;
     font-size: 0.72rem;
     font-weight: 600;
     padding: 0.35rem 0.5rem;
     flex: 1;
     min-height: 48px;
-    transition: all 200ms ease;
+    transition: all 180ms ease;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -5360,7 +5360,14 @@ textarea:focus {
   }
 
   .mobile-nav-item.is-active {
-    color: #F3B61F;
+    color: #FFF174 !important;
+    font-weight: 800;
+    text-shadow: 0 0 12px rgba(255, 241, 116, 0.4);
+  }
+
+  .dashboard-content,
+  .public-layout main {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .mobile-nav-icon-wrap {

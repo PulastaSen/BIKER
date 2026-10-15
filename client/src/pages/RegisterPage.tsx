@@ -90,8 +90,8 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="auth-page bg-[#090909] min-h-screen flex items-center justify-center p-4 md:p-8 text-white font-sans pt-24 pb-16">
-      <div className="auth-card bg-[#111111] border border-white/15 rounded-3xl p-6 sm:p-10 md:p-12 w-full max-w-xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative overflow-hidden">
+    <div className="auth-page bg-[#151515] min-h-screen flex items-center justify-center p-4 md:p-8 text-white font-sans pt-24 pb-28">
+      <div className="auth-card bg-[#1D1D1D] border border-white/15 rounded-3xl p-6 sm:p-10 md:p-12 w-full max-w-xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative overflow-hidden">
         
         {/* Subtle decorative glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-40 bg-[#FFF174]/10 blur-[90px] pointer-events-none" />

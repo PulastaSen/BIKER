@@ -186,10 +186,10 @@ export function NearbyServicesPage() {
   const mapSrc = `https://maps.google.com/maps?q=${mapQuery}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#151515] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-black pb-28 md:pb-12">
       
       {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-[#090909]/95 backdrop-blur-md border-b border-white/10 px-4 py-3">
+      <header className="sticky top-0 z-30 bg-[#1D1D1D]/95 backdrop-blur-md border-b border-white/10 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           <button
             type="button"

@@ -24,6 +24,14 @@ import {
   Shield,
   MapPin
 } from 'lucide-react';
+import {
+  MedicalEmergencyGraphic,
+  BikeBreakdownGraphic,
+  PersonalSafetyGraphic,
+  TowingRecoveryGraphic,
+  GuidedTriageGraphic,
+  DualEmergencyGraphic
+} from './graphics';
 import { buildWhatsAppBreakdownAlertUrl } from '../utils/whatsappShare';
 import { saveRequest, INITIAL_BIKES } from '../utils/appStorage';
 import { API_BASE_URL, hasBackendApi } from '../config/api';
@@ -415,10 +423,10 @@ export function EmergencyActionSheet({
       case 'MEDICAL':
         return {
           title: 'Medical emergency',
-          subtitle: 'Accidents, injuries, trauma care & ambulance dispatch',
+          subtitle: 'Accidents, injuries, trauma care & medical assistance',
           badgeColor: 'bg-red-500/20 text-red-300 border-red-500/40',
           borderColor: 'border-red-500/50',
-          icon: '🚑'
+          Graphic: MedicalEmergencyGraphic
         };
       case 'BIKE_PROBLEM':
         return {
@@ -426,7 +434,7 @@ export function EmergencyActionSheet({
           subtitle: 'Punctures, battery, chain, engine & roadside mechanics',
           badgeColor: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
           borderColor: 'border-[#FFF174]/40',
-          icon: '🔧'
+          Graphic: BikeBreakdownGraphic
         };
       case 'UNSAFE':
         return {
@@ -434,7 +442,7 @@ export function EmergencyActionSheet({
           subtitle: 'Immediate police dial, trusted contacts & safe public havens',
           badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
           borderColor: 'border-amber-500/50',
-          icon: '⚠️'
+          Graphic: PersonalSafetyGraphic
         };
       case 'TOWING':
         return {
@@ -442,7 +450,7 @@ export function EmergencyActionSheet({
           subtitle: 'Specialized 2-wheeler flatbeds, wheel clamps & mountain recovery',
           badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
           borderColor: 'border-blue-500/50',
-          icon: '🚚'
+          Graphic: TowingRecoveryGraphic
         };
       case 'NOT_SURE':
         return {
@@ -450,7 +458,7 @@ export function EmergencyActionSheet({
           subtitle: '3 quick questions to pinpoint the exact help you need',
           badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
           borderColor: 'border-purple-500/50',
-          icon: '❓'
+          Graphic: GuidedTriageGraphic
         };
       case 'BOTH':
         return {
@@ -458,7 +466,7 @@ export function EmergencyActionSheet({
           subtitle: 'Personal safety prioritised first, followed by vehicle recovery',
           badgeColor: 'bg-red-500/20 text-red-300 border-red-500/40',
           borderColor: 'border-red-500/60',
-          icon: '🚨'
+          Graphic: DualEmergencyGraphic
         };
       default:
         return {
@@ -466,12 +474,13 @@ export function EmergencyActionSheet({
           subtitle: 'Select an emergency option',
           badgeColor: 'bg-white/10 text-white border-white/20',
           borderColor: 'border-white/20',
-          icon: '🚨'
+          Graphic: MedicalEmergencyGraphic
         };
     }
   };
 
   const meta = getCategoryMeta();
+  const CategoryGraphic = meta.Graphic;
 
   return (
     <AnimatePresence>
@@ -508,7 +517,7 @@ export function EmergencyActionSheet({
                 onClose();
               }
             }}
-            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#111111] border-t sm:border ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.9)] z-10 flex flex-col overflow-hidden text-white`}
+            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#1D1D1D] border-t sm:border ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.9)] z-10 flex flex-col overflow-hidden text-white`}
           >
             {/* Visual Touch Drag Handle */}
             <div className="pt-2.5 pb-1 flex justify-center sm:hidden cursor-grab active:cursor-grabbing shrink-0">
@@ -516,9 +525,11 @@ export function EmergencyActionSheet({
             </div>
 
             {/* Header: Title, Short Explanation & Close Button */}
-            <div className="px-4 sm:px-6 py-3 border-b border-white/10 flex items-start justify-between gap-3 shrink-0 bg-[#161616]">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="text-2xl shrink-0 select-none">{meta.icon}</span>
+            <div className="px-4 sm:px-6 py-3 border-b border-white/10 flex items-start justify-between gap-3 shrink-0 bg-[#252525]">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="shrink-0 select-none">
+                  <CategoryGraphic size={36} />
+                </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <h2 id="emergency-sheet-title" className="text-base sm:text-lg font-black text-white truncate tracking-tight">
@@ -528,7 +539,7 @@ export function EmergencyActionSheet({
                       Live Actions
                     </span>
                   </div>
-                  <p className="text-[11px] text-gray-400 mt-0.5 line-clamp-1">{meta.subtitle}</p>
+                  <p className="text-[11px] text-[#C5C5C5] mt-0.5 line-clamp-1">{meta.subtitle}</p>
                 </div>
               </div>
 
@@ -737,13 +748,13 @@ export function EmergencyActionSheet({
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-xs">
                       {(
                         [
-                          ['ALL', 'All Issues', Wrench],
-                          ['TYRE', 'Puncture / Tyre', Disc],
-                          ['BATTERY', 'Battery / Starting', BatteryCharging],
-                          ['CHAIN', 'Chain / Mechanical', Activity],
-                          ['ENGINE', 'Engine / Electrical', Flame],
-                          ['FUEL', 'Out of Fuel', Fuel],
-                          ['OTHER', 'Something else', HelpCircle]
+                          ['ALL', 'All Problems', Wrench],
+                          ['TYRE', 'Puncture or tyre damage', Disc],
+                          ['BATTERY', 'Battery or starting failure', BatteryCharging],
+                          ['CHAIN', 'Chain or drivetrain issue', Activity],
+                          ['ENGINE', 'Engine or electrical problem', Flame],
+                          ['FUEL', 'Fuel shortage', Fuel],
+                          ['OTHER', 'Unknown mechanical problem', HelpCircle]
                         ] as const
                       ).map(([key, label, IconComponent]) => (
                         <button

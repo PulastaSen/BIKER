@@ -13,8 +13,9 @@ interface AuthContextType {
     password?: string;
     role: UserRole;
   }) => Promise<User | null>;
-  logout: () => void;
+  logout: () => Promise<void>;
   loading: boolean;
+  isLoggingOut: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,6 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return getCurrentUser();
   });
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Sync state changes with localStorage
   useEffect(() => {
@@ -125,14 +127,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return newUser;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    setIsLoggingOut(true);
+    const token = localStorage.getItem('auth_token');
+    if (token && hasBackendApi() && !token.startsWith('demo-token-')) {
+      try {
+        await fetch(`${API_BASE_URL}/api/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+      } catch {
+        // Silently continue clearing local state
+      }
+    }
     localStorage.removeItem('auth_token');
     persistCurrentUser(null);
     setUser(null);
+    setIsLoggingOut(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loading, isLoggingOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -10,7 +10,16 @@ import {
 } from 'lucide-react';
 import { useUserLocation } from '../hooks/useUserLocation';
 import { MedicalIdQuickModal } from '../components/MedicalIdQuickModal';
-import { MountainContourPattern, AnimatedRoadLines } from '../components/graphics';
+import {
+  MountainContourPattern,
+  AnimatedRoadLines,
+  MedicalEmergencyGraphic,
+  BikeBreakdownGraphic,
+  PersonalSafetyGraphic,
+  TowingRecoveryGraphic,
+  GuidedTriageGraphic,
+  DualEmergencyGraphic
+} from '../components/graphics';
 import { EmergencyActionSheet, type EmergencyCategory } from '../components/EmergencyActionSheet';
 
 export type HelpCategory = EmergencyCategory;
@@ -82,7 +91,7 @@ export function EmergencyAssistPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans selection:bg-red-500 selection:text-white pb-16 relative">
+    <div className="min-h-screen bg-[#151515] text-white flex flex-col font-sans selection:bg-red-500 selection:text-white pb-16 relative">
       <AnimatedRoadLines opacity={0.12} />
       <MountainContourPattern height={140} opacity={0.2} />
 
@@ -278,131 +287,178 @@ export function EmergencyAssistPage() {
         <section className="space-y-2.5" aria-label="Select Emergency Category">
           <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-gray-400 px-1">
             <span>SELECT EMERGENCY CATEGORY</span>
-            <button
-              type="button"
-              onClick={() => selectCategory('BOTH')}
-              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-white/5 hover:bg-red-500/20 text-gray-300 hover:text-red-300 border border-white/10 transition-colors cursor-pointer min-h-[34px]"
-            >
-              Need Both (Medical & Bike)
-            </button>
+            <span className="text-[11px] text-[#FFF174]">Tap to open overlay</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {/* 1. 🚑 Medical emergency */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* 1. Medical emergency */}
             <button
               type="button"
               onClick={() => selectCategory('MEDICAL')}
-              className="p-4 rounded-2xl bg-[#141414] hover:bg-[#201010] active:scale-[0.99] border-2 border-white/10 hover:border-red-500/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[82px] text-left"
+              className="p-4 rounded-2xl bg-[#1D1D1D] hover:bg-[#252525] active:scale-[0.99] border-2 border-white/10 hover:border-red-500/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
               aria-label="Medical emergency - Accidents, injuries, trauma care"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/40 text-red-400 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                  🚑
+                <div className="shrink-0 group-hover:scale-105 transition-transform">
+                  <MedicalEmergencyGraphic size={48} />
                 </div>
                 <div>
-                  <strong className="text-base font-black text-white group-hover:text-red-300 transition-colors block">
-                    Medical emergency
-                  </strong>
-                  <span className="text-xs text-gray-400 block mt-0.5">
-                    For accidents, injuries or urgent medical assistance.
+                  <div className="flex items-center gap-2">
+                    <strong className="text-base font-black text-white group-hover:text-red-300 transition-colors block">
+                      Medical emergency
+                    </strong>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/30">
+                      TRAUMA
+                    </span>
+                  </div>
+                  <span className="text-xs text-[#C5C5C5] block mt-0.5">
+                    For accidents, injuries or urgent medical assistance. Call 112 & trauma care.
                   </span>
                 </div>
               </div>
               <ChevronRight size={18} className="text-gray-400 group-hover:text-red-400 group-hover:translate-x-1 transition-all shrink-0" />
             </button>
 
-            {/* 2. 🔧 Bike problem */}
+            {/* 2. Bike problem */}
             <button
               type="button"
               onClick={() => selectCategory('BIKE_PROBLEM')}
-              className="p-4 rounded-2xl bg-[#141414] hover:bg-[#1f1d10] active:scale-[0.99] border-2 border-white/10 hover:border-[#FFF174]/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[82px] text-left"
+              className="p-4 rounded-2xl bg-[#1D1D1D] hover:bg-[#252525] active:scale-[0.99] border-2 border-white/10 hover:border-[#FFF174]/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
               aria-label="Bike problem - For punctures, battery failure, engine problems, fuel and repairs"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                  🔧
+                <div className="shrink-0 group-hover:scale-105 transition-transform">
+                  <BikeBreakdownGraphic size={48} />
                 </div>
                 <div>
-                  <strong className="text-base font-black text-white group-hover:text-[#FFF174] transition-colors block">
-                    Bike problem
-                  </strong>
-                  <span className="text-xs text-gray-400 block mt-0.5">
-                    For punctures, battery failure, engine problems, fuel and repairs.
+                  <div className="flex items-center gap-2">
+                    <strong className="text-base font-black text-white group-hover:text-[#FFF174] transition-colors block">
+                      Bike problem
+                    </strong>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
+                      RESCUE
+                    </span>
+                  </div>
+                  <span className="text-xs text-[#C5C5C5] block mt-0.5">
+                    Punctures, battery failure, chain snaps, engine stalls & emergency fuel.
                   </span>
                 </div>
               </div>
               <ChevronRight size={18} className="text-gray-400 group-hover:text-[#FFF174] group-hover:translate-x-1 transition-all shrink-0" />
             </button>
 
-            {/* 3. ⚠️ I feel unsafe */}
+            {/* 3. I feel unsafe */}
             <button
               type="button"
               onClick={() => selectCategory('UNSAFE')}
-              className="p-4 rounded-2xl bg-[#141414] hover:bg-[#201810] active:scale-[0.99] border-2 border-white/10 hover:border-amber-500/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[82px] text-left"
+              className="p-4 rounded-2xl bg-[#1D1D1D] hover:bg-[#252525] active:scale-[0.99] border-2 border-white/10 hover:border-amber-500/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
               aria-label="I feel unsafe - For threats, harassment, being followed or feeling unsafe"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                  ⚠️
+                <div className="shrink-0 group-hover:scale-105 transition-transform">
+                  <PersonalSafetyGraphic size={48} />
                 </div>
                 <div>
-                  <strong className="text-base font-black text-white group-hover:text-amber-300 transition-colors block">
-                    I feel unsafe
-                  </strong>
-                  <span className="text-xs text-gray-400 block mt-0.5">
-                    For threats, harassment, being followed or feeling unsafe.
+                  <div className="flex items-center gap-2">
+                    <strong className="text-base font-black text-white group-hover:text-amber-300 transition-colors block">
+                      I feel unsafe
+                    </strong>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      SAFETY
+                    </span>
+                  </div>
+                  <span className="text-xs text-[#C5C5C5] block mt-0.5">
+                    For threats, harassment, being stranded in isolated spots or feeling unsafe.
                   </span>
                 </div>
               </div>
               <ChevronRight size={18} className="text-gray-400 group-hover:text-amber-400 group-hover:translate-x-1 transition-all shrink-0" />
             </button>
 
-            {/* 4. 🚚 I need towing */}
+            {/* 4. I need towing */}
             <button
               type="button"
               onClick={() => selectCategory('TOWING')}
-              className="p-4 rounded-2xl bg-[#141414] hover:bg-[#101820] active:scale-[0.99] border-2 border-white/10 hover:border-blue-400/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[82px] text-left"
+              className="p-4 rounded-2xl bg-[#1D1D1D] hover:bg-[#252525] active:scale-[0.99] border-2 border-white/10 hover:border-blue-400/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
               aria-label="I need towing - For motorcycles that cannot safely be ridden"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/20 border border-blue-500/40 text-blue-300 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                  🚚
+                <div className="shrink-0 group-hover:scale-105 transition-transform">
+                  <TowingRecoveryGraphic size={48} />
                 </div>
                 <div>
-                  <strong className="text-base font-black text-white group-hover:text-blue-300 transition-colors block">
-                    I need towing
-                  </strong>
-                  <span className="text-xs text-gray-400 block mt-0.5">
-                    For motorcycles that cannot safely be ridden.
+                  <div className="flex items-center gap-2">
+                    <strong className="text-base font-black text-white group-hover:text-blue-300 transition-colors block">
+                      I need towing
+                    </strong>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                      FLATBED
+                    </span>
+                  </div>
+                  <span className="text-xs text-[#C5C5C5] block mt-0.5">
+                    Specialized motorcycle flatbed recovery with winch & wheel cradles.
                   </span>
                 </div>
               </div>
               <ChevronRight size={18} className="text-gray-400 group-hover:text-blue-400 group-hover:translate-x-1 transition-all shrink-0" />
             </button>
-          </div>
 
-          {/* 5. ❓ I'm not sure */}
-          <button
-            type="button"
-            onClick={() => selectCategory('NOT_SURE')}
-            className="w-full p-4 rounded-2xl bg-[#141414] hover:bg-[#1c1420] active:scale-[0.99] border-2 border-white/10 hover:border-purple-400/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[82px] text-left"
-            aria-label="I'm not sure - For users who cannot identify the problem"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-500/40 text-purple-300 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                ❓
+            {/* 5. Guided Triage / I'm not sure */}
+            <button
+              type="button"
+              onClick={() => selectCategory('NOT_SURE')}
+              className="p-4 rounded-2xl bg-[#1D1D1D] hover:bg-[#252525] active:scale-[0.99] border-2 border-white/10 hover:border-purple-400/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
+              aria-label="I'm not sure - For users who cannot identify the problem"
+            >
+              <div className="flex items-center gap-3">
+                <div className="shrink-0 group-hover:scale-105 transition-transform">
+                  <GuidedTriageGraphic size={48} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <strong className="text-base font-black text-white group-hover:text-purple-300 transition-colors block">
+                      I'm not sure (Triage)
+                    </strong>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                      DIAGNOSIS
+                    </span>
+                  </div>
+                  <span className="text-xs text-[#C5C5C5] block mt-0.5">
+                    Uncertain what is wrong? 3 step-by-step diagnostic checks to pinpoint rescue.
+                  </span>
+                </div>
               </div>
-              <div>
-                <strong className="text-base font-black text-white group-hover:text-purple-300 transition-colors block">
-                  I'm not sure
-                </strong>
-                <span className="text-xs text-gray-400 block mt-0.5">
-                  For users who cannot identify the problem. 3 quick triage checks.
-                </span>
+              <ChevronRight size={18} className="text-gray-400 group-hover:text-purple-400 group-hover:translate-x-1 transition-all shrink-0" />
+            </button>
+
+            {/* 6. Combined: Medical & Bike Recovery */}
+            <button
+              type="button"
+              onClick={() => selectCategory('BOTH')}
+              className="p-4 rounded-2xl bg-[#1D1D1D] hover:bg-[#252525] active:scale-[0.99] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
+              aria-label="Need Both Medical and Motorcycle Assistance"
+            >
+              <div className="flex items-center gap-3">
+                <div className="shrink-0 group-hover:scale-105 transition-transform">
+                  <DualEmergencyGraphic size={48} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <strong className="text-base font-black text-white group-hover:text-red-300 transition-colors block">
+                      Need Both (Medical & Bike)
+                    </strong>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-red-600/30 text-red-200 border border-red-500/50">
+                      HIGH PRIORITY
+                    </span>
+                  </div>
+                  <span className="text-xs text-[#C5C5C5] block mt-0.5">
+                    Accident with motorcycle down. First-aid & medical care first, recovery second.
+                  </span>
+                </div>
               </div>
-            </div>
-            <ChevronRight size={18} className="text-gray-400 group-hover:text-purple-400 group-hover:translate-x-1 transition-all shrink-0" />
-          </button>
+              <ChevronRight size={18} className="text-gray-400 group-hover:text-red-400 group-hover:translate-x-1 transition-all shrink-0" />
+            </button>
+          </div>
         </section>
 
         {/* Discreet Help Tip */}

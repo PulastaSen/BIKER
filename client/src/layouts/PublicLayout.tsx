@@ -50,7 +50,7 @@ export function PublicLayout() {
   };
 
   return (
-    <div className="public-layout min-h-screen flex flex-col bg-[#090909] text-white">
+    <div className="public-layout min-h-screen flex flex-col bg-[#151515] text-white">
       {/* If in Dedicated Emergency Mode, render minimal Emergency Header */}
       {isEmergencyMode ? (
         <header className="sticky top-0 z-50 bg-[#160808]/95 border-b border-red-500/40 backdrop-blur-md px-4 py-3">
@@ -72,7 +72,7 @@ export function PublicLayout() {
           </div>
         </header>
       ) : (
-        <header className="site-header sticky top-0 z-40 bg-[#090909]/95 border-b border-white/10 backdrop-blur-md">
+        <header className="site-header sticky top-0 z-40 bg-[#1D1D1D]/95 border-b border-white/10 backdrop-blur-md">
           <nav className="nav page-container flex items-center justify-between max-w-7xl mx-auto px-4 py-3" aria-label="Primary navigation">
             <Link className="brand flex items-center gap-2 font-black text-lg text-white" to="/" onClick={closeMenu}>
               <span className="brand-mark w-8 h-8 rounded-xl bg-[#FFF174] text-black flex items-center justify-center">
@@ -219,7 +219,7 @@ export function PublicLayout() {
       )}
 
       {/* MAIN VIEW */}
-      <main className="public-main flex-1" key={location.pathname}>
+      <main className="public-main flex-1 pb-28 md:pb-0" key={location.pathname}>
         <div className="page-transition">
           <Outlet />
         </div>

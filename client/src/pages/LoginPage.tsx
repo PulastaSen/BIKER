@@ -74,7 +74,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="auth-page bg-[#090909] min-h-screen text-white font-sans pt-12 pb-24 px-4 sm:px-6 relative overflow-hidden selection:bg-[#FFF174] selection:text-black">
+    <div className="auth-page bg-[#151515] min-h-screen text-white font-sans pt-12 pb-28 px-4 sm:px-6 relative overflow-hidden selection:bg-[#FFF174] selection:text-black">
       {/* Background graphics */}
       <AnimatedRoadLines opacity={0.1} />
       <MountainContourPattern height={140} opacity={0.18} />

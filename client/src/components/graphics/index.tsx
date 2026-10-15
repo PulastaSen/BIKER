@@ -683,12 +683,215 @@ export function ProviderMarker({
 
   return (
     <div className={`relative inline-flex flex-col items-center select-none ${className}`}>
-      <div className="px-2.5 py-1 rounded-xl bg-[#111111] border border-[#FFF174]/40 shadow-xl flex items-center gap-1.5 text-xs text-white">
+      <div className="px-2.5 py-1 rounded-xl bg-[#1D1D1D] border border-[#FFF174]/40 shadow-xl flex items-center gap-1.5 text-xs text-white">
         <span>{iconEmoji}</span>
         {rating && <span className="text-[#FFF174] font-black text-[11px]">★ {rating}</span>}
         {isVerified && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Verified" />}
       </div>
-      <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#111111]" />
+      <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#1D1D1D]" />
     </div>
   );
 }
+
+/**
+ * 13. Category Specific Emergency Graphics (MotoAssist 6.0)
+ */
+
+/** A. Medical Emergency Graphic (Trauma Cross + ECG Pulse) */
+export function MedicalEmergencyGraphic({ size = 44, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="Medical Emergency Icon"
+    >
+      <rect width="48" height="48" rx="14" fill="#EF4444" fillOpacity="0.18" />
+      <rect x="1" y="1" width="46" height="46" rx="13" stroke="#EF4444" strokeWidth="1.5" strokeOpacity="0.6" />
+      {/* Medical Cross */}
+      <path
+        d="M21 12H27V20H35V26H27V34H21V26H13V20H21V12Z"
+        fill="#EF4444"
+      />
+      {/* Dynamic ECG Waveform */}
+      <path
+        d="M10 23H17L19.5 17L23 29L26 21L28 25L30 23H38"
+        stroke="#FFFFFF"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="38" cy="23" r="2" fill="#FFFFFF" />
+    </svg>
+  );
+}
+
+/** B. Motorcycle Breakdown Graphic (Wheel + Spanner + Gear Cog) */
+export function BikeBreakdownGraphic({ size = 44, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="Motorcycle Breakdown Icon"
+    >
+      <rect width="48" height="48" rx="14" fill="#FFF174" fillOpacity="0.14" />
+      <rect x="1" y="1" width="46" height="46" rx="13" stroke="#FFF174" strokeWidth="1.5" strokeOpacity="0.5" />
+      {/* Motorcycle Tyre Outline with Tread */}
+      <circle cx="24" cy="24" r="14" stroke="#FFF174" strokeWidth="2.5" strokeDasharray="5 3" />
+      <circle cx="24" cy="24" r="8" stroke="#FFF174" strokeWidth="1.5" opacity="0.6" />
+      {/* Precision Mechanic Spanner / Wrench */}
+      <path
+        d="M17 31L27 21M26 15L29 18M30 14C31.5 12.5 34 12.5 35.5 14C37 15.5 37 18 35.5 19.5L33 17"
+        stroke="#FFF174"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="15.5" cy="32.5" r="2.5" fill="#FFF174" />
+    </svg>
+  );
+}
+
+/** C. Personal Safety Graphic (Tactical Shield + Beacon Rays) */
+export function PersonalSafetyGraphic({ size = 44, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="Personal Safety Shield Icon"
+    >
+      <rect width="48" height="48" rx="14" fill="#F59E0B" fillOpacity="0.15" />
+      <rect x="1" y="1" width="46" height="46" rx="13" stroke="#F59E0B" strokeWidth="1.5" strokeOpacity="0.6" />
+      {/* Safety Shield */}
+      <path
+        d="M24 10L14 15V24C14 31 18.5 36.5 24 39C29.5 36.5 34 31 34 24V15L24 10Z"
+        fill="#F59E0B"
+        fillOpacity="0.25"
+        stroke="#F59E0B"
+        strokeWidth="2.2"
+        strokeLinejoin="round"
+      />
+      {/* Centered Safety Pin / Lock Emblem */}
+      <circle cx="24" cy="22" r="3.5" stroke="#FFFFFF" strokeWidth="2" />
+      <path d="M20.5 25H27.5V30H20.5V25Z" fill="#FFFFFF" rx="1" />
+      <circle cx="24" cy="27.5" r="1" fill="#F59E0B" />
+    </svg>
+  );
+}
+
+/** D. Motorcycle Towing Graphic (Recovery Truck + Winch Bed) */
+export function TowingRecoveryGraphic({ size = 44, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="Towing Flatbed Recovery Icon"
+    >
+      <rect width="48" height="48" rx="14" fill="#38BDF8" fillOpacity="0.15" />
+      <rect x="1" y="1" width="46" height="46" rx="13" stroke="#38BDF8" strokeWidth="1.5" strokeOpacity="0.6" />
+      {/* Flatbed Truck Cab */}
+      <path
+        d="M27 20H34L38 25V31H27V20Z"
+        stroke="#38BDF8"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <rect x="29" y="23" width="5" height="4" rx="1" fill="#38BDF8" fillOpacity="0.4" />
+      {/* Tilted Towing Ramp Bed */}
+      <path
+        d="M10 24L26 29"
+        stroke="#38BDF8"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      {/* Winch Cable & Hook */}
+      <path
+        d="M26 23L18 26"
+        stroke="#FFFFFF"
+        strokeWidth="1.5"
+        strokeDasharray="2 2"
+      />
+      {/* Heavy Wheels */}
+      <circle cx="17" cy="33" r="3.5" fill="#38BDF8" />
+      <circle cx="34" cy="33" r="3.5" fill="#38BDF8" />
+      <circle cx="17" cy="33" r="1.5" fill="#151515" />
+      <circle cx="34" cy="33" r="1.5" fill="#151515" />
+    </svg>
+  );
+}
+
+/** E. Guided Triage & Diagnosis Graphic (Decision Tree + Pulse) */
+export function GuidedTriageGraphic({ size = 44, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="Guided Triage Diagnostic Flowchart Icon"
+    >
+      <rect width="48" height="48" rx="14" fill="#A78BFA" fillOpacity="0.15" />
+      <rect x="1" y="1" width="46" height="46" rx="13" stroke="#A78BFA" strokeWidth="1.5" strokeOpacity="0.6" />
+      {/* Top Root Diagnostic Question Node */}
+      <circle cx="24" cy="15" r="5" fill="#A78BFA" fillOpacity="0.3" stroke="#A78BFA" strokeWidth="2" />
+      <text x="24" y="18" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="bold">?</text>
+      {/* Branch Lines */}
+      <path d="M24 20V26M24 26L16 32M24 26L32 32" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Sub-Branch Nodes */}
+      <circle cx="16" cy="33" r="3.5" fill="#10B981" />
+      <circle cx="32" cy="33" r="3.5" fill="#EF4444" />
+    </svg>
+  );
+}
+
+/** F. Combined Medical & Bike Emergency Graphic (Split Badge) */
+export function DualEmergencyGraphic({ size = 44, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="Dual Medical and Mechanical Emergency Icon"
+    >
+      <rect width="48" height="48" rx="14" fill="#EF4444" fillOpacity="0.15" />
+      <rect x="1" y="1" width="46" height="46" rx="13" stroke="#EF4444" strokeWidth="1.5" strokeOpacity="0.6" />
+      {/* Split diagonal line */}
+      <line x1="32" y1="10" x2="16" y2="38" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeDasharray="3 3" />
+      {/* Left: Medical Cross in Red */}
+      <path
+        d="M17 14H21V18H25V22H21V26H17V22H13V18H17V14Z"
+        fill="#EF4444"
+      />
+      {/* Right: Motorcycle Spanner in Moto Yellow */}
+      <path
+        d="M25 32L32 25M31 21L34 24M34 20C35 19 36.5 19 37.5 20C38.5 21 38.5 22.5 37.5 23.5L35.5 22"
+        stroke="#FFF174"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="24" cy="33" r="1.8" fill="#FFF174" />
+    </svg>
+  );
+}
+

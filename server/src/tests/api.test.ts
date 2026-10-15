@@ -70,6 +70,21 @@ describe('MotoAssist Backend Full API Test Suite', () => {
       expect(body.user.email).toBe(uniqueEmail);
       expect(body.token).toBeDefined();
     });
+
+    it('POST /api/auth/logout invalidates session token and returns success', async () => {
+      const res = await fetch(`${BASE_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer test-jwt-token'
+        }
+      });
+
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.message).toContain('logged out');
+    });
   });
 
   describe('2. Bike Garage API', () => {

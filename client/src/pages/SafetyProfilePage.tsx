@@ -14,7 +14,9 @@ import {
   FileText,
   Lock,
   Calendar,
-  ShieldCheck
+  ShieldCheck,
+  LogOut,
+  Loader2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getBikes, saveBike, addUser } from '../utils/appStorage';
@@ -42,7 +44,7 @@ const DOCUMENT_TYPE_LABELS: Record<RiderDocumentType, { label: string; primary?:
 
 export function SafetyProfilePage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout, isLoggingOut } = useAuth();
 
   // 1. Personal
   const [name, setName] = useState(user?.name || 'Pulasta Sen');
@@ -326,7 +328,7 @@ export function SafetyProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white pt-6 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#151515] text-white pt-6 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
       <div className="max-w-xl mx-auto px-4 sm:px-6 space-y-6">
         
         {/* TOP BAR */}
@@ -809,6 +811,48 @@ export function SafetyProfilePage() {
             </button>
           </div>
         </form>
+
+        {/* ACCOUNT SECURITY & AUTHENTICATION SESSION CARD */}
+        {user && (
+          <section className="p-5 rounded-3xl bg-[#1D1D1D] border border-white/10 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block">
+                  ACCOUNT SECURITY & AUTHENTICATION
+                </span>
+                <strong className="text-sm font-bold text-white block mt-0.5">
+                  Logged in as {user.name}
+                </strong>
+                <span className="text-xs text-[#C5C5C5] block">{user.email} • Role: {user.role}</span>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ACTIVE SESSION
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={async () => {
+                await logout();
+                navigate('/login');
+              }}
+              disabled={isLoggingOut}
+              className="w-full py-3.5 rounded-2xl bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-red-300 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 min-h-[46px]"
+            >
+              {isLoggingOut ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Logging out from MotoAssist…</span>
+                </>
+              ) : (
+                <>
+                  <LogOut size={16} />
+                  <span>Log Out from MotoAssist</span>
+                </>
+              )}
+            </button>
+          </section>
+        )}
 
       </div>
     </div>

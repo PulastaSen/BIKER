@@ -238,7 +238,7 @@ export function VerificationCenterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-black pb-24 md:pb-16">
+    <div className="min-h-screen bg-[#151515] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-black pb-28 md:pb-16">
       
       {/* Face Verification Modal */}
       <FaceVerificationModal
@@ -255,7 +255,7 @@ export function VerificationCenterPage() {
       />
 
       {/* TOP HEADER */}
-      <header className="sticky top-0 z-30 bg-[#090909]/95 backdrop-blur-md border-b border-white/10 px-4 py-3.5 sm:px-6">
+      <header className="sticky top-0 z-30 bg-[#1D1D1D]/95 backdrop-blur-md border-b border-white/10 px-4 py-3.5 sm:px-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
           <button
             type="button"

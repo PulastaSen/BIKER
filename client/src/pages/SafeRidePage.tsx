@@ -176,7 +176,7 @@ export function SafeRidePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#090909] flex items-center justify-center text-white">
+      <div className="min-h-screen bg-[#151515] flex items-center justify-center text-white">
         <Loader2 size={32} className="animate-spin text-[#FFF174]" />
       </div>
     );
@@ -196,7 +196,7 @@ export function SafeRidePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white pt-4 pb-24 md:pb-16 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#151515] text-white pt-4 pb-28 md:pb-16 font-sans selection:bg-[#FFF174] selection:text-black">
       <div className="container mx-auto px-4 max-w-xl space-y-4">
         
         {/* Header */}

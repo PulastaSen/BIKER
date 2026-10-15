@@ -5,7 +5,7 @@ export function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[#090909] min-h-screen text-white pb-24 font-sans flex flex-col items-center">
+    <div className="bg-[#151515] min-h-screen text-white pb-28 font-sans flex flex-col items-center">
       <main className="w-full max-w-md px-6 pt-6 pb-12 flex-1 flex flex-col gap-6">
         
         {/* Urgent Status Area */}

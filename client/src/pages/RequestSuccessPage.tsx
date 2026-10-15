@@ -12,8 +12,8 @@ export function RequestSuccessPage() {
 
   if (!request) {
     return (
-      <main className="min-h-screen bg-[#090909] text-white flex items-center justify-center p-6 text-center">
-        <div className="bg-[#121212] border border-white/10 p-8 rounded-3xl max-w-md w-full space-y-4">
+      <main className="min-h-screen bg-[#151515] text-white flex items-center justify-center p-6 text-center">
+        <div className="bg-[#1D1D1D] border border-white/10 p-8 rounded-3xl max-w-md w-full space-y-4 shadow-xl">
           <h1 className="text-xl font-bold text-white">No active request found</h1>
           <p className="text-xs text-gray-400">Create a roadside assistance ticket to get started.</p>
           <Link
@@ -33,7 +33,7 @@ export function RequestSuccessPage() {
   const priceEstimate = '₹350 (Includes Call-out & Diagnosis)';
 
   return (
-    <main className="min-h-screen bg-[#090909] text-white pt-6 pb-24 md:pb-16 font-sans">
+    <main className="min-h-screen bg-[#151515] text-white pt-6 pb-28 md:pb-16 font-sans">
       <div className="max-w-xl mx-auto px-4 space-y-5">
         
         {/* Navigation */}

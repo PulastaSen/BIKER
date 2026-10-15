@@ -24,7 +24,7 @@ export function SmartEntryScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white flex flex-col justify-between relative overflow-hidden font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#151515] text-white flex flex-col justify-between relative overflow-hidden font-sans selection:bg-[#FFF174] selection:text-black">
       {/* Background Graphic Elements */}
       <AnimatedRoadLines opacity={0.12} />
       <MountainContourPattern height={180} opacity={0.2} />
