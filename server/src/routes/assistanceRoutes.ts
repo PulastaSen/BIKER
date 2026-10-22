@@ -6,7 +6,9 @@ import {
   getNearbyProviders,
   rateAssistanceRequest,
   cancelAssistanceRequest,
-  getOperationsQueue
+  getOperationsQueue,
+  escalateAssistanceRequest,
+  disputeAssistanceRequest
 } from '../controllers/assistanceController.js';
 
 const router = Router();
@@ -17,6 +19,8 @@ router.post('/', createAssistanceRequest);
 router.get('/:id', getRequestById);
 router.put('/:id/status', updateAssistanceStatus);
 router.post('/:id/cancel', cancelAssistanceRequest);
+router.post('/:id/escalate', escalateAssistanceRequest);
+router.post('/:id/dispute', disputeAssistanceRequest);
 router.put('/:id/rate', rateAssistanceRequest);
 
 export default router;

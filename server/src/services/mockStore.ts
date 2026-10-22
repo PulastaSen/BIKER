@@ -128,6 +128,41 @@ export interface MockAssistanceRequest {
   };
   locationProvenance?: 'GPS_FRESH' | 'GPS_STALE' | 'MANUAL_LANDMARK' | 'UNAVAILABLE';
   status: string;
+  helpCategory?: string;
+  subcategory?: string;
+  urgency?: string;
+  bikeId?: string;
+  bikeDetails?: {
+    brand?: string;
+    model?: string;
+    registrationNumber?: string;
+    vin?: string;
+    fuelType?: string;
+    year?: number;
+  };
+  coverageType?: string;
+  medicalDetails?: any;
+  assignedProviderDetails?: {
+    name?: string;
+    phone?: string;
+    businessName?: string;
+    vehiclePlate?: string;
+    rating?: number;
+    verified?: boolean;
+  };
+  escalationDetails?: {
+    escalatedToHelpline?: boolean;
+    helplinePhone?: string;
+    escalatedAt?: string;
+    notes?: string;
+  };
+  disputeDetails?: {
+    disputed?: boolean;
+    reason?: string;
+    disputedAmount?: number;
+    status?: 'OPEN' | 'INVESTIGATING' | 'RESOLVED' | 'REVIEW_PENDING';
+    reportedAt?: string;
+  };
   cancellationReason?: string;
   estimatedPrice?: {
     calloutFee: number;
@@ -868,6 +903,14 @@ export const mockStore = {
     const now = new Date().toISOString();
     const newReq: MockAssistanceRequest = {
       ...req,
+      helpCategory: req.helpCategory || 'MECHANICAL',
+      subcategory: req.subcategory,
+      urgency: req.urgency || 'MEDIUM',
+      bikeId: req.bikeId,
+      bikeDetails: req.bikeDetails,
+      coverageType: req.coverageType || 'COMPLIMENTARY_YEAR_1',
+      medicalDetails: req.medicalDetails,
+      assignedProviderDetails: req.assignedProviderDetails,
       status: req.status || 'SUBMITTED',
       locationProvenance: req.locationProvenance || (req.location?.coordinates?.[0] ? 'GPS_FRESH' : 'UNAVAILABLE'),
       timeline: [
@@ -894,13 +937,29 @@ export const mockStore = {
     status: string, 
     providerId?: string, 
     notes?: string, 
-    actor: 'RIDER' | 'PROVIDER' | 'OPERATOR' | 'SYSTEM' = 'SYSTEM'
+    actor: 'RIDER' | 'PROVIDER' | 'OPERATOR' | 'SYSTEM' = 'SYSTEM',
+    providerDetails?: any
   ) => {
     const req = assistanceRequests.get(id);
     if (!req) return null;
     const previousStatus = req.status;
     req.status = status;
     if (providerId) req.providerId = providerId;
+    if (providerDetails) {
+      req.assignedProviderDetails = providerDetails;
+    } else if (providerId) {
+      const p = providers.find(prov => prov.id === providerId);
+      if (p) {
+        req.assignedProviderDetails = {
+          name: p.name,
+          phone: p.phone,
+          businessName: p.businessName,
+          vehiclePlate: 'WB 74 RSA RESCUE',
+          rating: p.rating,
+          verified: p.verified
+        };
+      }
+    }
     const now = new Date().toISOString();
     req.updatedAt = now;
     if (!req.timeline) req.timeline = [];
@@ -913,6 +972,61 @@ export const mockStore = {
       newStatus: status,
       timestamp: now,
       notes: notes || `Status changed from ${previousStatus} to ${status}`
+    });
+    return req;
+  },
+  escalateAssistanceRequest: (
+    id: string,
+    reason: string = 'No provider available in sector. Escalated to 24/7 National Emergency Desk.',
+    actor: 'RIDER' | 'PROVIDER' | 'OPERATOR' | 'SYSTEM' = 'SYSTEM'
+  ) => {
+    const req = assistanceRequests.get(id);
+    if (!req) return null;
+    const previousStatus = req.status;
+    req.status = 'UNFULFILLED_NO_PROVIDER';
+    const now = new Date().toISOString();
+    req.updatedAt = now;
+    req.escalationDetails = {
+      escalatedToHelpline: true,
+      helplinePhone: '1800 2100 007',
+      escalatedAt: now,
+      notes: reason
+    };
+    if (!req.timeline) req.timeline = [];
+    req.timeline.push({ status: 'UNFULFILLED_NO_PROVIDER', timestamp: now, notes: `Escalated: ${reason}` });
+    if (!req.auditEvents) req.auditEvents = [];
+    req.auditEvents.push({
+      actor,
+      action: 'ESCALATION_TO_HELPLINE',
+      previousStatus,
+      newStatus: 'UNFULFILLED_NO_PROVIDER',
+      timestamp: now,
+      notes: reason
+    });
+    return req;
+  },
+  disputeAssistanceRequest: (
+    id: string,
+    reason: string,
+    disputedAmount?: number
+  ) => {
+    const req = assistanceRequests.get(id);
+    if (!req) return null;
+    const now = new Date().toISOString();
+    req.updatedAt = now;
+    req.disputeDetails = {
+      disputed: true,
+      reason,
+      disputedAmount: disputedAmount || 0,
+      status: 'REVIEW_PENDING',
+      reportedAt: now
+    };
+    if (!req.auditEvents) req.auditEvents = [];
+    req.auditEvents.push({
+      actor: 'RIDER',
+      action: 'DISPUTE_FILED',
+      timestamp: now,
+      notes: `Dispute filed: ${reason} (Amount: ₹${disputedAmount || 0})`
     });
     return req;
   },

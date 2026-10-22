@@ -507,6 +507,103 @@ export async function createAssistanceRequest(data: any): Promise<any> {
   return created;
 }
 
+export async function cancelAssistanceRequest(id: string, reason: string): Promise<any> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/assistance/${id}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ reason })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data;
+      }
+    } catch {
+      // Fall through
+    }
+  }
+
+  const raw = localStorage.getItem('motoassist_requests_v3');
+  const all: any[] = raw ? JSON.parse(raw) : [];
+  const req = all.find(r => r.id === id || r.requestId === id);
+  if (req) {
+    req.status = 'CANCELLED';
+    req.cancellationReason = reason;
+    req.updatedAt = new Date().toISOString();
+    localStorage.setItem('motoassist_requests_v3', JSON.stringify(all));
+  }
+  return req || { id, status: 'CANCELLED', cancellationReason: reason };
+}
+
+export async function escalateAssistanceRequest(id: string, reason?: string): Promise<any> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/assistance/${id}/escalate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ reason })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data;
+      }
+    } catch {
+      // Fall through
+    }
+  }
+
+  const raw = localStorage.getItem('motoassist_requests_v3');
+  const all: any[] = raw ? JSON.parse(raw) : [];
+  const req = all.find(r => r.id === id || r.requestId === id);
+  if (req) {
+    req.status = 'UNFULFILLED_NO_PROVIDER';
+    req.escalationDetails = {
+      escalatedToHelpline: true,
+      helplinePhone: '1800 2100 007',
+      escalatedAt: new Date().toISOString(),
+      notes: reason || 'Escalated to 24/7 Helpline'
+    };
+    req.updatedAt = new Date().toISOString();
+    localStorage.setItem('motoassist_requests_v3', JSON.stringify(all));
+  }
+  return req || { id, status: 'UNFULFILLED_NO_PROVIDER', escalatedToHelpline: true };
+}
+
+export async function disputeAssistanceRequest(id: string, reason: string, disputedAmount: number = 0): Promise<any> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/assistance/${id}/dispute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ reason, disputedAmount })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data;
+      }
+    } catch {
+      // Fall through
+    }
+  }
+
+  const raw = localStorage.getItem('motoassist_requests_v3');
+  const all: any[] = raw ? JSON.parse(raw) : [];
+  const req = all.find(r => r.id === id || r.requestId === id);
+  if (req) {
+    req.disputeDetails = {
+      disputed: true,
+      reason,
+      disputedAmount,
+      status: 'OPEN',
+      reportedAt: new Date().toISOString()
+    };
+    req.updatedAt = new Date().toISOString();
+    localStorage.setItem('motoassist_requests_v3', JSON.stringify(all));
+  }
+  return req || { id, disputed: true };
+}
+
 export const fetchAssistanceRequest = fetchAssistanceRequestById;
 
 // ----------------------------------------------------

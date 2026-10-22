@@ -30,6 +30,9 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
       estimatedPrice,
       medicalDetails,
       bikeId,
+      bikeDetails,
+      coverageType = 'COMPLIMENTARY_YEAR_1',
+      assignedProviderDetails,
       locationProvenance: provInput
     } = req.body;
 
@@ -66,14 +69,14 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
       (location?.address ? 'MANUAL_LANDMARK' : 'UNAVAILABLE')
     );
 
-    // Price calculation
+    // Price calculation matching manufacturer transparency
     const defaultPricing = {
       calloutFee: 150,
       travelFee: 100,
       serviceFee: problemCategory === 'Towing' ? 500 : 100,
       estimatedTotal: problemCategory === 'Towing' ? 750 : 350,
       isAvailable: true,
-      disclaimer: 'Final price may change if additional parts or work are required.'
+      disclaimer: 'Labor & towing up to 50km covered under RSA scope. Consumables, fuel, and spare parts payable at actuals.'
     };
 
     const finalPricing = estimatedPrice || defaultPricing;
@@ -84,6 +87,7 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
         idempotencyKey,
         riderId,
         providerId: providerId || undefined,
+        assignedProviderDetails,
         problemCategory: problemCategory || 'Breakdown',
         description,
         location: {
@@ -95,21 +99,19 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
         locationProvenance,
         status: RequestStatus.SUBMITTED,
         estimatedPrice: finalPricing,
-        towingDetails: towingDetails || undefined
-      });
-
-      const fullMock = {
-        ...mockReq,
+        towingDetails: towingDetails || undefined,
         helpCategory,
         subcategory,
         urgency,
         medicalDetails,
-        bikeId
-      };
+        bikeId,
+        bikeDetails,
+        coverageType
+      });
 
-      io.emit('assistance:new_request', fullMock);
-      io.emit('assistance:created', fullMock);
-      res.status(201).json({ success: true, data: fullMock });
+      io.emit('assistance:new_request', mockReq);
+      io.emit('assistance:created', mockReq);
+      res.status(201).json({ success: true, data: mockReq });
       return;
     }
 
@@ -118,7 +120,10 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
       idempotencyKey,
       riderId,
       bikeId,
+      bikeDetails,
+      coverageType,
       providerId: providerId || undefined,
+      assignedProviderDetails,
       problemCategory: problemCategory || helpCategory,
       helpCategory,
       subcategory,
@@ -163,7 +168,7 @@ export const createAssistanceRequest = async (req: Request, res: Response): Prom
 export const updateAssistanceStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const id = req.params.id as string;
-    const { status, providerId, notes, actor = 'SYSTEM' } = req.body;
+    const { status, providerId, providerDetails, notes, actor = 'SYSTEM' } = req.body;
 
     const validStatuses = Object.values(RequestStatus);
     if (!validStatuses.includes(status)) {
@@ -196,6 +201,9 @@ export const updateAssistanceStatus = async (req: Request, res: Response): Promi
         case RequestStatus.CANCELLED:
           io.emit('assistance:cancelled', payload);
           break;
+        case RequestStatus.UNFULFILLED_NO_PROVIDER:
+          io.emit('assistance:unfulfilled', payload);
+          break;
       }
     };
 
@@ -219,7 +227,7 @@ export const updateAssistanceStatus = async (req: Request, res: Response): Promi
         return;
       }
 
-      const updated = mockStore.updateRequestStatus(id, status, providerId, notes, actor);
+      const updated = mockStore.updateRequestStatus(id, status, providerId, notes, actor, providerDetails);
       if (!updated) {
         res.status(404).json({ success: false, message: 'Request not found' });
         return;
@@ -253,6 +261,9 @@ export const updateAssistanceStatus = async (req: Request, res: Response): Promi
     if (providerId) {
       request.providerId = providerId;
     }
+    if (providerDetails) {
+      request.assignedProviderDetails = providerDetails;
+    }
     request.timeline.push({
       status,
       timestamp: new Date(),
@@ -274,6 +285,110 @@ export const updateAssistanceStatus = async (req: Request, res: Response): Promi
   } catch (error) {
     console.error('Error updating status:', error);
     res.status(500).json({ success: false, message: 'Failed to update status' });
+  }
+};
+
+export const escalateAssistanceRequest = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    const { reason = 'No provider responded within timeout window. Escalated to 24/7 Helpline Desk.', actor = 'SYSTEM' } = req.body;
+    const isMongoConnected = mongoose.connection.readyState === 1;
+
+    if (!isMongoConnected) {
+      const escalated = mockStore.escalateAssistanceRequest(id, reason, actor as any);
+      if (!escalated) {
+        res.status(404).json({ success: false, message: 'Request not found' });
+        return;
+      }
+      io.emit(`assistance:updated:${id}`, escalated);
+      io.emit('assistance:escalated', escalated);
+      res.status(200).json({ success: true, data: escalated });
+      return;
+    }
+
+    const request = await AssistanceRequest.findOne({ requestId: id });
+    if (!request) {
+      res.status(404).json({ success: false, message: 'Request not found' });
+      return;
+    }
+
+    const prevStatus = request.status;
+    request.status = RequestStatus.UNFULFILLED_NO_PROVIDER;
+    request.escalationDetails = {
+      escalatedToHelpline: true,
+      helplinePhone: '1800 2100 007',
+      escalatedAt: new Date(),
+      notes: reason
+    };
+    request.timeline.push({ status: 'UNFULFILLED_NO_PROVIDER', timestamp: new Date(), notes: `Escalated: ${reason}` });
+    if (!request.auditEvents) request.auditEvents = [];
+    request.auditEvents.push({
+      actor: actor as any,
+      action: 'ESCALATION_TO_HELPLINE',
+      previousStatus: prevStatus,
+      newStatus: 'UNFULFILLED_NO_PROVIDER',
+      timestamp: new Date(),
+      notes: reason
+    });
+    await request.save();
+
+    io.emit(`assistance:updated:${id}`, request);
+    io.emit('assistance:escalated', request);
+    res.status(200).json({ success: true, data: request });
+  } catch (error) {
+    console.error('Error escalating request:', error);
+    res.status(500).json({ success: false, message: 'Failed to escalate request' });
+  }
+};
+
+export const disputeAssistanceRequest = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    const { reason, disputedAmount = 0 } = req.body;
+    if (!reason) {
+      res.status(400).json({ success: false, message: 'Dispute reason is required' });
+      return;
+    }
+    const isMongoConnected = mongoose.connection.readyState === 1;
+
+    if (!isMongoConnected) {
+      const disputed = mockStore.disputeAssistanceRequest(id, reason, disputedAmount);
+      if (!disputed) {
+        res.status(404).json({ success: false, message: 'Request not found' });
+        return;
+      }
+      io.emit(`assistance:updated:${id}`, disputed);
+      res.status(200).json({ success: true, data: disputed });
+      return;
+    }
+
+    const request = await AssistanceRequest.findOne({ requestId: id });
+    if (!request) {
+      res.status(404).json({ success: false, message: 'Request not found' });
+      return;
+    }
+
+    request.disputeDetails = {
+      disputed: true,
+      reason,
+      disputedAmount,
+      status: 'REVIEW_PENDING',
+      reportedAt: new Date()
+    };
+    if (!request.auditEvents) request.auditEvents = [];
+    request.auditEvents.push({
+      actor: 'RIDER',
+      action: 'DISPUTE_FILED',
+      timestamp: new Date(),
+      notes: `Dispute filed: ${reason} (Amount: ₹${disputedAmount})`
+    });
+    await request.save();
+
+    io.emit(`assistance:updated:${id}`, request);
+    res.status(200).json({ success: true, data: request });
+  } catch (error) {
+    console.error('Error filing dispute:', error);
+    res.status(500).json({ success: false, message: 'Failed to file dispute' });
   }
 };
 
@@ -399,6 +514,7 @@ export const getNearbyProviders = async (req: Request, res: Response): Promise<v
 
     const isMongoConnected = mongoose.connection.readyState === 1;
     const categoryFilter = (req.query.category as string) || (req.query.helpCategory as string) || 'ALL';
+    const brandFilter = (req.query.brand as string) || '';
 
     if (!isMongoConnected) {
       let mockProviders = mockStore.getProviders();
@@ -412,6 +528,18 @@ export const getNearbyProviders = async (req: Request, res: Response): Promise<v
           return true;
         });
       }
+
+      if (brandFilter) {
+        const bLower = brandFilter.toLowerCase();
+        mockProviders.sort((a, b) => {
+          const aMatches = a.name.toLowerCase().includes(bLower) || a.businessName.toLowerCase().includes(bLower);
+          const bMatches = b.name.toLowerCase().includes(bLower) || b.businessName.toLowerCase().includes(bLower);
+          if (aMatches && !bMatches) return -1;
+          if (!aMatches && bMatches) return 1;
+          return 0;
+        });
+      }
+
       res.status(200).json({ success: true, data: mockProviders });
       return;
     }

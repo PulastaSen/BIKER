@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { getRequests, getHelperProfileByUserId, offerAssistance } from '../../utils/appStorage';
+import { getRequests, getHelperProfileByUserId, updateRequestStatus } from '../../utils/appStorage';
 import type { HelpRequest } from '../../types/app';
 import { Button } from '../../components/Button';
 import { StatusBadge } from '../../components/StatusBadge';
@@ -13,26 +13,42 @@ export function AvailableRequestsPage() {
   const navigate = useNavigate();
   const [requests, setRequests] = useState<HelpRequest[]>([]);
   const [searchArea, setSearchArea] = useState('');
-  const [offeredIds, setOfferedIds] = useState<string[]>([]);
 
   const loadRequests = () => {
     const all = getRequests();
-    setRequests(all.filter((r) => r.status === 'OPEN' || r.status === 'HELPER_OFFERED'));
+    setRequests(
+      all.filter((r) =>
+        ['SUBMITTED', 'OPEN', 'SEARCHING', 'HELPER_OFFERED'].includes(r.status)
+      )
+    );
   };
 
   useEffect(() => {
     loadRequests();
   }, []);
 
-  const handleOfferAssistance = (req: HelpRequest) => {
+  const handleAcceptAndDispatch = (req: HelpRequest) => {
     if (!user) return;
     const profile = getHelperProfileByUserId(user.id);
-    if (profile) {
-      offerAssistance(req.id, profile);
-      setOfferedIds([...offeredIds, req.id]);
-      loadRequests();
-      alert(`Assistance offer submitted for Request #${req.id}!`);
-    }
+    const assignedInfo = {
+      name: profile?.name || user.name || 'Certified Responder',
+      phone: profile?.phone || user.phone || '+91 94340 12345',
+      businessName: profile?.businessName || 'MotoAssist Verified Workshop',
+      vehiclePlate: 'WB 74 RSA RESCUE',
+      eta: '15-20 mins',
+      badge: 'Verified Helper'
+    };
+
+    updateRequestStatus(req.id, 'ACCEPTED', {
+      assignedHelperId: profile?.id || user.id,
+      assignedHelperName: assignedInfo.name,
+      assignedHelperPhone: assignedInfo.phone,
+      assignedProviderDetails: assignedInfo
+    });
+
+    loadRequests();
+    alert(`Request #${req.id} accepted! You are now dispatched.`);
+    navigate(`/requests/${req.id}`);
   };
 
   const filtered = requests.filter((r) => {
@@ -79,8 +95,15 @@ export function AvailableRequestsPage() {
 
               <div className="request-item-card__body">
                 <div>
-                  <strong>{req.riderName} • {req.bike.brand} {req.bike.model}</strong>
-                  <p className="issue-title-badge">{req.issue.replaceAll('_', ' ')}</p>
+                  <strong>
+                    {req.riderName} • {(req.bikeDetails?.brand || req.bike?.brand || 'Royal Enfield')} {(req.bikeDetails?.model || req.bike?.model || '')}
+                  </strong>
+                  {(req.bikeDetails?.registrationNumber || req.bike?.registrationNumber) && (
+                    <span className="font-mono text-[11px] bg-white/10 px-2 py-0.5 rounded ml-2 font-bold text-yellow-300">
+                      {req.bikeDetails?.registrationNumber || req.bike?.registrationNumber}
+                    </span>
+                  )}
+                  <p className="issue-title-badge">{req.issue?.replaceAll('_', ' ')}</p>
                   <p className="description-preview">{req.description}</p>
                 </div>
                 {req.approximateLocation && (
@@ -92,10 +115,10 @@ export function AvailableRequestsPage() {
 
               <div className="request-item-card__footer">
                 <Button variant="secondary" onClick={() => navigate(`/requests/${req.id}`)}>
-                  View Full Details
+                  View Details
                 </Button>
-                <Button onClick={() => handleOfferAssistance(req)}>
-                  <ShieldCheck size={18} /> Offer Assistance
+                <Button onClick={() => handleAcceptAndDispatch(req)}>
+                  <ShieldCheck size={18} /> Accept & Dispatch
                 </Button>
               </div>
             </div>

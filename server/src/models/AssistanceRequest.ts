@@ -111,7 +111,24 @@ export interface IAssistanceRequest extends Document {
   idempotencyKey?: string;
   riderId: mongoose.Types.ObjectId;
   bikeId?: mongoose.Types.ObjectId;
+  bikeDetails?: {
+    brand?: string;
+    model?: string;
+    registrationNumber?: string;
+    vin?: string;
+    fuelType?: string;
+    year?: number;
+  };
+  coverageType?: string;
   providerId?: mongoose.Types.ObjectId;
+  assignedProviderDetails?: {
+    name?: string;
+    phone?: string;
+    businessName?: string;
+    vehiclePlate?: string;
+    rating?: number;
+    verified?: boolean;
+  };
   problemCategory: string;
   helpCategory?: HelpCategoryType;
   subcategory?: string;
@@ -140,6 +157,19 @@ export interface IAssistanceRequest extends Document {
   timeline: IRequestTimelineEvent[];
   auditEvents: IAuditEvent[];
   cancellationReason?: string;
+  escalationDetails?: {
+    escalatedToHelpline?: boolean;
+    helplinePhone?: string;
+    escalatedAt?: Date;
+    notes?: string;
+  };
+  disputeDetails?: {
+    disputed?: boolean;
+    reason?: string;
+    disputedAmount?: number;
+    status?: 'OPEN' | 'INVESTIGATING' | 'RESOLVED' | 'REVIEW_PENDING';
+    reportedAt?: Date;
+  };
   locationProvenance?: LocationProvenance;
   paymentAmount?: number;
   paymentStatus?: 'PENDING' | 'PAID';
@@ -154,7 +184,24 @@ const AssistanceRequestSchema: Schema = new Schema({
   idempotencyKey: { type: String, sparse: true, index: true },
   riderId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
   bikeId: { type: Schema.Types.ObjectId, ref: 'Bike', index: true },
+  bikeDetails: {
+    brand: { type: String },
+    model: { type: String },
+    registrationNumber: { type: String },
+    vin: { type: String },
+    fuelType: { type: String },
+    year: { type: Number }
+  },
+  coverageType: { type: String, default: 'COMPLIMENTARY_YEAR_1' },
   providerId: { type: Schema.Types.ObjectId, ref: 'User', index: true },
+  assignedProviderDetails: {
+    name: { type: String },
+    phone: { type: String },
+    businessName: { type: String },
+    vehiclePlate: { type: String },
+    rating: { type: Number },
+    verified: { type: Boolean }
+  },
   problemCategory: { type: String, required: true },
   helpCategory: { 
     type: String, 
@@ -200,6 +247,19 @@ const AssistanceRequestSchema: Schema = new Schema({
     index: true
   },
   cancellationReason: { type: String },
+  escalationDetails: {
+    escalatedToHelpline: { type: Boolean, default: false },
+    helplinePhone: { type: String, default: '1800 2100 007' },
+    escalatedAt: { type: Date },
+    notes: { type: String }
+  },
+  disputeDetails: {
+    disputed: { type: Boolean, default: false },
+    reason: { type: String },
+    disputedAmount: { type: Number },
+    status: { type: String, enum: ['OPEN', 'INVESTIGATING', 'RESOLVED', 'REVIEW_PENDING'], default: 'OPEN' },
+    reportedAt: { type: Date }
+  },
   estimatedPrice: {
     calloutFee: { type: Number, default: 150 },
     travelFee: { type: Number, default: 100 },

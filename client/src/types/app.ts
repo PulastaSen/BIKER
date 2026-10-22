@@ -39,16 +39,19 @@ export interface Bike {
 
 export type RequestStatus =
   | 'OPEN'
+  | 'SUBMITTED'
   | 'REQUESTED'
   | 'ASSIGNED'
   | 'HELPER_OFFERED'
+  | 'SEARCHING'
   | 'ACCEPTED'
   | 'EN_ROUTE'
   | 'ARRIVED'
   | 'IN_PROGRESS'
   | 'RESOLVED'
   | 'COMPLETED'
-  | 'CANCELLED';
+  | 'CANCELLED'
+  | 'UNFULFILLED_NO_PROVIDER';
 
 export interface EstimatedPrice {
   calloutFee: number;
@@ -169,6 +172,38 @@ export interface HelpRequest {
   };
   receiptId?: string;
   timeline?: RequestTimelineEvent[];
+  coverageType?: 'COMPLIMENTARY_YEAR_1' | 'EXTENDED_WARRANTY' | 'PAY_PER_INCIDENT' | 'OEM_RSA';
+  assignedProviderDetails?: {
+    name?: string;
+    phone?: string;
+    businessName?: string;
+    vehiclePlate?: string;
+    rating?: number;
+    verified?: boolean;
+  };
+  escalationDetails?: {
+    escalatedToHelpline?: boolean;
+    helplinePhone?: string;
+    escalatedAt?: string;
+    notes?: string;
+  };
+  disputeDetails?: {
+    disputed?: boolean;
+    reason?: string;
+    disputedAmount?: number;
+    status?: 'OPEN' | 'INVESTIGATING' | 'RESOLVED' | 'REVIEW_PENDING';
+    reportedAt?: string;
+  };
+  cancellationReason?: string;
+  bikeDetails?: {
+    brand?: string;
+    model?: string;
+    registrationNumber?: string;
+    vin?: string;
+    fuelType?: string;
+    year?: number;
+  };
+  locationProvenance?: 'GPS_FRESH' | 'GPS_STALE' | 'MANUAL_LANDMARK' | 'UNAVAILABLE';
   assignedHelperId?: string;
   assignedHelperName?: string;
   assignedHelperPhone?: string;

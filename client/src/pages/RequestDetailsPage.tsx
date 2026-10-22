@@ -16,7 +16,7 @@ import {
   Info
 } from 'lucide-react';
 import { getSocket } from '../services/socket';
-import { getRequestById, getHelperProfileById, updateRequestStatus } from '../utils/appStorage';
+import { getRequestById, getHelperProfileById, updateRequestStatus, disputeRequest as disputeLocalRequest } from '../utils/appStorage';
 import { API_BASE_URL, hasBackendApi } from '../config/api';
 import { fetchServiceReceipt } from '../services/ecosystemApi';
 import type { ServiceReceipt } from '../types/app';
@@ -40,8 +40,31 @@ interface AssistanceDetail {
   requestId: string;
   status: string;
   problemCategory: string;
+  description?: string;
   location: string | { address?: string; coordinates?: number[]; accuracyMeters?: number };
   locationProvenance?: 'GPS_FRESH' | 'GPS_STALE' | 'MANUAL_LANDMARK' | 'UNAVAILABLE';
+  bikeDetails?: {
+    brand?: string;
+    model?: string;
+    registrationNumber?: string;
+    vin?: string;
+    fuelType?: string;
+    year?: number;
+  };
+  coverageType?: string;
+  escalationDetails?: {
+    escalatedToHelpline?: boolean;
+    helplinePhone?: string;
+    escalatedAt?: string;
+    notes?: string;
+  };
+  disputeDetails?: {
+    disputed?: boolean;
+    reason?: string;
+    disputedAmount?: number;
+    status?: string;
+    reportedAt?: string;
+  };
   provider?: {
     name?: string;
     phone?: string;
@@ -77,13 +100,19 @@ export function RequestDetailsPage() {
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [receiptData, setReceiptData] = useState<ServiceReceipt | null>(null);
+
+  // Dispute & Overcharge Reporting State
+  const [showDisputeModal, setShowDisputeModal] = useState(false);
+  const [disputeReason, setDisputeReason] = useState('Excess charges above ₹45/km towing tariff');
+  const [disputeAmount, setDisputeAmount] = useState('');
+  const [disputeNotes, setDisputeNotes] = useState('');
+  const [disputeSubmitting, setDisputeSubmitting] = useState(false);
   
   // Section 42: Client Satisfaction
   const [safeNow, setSafeNow] = useState<'YES' | 'NO' | null>(null);
   const [solvedProblem, setSolvedProblem] = useState<'YES' | 'PARTLY' | 'NO' | null>(null);
   const [improvements, setImprovements] = useState<string[]>([]);
   const [satisfactionSubmitted, setSatisfactionSubmitted] = useState(false);
-  const [issueText, setIssueText] = useState('');
 
   // Section 13 & 14: Realtime Helper Telemetry
   const [liveHelperPos, setLiveHelperPos] = useState<{
@@ -118,33 +147,63 @@ export function RequestDetailsPage() {
     if (localReq) {
       const isAcceptedLocally = ['ACCEPTED', 'HELPER_OFFERED', 'IN_PROGRESS', 'RESOLVED'].includes(localReq.status);
       const helper = isAcceptedLocally && localReq.assignedHelperId ? getHelperProfileById(localReq.assignedHelperId) : undefined;
+      const assignedProv = (localReq as any).assignedProviderDetails;
+      
       const mappedStatus = localReq.status === 'RESOLVED' 
         ? 'COMPLETED' 
         : localReq.status === 'IN_PROGRESS' 
         ? 'IN_PROGRESS' 
         : (localReq.status === 'HELPER_OFFERED' || localReq.status === 'ACCEPTED')
         ? 'ACCEPTED' 
+        : localReq.status === 'CANCELLED'
+        ? 'CANCELLED'
+        : localReq.status === 'UNFULFILLED_NO_PROVIDER'
+        ? 'UNFULFILLED_NO_PROVIDER'
         : 'SUBMITTED';
+
+      const providerObj = assignedProv ? {
+        name: assignedProv.businessName || assignedProv.name,
+        phone: assignedProv.phone,
+        vehiclePlate: assignedProv.vehiclePlate || 'WB 74 RSA RESCUE',
+        rating: 4.9,
+        reviewsCount: 38,
+        verified: true,
+        verificationStatus: 'VERIFIED',
+        distance: 'En route in corridor',
+        averageResponseMinutes: 15
+      } : helper ? {
+        name: helper.businessName || helper.name,
+        phone: helper.phone || '+91 94340 12345',
+        vehiclePlate: 'WB 74 Verified Service',
+        rating: helper.rating || 4.8,
+        reviewsCount: helper.completedAssists || 28,
+        verified: helper.verificationStatus === 'VERIFIED',
+        verificationStatus: helper.verificationStatus,
+        distance: 'In service sector',
+        averageResponseMinutes: helper.averageResponseMinutes || 15
+      } : undefined;
 
       setRequest({
         requestId: localReq.id,
         status: mappedStatus,
         problemCategory: localReq.issue ? localReq.issue.replaceAll('_', ' ') : 'Roadside',
+        description: localReq.description,
         location: localReq.approximateLocation || 'Location not specified by rider',
-        locationProvenance: localReq.latitude ? 'GPS_FRESH' : 'MANUAL_LANDMARK',
-        provider: helper ? {
-          name: helper.businessName || helper.name,
-          phone: helper.phone || '+91 94340 12345',
-          vehiclePlate: 'WB 74 Verified Service',
-          rating: helper.rating || 4.8,
-          reviewsCount: helper.completedAssists || 28,
-          verified: helper.verificationStatus === 'VERIFIED',
-          verificationStatus: helper.verificationStatus,
-          distance: 'In service sector',
-          averageResponseMinutes: helper.averageResponseMinutes || 15
-        } : undefined,
-        eta: helper ? '15-20 minutes' : undefined,
-        estimatedPrice: {
+        locationProvenance: (localReq as any).locationProvenance || (localReq.latitude ? 'GPS_FRESH' : 'MANUAL_LANDMARK'),
+        bikeDetails: (localReq as any).bikeDetails || (localReq.bike ? {
+          brand: localReq.bike.brand,
+          model: localReq.bike.model,
+          registrationNumber: localReq.bike.registrationNumber,
+          vin: (localReq.bike as any).vin,
+          fuelType: localReq.bike.fuelType,
+          year: localReq.bike.year
+        } : undefined),
+        coverageType: (localReq as any).coverageType || 'COMPLIMENTARY_YEAR_1',
+        escalationDetails: (localReq as any).escalationDetails,
+        disputeDetails: (localReq as any).disputeDetails,
+        provider: providerObj,
+        eta: assignedProv?.eta || (helper ? '15-20 minutes' : undefined),
+        estimatedPrice: localReq.estimatedPrice || {
           calloutFee: 150,
           travelFee: 100,
           serviceFee: 100,
@@ -367,6 +426,115 @@ export function RequestDetailsPage() {
           )}
         </div>
 
+        {/* MOTORCYCLE IDENTIFICATION & SCOPE CARD */}
+        <div className="p-4 rounded-3xl bg-[#111622] border border-white/10 space-y-2 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FFF174]" />
+              <span className="font-bold text-white uppercase text-[11px] tracking-wider">
+                Assisted Motorcycle & Policy Record
+              </span>
+            </div>
+            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              {request.coverageType === 'COMPLIMENTARY_YEAR_1' ? 'Complimentary Year 1 RSA' : 'Multi-Brand Safe Assist'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+            <div>
+              <span className="text-[10px] text-gray-400 block uppercase">Brand & Model</span>
+              <strong className="text-white text-xs block">
+                {request.bikeDetails?.brand || 'Royal Enfield'} {request.bikeDetails?.model || 'Himalayan 450'}
+              </strong>
+            </div>
+            <div>
+              <span className="text-[10px] text-gray-400 block uppercase">Registration (VRN)</span>
+              <span className="font-mono bg-white/10 px-2 py-0.5 rounded text-white text-xs font-bold inline-block mt-0.5">
+                {request.bikeDetails?.registrationNumber || 'WB 74 H 4500'}
+              </span>
+            </div>
+            <div>
+              <span className="text-[10px] text-gray-400 block uppercase">VIN / Chassis</span>
+              <span className="font-mono text-gray-300 text-xs block mt-0.5">
+                {request.bikeDetails?.vin || 'ME3H450XXXXXX'}
+              </span>
+            </div>
+            <div>
+              <span className="text-[10px] text-gray-400 block uppercase">Coverage Standard</span>
+              <span className="text-gray-300 text-[11px] block mt-0.5">
+                On-site Labor & 50km Towing
+              </span>
+            </div>
+          </div>
+
+          {request.description && (
+            <div className="pt-2 border-t border-white/5 text-[11px] text-gray-300">
+              <strong className="text-gray-400">Rider Reported Symptoms: </strong>
+              <span>{request.description}</span>
+            </div>
+          )}
+        </div>
+
+        {/* ESCALATION PROTOCOL CARD (If unfulfilled or escalated) */}
+        {(request.status === 'UNFULFILLED_NO_PROVIDER' || request.escalationDetails?.escalatedToHelpline) && (
+          <div className="p-4 rounded-3xl bg-red-950/70 border-2 border-red-500 text-white space-y-3 animate-in fade-in">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-red-400 font-black text-sm">
+                <AlertCircle size={18} />
+                <span>ESCALATION TO CENTRAL ASSISTANCE HELPLINE</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-red-600 text-white font-mono font-bold">
+                Toll-Free 24/7
+              </span>
+            </div>
+
+            <p className="text-xs text-gray-200 leading-relaxed">
+              No local provider in this corridor was able to accept your dispatch within the SLA window.
+              Per manufacturer emergency protocol, route directly to the 24/7 central desk:
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+              <a
+                href="tel:18002100007"
+                className="py-3 px-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase flex items-center justify-center gap-2 shadow-lg"
+              >
+                <PhoneCall size={16} />
+                <span>Call 1800 2100 007</span>
+              </a>
+
+              <a
+                href="tel:112"
+                className="py-3 px-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase flex items-center justify-center gap-2"
+              >
+                <PhoneCall size={15} />
+                <span>Call 112 Police</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={() => setShowDisputeModal(true)}
+                className="py-3 px-3 rounded-2xl bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 font-bold text-xs flex items-center justify-center gap-2 border border-yellow-500/40"
+              >
+                <FileText size={15} />
+                <span>Report Issue / Dispute</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* DISPUTE STATUS BANNER */}
+        {request.disputeDetails?.disputed && (
+          <div className="p-3.5 rounded-2xl bg-amber-950/50 border border-amber-500/50 text-amber-200 text-xs flex items-center justify-between">
+            <div>
+              <strong>Discrepancy / Overcharge Dispute Filed:</strong> {request.disputeDetails.reason}
+              <div className="text-[10px] text-gray-400 mt-0.5">Status: Pending Operations Review</div>
+            </div>
+            <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-bold">
+              Reviewing
+            </span>
+          </div>
+        )}
+
         <div className="grid lg:grid-cols-3 gap-6">
           
           {/* Section 2: Real-time Status Flow Tracker */}
@@ -515,24 +683,34 @@ export function RequestDetailsPage() {
             {/* Provider Actions & WhatsApp Emergency Sharing (Section 18 & 19) */}
             <div className="p-5 rounded-3xl bg-[#111622] border border-white/10 space-y-3">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <a 
-                  href={`tel:${request.provider?.phone || '+919832012345'}`}
-                  className="py-3 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
-                >
-                  <PhoneCall size={15} /> Call Helper
-                </a>
+                {request.provider?.phone ? (
+                  <a 
+                    href={`tel:${request.provider.phone.replace(/[^0-9+]/g, '')}`}
+                    className="py-3 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
+                  >
+                    <PhoneCall size={15} /> Call Helper
+                  </a>
+                ) : (
+                  <a 
+                    href="tel:18002100007"
+                    className="py-3 px-3 bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5"
+                    title="Awaiting responder assignment. Call central 24/7 helpline."
+                  >
+                    <PhoneCall size={15} /> 1800 2100 007
+                  </a>
+                )}
                 <button
                   type="button"
-                  onClick={() => alert(`Starting secure masked chat with ${request.provider?.name || 'Provider'}`)}
+                  onClick={() => alert(`Starting secure masked chat with ${request.provider?.name || 'Assigned Responder'}`)}
                   className="py-3 px-3 bg-white/10 hover:bg-white/15 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
                 >
                   <MessageSquare size={15} /> Chat
                 </button>
                 <a
                   href={`https://wa.me/?text=${encodeURIComponent(
-                    `MOTOASSIST EMERGENCY ALERT\n\nRider: Pulasta Sen\nSituation: ${request.problemCategory} Assistance\nLocation: https://maps.google.com/?q=${
+                    `MOTOASSIST EMERGENCY ALERT\n\nRider: Pulasta Sen\nSituation: ${request.problemCategory} Assistance (${request.bikeDetails?.brand || 'Royal Enfield'} ${request.bikeDetails?.registrationNumber || ''})\nLocation: https://maps.google.com/?q=${
                       typeof request.location === 'object' && request.location?.coordinates ? `${request.location.coordinates[1]},${request.location.coordinates[0]}` : '26.7271,88.4230'
-                    }\nTime: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\nMotoAssist status: Helper en route.`
+                    }\nTime: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}\nMotoAssist status: ${request.status}.`
                   )}`}
                   target="_blank"
                   rel="noreferrer"
@@ -854,42 +1032,100 @@ export function RequestDetailsPage() {
         </div>
       )}
 
-      {/* Report Issue Modal */}
-      {showIssueModal && (
+      {/* Report Issue & Dispute Modal */}
+      {(showIssueModal || showDisputeModal) && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#111622] border border-red-500/30 rounded-3xl max-w-md w-full p-6 space-y-4">
+          <div className="bg-[#111622] border border-amber-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h3 className="text-base font-black text-red-400 flex items-center gap-2">
-                <AlertCircle size={20} /> Report Pricing or Service Issue
+              <h3 className="text-base font-black text-amber-300 flex items-center gap-2">
+                <AlertCircle size={20} /> Report Pricing Dispute / Discrepancy
               </h3>
-              <button onClick={() => setShowIssueModal(false)} className="text-gray-400 hover:text-white">
+              <button 
+                onClick={() => {
+                  setShowIssueModal(false);
+                  setShowDisputeModal(false);
+                }} 
+                className="text-gray-400 hover:text-white"
+              >
                 <X size={20} />
               </button>
             </div>
             <p className="text-xs text-gray-300">
-              Did the provider overcharge or fail to deliver assistance? MotoAssist Operations will investigate.
+              Disputes are reviewed against official manufacturer RSA policy (Royal Enfield & Europ Assistance standard):
             </p>
-            <textarea
-              value={issueText}
-              onChange={e => setIssueText(e.target.value)}
-              placeholder="Describe the complaint in detail..."
-              rows={4}
-              className="w-full bg-[#182030] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500"
-            />
-            <div className="flex gap-2">
+            
+            <div className="space-y-1">
+              <label className="text-[11px] text-gray-400 block">Select Discrepancy Category:</label>
+              <select
+                value={disputeReason}
+                onChange={e => setDisputeReason(e.target.value)}
+                className="w-full bg-[#182030] border border-white/15 rounded-xl p-2.5 text-xs text-white"
+              >
+                <option value="Excess charges above ₹45/km towing tariff">Excess charges above ₹45/km towing tariff</option>
+                <option value="Demanded cash for on-site minor labor (Covered under RSA)">Demanded cash for on-site minor labor (Covered under RSA)</option>
+                <option value="Refused roadside assistance / Towing denied">Refused roadside assistance / Towing denied</option>
+                <option value="Excessive delay (arrival exceeded 90 mins)">Excessive delay (arrival exceeded 90 mins)</option>
+                <option value="Vehicle damage during loading or flatbed transport">Vehicle damage during loading or flatbed transport</option>
+                <option value="Other billing / operational dispute">Other billing / operational dispute</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[11px] text-gray-400 block">Disputed Overcharge Amount (₹, if applicable):</label>
+              <input
+                type="number"
+                value={disputeAmount}
+                onChange={e => setDisputeAmount(e.target.value)}
+                placeholder="e.g. 500"
+                className="w-full bg-[#182030] border border-white/15 rounded-xl p-2.5 text-xs text-white"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[11px] text-gray-400 block">Additional Explanation & Invoices:</label>
+              <textarea
+                value={disputeNotes}
+                onChange={e => setDisputeNotes(e.target.value)}
+                placeholder="Specify what happened, technician receipt number, or excess kms charged..."
+                rows={3}
+                className="w-full bg-[#182030] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500 resize-none"
+              />
+            </div>
+
+            <div className="flex gap-2 pt-1">
               <button
                 type="button"
-                onClick={() => {
-                  alert('Your report has been logged with MotoAssist trust & safety moderation.');
+                disabled={disputeSubmitting}
+                onClick={async () => {
+                  if (!id) return;
+                  setDisputeSubmitting(true);
+                  const fullReason = disputeNotes.trim() ? `${disputeReason} — ${disputeNotes.trim()}` : disputeReason;
+                  const numAmount = disputeAmount ? parseFloat(disputeAmount) : undefined;
+                  disputeLocalRequest(id, fullReason, numAmount);
+                  if (hasBackendApi()) {
+                    try {
+                      await fetch(`${API_BASE_URL}/api/assistance/${id}/dispute`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ reason: fullReason, disputedAmount: numAmount })
+                      });
+                    } catch {}
+                  }
+                  setDisputeSubmitting(false);
                   setShowIssueModal(false);
+                  setShowDisputeModal(false);
+                  fetchRequest();
                 }}
-                className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 font-bold text-xs text-white rounded-xl"
+                className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 font-bold text-xs text-black rounded-xl"
               >
-                Submit Complaint
+                {disputeSubmitting ? 'Logging Dispute...' : 'Submit Official Dispute'}
               </button>
               <button
                 type="button"
-                onClick={() => setShowIssueModal(false)}
+                onClick={() => {
+                  setShowIssueModal(false);
+                  setShowDisputeModal(false);
+                }}
                 className="py-2.5 px-4 bg-white/10 text-xs font-bold text-white rounded-xl"
               >
                 Cancel

@@ -501,6 +501,56 @@ export function updateRequestStatus(
   return updated;
 }
 
+export function cancelRequest(requestId: string, reason: string): HelpRequest | undefined {
+  const request = getRequestById(requestId);
+  if (!request) return undefined;
+  const updated: HelpRequest = {
+    ...request,
+    status: 'CANCELLED',
+    cancellationReason: reason,
+    description: request.description ? `${request.description} (Cancelled: ${reason})` : `Cancelled: ${reason}`,
+    updatedAt: new Date().toISOString(),
+  };
+  saveRequest(updated);
+  return updated;
+}
+
+export function escalateRequest(requestId: string, reason: string = 'No local provider available in sector. Escalated to 24/7 National Emergency Desk.'): HelpRequest | undefined {
+  const request = getRequestById(requestId);
+  if (!request) return undefined;
+  const updated: HelpRequest = {
+    ...request,
+    status: 'UNFULFILLED_NO_PROVIDER',
+    escalationDetails: {
+      escalatedToHelpline: true,
+      helplinePhone: '1800 2100 007',
+      escalatedAt: new Date().toISOString(),
+      notes: reason
+    },
+    updatedAt: new Date().toISOString(),
+  };
+  saveRequest(updated);
+  return updated;
+}
+
+export function disputeRequest(requestId: string, reason: string, disputedAmount: number = 0): HelpRequest | undefined {
+  const request = getRequestById(requestId);
+  if (!request) return undefined;
+  const updated: HelpRequest = {
+    ...request,
+    disputeDetails: {
+      disputed: true,
+      reason,
+      disputedAmount,
+      status: 'REVIEW_PENDING',
+      reportedAt: new Date().toISOString()
+    },
+    updatedAt: new Date().toISOString(),
+  };
+  saveRequest(updated);
+  return updated;
+}
+
 // Helper Profile Storage
 export function getHelperProfiles(): HelperProfile[] {
   initAppStorage();
@@ -581,3 +631,5 @@ export function saveSafetyReport(report: SafetyReport): void {
   const reports = getSafetyReports();
   setItem(KEYS.REPORTS, [report, ...reports]);
 }
+
+

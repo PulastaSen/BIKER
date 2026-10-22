@@ -322,6 +322,125 @@ describe('MotoAssist Backend Full API Test Suite', () => {
       expect(body.data.cancellationReason).toBe('Self resolved flat tyre with CO2 canister');
     });
 
+    it('POST /api/assistance creates request with motorcycle identification (VRN, VIN, Brand, Model)', async () => {
+      const res = await fetch(`${BASE_URL}/api/assistance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          riderId: 'rider-re-test',
+          riderName: 'Pulasta Sen',
+          riderPhone: '+91 98765 43210',
+          helpCategory: 'MECHANICAL',
+          subcategory: 'TYRE',
+          issue: 'PUNCTURE',
+          description: 'Rear puncture on Himalayan 450',
+          approximateLocation: 'Sevoke Road Crossing',
+          latitude: 26.8834,
+          longitude: 88.4712,
+          locationProvenance: 'GPS_FRESH',
+          bikeDetails: {
+            brand: 'Royal Enfield',
+            model: 'Himalayan 450',
+            registrationNumber: 'WB 74 H 4500',
+            vin: 'ME3H450XXXX123456',
+            fuelType: 'PETROL',
+            year: 2024
+          },
+          coverageType: 'COMPLIMENTARY_YEAR_1'
+        })
+      });
+
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.bikeDetails.brand).toBe('Royal Enfield');
+      expect(body.data.bikeDetails.registrationNumber).toBe('WB 74 H 4500');
+      expect(body.data.coverageType).toBe('COMPLIMENTARY_YEAR_1');
+    });
+
+    it('POST /api/assistance/:id/escalate escalates unfulfilled request to 24/7 Helpline', async () => {
+      // Create request to escalate
+      const createRes = await fetch(`${BASE_URL}/api/assistance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          riderId: 'rider-re-test-2',
+          riderName: 'Pulasta Sen',
+          riderPhone: '+91 98765 43210',
+          helpCategory: 'MECHANICAL',
+          issue: 'BATTERY_DEAD',
+          description: 'Dead battery in remote sector',
+          latitude: 26.8834,
+          longitude: 88.4712,
+          bikeDetails: {
+            brand: 'Royal Enfield',
+            model: 'Continental GT 650',
+            registrationNumber: 'WB 74 GT 6500'
+          }
+        })
+      });
+      const createData = await createRes.json();
+      const escId = createData.data.id || createData.data.requestId;
+
+      const escRes = await fetch(`${BASE_URL}/api/assistance/${escId}/escalate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: 'No local workshop responded in 15 mins' })
+      });
+
+      expect(escRes.status).toBe(200);
+      const escBody = await escRes.json();
+      expect(escBody.success).toBe(true);
+      expect(escBody.data.status).toBe('UNFULFILLED_NO_PROVIDER');
+      expect(escBody.data.escalationDetails.escalatedToHelpline).toBe(true);
+      expect(escBody.data.escalationDetails.helplinePhone).toBe('1800 2100 007');
+    });
+
+    it('POST /api/assistance/:id/dispute records customer tariff / billing discrepancy', async () => {
+      // Create request to dispute
+      const createRes = await fetch(`${BASE_URL}/api/assistance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          riderId: 'rider-re-test-3',
+          riderName: 'Pulasta Sen',
+          riderPhone: '+91 98765 43210',
+          helpCategory: 'TOWING',
+          issue: 'TOWING',
+          description: 'Flatbed towing dispute',
+          latitude: 26.8834,
+          longitude: 88.4712
+        })
+      });
+      const createData = await createRes.json();
+      const dispId = createData.data.id || createData.data.requestId;
+
+      const dispRes = await fetch(`${BASE_URL}/api/assistance/${dispId}/dispute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reason: 'Excess charges above ₹45/km towing tariff',
+          disputedAmount: 450
+        })
+      });
+
+      expect(dispRes.status).toBe(200);
+      const dispBody = await dispRes.json();
+      expect(dispBody.success).toBe(true);
+      expect(dispBody.data.disputeDetails.disputed).toBe(true);
+      expect(dispBody.data.disputeDetails.disputedAmount).toBe(450);
+      expect(dispBody.data.disputeDetails.status).toBe('REVIEW_PENDING');
+    });
+
+    it('GET /api/assistance/providers/nearby?brand=Royal+Enfield prioritizes OEM authorized workshops', async () => {
+      const res = await fetch(`${BASE_URL}/api/assistance/providers/nearby?lat=26.7271&lng=88.3953&brand=Royal+Enfield`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.length).toBeGreaterThanOrEqual(1);
+      expect(body.data[0].name).toContain('Royal Enfield');
+    });
+
     it('POST /api/sos triggers emergency incident', async () => {
       const res = await fetch(`${BASE_URL}/api/sos`, {
         method: 'POST',

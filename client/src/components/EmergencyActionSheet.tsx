@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   PhoneCall,
@@ -22,7 +23,11 @@ import {
   CheckCircle2,
   ChevronRight,
   Shield,
-  MapPin
+  MapPin,
+  Info,
+  XCircle,
+  AlertOctagon,
+  PhoneForwarded
 } from 'lucide-react';
 import {
   MedicalEmergencyGraphic,
@@ -33,7 +38,14 @@ import {
   DualEmergencyGraphic
 } from './graphics';
 import { buildWhatsAppBreakdownAlertUrl } from '../utils/whatsappShare';
-import { saveRequest, INITIAL_BIKES } from '../utils/appStorage';
+import { 
+  saveRequest, 
+  INITIAL_BIKES, 
+  getBikes, 
+  cancelRequest, 
+  escalateRequest, 
+  updateRequestStatus as updateLocalRequestStatus 
+} from '../utils/appStorage';
 import { API_BASE_URL, hasBackendApi } from '../config/api';
 
 export type EmergencyCategory = 'MEDICAL' | 'BIKE_PROBLEM' | 'UNSAFE' | 'TOWING' | 'NOT_SURE' | 'BOTH';
@@ -253,8 +265,28 @@ export function EmergencyActionSheet({
   const sheetRef = useRef<HTMLDivElement>(null);
   const primaryActionRef = useRef<HTMLAnchorElement | null>(null);
 
+  const navigate = useNavigate();
+
   // Category B state: problem filter
   const [bikeIssueFilter, setBikeIssueFilter] = useState<BikeProblemType>('ALL');
+
+  // Motorcycle Identification State
+  const [bikesList] = useState<any[]>(() => {
+    try {
+      const b = getBikes();
+      return b && b.length > 0 ? b : INITIAL_BIKES;
+    } catch {
+      return INITIAL_BIKES;
+    }
+  });
+  const [selectedBikeId, setSelectedBikeId] = useState<string>(bikesList[0]?.id || 'bike-re-450');
+  const [isCustomBike, setIsCustomBike] = useState(false);
+  const [customBrand, setCustomBrand] = useState('Royal Enfield');
+  const [customModel, setCustomModel] = useState('Himalayan 450');
+  const [customRegNo, setCustomRegNo] = useState('WB 74 H 4500');
+  const [customVin, setCustomVin] = useState('');
+  const [showBikeSelector, setShowBikeSelector] = useState(false);
+  const [troubleNotes, setTroubleNotes] = useState('');
 
   // Category D state: towing options
   const [towingBikeModel, setTowingBikeModel] = useState('Royal Enfield Himalayan 450');
@@ -266,12 +298,41 @@ export function EmergencyActionSheet({
   // Copy success feedback
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // Dispatch state
+  // Dispatch & State Machine state: 'IDLE' | 'SEARCHING' | 'ACCEPTED' | 'UNFULFILLED' | 'CANCELLED'
   const [dispatchPending, setDispatchPending] = useState(false);
-  const [dispatchConfirmed, setDispatchConfirmed] = useState(false);
+  const [dispatchStatus, setDispatchStatus] = useState<'IDLE' | 'SEARCHING' | 'ACCEPTED' | 'UNFULFILLED' | 'CANCELLED'>('IDLE');
   const [createdRequestId, setCreatedRequestId] = useState<string | null>(null);
-  const [serverDispatched, setServerDispatched] = useState(false);
-  const [dispatchedProvider, setDispatchedProvider] = useState<ProviderListing | null>(null);
+  const [assignedProviderInfo, setAssignedProviderInfo] = useState<{
+    name: string;
+    phone: string;
+    businessName: string;
+    vehiclePlate: string;
+    eta: string;
+    badge: string;
+  } | null>(null);
+
+  // Modals for Terms & Cancellation
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState('Bike restarted / Problem self-resolved');
+
+  // Helper to resolve currently selected motorcycle
+  const getActiveBike = () => {
+    if (isCustomBike) {
+      return {
+        id: `custom-bike-${Date.now()}`,
+        userId: 'user-rider-1',
+        brand: customBrand.trim() || 'Royal Enfield',
+        model: customModel.trim() || 'Himalayan 450',
+        registrationNumber: customRegNo.trim().toUpperCase() || 'WB 74 H 4500',
+        vin: customVin.trim().toUpperCase() || undefined,
+        year: 2024,
+        fuelType: 'PETROL' as const
+      };
+    }
+    const found = bikesList.find((b) => b.id === selectedBikeId);
+    return found || bikesList[0] || INITIAL_BIKES[0];
+  };
 
   // Lock background scroll when open
   useEffect(() => {
@@ -303,8 +364,8 @@ export function EmergencyActionSheet({
 
   // Reset category-specific internal state when category changes
   useEffect(() => {
-    setDispatchConfirmed(false);
-    setDispatchedProvider(null);
+    setDispatchStatus('IDLE');
+    setAssignedProviderInfo(null);
     setTriageStep(1);
   }, [category]);
 
@@ -336,6 +397,7 @@ export function EmergencyActionSheet({
   };
 
   const getWhatsAppAlertUrl = () => {
+    const activeBike = getActiveBike();
     return buildWhatsAppBreakdownAlertUrl({
       latitude: coords?.lat,
       longitude: coords?.lng,
@@ -345,17 +407,19 @@ export function EmergencyActionSheet({
         category === 'MEDICAL'
           ? 'Medical Emergency'
           : category === 'TOWING'
-          ? 'Motorcycle Towing'
+          ? `Motorcycle Towing (${activeBike.brand} ${activeBike.model} - ${activeBike.registrationNumber})`
           : category === 'UNSAFE'
           ? 'Personal Safety Emergency'
-          : 'Motorcycle Breakdown',
+          : `Motorcycle Breakdown (${activeBike.brand} ${activeBike.model} - ${activeBike.registrationNumber})`,
       status: 'Assistance requested'
     });
   };
 
   const handleDispatchAssistance = async (provider: ProviderListing) => {
     setDispatchPending(true);
-    const requestId = `RH-${Date.now().toString().slice(-4)}`;
+    setDispatchStatus('SEARCHING');
+    const requestId = `REQ-${Date.now().toString().slice(-4)}`;
+    const activeBike = getActiveBike();
 
     const helpCatMap: Record<EmergencyCategory, 'MEDICAL' | 'MECHANICAL' | 'SAFETY' | 'TOWING' | 'BOTH'> = {
       MEDICAL: 'MEDICAL',
@@ -366,50 +430,132 @@ export function EmergencyActionSheet({
       BOTH: 'BOTH'
     };
 
+    const problemDesc = troubleNotes.trim() 
+      ? troubleNotes.trim()
+      : `Assistance request for ${activeBike.brand} ${activeBike.model} (${activeBike.registrationNumber}) at ${address || 'Corridor'}`;
+
     const newRequest = {
       id: requestId,
       requestId,
       riderId: 'user-rider-1',
-      riderName: 'MotoAssist Rider',
+      riderName: 'Pulasta Sen',
       riderPhone: '+91 98765 43210',
-      bike: INITIAL_BIKES[0],
+      bike: activeBike,
+      bikeDetails: {
+        brand: activeBike.brand,
+        model: activeBike.model,
+        registrationNumber: activeBike.registrationNumber,
+        vin: (activeBike as any).vin,
+        year: activeBike.year,
+        fuelType: activeBike.fuelType
+      },
+      coverageType: 'COMPLIMENTARY_YEAR_1' as const,
       issue: `${provider.type} - ${provider.name}`,
       helpCategory: helpCatMap[category || 'BIKE_PROBLEM'],
-      subcategory: provider.type,
+      subcategory: bikeIssueFilter !== 'ALL' ? bikeIssueFilter : provider.type,
       urgency: (category === 'MEDICAL' || category === 'UNSAFE' ? 'CRITICAL' : 'HIGH') as 'CRITICAL' | 'HIGH',
-      description: `Emergency request for ${provider.name} at ${address || 'Corridor'}`,
+      description: problemDesc,
       approximateLocation: address || (coords ? `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}` : 'Highway Sector'),
       locationShared: !!coords,
       latitude: coords?.lat,
       longitude: coords?.lng,
       accuracyMeters: accuracy || 15,
-      status: 'REQUESTED' as const,
+      locationProvenance: (coords ? (accuracy && accuracy < 50 ? 'GPS_FRESH' : 'GPS_STALE') : address ? 'MANUAL_LANDMARK' : 'UNAVAILABLE') as any,
+      status: 'SUBMITTED' as const,
+      estimatedPrice: {
+        calloutFee: 150,
+        travelFee: 100,
+        serviceFee: category === 'TOWING' ? 500 : 100,
+        estimatedTotal: category === 'TOWING' ? 750 : 350,
+        isAvailable: true,
+        disclaimer: 'Labor & towing up to 50km covered under RSA scope. Consumables, fuel, and spare parts payable at actuals.'
+      },
+      towingDetails: category === 'TOWING' || category === 'BOTH' ? {
+        towingType: 'FLATBED' as const,
+        pickupAddress: address || (coords ? `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}` : 'Highway corridor')
+      } : undefined,
       createdAt: new Date().toISOString()
     };
 
-    saveRequest(newRequest);
+    saveRequest(newRequest as any);
 
     if (hasBackendApi()) {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/assistance`, {
+        await fetch(`${API_BASE_URL}/api/assistance`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newRequest)
         });
-        if (res.ok) {
-          setServerDispatched(true);
-        }
-      } catch {
-        setServerDispatched(false);
-      }
-    } else {
-      setServerDispatched(false);
+      } catch {}
     }
 
     setCreatedRequestId(requestId);
-    setDispatchedProvider(provider);
     setDispatchPending(false);
-    setDispatchConfirmed(true);
+
+    // Realistic provider matching window (2.5 seconds):
+    setTimeout(() => {
+      const assigned = {
+        name: provider.name.includes('Royal Enfield') ? 'Sunil Sharma' : provider.name.includes('KTM') ? 'Tenzing Norbu' : 'Raju Das',
+        phone: provider.phone,
+        businessName: provider.name,
+        vehiclePlate: 'WB 74 RSA RESCUE',
+        eta: provider.eta || '15-20 mins',
+        badge: provider.badge
+      };
+      setAssignedProviderInfo(assigned);
+      setDispatchStatus('ACCEPTED');
+
+      // Update in storage
+      updateLocalRequestStatus(requestId, 'ACCEPTED', {
+        assignedHelperName: `${assigned.name} (${assigned.businessName})`,
+        assignedHelperPhone: assigned.phone,
+        assignedProviderDetails: assigned
+      } as any);
+
+      if (hasBackendApi()) {
+        fetch(`${API_BASE_URL}/api/assistance/${requestId}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: 'ACCEPTED',
+            providerId: provider.id,
+            providerDetails: assigned,
+            notes: `Accepted by ${assigned.name}`
+          })
+        }).catch(() => {});
+      }
+    }, 2500);
+  };
+
+  const handleEscalateNoProvider = async () => {
+    if (!createdRequestId) return;
+    setDispatchStatus('UNFULFILLED');
+    escalateRequest(createdRequestId, 'Rider escalated to 24/7 Helpline desk due to local provider unavailability.');
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/assistance/${createdRequestId}/escalate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason: 'Escalated to 24/7 Helpline' })
+        });
+      } catch {}
+    }
+  };
+
+  const handleConfirmCancel = async () => {
+    if (!createdRequestId) return;
+    setDispatchStatus('CANCELLED');
+    cancelRequest(createdRequestId, cancelReason);
+    if (hasBackendApi()) {
+      try {
+        await fetch(`${API_BASE_URL}/api/assistance/${createdRequestId}/cancel`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason: cancelReason })
+        });
+      } catch {}
+    }
+    setShowCancelModal(false);
   };
 
   // Filter mechanics for Category B
@@ -774,6 +920,176 @@ export function EmergencyActionSheet({
                     </div>
                   </div>
 
+                  {/* MOTORCYCLE IDENTIFICATION CARD (Manufacturer requirement: VRN, Model, VIN) */}
+                  <div className="p-3.5 rounded-2xl bg-[#181818] border border-white/10 space-y-2.5 text-xs">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#FFF174]" />
+                        <span className="font-bold text-white text-xs">Motorcycle Identification</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowBikeSelector(!showBikeSelector)}
+                        className="text-[11px] text-[#FFF174] hover:underline font-bold"
+                      >
+                        {showBikeSelector ? 'Done' : 'Change / Add Vehicle'}
+                      </button>
+                    </div>
+
+                    {!showBikeSelector ? (
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-bold text-white text-sm">
+                            {getActiveBike().brand} {getActiveBike().model}
+                          </div>
+                          <div className="text-[11px] text-gray-400 flex items-center gap-2 mt-0.5">
+                            <span className="font-mono bg-white/10 px-1.5 py-0.5 rounded text-gray-200">
+                              {getActiveBike().registrationNumber}
+                            </span>
+                            {(getActiveBike() as any).vin && (
+                              <span className="text-[10px] text-gray-400">
+                                VIN: {(getActiveBike() as any).vin.slice(-6)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          Active Coverage
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 pt-1 animate-in fade-in duration-150">
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setIsCustomBike(false)}
+                            className={`flex-1 py-1.5 px-2 rounded-lg font-bold text-xs ${
+                              !isCustomBike ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-gray-300'
+                            }`}
+                          >
+                            Saved Garage ({bikesList.length})
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setIsCustomBike(true)}
+                            className={`flex-1 py-1.5 px-2 rounded-lg font-bold text-xs ${
+                              isCustomBike ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-gray-300'
+                            }`}
+                          >
+                            Enter Other / Friend's Bike
+                          </button>
+                        </div>
+
+                        {!isCustomBike ? (
+                          <div className="space-y-1.5 max-h-32 overflow-y-auto">
+                            {bikesList.map((b) => (
+                              <button
+                                key={b.id}
+                                type="button"
+                                onClick={() => setSelectedBikeId(b.id)}
+                                className={`w-full p-2 rounded-xl text-left border flex items-center justify-between ${
+                                  selectedBikeId === b.id
+                                    ? 'border-[#FFF174] bg-[#FFF174]/10 text-white'
+                                    : 'border-white/10 bg-black/30 text-gray-400 hover:text-white'
+                                }`}
+                              >
+                                <div>
+                                  <div className="font-bold text-xs text-white">
+                                    {b.brand} {b.model}
+                                  </div>
+                                  <div className="text-[10px] font-mono text-gray-400">{b.registrationNumber}</div>
+                                </div>
+                                {selectedBikeId === b.id && <Check size={14} className="text-[#FFF174]" />}
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="space-y-2 pt-1 text-[11px]">
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <label className="text-gray-400 block mb-0.5">Brand / Make</label>
+                                <input
+                                  type="text"
+                                  value={customBrand}
+                                  onChange={(e) => setCustomBrand(e.target.value)}
+                                  placeholder="e.g. Royal Enfield"
+                                  className="w-full bg-black/40 border border-white/20 rounded-lg px-2 py-1 text-white"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-gray-400 block mb-0.5">Model</label>
+                                <input
+                                  type="text"
+                                  value={customModel}
+                                  onChange={(e) => setCustomModel(e.target.value)}
+                                  placeholder="e.g. Classic 350 / Shotgun"
+                                  className="w-full bg-black/40 border border-white/20 rounded-lg px-2 py-1 text-white"
+                                />
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <label className="text-gray-400 block mb-0.5">Reg. Plate (VRN)</label>
+                                <input
+                                  type="text"
+                                  value={customRegNo}
+                                  onChange={(e) => setCustomRegNo(e.target.value)}
+                                  placeholder="e.g. WB 74 AZ 1234"
+                                  className="w-full bg-black/40 border border-white/20 rounded-lg px-2 py-1 text-white uppercase font-mono"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-gray-400 block mb-0.5">VIN / Chassis (Optional)</label>
+                                <input
+                                  type="text"
+                                  value={customVin}
+                                  onChange={(e) => setCustomVin(e.target.value)}
+                                  placeholder="Last 6-17 chars"
+                                  className="w-full bg-black/40 border border-white/20 rounded-lg px-2 py-1 text-white uppercase font-mono"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* UNLISTED PROBLEM & SYMPTOM NOTES */}
+                  <div className="p-3 rounded-2xl bg-[#181818] border border-white/10 space-y-2 text-xs">
+                    <label htmlFor="troubleNotesInput" className="font-bold text-gray-300 block text-xs">
+                      Describe breakdown symptoms / unlisted problem:
+                    </label>
+                    <textarea
+                      id="troubleNotesInput"
+                      rows={2}
+                      value={troubleNotes}
+                      onChange={(e) => setTroubleNotes(e.target.value)}
+                      placeholder="e.g. Clutch cable snapped at lever, strange grinding noise from primary chain, sudden stalling on climb..."
+                      className="w-full bg-black/40 border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174] placeholder:text-gray-500 resize-none"
+                    />
+                  </div>
+
+                  {/* RSA COVERAGE & PRICING TRANSPARENCY BAR */}
+                  <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-950/30 to-black/40 border border-yellow-500/30 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <Shield size={16} className="text-[#FFF174] shrink-0" />
+                      <div>
+                        <span className="font-bold text-white block">Manufacturer RSA Scope</span>
+                        <span className="text-[10px] text-gray-400 block">
+                          Minor repair labor covered. Spares & fuel at actuals.
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowTermsModal(true)}
+                      className="text-[11px] text-[#FFF174] underline font-bold shrink-0 ml-2"
+                    >
+                      View Policy
+                    </button>
+                  </div>
+
                   {/* Immediate Shortcuts: Towing & Share Location */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <button
@@ -809,76 +1125,244 @@ export function EmergencyActionSheet({
                     </button>
                   </div>
 
-                  {/* NEARBY MOTORCYCLE MECHANICS LIST */}
-                  <div className="space-y-2 pt-1">
-                    <div className="flex items-center justify-between text-xs font-bold text-gray-300">
-                      <span className="flex items-center gap-1.5">
-                        <Wrench size={14} className="text-[#FFF174]" /> Nearby Motorcycle Mechanics & Workshops
-                      </span>
-                      <span className="text-[10px] text-gray-400">{filteredMechanical.length} available</span>
-                    </div>
+                  {/* DYNAMIC DISPATCH STATE MACHINE UI */}
+                  {dispatchStatus === 'SEARCHING' && (
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-yellow-950/50 to-black/70 border-2 border-[#FFF174] text-white space-y-3 shadow-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded-full bg-[#FFF174] animate-ping" />
+                          <span className="font-black text-sm text-[#FFF174] tracking-wide">
+                            MATCHING NEAREST TECHNICIAN...
+                          </span>
+                        </div>
+                        <span className="font-mono text-xs text-gray-400">{createdRequestId}</span>
+                      </div>
 
-                    <div className="space-y-2">
-                      {filteredMechanical.map((prov) => (
-                        <div
-                          key={prov.id}
-                          className="p-3 rounded-xl bg-[#181818] border border-white/10 hover:border-[#FFF174]/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs"
+                      <p className="text-xs text-gray-300">
+                        Broadcasting incident to certified roadside mechanics near {address || 'your location'}.
+                      </p>
+
+                      <div className="bg-black/50 p-2.5 rounded-xl border border-white/10 text-[11px] space-y-1">
+                        <div>
+                          <strong>Vehicle:</strong> {getActiveBike().brand} {getActiveBike().model} (
+                          {getActiveBike().registrationNumber})
+                        </div>
+                        <div>
+                          <strong>Problem:</strong> {troubleNotes.trim() || bikeIssueFilter}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={handleEscalateNoProvider}
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-red-600/90 hover:bg-red-600 text-white font-bold text-xs flex items-center justify-center gap-1.5"
                         >
-                          <div>
-                            <div className="flex items-center gap-1.5">
-                              <strong className="text-white font-bold">{prov.name}</strong>
-                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-                                {prov.badge}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-gray-400 block mt-0.5">
-                              📍 {prov.distance} away ({prov.eta}) • {prov.address}
-                            </span>
-                            <div className="flex flex-wrap gap-1 pt-1">
-                              {prov.services.slice(0, 3).map((s) => (
-                                <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-300">
-                                  {s}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
+                          <PhoneForwarded size={14} />
+                          <span>Escalate to 24/7 Helpline</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowCancelModal(true)}
+                          className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 font-bold text-xs"
+                        >
+                          Cancel Request
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
-                          <div className="flex items-center gap-2 shrink-0 pt-1 sm:pt-0">
-                            <a
-                              href={`tel:${prov.phone.replace(/[^0-9+]/g, '')}`}
-                              className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1 cursor-pointer min-h-[38px]"
-                              aria-label={`Call ${prov.name}`}
-                            >
-                              <PhoneCall size={13} className="text-emerald-400" />
-                              <span>Call</span>
-                            </a>
+                  {dispatchStatus === 'ACCEPTED' && assignedProviderInfo && (
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/60 to-black/80 border-2 border-emerald-500 text-white space-y-3 shadow-xl animate-in zoom-in-95">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 size={18} className="text-emerald-400" />
+                          <span className="font-black text-sm text-emerald-300">DISPATCH CONFIRMED</span>
+                        </div>
+                        <span className="font-mono text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">
+                          {createdRequestId}
+                        </span>
+                      </div>
 
-                            <button
-                              type="button"
-                              disabled={dispatchPending}
-                              onClick={() => handleDispatchAssistance(prov)}
-                              className="px-3 py-2 rounded-lg bg-[#FFF174] hover:bg-yellow-400 disabled:opacity-50 text-black font-black text-xs uppercase cursor-pointer min-h-[38px]"
-                            >
-                              {dispatchPending ? '...' : 'Request'}
-                            </button>
+                      <div className="bg-black/60 p-3 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+                        <div>
+                          <div className="font-bold text-sm text-white">{assignedProviderInfo.name}</div>
+                          <div className="text-[11px] text-gray-400">{assignedProviderInfo.businessName}</div>
+                          <div className="text-[10px] text-emerald-400 font-mono mt-1">
+                            🚑 Rescue Vehicle: {assignedProviderInfo.vehiclePlate}
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Dispatch confirmation feedback inside the overlay */}
-                  {dispatchConfirmed && dispatchedProvider && (
-                    <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/70 text-emerald-200 text-xs space-y-1">
-                      <div className="flex items-center gap-1.5 font-bold text-emerald-300">
-                        <CheckCircle2 size={16} />
-                        <span>Rescue Request Initiated (#{createdRequestId})</span>
+                        <div className="text-right">
+                          <div className="text-[10px] text-gray-400 uppercase font-bold">Estimated Arrival</div>
+                          <div className="text-base font-black text-[#FFF174]">{assignedProviderInfo.eta}</div>
+                        </div>
                       </div>
-                      <p className="text-[11px] text-gray-300">
-                        {serverDispatched
-                          ? 'Server accepted your request. Provider notified.'
-                          : 'Request saved in offline queue. Please call the provider directly using the call button.'}
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <a
+                          href={`tel:${assignedProviderInfo.phone.replace(/[^0-9+]/g, '')}`}
+                          className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5"
+                        >
+                          <PhoneCall size={14} />
+                          <span>Call Technician</span>
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onClose();
+                            if (createdRequestId) navigate(`/requests/${createdRequestId}`);
+                          }}
+                          className="py-2.5 px-3 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs flex items-center justify-center gap-1"
+                        >
+                          <span>Live Tracker</span>
+                          <ChevronRight size={14} />
+                        </button>
+                      </div>
+
+                      <div className="text-center pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowCancelModal(true)}
+                          className="text-[11px] text-gray-400 hover:text-red-400 underline"
+                        >
+                          Cancel Assistance
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {dispatchStatus === 'UNFULFILLED' && (
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-red-950/70 to-black/90 border-2 border-red-500 text-white space-y-3 animate-in fade-in">
+                      <div className="flex items-center gap-2 text-red-400 font-black text-sm">
+                        <AlertOctagon size={18} />
+                        <span>NO LOCAL MECHANIC RESPONDED</span>
+                      </div>
+
+                      <p className="text-xs text-gray-300 leading-relaxed">
+                        No workshop in your immediate radius could take this dispatch. Per manufacturer protocol,
+                        escalate directly to the 24/7 Central Helpline:
                       </p>
+
+                      <div className="space-y-2">
+                        <a
+                          href="tel:18002100007"
+                          className="w-full py-3 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase flex items-center justify-center gap-2 shadow-lg"
+                        >
+                          <PhoneCall size={16} />
+                          <span>Call RSA Toll-Free: 1800 2100 007</span>
+                        </a>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <a
+                            href="tel:112"
+                            className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center gap-1.5"
+                          >
+                            <PhoneCall size={14} className="text-red-400" />
+                            <span>Call 112 Police</span>
+                          </a>
+
+                          <a
+                            href={getWhatsAppAlertUrl()}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="py-2.5 px-3 rounded-xl bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] font-bold text-xs flex items-center justify-center gap-1.5"
+                          >
+                            <MessageCircle size={14} />
+                            <span>WhatsApp Beacon</span>
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="text-center pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setDispatchStatus('IDLE')}
+                          className="text-[11px] text-gray-400 underline hover:text-white"
+                        >
+                          ← Retry Local Workshop Search
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {dispatchStatus === 'CANCELLED' && (
+                    <div className="p-3.5 rounded-2xl bg-gray-900 border border-white/20 text-white space-y-2 text-xs">
+                      <div className="flex items-center gap-2 text-gray-300 font-bold">
+                        <XCircle size={16} className="text-gray-400" />
+                        <span>Assistance Request Cancelled</span>
+                      </div>
+                      <p className="text-[11px] text-gray-400">Reason: {cancelReason}</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDispatchStatus('IDLE');
+                          setCreatedRequestId(null);
+                        }}
+                        className="text-[11px] text-[#FFF174] font-bold underline"
+                      >
+                        Start New Assistance Request
+                      </button>
+                    </div>
+                  )}
+
+                  {/* NEARBY MOTORCYCLE MECHANICS LIST (Shown when IDLE) */}
+                  {dispatchStatus === 'IDLE' && (
+                    <div className="space-y-2 pt-1">
+                      <div className="flex items-center justify-between text-xs font-bold text-gray-300">
+                        <span className="flex items-center gap-1.5">
+                          <Wrench size={14} className="text-[#FFF174]" /> Nearby Motorcycle Mechanics & Workshops
+                        </span>
+                        <span className="text-[10px] text-gray-400">{filteredMechanical.length} available</span>
+                      </div>
+
+                      <div className="space-y-2">
+                        {filteredMechanical.map((prov) => (
+                          <div
+                            key={prov.id}
+                            className="p-3 rounded-xl bg-[#181818] border border-white/10 hover:border-[#FFF174]/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs"
+                          >
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <strong className="text-white font-bold">{prov.name}</strong>
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                                  {prov.badge}
+                                </span>
+                              </div>
+                              <span className="text-[11px] text-gray-400 block mt-0.5">
+                                📍 {prov.distance} away ({prov.eta}) • {prov.address}
+                              </span>
+                              <div className="flex flex-wrap gap-1 pt-1">
+                                {prov.services.slice(0, 3).map((s) => (
+                                  <span key={s} className="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-gray-300">
+                                    {s}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0 pt-1 sm:pt-0">
+                              <a
+                                href={`tel:${prov.phone.replace(/[^0-9+]/g, '')}`}
+                                className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1 cursor-pointer min-h-[38px]"
+                                aria-label={`Call ${prov.name}`}
+                              >
+                                <PhoneCall size={13} className="text-emerald-400" />
+                                <span>Call</span>
+                              </a>
+
+                              <button
+                                type="button"
+                                disabled={dispatchPending}
+                                onClick={() => handleDispatchAssistance(prov)}
+                                className="px-3 py-2 rounded-lg bg-[#FFF174] hover:bg-yellow-400 disabled:opacity-50 text-black font-black text-xs uppercase cursor-pointer min-h-[38px]"
+                              >
+                                {dispatchPending ? '...' : 'Request'}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1024,7 +1508,7 @@ export function EmergencyActionSheet({
                   </div>
 
                   {/* Location & Vehicle Options */}
-                  <div className="p-3 rounded-xl bg-[#181818] border border-white/10 space-y-2.5 text-xs">
+                  <div className="p-3.5 rounded-xl bg-[#181818] border border-white/10 space-y-2.5 text-xs">
                     <div className="flex items-center justify-between border-b border-white/10 pb-2">
                       <span className="font-bold text-gray-300 flex items-center gap-1.5">
                         <MapPin size={14} className="text-[#FFF174]" /> Pickup Location:
@@ -1044,15 +1528,20 @@ export function EmergencyActionSheet({
                     </span>
 
                     <div className="pt-2 border-t border-white/10 space-y-2">
-                      <label htmlFor="sheetTowingModel" className="font-bold text-gray-300 block text-[11px]">
-                        Motorcycle Model / Category:
-                      </label>
+                      <div className="flex items-center justify-between">
+                        <label htmlFor="sheetTowingModel" className="font-bold text-gray-300 block text-[11px]">
+                          Motorcycle for Recovery:
+                        </label>
+                        <span className="text-[10px] text-gray-400 font-mono">
+                          {getActiveBike().registrationNumber}
+                        </span>
+                      </div>
                       <input
                         id="sheetTowingModel"
                         type="text"
                         value={towingBikeModel}
                         onChange={(e) => setTowingBikeModel(e.target.value)}
-                        placeholder="e.g. Royal Enfield Himalayan 450, KTM 390..."
+                        placeholder="e.g. Royal Enfield Himalayan 450, Hunter 350..."
                         className="w-full bg-[#121212] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-400"
                       />
 
@@ -1063,33 +1552,130 @@ export function EmergencyActionSheet({
                           onChange={(e) => setTowingWinchNeeded(e.target.checked)}
                           className="rounded accent-blue-500 w-4 h-4"
                         />
-                        <span>Motorcycle is off-road / in ditch (Mountain winch needed)</span>
+                        <span>Motorcycle is off-road / in ditch (5-Ton mountain winch needed)</span>
                       </label>
                     </div>
 
-                    <button
-                      type="button"
-                      disabled={dispatchPending}
-                      onClick={() => handleDispatchAssistance(EMERGENCY_TOWING_PROVIDERS[0])}
-                      className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer min-h-[46px]"
-                    >
-                      <Truck size={15} />
-                      <span>{dispatchPending ? 'Coordinating...' : 'Request Towing Dispatch'}</span>
-                    </button>
+                    {/* Towing Policy & Tariff Disclosure */}
+                    <div className="p-2.5 rounded-lg bg-blue-950/30 border border-blue-500/30 text-[11px] text-blue-200 space-y-1">
+                      <div className="flex items-center justify-between font-bold">
+                        <span>RSA Towing Policy (50 km Cap)</span>
+                        <button
+                          type="button"
+                          onClick={() => setShowTermsModal(true)}
+                          className="text-blue-300 underline"
+                        >
+                          Terms
+                        </button>
+                      </div>
+                      <p className="text-[10px] text-gray-300">
+                        Complimentary towing to nearest authorized dealer or up to 50 km. Additional distance charged at standard tariff of ₹45/km.
+                      </p>
+                    </div>
+
+                    {dispatchStatus === 'IDLE' && (
+                      <button
+                        type="button"
+                        disabled={dispatchPending}
+                        onClick={() => handleDispatchAssistance(EMERGENCY_TOWING_PROVIDERS[0])}
+                        className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer min-h-[46px]"
+                      >
+                        <Truck size={15} />
+                        <span>{dispatchPending ? 'Coordinating...' : 'Request Towing Dispatch'}</span>
+                      </button>
+                    )}
                   </div>
 
-                  {/* Dispatch confirmation note */}
-                  {dispatchConfirmed && (
-                    <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/70 text-emerald-200 text-xs space-y-1">
-                      <div className="flex items-center gap-1.5 font-bold text-emerald-300">
-                        <CheckCircle2 size={16} />
-                        <span>Towing Request Logged (#{createdRequestId})</span>
+                  {/* Towing State Machine Feedback */}
+                  {dispatchStatus === 'SEARCHING' && (
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-950/60 to-black/80 border-2 border-blue-400 text-white space-y-3 shadow-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded-full bg-blue-400 animate-ping" />
+                          <span className="font-black text-sm text-blue-300">DISPATCHING FLATBED TRUCK...</span>
+                        </div>
+                        <span className="font-mono text-xs text-gray-400">{createdRequestId}</span>
                       </div>
-                      <p className="text-[11px] text-gray-300">
-                        {serverDispatched
-                          ? 'Server confirmed coordinates. Driver preparing departure.'
-                          : 'Saved in offline queue. Please call the driver directly via cellular network above.'}
+                      <p className="text-xs text-gray-300">
+                        Allocating hydraulic recovery unit equipped with soft tie-down straps and wheel chocks.
                       </p>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={handleEscalateNoProvider}
+                          className="flex-1 py-2 px-3 rounded-xl bg-red-600/90 text-white font-bold text-xs"
+                        >
+                          Helpline Escalation
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShowCancelModal(true)}
+                          className="py-2 px-3 rounded-xl bg-white/10 text-gray-300 text-xs"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {dispatchStatus === 'ACCEPTED' && assignedProviderInfo && (
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/60 to-black/80 border-2 border-emerald-500 text-white space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 size={18} className="text-emerald-400" />
+                          <span className="font-black text-sm text-emerald-300">FLATBED EN ROUTE</span>
+                        </div>
+                        <span className="font-mono text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">
+                          {createdRequestId}
+                        </span>
+                      </div>
+                      <div className="bg-black/60 p-2.5 rounded-xl border border-emerald-500/30 flex items-center justify-between text-xs">
+                        <div>
+                          <div className="font-bold text-white">{assignedProviderInfo.businessName}</div>
+                          <div className="text-[10px] text-gray-400">Truck: {assignedProviderInfo.vehiclePlate}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-[10px] text-gray-400 uppercase">ETA</div>
+                          <div className="text-sm font-black text-[#FFF174]">{assignedProviderInfo.eta}</div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <a
+                          href={`tel:${assignedProviderInfo.phone.replace(/[^0-9+]/g, '')}`}
+                          className="py-2.5 px-3 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-1.5"
+                        >
+                          <PhoneCall size={14} />
+                          <span>Call Driver</span>
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onClose();
+                            if (createdRequestId) navigate(`/requests/${createdRequestId}`);
+                          }}
+                          className="py-2.5 px-3 rounded-xl bg-[#FFF174] text-black font-black text-xs flex items-center justify-center gap-1"
+                        >
+                          <span>Live Map</span>
+                          <ChevronRight size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {dispatchStatus === 'CANCELLED' && (
+                    <div className="p-3 rounded-xl bg-gray-900 border border-white/20 text-white space-y-1.5 text-xs">
+                      <div className="font-bold text-gray-300">Towing Request Cancelled</div>
+                      <p className="text-[11px] text-gray-400">Reason: {cancelReason}</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDispatchStatus('IDLE');
+                          setCreatedRequestId(null);
+                        }}
+                        className="text-[11px] text-blue-400 font-bold underline"
+                      >
+                        Request Towing Again
+                      </button>
                     </div>
                   )}
                 </div>
@@ -1315,6 +1901,157 @@ export function EmergencyActionSheet({
 
             </div>
           </motion.div>
+
+          {/* TERMS & EXCLUSIONS MODAL */}
+          {showTermsModal && (
+            <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+              <div className="w-full max-w-lg bg-[#181818] border border-white/20 rounded-2xl p-5 text-white space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl">
+                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Shield size={18} className="text-[#FFF174]" />
+                    <h3 className="font-black text-sm uppercase tracking-wide">
+                      RSA Scope, Policy & Exclusions
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowTermsModal(false)}
+                    className="p-1 rounded-lg text-gray-400 hover:text-white"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-xs text-yellow-200">
+                  <strong>Manufacturer Standard:</strong> Royal Enfield RSA in partnership with Europ Assistance
+                  India. 24/7 National Toll-Free Helpline:{' '}
+                  <a href="tel:18002100007" className="underline font-mono font-black text-white">
+                    1800 2100 007
+                  </a>
+                  .
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <h4 className="font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
+                      <Check size={14} /> What is Covered Under RSA:
+                    </h4>
+                    <ul className="list-disc list-inside space-y-0.5 text-gray-300 text-[11px] leading-relaxed">
+                      <li>On-site minor mechanical and electrical diagnosis and labor.</li>
+                      <li>Flat tyre & puncture assistance (puncture plugging / tube assistance).</li>
+                      <li>Battery jump-start service with portable booster pack.</li>
+                      <li>Emergency fuel delivery labor (up to 5 litres; fuel billed at pump price).</li>
+                      <li>Motorcycle flatbed towing to nearest Authorized Service Point (ASP) up to 50 km.</li>
+                      <li>Key lockout or broken key coordination.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-red-400 mb-1 flex items-center gap-1.5">
+                      <XCircle size={14} /> What is Strictly Excluded:
+                    </h4>
+                    <ul className="list-disc list-inside space-y-0.5 text-gray-300 text-[11px] leading-relaxed">
+                      <li>Riding under the influence of alcohol, drugs, or intoxicating substances.</li>
+                      <li>Participation in competitive rallies, racing, speed trials, or track days.</li>
+                      <li>Off-road exploration on non-motorable terrain, dry riverbeds, or unauthorized trails.</li>
+                      <li>Commercial carriage of passengers / unauthorized bike-taxi rentals.</li>
+                      <li>Acts of God (flooding, landslides, earthquakes) physically obstructing passage.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-amber-300 mb-1 flex items-center gap-1.5">
+                      <Info size={14} /> Rider Liabilities & Tariffs:
+                    </h4>
+                    <p className="text-[11px] text-gray-300 leading-relaxed">
+                      Cost of all replacement parts (tubes, fuses, clutch cables, spark plugs, oil) must be paid
+                      directly to the attending workshop. Any towing distance exceeding 50 km is billed at standard
+                      pan-India tariff of <strong>₹45 per additional kilometre</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-white/10 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowTermsModal(false)}
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase"
+                  >
+                    I Understand & Accept
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CANCELLATION REASON MODAL */}
+          {showCancelModal && (
+            <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+              <div className="w-full max-w-md bg-[#181818] border border-white/20 rounded-2xl p-5 text-white space-y-4 shadow-2xl">
+                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-2">
+                    <XCircle size={18} className="text-red-400" />
+                    <h3 className="font-black text-sm uppercase tracking-wide">
+                      Cancel Roadside Assistance
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowCancelModal(false)}
+                    className="p-1 rounded-lg text-gray-400 hover:text-white"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <p className="text-xs text-gray-300">
+                  Please provide a cancellation reason. This notifies the dispatch desk and releases any assigned
+                  roadside technician:
+                </p>
+
+                <div className="space-y-1.5">
+                  {[
+                    'Bike restarted / Problem self-resolved',
+                    'Local mechanic arrived on spot',
+                    'Arranged private towing/ride',
+                    'ETA too long / Cannot wait',
+                    'Dispatched by mistake'
+                  ].map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setCancelReason(r)}
+                      className={`w-full p-2.5 rounded-xl text-left text-xs font-bold border transition-colors flex items-center justify-between ${
+                        cancelReason === r
+                          ? 'border-red-500 bg-red-500/10 text-white'
+                          : 'border-white/10 bg-black/30 text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <span>{r}</span>
+                      {cancelReason === r && <Check size={14} className="text-red-400" />}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setShowCancelModal(false)}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-gray-200 font-bold text-xs"
+                  >
+                    Keep Request Active
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmCancel}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase"
+                  >
+                    Confirm Cancellation
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </AnimatePresence>
