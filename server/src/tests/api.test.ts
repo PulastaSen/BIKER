@@ -441,6 +441,119 @@ describe('MotoAssist Backend Full API Test Suite', () => {
       expect(body.data[0].name).toContain('Royal Enfield');
     });
 
+    it('POST /api/bookings creates on-demand motorcycle service booking', async () => {
+      const res = await fetch(`${BASE_URL}/api/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceType: 'PUNCTURE_REPAIR',
+          serviceName: 'Tubeless Tyre Mushroom Plug Repair',
+          bikeDetails: {
+            brand: 'KTM',
+            model: '390 Adventure',
+            registrationNumber: 'WB 74 AB 8921'
+          },
+          location: {
+            address: 'Sevoke Road 3rd Mile, Siliguri',
+            lat: 26.7412,
+            lng: 88.4285
+          },
+          pricing: {
+            baseRate: 350,
+            travelFee: 100,
+            partsEstimate: 150,
+            totalEstimated: 600,
+            disclaimer: 'Transparent rate. Parts billed at actuals.'
+          }
+        })
+      });
+
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.bookingId).toContain('BK-');
+      expect(body.data.status).toBe('REQUESTED');
+      expect(body.data.serviceType).toBe('PUNCTURE_REPAIR');
+    });
+
+    it('GET /api/bookings returns booking list with status filter', async () => {
+      const res = await fetch(`${BASE_URL}/api/bookings?status=COMPLETED`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThanOrEqual(1);
+      expect(body.data[0].status).toBe('COMPLETED');
+    });
+
+    it('POST /api/subscriptions creates roadside assistance subscription plan', async () => {
+      const res = await fetch(`${BASE_URL}/api/subscriptions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planTier: 'TOURING_PRO',
+          planName: 'Touring Pro Roadside Shield',
+          priceInr: 1999,
+          durationMonths: 12,
+          linkedBike: {
+            bikeId: 'bike-ktm-390',
+            brand: 'KTM',
+            model: '390 Adventure',
+            registrationNumber: 'WB 74 AB 8921'
+          }
+        })
+      });
+
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.subscriptionId).toContain('SUB-');
+      expect(body.data.status).toBe('ACTIVE');
+      expect(body.data.features.towingDistanceLimitKm).toBe(50);
+      expect(body.data.features.maxFreeBreakdowns).toBe(4);
+    });
+
+    it('GET /api/subscriptions returns active coverage plans', async () => {
+      const res = await fetch(`${BASE_URL}/api/subscriptions?userId=user-rider-1`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(Array.isArray(body.data)).toBe(true);
+      expect(body.data.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('GET /api/qr/tag/:token returns public safe vehicle tag details without private contact', async () => {
+      const res = await fetch(`${BASE_URL}/api/qr/tag/qr_sec_ktm390adv_8921`);
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.vehicleNickname).toContain('KTM 390');
+      expect(body.data.registrationNumber).toBe('WB 74 AB 8921');
+      // Crucial privacy guarantee: owner phone or address must NOT be present
+      expect(body.data.phone).toBeUndefined();
+      expect(body.data.ownerPhone).toBeUndefined();
+      expect(body.data.userId).toBeUndefined();
+    });
+
+    it('POST /api/qr/tag/:token/contact submits parked vehicle alert to owner', async () => {
+      const res = await fetch(`${BASE_URL}/api/qr/tag/qr_sec_ktm390adv_8921/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requestType: 'LIGHTS_ON',
+          senderName: 'Fellow Rider',
+          message: 'Auxiliary lights left switched on. Battery draining.',
+          locationPin: { lat: 26.7412, lng: 88.4285, address: 'Mallaguri Junction' }
+        })
+      });
+
+      expect(res.status).toBe(201);
+      const body = await res.json();
+      expect(body.success).toBe(true);
+      expect(body.data.id).toContain('QR-MSG-');
+      expect(body.data.requestType).toBe('LIGHTS_ON');
+    });
+
     it('POST /api/sos triggers emergency incident', async () => {
       const res = await fetch(`${BASE_URL}/api/sos`, {
         method: 'POST',

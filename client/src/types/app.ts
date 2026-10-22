@@ -35,6 +35,17 @@ export interface Bike {
   groundClearance?: string;
   brakes?: string;
   features?: string[];
+  vin?: string;
+  odometerKm?: number;
+  insuranceExpiry?: string;
+  pucExpiry?: string;
+  maintenanceReminders?: {
+    chainLubeDueKm?: number;
+    oilServiceDueKm?: number;
+    tyreCheckDate?: string;
+  };
+  qrToken?: string;
+  activeSubscriptionId?: string;
 }
 
 export type RequestStatus =
@@ -458,4 +469,196 @@ export interface BikeHealthStatus {
   battery: 'GOOD' | 'ATTENTION' | 'CRITICAL';
   upcomingMaintenanceKm: number;
   upcomingMaintenanceTask: string;
+}
+
+// ReadyAssist-Benchmark Service Catalogue Types
+export type CatalogServiceType =
+  | 'PUNCTURE_REPAIR'
+  | 'TYRE_REPLACEMENT'
+  | 'BATTERY_JUMPSTART'
+  | 'MINOR_MECHANICAL'
+  | 'CHAIN_DRIVETRAIN'
+  | 'EMERGENCY_FUEL'
+  | 'FLATBED_TOWING'
+  | 'ACCIDENT_RECOVERY'
+  | 'KEY_LOCK_ASSIST'
+  | 'SCHEDULED_PERIODIC'
+  | 'DOORSTEP_FITMENT'
+  | 'WORKSHOP_PICKDROP';
+
+export interface ServiceCatalogItem {
+  id: CatalogServiceType;
+  title: string;
+  category: 'ROADSIDE_ASSISTANCE' | 'DOORSTEP_CARE' | 'TOWING_RECOVERY' | 'WORKSHOP_SERVICE';
+  shortDesc: string;
+  fullDesc: string;
+  basePrice: number;
+  priceNote: string;
+  turnaroundMinutes: number;
+  supportedVehicles: string[];
+  inclusions: string[];
+  exclusions: string[];
+  cancellationPolicy: string;
+  badge?: string;
+  iconName: string;
+}
+
+export type BookingStatus =
+  | 'REQUESTED'
+  | 'CONFIRMED'
+  | 'ASSIGNED'
+  | 'EN_ROUTE'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'UNFULFILLED_NO_PROVIDER'
+  | 'PENDING'
+  | 'ACCEPTED'
+  | 'DISPATCHED'
+  | 'SEARCHING';
+
+export interface ServiceBooking {
+  bookingId: string;
+  userId: string;
+  riderName: string;
+  riderPhone: string;
+  serviceType: CatalogServiceType;
+  serviceName: string;
+  bikeDetails: {
+    brand: string;
+    model: string;
+    registrationNumber: string;
+    fuelType?: string;
+  };
+  location: {
+    address: string;
+    lat: number;
+    lng: number;
+    landmark?: string;
+  };
+  scheduledTime?: string;
+  pricing: {
+    baseRate: number;
+    travelFee: number;
+    partsEstimate: number;
+    totalEstimated: number;
+    isCoveredBySubscription?: boolean;
+    coveragePlanName?: string;
+    disclaimer: string;
+  };
+  status: BookingStatus;
+  assignedProvider?: {
+    id: string;
+    name: string;
+    phone: string;
+    rating: number;
+    assignedAt: string;
+  };
+  cancellationReason?: string;
+  serviceNotes?: string;
+  partsUsed?: string[];
+  dispute?: {
+    filed: boolean;
+    reason?: string;
+    amount?: number;
+    status?: 'OPEN' | 'RESOLVED' | 'REVIEW_PENDING';
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ReadyAssist-Benchmark Subscription Plans
+export type RsaPlanTier = 'FREEDOM' | 'COMMUTER' | 'TOURING_PRO' | 'HILL_EXPLORER';
+
+export interface RsaPlan {
+  tier: RsaPlanTier;
+  name: string;
+  tagline: string;
+  priceInr: number;
+  durationMonths: number;
+  highlight?: boolean;
+  badge?: string;
+  features: {
+    maxFreeBreakdowns: number;
+    towingDistanceLimitKm: number;
+    includesPunctureRepair: boolean;
+    includesBatteryJumpstart: boolean;
+    includesMinorMechanicalLabor: boolean;
+    includesFuelDeliveryLabor: boolean;
+    includesMountainWinchRecovery: boolean;
+    highwayPriorityDispatch: boolean;
+  };
+  includedBulletPoints: string[];
+  exclusions: string[];
+  waitingPeriodHours: number;
+}
+
+export interface UserSubscription {
+  subscriptionId: string;
+  userId: string;
+  planTier: RsaPlanTier;
+  planName: string;
+  priceInr: number;
+  durationMonths: number;
+  linkedBike: {
+    bikeId: string;
+    brand: string;
+    model: string;
+    registrationNumber: string;
+  };
+  features: {
+    maxFreeBreakdowns: number;
+    usedBreakdowns: number;
+    towingDistanceLimitKm: number;
+    includesPunctureRepair: boolean;
+    includesBatteryJumpstart: boolean;
+    includesMinorMechanicalLabor: boolean;
+    includesFuelDeliveryLabor: boolean;
+    includesMountainWinchRecovery: boolean;
+    highwayPriorityDispatch: boolean;
+  };
+  waitingPeriodHours: number;
+  startDate: string;
+  endDate: string;
+  status: 'ACTIVE' | 'EXPIRED' | 'CANCELLED';
+  paymentDetails: {
+    paymentMode: 'TEST_DEMO' | 'RAZORPAY' | 'STRIPE';
+    transactionRef: string;
+    paidAmount: number;
+    paidAt: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Vehicle Emergency QR Tag
+export interface QrContactRequest {
+  id: string;
+  requestType: 'PARKED_OBSTRUCTION' | 'LIGHTS_ON' | 'VEHICLE_TIPPED' | 'ACCIDENT_EMERGENCY' | 'GENERAL_MESSAGE';
+  senderName?: string;
+  senderPhone?: string;
+  message: string;
+  locationPin?: {
+    lat: number;
+    lng: number;
+    address?: string;
+  };
+  createdAt: string;
+  read: boolean;
+}
+
+export interface VehicleQrTag {
+  token: string;
+  userId: string;
+  bikeId: string;
+  vehicleNickname: string;
+  brand: string;
+  model: string;
+  registrationNumber: string;
+  emergencyInstructions?: string;
+  allowPublicContact: boolean;
+  contactRequests: QrContactRequest[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

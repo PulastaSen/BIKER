@@ -330,6 +330,123 @@ export interface MockInventoryPart {
   quantity: number;
 }
 
+export interface MockServiceBooking {
+  bookingId: string;
+  userId: string;
+  riderName: string;
+  riderPhone: string;
+  serviceType: string;
+  serviceName: string;
+  bikeDetails: {
+    brand: string;
+    model: string;
+    registrationNumber: string;
+    fuelType?: string;
+  };
+  location: {
+    address: string;
+    lat: number;
+    lng: number;
+    landmark?: string;
+  };
+  scheduledTime?: string;
+  pricing: {
+    baseRate: number;
+    travelFee: number;
+    partsEstimate: number;
+    totalEstimated: number;
+    isCoveredBySubscription?: boolean;
+    coveragePlanName?: string;
+    disclaimer: string;
+  };
+  status: 'REQUESTED' | 'CONFIRMED' | 'ASSIGNED' | 'EN_ROUTE' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'UNFULFILLED_NO_PROVIDER';
+  assignedProvider?: {
+    id: string;
+    name: string;
+    phone: string;
+    rating: number;
+    assignedAt: string;
+  };
+  cancellationReason?: string;
+  serviceNotes?: string;
+  partsUsed?: string[];
+  dispute?: {
+    filed: boolean;
+    reason?: string;
+    amount?: number;
+    status?: 'OPEN' | 'RESOLVED' | 'REVIEW_PENDING';
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MockSubscription {
+  subscriptionId: string;
+  userId: string;
+  planTier: 'FREEDOM' | 'COMMUTER' | 'TOURING_PRO' | 'HILL_EXPLORER';
+  planName: string;
+  priceInr: number;
+  durationMonths: number;
+  linkedBike: {
+    bikeId: string;
+    brand: string;
+    model: string;
+    registrationNumber: string;
+  };
+  features: {
+    maxFreeBreakdowns: number;
+    usedBreakdowns: number;
+    towingDistanceLimitKm: number;
+    includesPunctureRepair: boolean;
+    includesBatteryJumpstart: boolean;
+    includesMinorMechanicalLabor: boolean;
+    includesFuelDeliveryLabor: boolean;
+    includesMountainWinchRecovery: boolean;
+    highwayPriorityDispatch: boolean;
+  };
+  waitingPeriodHours: number;
+  startDate: string;
+  endDate: string;
+  status: 'ACTIVE' | 'EXPIRED' | 'CANCELLED';
+  paymentDetails: {
+    paymentMode: 'TEST_DEMO' | 'RAZORPAY' | 'STRIPE';
+    transactionRef: string;
+    paidAmount: number;
+    paidAt: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MockVehicleQrTag {
+  token: string;
+  userId: string;
+  bikeId: string;
+  vehicleNickname: string;
+  brand: string;
+  model: string;
+  registrationNumber: string;
+  emergencyInstructions?: string;
+  allowPublicContact: boolean;
+  contactRequests: Array<{
+    id: string;
+    requestType: 'PARKED_OBSTRUCTION' | 'LIGHTS_ON' | 'VEHICLE_TIPPED' | 'ACCIDENT_EMERGENCY' | 'GENERAL_MESSAGE';
+    senderName?: string;
+    senderPhone?: string;
+    message: string;
+    locationPin?: {
+      lat: number;
+      lng: number;
+      address?: string;
+    };
+    createdAt: string;
+    read: boolean;
+  }>;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Pre-seeded users with hashed 'password123'
 const defaultPasswordHash = bcrypt.hashSync('password123', 10);
 
@@ -603,6 +720,123 @@ const serviceReceipts = new Map<string, MockServiceReceipt>();
 const accidentReports = new Map<string, MockAccidentReport>();
 const bikeDocuments = new Map<string, MockBikeDocument>();
 const identityVerifications = new Map<string, any>();
+const serviceBookings = new Map<string, MockServiceBooking>();
+const subscriptions = new Map<string, MockSubscription>();
+const vehicleQrTags = new Map<string, MockVehicleQrTag>();
+
+// Seed initial Touring Pro subscription for user-rider-1
+subscriptions.set('SUB-MOTO-1001', {
+  subscriptionId: 'SUB-MOTO-1001',
+  userId: 'user-rider-1',
+  planTier: 'TOURING_PRO',
+  planName: 'Touring Pro Roadside Shield',
+  priceInr: 1999,
+  durationMonths: 12,
+  linkedBike: {
+    bikeId: 'bike-1',
+    brand: 'KTM',
+    model: '390 Adventure',
+    registrationNumber: 'WB 74 AB 8921'
+  },
+  features: {
+    maxFreeBreakdowns: 4,
+    usedBreakdowns: 1,
+    towingDistanceLimitKm: 50,
+    includesPunctureRepair: true,
+    includesBatteryJumpstart: true,
+    includesMinorMechanicalLabor: true,
+    includesFuelDeliveryLabor: true,
+    includesMountainWinchRecovery: false,
+    highwayPriorityDispatch: true
+  },
+  waitingPeriodHours: 48,
+  startDate: new Date(Date.now() - 30 * 86400000).toISOString(),
+  endDate: new Date(Date.now() + 335 * 86400000).toISOString(),
+  status: 'ACTIVE',
+  paymentDetails: {
+    paymentMode: 'TEST_DEMO',
+    transactionRef: 'TXN-DEMO-991204',
+    paidAmount: 1999,
+    paidAt: new Date(Date.now() - 30 * 86400000).toISOString()
+  },
+  createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
+  updatedAt: new Date(Date.now() - 30 * 86400000).toISOString()
+});
+
+// Seed initial Vehicle QR Tag for user-rider-1's bike
+vehicleQrTags.set('qr_sec_ktm390adv_8921', {
+  token: 'qr_sec_ktm390adv_8921',
+  userId: 'user-rider-1',
+  bikeId: 'bike-1',
+  vehicleNickname: 'KTM 390 Adventure (Raid Edition)',
+  brand: 'KTM',
+  model: '390 Adventure',
+  registrationNumber: 'WB 74 AB 8921',
+  emergencyInstructions: 'Emergency medical card in tank bag. In case of accident or unattended bike, notify 112 and send a beacon below.',
+  allowPublicContact: true,
+  contactRequests: [
+    {
+      id: 'REQ-QR-001',
+      requestType: 'PARKED_OBSTRUCTION',
+      senderName: 'Highway Patrol Officer',
+      senderPhone: '+91 98320 00099',
+      message: 'Motorcycle parked close to NH-10 shoulder construction line. Please move 2 meters inward.',
+      locationPin: {
+        lat: 26.7412,
+        lng: 88.4285,
+        address: 'Sevoke Road 2nd Mile Corridor'
+      },
+      createdAt: new Date(Date.now() - 7200000).toISOString(),
+      read: true
+    }
+  ],
+  isActive: true,
+  createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
+  updatedAt: new Date(Date.now() - 7200000).toISOString()
+});
+
+// Seed initial sample service booking
+serviceBookings.set('BK-MOTO-5001', {
+  bookingId: 'BK-MOTO-5001',
+  userId: 'user-rider-1',
+  riderName: 'Pulasta Sen',
+  riderPhone: '+91 98765 43210',
+  serviceType: 'PUNCTURE_REPAIR',
+  serviceName: 'Tubeless Tyre Mushroom Plug Repair',
+  bikeDetails: {
+    brand: 'KTM',
+    model: '390 Adventure',
+    registrationNumber: 'WB 74 AB 8921',
+    fuelType: 'PETROL'
+  },
+  location: {
+    address: 'Sevoke Military Camp Junction, Siliguri, WB',
+    lat: 26.7350,
+    lng: 88.4310,
+    landmark: 'Near Army Gate 2'
+  },
+  pricing: {
+    baseRate: 350,
+    travelFee: 100,
+    partsEstimate: 150,
+    totalEstimated: 600,
+    isCoveredBySubscription: true,
+    coveragePlanName: 'Touring Pro Roadside Shield',
+    disclaimer: 'Labor covered under active Touring Pro plan. Consumable plug kit billed at ₹150.'
+  },
+  status: 'COMPLETED',
+  assignedProvider: {
+    id: 'provider-1',
+    name: 'KTM & Husqvarna Authorized Service Centre',
+    phone: '+91 98320 11223',
+    rating: 4.8,
+    assignedAt: new Date(Date.now() - 86400000).toISOString()
+  },
+  serviceNotes: 'Rear tyre puncture sealed with heavy duty mushroom plug. Tyre pressure inflated to 34 PSI.',
+  partsUsed: ['Tubeless Mushroom Plug x1', 'High-Pressure CO2 Seal'],
+  createdAt: new Date(Date.now() - 86400000).toISOString(),
+  updatedAt: new Date(Date.now() - 82800000).toISOString()
+});
 
 // Seed initial verification records
 identityVerifications.set('user-rider-1', {
@@ -1257,5 +1491,139 @@ export const mockStore = {
   },
   getAllIdentityVerifications: () => {
     return Array.from(identityVerifications.values());
+  },
+
+  // Service Bookings Store
+  createServiceBooking: (data: Omit<MockServiceBooking, 'bookingId' | 'createdAt' | 'updatedAt'>) => {
+    const bookingId = `BK-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
+    const newBooking: MockServiceBooking = {
+      ...data,
+      bookingId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    serviceBookings.set(bookingId, newBooking);
+    return newBooking;
+  },
+  getServiceBookings: (userId?: string, status?: string) => {
+    let list = Array.from(serviceBookings.values());
+    if (userId) list = list.filter(b => b.userId === userId);
+    if (status) list = list.filter(b => b.status === status);
+    return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  },
+  getServiceBookingById: (bookingId: string) => {
+    return serviceBookings.get(bookingId) || null;
+  },
+  updateServiceBookingStatus: (
+    bookingId: string, 
+    status: MockServiceBooking['status'], 
+    assignedProvider?: any, 
+    cancellationReason?: string, 
+    serviceNotes?: string, 
+    partsUsed?: string[]
+  ) => {
+    const b = serviceBookings.get(bookingId);
+    if (!b) return null;
+    b.status = status;
+    if (assignedProvider) b.assignedProvider = assignedProvider;
+    if (cancellationReason) b.cancellationReason = cancellationReason;
+    if (serviceNotes) b.serviceNotes = serviceNotes;
+    if (partsUsed) b.partsUsed = partsUsed;
+    b.updatedAt = new Date().toISOString();
+    return b;
+  },
+  disputeServiceBooking: (bookingId: string, reason: string, amount: number) => {
+    const b = serviceBookings.get(bookingId);
+    if (!b) return null;
+    b.dispute = {
+      filed: true,
+      reason,
+      amount,
+      status: 'REVIEW_PENDING'
+    };
+    b.updatedAt = new Date().toISOString();
+    return b;
+  },
+
+  // Subscriptions Store
+  createSubscription: (data: Omit<MockSubscription, 'subscriptionId' | 'createdAt' | 'updatedAt'>) => {
+    const subscriptionId = `SUB-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
+    const newSub: MockSubscription = {
+      ...data,
+      subscriptionId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    subscriptions.set(subscriptionId, newSub);
+    return newSub;
+  },
+  getUserSubscriptions: (userId: string) => {
+    return Array.from(subscriptions.values()).filter(s => s.userId === userId);
+  },
+  getAllSubscriptions: () => {
+    return Array.from(subscriptions.values());
+  },
+  getSubscriptionById: (subscriptionId: string) => {
+    return subscriptions.get(subscriptionId) || null;
+  },
+  cancelSubscription: (subscriptionId: string) => {
+    const s = subscriptions.get(subscriptionId);
+    if (!s) return null;
+    s.status = 'CANCELLED';
+    s.updatedAt = new Date().toISOString();
+    return s;
+  },
+
+  // Vehicle QR Tag Store
+  createOrUpdateVehicleQrTag: (data: Omit<MockVehicleQrTag, 'createdAt' | 'updatedAt'>) => {
+    const existing = Array.from(vehicleQrTags.values()).find(t => t.bikeId === data.bikeId);
+    const tag: MockVehicleQrTag = {
+      ...data,
+      createdAt: existing ? existing.createdAt : new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    vehicleQrTags.set(tag.token, tag);
+    return tag;
+  },
+  getVehicleQrTagByToken: (token: string) => {
+    const tag = vehicleQrTags.get(token);
+    if (!tag || !tag.isActive) return null;
+    return tag;
+  },
+  getVehicleQrTagByBikeId: (bikeId: string) => {
+    for (const tag of vehicleQrTags.values()) {
+      if (tag.bikeId === bikeId && tag.isActive) return tag;
+    }
+    return null;
+  },
+  submitQrContactRequest: (token: string, request: {
+    requestType: 'PARKED_OBSTRUCTION' | 'LIGHTS_ON' | 'VEHICLE_TIPPED' | 'ACCIDENT_EMERGENCY' | 'GENERAL_MESSAGE';
+    senderName?: string;
+    senderPhone?: string;
+    message: string;
+    locationPin?: { lat: number; lng: number; address?: string };
+  }) => {
+    const tag = vehicleQrTags.get(token);
+    if (!tag || !tag.isActive) return null;
+    const newReq = {
+      id: `QR-MSG-${Date.now().toString(36).toUpperCase()}`,
+      ...request,
+      createdAt: new Date().toISOString(),
+      read: false
+    };
+    tag.contactRequests.unshift(newReq);
+    tag.updatedAt = new Date().toISOString();
+    return newReq;
+  },
+  revokeVehicleQrTag: (bikeId: string) => {
+    for (const [token, tag] of vehicleQrTags.entries()) {
+      if (tag.bikeId === bikeId) {
+        tag.isActive = false;
+        tag.updatedAt = new Date().toISOString();
+        vehicleQrTags.set(token, tag);
+        return true;
+      }
+    }
+    return false;
   }
 };

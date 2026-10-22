@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getBikes, saveBike, deleteBike as removeBikeFromStorage } from '../../utils/appStorage';
-import type { Bike, FuelType } from '../../types/app';
+import { generateBikeQrTagApi, revokeBikeQrTagApi, fetchUserSubscriptionsApi } from '../../services/ecosystemApi';
+import type { Bike, FuelType, UserSubscription, VehicleQrTag } from '../../types/app';
 import { Button } from '../../components/Button';
 import { EmptyState } from '../../components/EmptyState';
 import {
@@ -16,15 +17,26 @@ import {
   ChevronUp,
   ShieldCheck,
   Sparkles,
+  QrCode,
+  Copy,
+  ExternalLink,
+  AlertTriangle
 } from 'lucide-react';
 import { getAssetUrl } from '../../utils/assets';
 
 export function MyBikesPage() {
   const { user } = useAuth();
   const [bikes, setBikes] = useState<Bike[]>([]);
+  const [subscriptions, setSubscriptions] = useState<UserSubscription[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingBike, setEditingBike] = useState<Bike | undefined>();
   const [expandedBikeIds, setExpandedBikeIds] = useState<Record<string, boolean>>({});
+
+  // QR Modal State
+  const [activeQrModalBike, setActiveQrModalBike] = useState<Bike | null>(null);
+  const [activeQrTag, setActiveQrTag] = useState<VehicleQrTag | null>(null);
+  const [qrCopied, setQrCopied] = useState(false);
+  const [qrLoading, setQrLoading] = useState(false);
 
   // Form State
   const [brand, setBrand] = useState('');
@@ -36,9 +48,11 @@ export function MyBikesPage() {
   const [isPrimary, setIsPrimary] = useState(false);
   const [notes, setNotes] = useState('');
 
-  const loadBikes = () => {
+  const loadBikes = async () => {
     if (user) {
       setBikes(getBikes(user.id));
+      const subs = await fetchUserSubscriptionsApi(user.id);
+      setSubscriptions(subs);
     }
   };
 
@@ -46,6 +60,29 @@ export function MyBikesPage() {
     loadBikes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  const handleOpenQrModal = async (bike: Bike) => {
+    setActiveQrModalBike(bike);
+    setQrCopied(false);
+    setQrLoading(true);
+    try {
+      const tag = await generateBikeQrTagApi(bike.id);
+      setActiveQrTag(tag);
+    } finally {
+      setQrLoading(false);
+    }
+  };
+
+  const handleRevokeQrTag = async (bikeId: string) => {
+    if (!window.confirm('Are you sure you want to revoke this QR tag? Any existing printed stickers or tags will stop working.')) return;
+    setQrLoading(true);
+    try {
+      await revokeBikeQrTagApi(bikeId);
+      setActiveQrTag(null);
+    } finally {
+      setQrLoading(false);
+    }
+  };
 
   const toggleSpecs = (bikeId: string) => {
     setExpandedBikeIds((prev) => ({ ...prev, [bikeId]: !prev[bikeId] }));
@@ -420,8 +457,78 @@ export function MyBikesPage() {
                     </p>
                   )}
                   
+                  {/* Active Roadside Protection Plan Badge */}
+                  {(() => {
+                    const activeSub = subscriptions.find(s => s.linkedBike?.bikeId === b.id && s.status === 'ACTIVE');
+                    if (activeSub) {
+                      return (
+                        <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <ShieldCheck size={16} style={{ color: '#059669' }} />
+                            <div>
+                              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#065F46', display: 'block' }}>
+                                {activeSub.planName}
+                              </span>
+                              <span style={{ fontSize: '0.68rem', color: '#047857' }}>
+                                {activeSub.features.maxFreeBreakdowns - activeSub.features.usedBreakdowns} Free Breakdowns Left • Free Towing to {activeSub.features.towingDistanceLimitKm}km
+                              </span>
+                            </div>
+                          </div>
+                          <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#059669', background: '#D1FAE5', padding: '0.15rem 0.45rem', borderRadius: '5px' }}>
+                            ACTIVE
+                          </span>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: '#FEFCE8', border: '1px solid #FEF08A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <AlertTriangle size={15} style={{ color: '#CA8A04' }} />
+                          <div>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#854D0E', display: 'block' }}>
+                              Standard Pay-Per-Incident RSA
+                            </span>
+                            <span style={{ fontSize: '0.68rem', color: '#A16207' }}>
+                              Towing & labor billed at standard callout rate
+                            </span>
+                          </div>
+                        </div>
+                        <a
+                          href="#/subscriptions"
+                          style={{ fontSize: '0.7rem', fontWeight: 800, color: '#854D0E', background: '#FEF08A', padding: '0.2rem 0.55rem', borderRadius: '6px', textDecoration: 'none' }}
+                        >
+                          Add Shield Plan →
+                        </a>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Vehicle Garage Maintenance Health Metrics (Phase 9) */}
+                  <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.75rem', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '10px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.5rem', fontSize: '0.72rem' }}>
+                    <div>
+                      <span style={{ color: '#64748B', display: 'block', fontWeight: 600 }}>Drive Chain Maintenance</span>
+                      <strong style={{ color: '#0F172A', fontWeight: 800 }}>Lube every 500 km</strong>
+                      <span style={{ color: '#059669', display: 'block', fontSize: '0.65rem' }}>✓ Cleaned & Tensioned</span>
+                    </div>
+                    <div>
+                      <span style={{ color: '#64748B', display: 'block', fontWeight: 600 }}>Engine Oil Service</span>
+                      <strong style={{ color: '#0F172A', fontWeight: 800 }}>Every 5,000 km</strong>
+                      <span style={{ color: '#2563EB', display: 'block', fontSize: '0.65rem' }}>Motul Synthetic 10W-50</span>
+                    </div>
+                    <div>
+                      <span style={{ color: '#64748B', display: 'block', fontWeight: 600 }}>Tyre Pressure (Cold)</span>
+                      <strong style={{ color: '#0F172A', fontWeight: 800 }}>32 PSI Front / 36 Rear</strong>
+                      <span style={{ color: '#059669', display: 'block', fontSize: '0.65rem' }}>Weekly Audit Due</span>
+                    </div>
+                    <div>
+                      <span style={{ color: '#64748B', display: 'block', fontWeight: 600 }}>Compliance & Reg</span>
+                      <strong style={{ color: '#0F172A', fontWeight: 800 }}>RC Active • Insurance 2026</strong>
+                      <span style={{ color: '#059669', display: 'block', fontSize: '0.65rem' }}>PUC Valid</span>
+                    </div>
+                  </div>
+
                   {!b.isPrimary && (
-                    <div style={{ marginTop: '1rem' }}>
+                    <div style={{ marginTop: '0.75rem' }}>
                       <button
                         type="button"
                         className="make-primary-btn"
@@ -435,6 +542,15 @@ export function MyBikesPage() {
                 </div>
 
                 <div className="bike-garage-card__footer">
+                  <button
+                    type="button"
+                    className="icon-action-btn"
+                    onClick={() => handleOpenQrModal(b)}
+                    title="Vehicle QR Tag"
+                    style={{ textDecoration: 'none', color: '#4338CA', fontWeight: 800 }}
+                  >
+                    <QrCode size={16} /> Emergency QR Tag
+                  </button>
                   <button
                     type="button"
                     className="icon-action-btn"
@@ -597,6 +713,127 @@ export function MyBikesPage() {
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MOTOASSIST VEHICLE QR TAG MODAL */}
+      {activeQrModalBike && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="bg-[#1D1D1D] border border-white/15 rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-6 shadow-2xl relative text-white">
+            
+            <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30">
+                  <QrCode size={26} />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase text-[#FFF174] tracking-widest block">VEHICLE EMERGENCY QR TAG</span>
+                  <h3 className="text-xl font-black text-white">{activeQrModalBike.brand} {activeQrModalBike.model}</h3>
+                  <span className="text-xs text-gray-400 font-mono">{activeQrModalBike.registrationNumber}</span>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setActiveQrModalBike(null);
+                  setActiveQrTag(null);
+                }}
+                className="p-2 text-gray-400 hover:text-white rounded-xl bg-white/5 border border-white/10"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {qrLoading ? (
+              <div className="py-12 text-center space-y-3">
+                <div className="w-8 h-8 border-2 border-[#FFF174] border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-xs text-gray-400">Generating secure emergency QR tag...</p>
+              </div>
+            ) : activeQrTag ? (
+              <div className="space-y-4">
+                
+                {/* Visual QR Card Representation */}
+                <div className="p-6 bg-gradient-to-br from-indigo-950/40 via-[#1D1D1D] to-black border border-indigo-500/30 rounded-2xl text-center space-y-3 shadow-inner">
+                  <div className="w-40 h-40 bg-white p-2 rounded-2xl mx-auto flex items-center justify-center shadow-lg">
+                    {/* SVG Stylized QR graphic representing the token */}
+                    <div className="w-full h-full border-4 border-black p-2 flex flex-col justify-between items-center text-black">
+                      <div className="w-full flex justify-between">
+                        <div className="w-8 h-8 border-4 border-black bg-black" />
+                        <div className="w-8 h-8 border-4 border-black bg-black" />
+                      </div>
+                      <div className="text-[9px] font-black tracking-tighter text-center uppercase">
+                        MOTOASSIST RESCUE<br />
+                        <span className="font-mono text-[7px] text-gray-600 truncate block max-w-[120px]">{activeQrTag.token}</span>
+                      </div>
+                      <div className="w-full flex justify-between">
+                        <div className="w-8 h-8 border-4 border-black bg-black" />
+                        <div className="w-5 h-5 bg-black" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-bold text-gray-300 block">
+                      Protected Public Scanner URL:
+                    </span>
+                    <span className="text-xs font-mono text-[#FFF174] break-all block mt-0.5">
+                      {window.location.origin}{window.location.pathname}#/qr/{activeQrTag.token}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Privacy & Instructions Notice */}
+                <div className="p-3.5 bg-white/5 border border-white/5 rounded-2xl space-y-1 text-xs">
+                  <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                    <ShieldCheck size={14} />
+                    <span>Zero Personal Contact Leakage</span>
+                  </div>
+                  <p className="text-gray-300 text-[11px] leading-relaxed">
+                    Print or engrave this QR code on your motorcycle's front windshield, number plate, or key fob. Anyone scanning it can notify you of parking obstruction, lights left on, or an accident without seeing your phone number or home address.
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = `${window.location.origin}${window.location.pathname}#/qr/${activeQrTag.token}`;
+                      navigator.clipboard.writeText(url);
+                      setQrCopied(true);
+                      setTimeout(() => setQrCopied(false), 2500);
+                    }}
+                    className="w-full sm:flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    {qrCopied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
+                    <span>{qrCopied ? 'URL Copied to Clipboard!' : 'Copy QR Scanner URL'}</span>
+                  </button>
+
+                  <a
+                    href={`#/qr/${activeQrTag.token}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full sm:flex-1 py-3 rounded-xl bg-[#FFF174] text-black font-black text-xs flex items-center justify-center gap-1.5 hover:bg-yellow-400 transition-colors shadow-md text-center"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <ExternalLink size={15} />
+                    <span>Test Scanner Page</span>
+                  </a>
+                </div>
+
+                <div className="pt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => handleRevokeQrTag(activeQrModalBike.id)}
+                    className="text-[11px] text-red-400 hover:text-red-300 font-bold hover:underline"
+                  >
+                    Revoke & Regenerate New QR Token
+                  </button>
+                </div>
+
+              </div>
+            ) : null}
+
           </div>
         </div>
       )}

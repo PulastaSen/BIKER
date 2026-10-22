@@ -51,6 +51,9 @@ import { EmergencyAssistPage } from './pages/EmergencyAssistPage';
 import { VerificationCenterPage } from './pages/VerificationCenterPage';
 import { RemoteReadinessPage } from './pages/RemoteReadinessPage';
 import { OperationsQueuePage } from './pages/OperationsQueuePage';
+import { ServicesCatalogPage } from './pages/ServicesCatalogPage';
+import { SubscriptionsPage } from './pages/SubscriptionsPage';
+import { VehicleQrPage } from './pages/VehicleQrPage';
 import { MotorcycleTroubleshooter } from './components/MotorcycleTroubleshooter';
 import { ScrollToTop } from './components/ScrollToTop';
 import { OfflineNotice } from './components/OfflineNotice';
@@ -125,6 +128,10 @@ function AppRoutes() {
           <Route path="/request-success" element={<PageTransition><RequestSuccessPage /></PageTransition>} />
           <Route path="/requests/:id" element={<PageTransition><RequestDetailsPage /></PageTransition>} />
           <Route path="/nearby-services" element={<PageTransition><NearbyServicesPage /></PageTransition>} />
+          <Route path="/services" element={<PageTransition><ServicesCatalogPage /></PageTransition>} />
+          <Route path="/subscriptions" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
+          <Route path="/coverage" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
+          <Route path="/qr/:token" element={<PageTransition><VehicleQrPage /></PageTransition>} />
           <Route path="/remote-readiness" element={<PageTransition><RemoteReadinessPage /></PageTransition>} />
           <Route path="/ops" element={<PageTransition><OperationsQueuePage /></PageTransition>} />
           <Route path="/troubleshoot" element={<PageTransition><div className="min-h-screen bg-[#151515] pt-20 pb-20 px-4 max-w-3xl mx-auto"><MotorcycleTroubleshooter onSelectCategory={(cat) => window.location.hash = `#/emergency-assist?cat=${cat === 'Towing' ? 'TOWING' : cat === 'Medical' ? 'MEDICAL' : cat === 'Safety' ? 'UNSAFE' : 'BIKE_PROBLEM'}`} /></div></PageTransition>} />
@@ -132,6 +139,8 @@ function AppRoutes() {
         <Route element={<DashboardLayout />}>
           <Route path="/admin/ops" element={<PageTransition><OperationsQueuePage /></PageTransition>} />
           <Route path="/rider/dashboard" element={<PageTransition><RiderDashboardPage /></PageTransition>} />
+          <Route path="/rider/services" element={<PageTransition><ServicesCatalogPage /></PageTransition>} />
+          <Route path="/rider/subscriptions" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
           <Route path="/rider/requests" element={<PageTransition><MyRequestsPage /></PageTransition>} />
           <Route path="/rider/bikes" element={<PageTransition><MyBikesPage /></PageTransition>} />
           <Route path="/rider/emergency-contacts" element={<PageTransition><EmergencyContactsPage /></PageTransition>} />

@@ -67,6 +67,8 @@ export function DashboardLayout() {
 
   const riderLinks = [
     { to: '/rider/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/services', label: 'Services Catalogue', icon: Wrench },
+    { to: '/subscriptions', label: 'RSA Plans & Shield', icon: ShieldCheck },
     { to: '/request-help', label: 'Request Help', icon: PlusCircle },
     { to: '/rider/requests', label: 'My Help Requests', icon: Clock },
     { to: '/rider/bikes', label: 'My Garage (Bikes)', icon: BikeIcon },
@@ -83,10 +85,11 @@ export function DashboardLayout() {
   ];
 
   const adminLinks = [
-    { to: '/admin/dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
+    { to: '/admin/dashboard', label: 'Operations Command Centre', icon: LayoutDashboard },
+    { to: '/ops', label: 'Live Ops Desk', icon: Clock },
     { to: '/admin/helpers', label: 'Verify Helpers', icon: ShieldCheck },
     { to: '/admin/users', label: 'User Directory', icon: Users },
-    { to: '/admin/requests', label: 'System Requests', icon: Clock },
+    { to: '/admin/requests', label: 'System Requests', icon: AlertTriangle },
     { to: '/admin/reports', label: 'Safety Reports', icon: AlertTriangle },
   ];
 

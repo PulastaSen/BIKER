@@ -179,6 +179,47 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
     setTimeout(() => setDownloadSuccess(false), 3000);
   };
 
+  // Live GPS Sensor State
+  const [gpsFix, setGpsFix] = useState<{
+    lat: number;
+    lng: number;
+    accuracy: number;
+    timestamp: number;
+  } | null>(null);
+  const [gpsError, setGpsError] = useState<string | null>(null);
+  const [gpsLoading, setGpsLoading] = useState<boolean>(false);
+  const [manualLandmark, setManualLandmark] = useState<string>('');
+  const [manualSaved, setManualSaved] = useState<boolean>(false);
+
+  const fetchGpsFix = () => {
+    if (!navigator.geolocation) {
+      setGpsError('Geolocation is not supported by your browser.');
+      return;
+    }
+    setGpsLoading(true);
+    setGpsError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setGpsFix({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: Math.round(pos.coords.accuracy),
+          timestamp: pos.timestamp
+        });
+        setGpsLoading(false);
+      },
+      (err) => {
+        setGpsError(err.message || 'GPS access denied or unavailable in deep canyon terrain.');
+        setGpsLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
+  };
+
+  useEffect(() => {
+    fetchGpsFix();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#151515] text-white pt-20 pb-28 font-sans selection:bg-[#FFF174] selection:text-black">
       <div className="container mx-auto px-4 max-w-4xl space-y-7">
@@ -228,7 +269,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
           <div className="flex items-center gap-2">
             {offlineQueue.length > 0 && (
               <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 font-bold text-amber-300">
-                {offlineQueue.length} queued offline request(s)
+                {offlineQueue.length} locally queued (not sent)
               </span>
             )}
             <button
@@ -241,6 +282,89 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
             </button>
           </div>
         </div>
+
+        {/* SECTION 0: LIVE GPS QUALITY & LAST-KNOWN POSITION */}
+        <section className="bg-[#121212] border border-white/10 rounded-3xl p-5 sm:p-7 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+              <MapPin size={18} className="text-[#FFF174]" />
+              Live GPS Sensor Accuracy & Offline Position
+            </h2>
+            <button
+              type="button"
+              onClick={fetchGpsFix}
+              disabled={gpsLoading}
+              className="text-xs text-[#FFF174] hover:underline flex items-center gap-1"
+            >
+              <RefreshCw size={12} className={gpsLoading ? 'animate-spin' : ''} />
+              Refresh GPS
+            </button>
+          </div>
+
+          {gpsFix ? (
+            <div className="grid sm:grid-cols-3 gap-3">
+              <div className="bg-black/40 border border-white/10 p-3.5 rounded-2xl">
+                <p className="text-[10px] uppercase font-bold text-gray-400">Coordinates</p>
+                <p className="font-mono text-sm font-bold text-white mt-0.5">
+                  {gpsFix.lat.toFixed(5)}, {gpsFix.lng.toFixed(5)}
+                </p>
+              </div>
+              <div className="bg-black/40 border border-white/10 p-3.5 rounded-2xl">
+                <p className="text-[10px] uppercase font-bold text-gray-400">Sensor Quality</p>
+                <p className="text-sm font-bold text-emerald-400 mt-0.5 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  ±{gpsFix.accuracy} meters accuracy
+                </p>
+              </div>
+              <div className="bg-black/40 border border-white/10 p-3.5 rounded-2xl">
+                <p className="text-[10px] uppercase font-bold text-gray-400">Fix Timestamp</p>
+                <p className="text-xs text-gray-300 mt-1 font-mono">
+                  {new Date(gpsFix.timestamp).toLocaleTimeString()} ({Math.round((Date.now() - gpsFix.timestamp) / 1000)}s ago)
+                </p>
+              </div>
+            </div>
+          ) : gpsError ? (
+            <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-300 text-xs space-y-2">
+              <p className="font-bold flex items-center gap-1.5">
+                <AlertTriangle size={15} /> {gpsError}
+              </p>
+              <p className="text-gray-400">
+                Satellite geometry blocked by mountain terrain or permission not granted. Use manual landmark entry below:
+              </p>
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400">Acquiring live satellite constellation fix...</p>
+          )}
+
+          {/* Manual Landmark Backup Entry */}
+          <div className="pt-2">
+            <label className="block text-xs font-bold text-gray-300 mb-1.5">
+              Manual Landmark / Highway Mile Marker Backup (When GPS is Obstructed)
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={manualLandmark}
+                onChange={(e) => setManualLandmark(e.target.value)}
+                placeholder="e.g. NH-10 14th Mile, opposite Kali Mandir rock cut"
+                className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#FFF174] outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (manualLandmark.trim()) {
+                    localStorage.setItem('motoassist_manual_landmark', manualLandmark);
+                    setManualSaved(true);
+                    setTimeout(() => setManualSaved(false), 2500);
+                  }
+                }}
+                className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl"
+              >
+                {manualSaved ? 'Saved!' : 'Cache'}
+              </button>
+            </div>
+          </div>
+        </section>
 
         {/* SECTION 1: TRIP ROUTE CHECK-IN */}
         <section className="bg-[#121212] border border-white/10 rounded-3xl p-5 sm:p-7 space-y-4">

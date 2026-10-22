@@ -7,6 +7,18 @@ export interface IBike {
   registrationNumber: string;
   year: number;
   fuelType: 'PETROL' | 'ELECTRIC';
+  vin?: string;
+  engineCc?: number;
+  odometerKm?: number;
+  insuranceExpiry?: Date;
+  pucExpiry?: Date;
+  maintenanceReminders?: {
+    chainLubeDueKm?: number;
+    oilServiceDueKm?: number;
+    tyreCheckDate?: Date;
+  };
+  qrToken?: string;
+  activeSubscriptionId?: string;
   isPrimary: boolean;
   notes?: string;
   createdAt?: Date;
@@ -20,6 +32,18 @@ const BikeSchema: Schema = new Schema({
   registrationNumber: { type: String, required: true },
   year: { type: Number, required: true },
   fuelType: { type: String, enum: ['PETROL', 'ELECTRIC'], default: 'PETROL' },
+  vin: { type: String },
+  engineCc: { type: Number },
+  odometerKm: { type: Number, default: 0 },
+  insuranceExpiry: { type: Date },
+  pucExpiry: { type: Date },
+  maintenanceReminders: {
+    chainLubeDueKm: { type: Number },
+    oilServiceDueKm: { type: Number },
+    tyreCheckDate: { type: Date }
+  },
+  qrToken: { type: String },
+  activeSubscriptionId: { type: String },
   isPrimary: { type: Boolean, default: false },
   notes: { type: String }
 }, {

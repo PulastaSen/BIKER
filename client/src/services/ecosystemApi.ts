@@ -8,8 +8,26 @@ import type {
   BikeDocument,
   SparePart,
   ServiceReceipt,
-  HelpRequest
+  HelpRequest,
+  ServiceBooking,
+  UserSubscription,
+  VehicleQrTag,
+  QrContactRequest
 } from '../types/app';
+import {
+  getServiceBookings as getStoredBookings,
+  getServiceBookingById as getStoredBookingById,
+  saveServiceBooking as saveStoredBooking,
+  updateServiceBookingStatus as updateStoredBookingStatus,
+  disputeServiceBooking as disputeStoredBooking,
+  getUserSubscriptions as getStoredSubscriptions,
+  saveSubscription as saveStoredSubscription,
+  cancelSubscription as cancelStoredSubscription,
+  getVehicleQrTagByToken as getStoredQrTag,
+  submitQrContactRequest as submitStoredQrContactRequest,
+  saveVehicleQrTag as saveStoredQrTag,
+  revokeVehicleQrTag as revokeStoredQrTag
+} from '../utils/appStorage';
 
 function getAuthHeader(): Record<string, string> {
   const token = localStorage.getItem('auth_token');
@@ -962,4 +980,339 @@ export async function fetchServiceReceipt(requestId: string): Promise<ServiceRec
     }
   }
   return null;
+}
+
+// ----------------------------------------------------
+// READYASSIST-BENCHMARK: SERVICE CATALOGUE BOOKING API
+// ----------------------------------------------------
+export async function createServiceBookingApi(data: Partial<ServiceBooking>): Promise<ServiceBooking> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        const json = await res.json();
+        saveStoredBooking(json.data);
+        return json.data;
+      }
+    } catch {
+      // Fallback to local storage
+    }
+  }
+
+  const bookingId = `BK-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const localBooking: ServiceBooking = {
+    bookingId,
+    userId: data.userId || 'user-rider-1',
+    riderName: data.riderName || 'MotoAssist Rider',
+    riderPhone: data.riderPhone || '+91 98765 43210',
+    serviceType: data.serviceType || 'PUNCTURE_REPAIR',
+    serviceName: data.serviceName || 'General Motorcycle Assistance',
+    bikeDetails: data.bikeDetails || { brand: 'Motorcycle', model: 'Standard', registrationNumber: 'WB 74 AB 8921' },
+    location: data.location || { address: 'Current Location', lat: 26.7271, lng: 88.3953 },
+    scheduledTime: data.scheduledTime,
+    pricing: data.pricing || {
+      baseRate: 350,
+      travelFee: 100,
+      partsEstimate: 0,
+      totalEstimated: 450,
+      disclaimer: 'Transparent standard rate. Consumables billed at actuals.'
+    },
+    status: 'REQUESTED',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  saveStoredBooking(localBooking);
+  return localBooking;
+}
+
+export async function fetchServiceBookingsApi(userId?: string, status?: string): Promise<ServiceBooking[]> {
+  if (hasBackendApi()) {
+    try {
+      const query = new URLSearchParams();
+      if (userId) query.set('userId', userId);
+      if (status) query.set('status', status);
+      const res = await fetch(`${API_BASE_URL}/api/bookings?${query.toString()}`, {
+        headers: { ...getAuthHeader() }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data || [];
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return getStoredBookings(userId);
+}
+
+export async function fetchServiceBookingByIdApi(bookingId: string): Promise<ServiceBooking | null> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}`, {
+        headers: { ...getAuthHeader() }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data || null;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return getStoredBookingById(bookingId) || null;
+}
+
+export async function updateServiceBookingStatusApi(
+  bookingId: string, 
+  status: ServiceBooking['status'], 
+  details?: Partial<ServiceBooking>
+): Promise<ServiceBooking | null> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ status, ...details })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        updateStoredBookingStatus(bookingId, status, details);
+        return json.data;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return updateStoredBookingStatus(bookingId, status, details) || null;
+}
+
+export async function disputeServiceBookingApi(
+  bookingId: string, 
+  reason: string, 
+  amount: number
+): Promise<ServiceBooking | null> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/dispute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ reason, amount })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        disputeStoredBooking(bookingId, reason, amount);
+        return json.data;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return disputeStoredBooking(bookingId, reason, amount) || null;
+}
+
+// ----------------------------------------------------
+// READYASSIST-BENCHMARK: ROADSIDE SUBSCRIPTION API
+// ----------------------------------------------------
+export async function createSubscriptionApi(data: Partial<UserSubscription>): Promise<UserSubscription> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/subscriptions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        const json = await res.json();
+        saveStoredSubscription(json.data);
+        return json.data;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+
+  const subscriptionId = `SUB-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const localSub: UserSubscription = {
+    subscriptionId,
+    userId: data.userId || 'user-rider-1',
+    planTier: data.planTier || 'TOURING_PRO',
+    planName: data.planName || 'Touring Pro Roadside Shield',
+    priceInr: data.priceInr || 1999,
+    durationMonths: data.durationMonths || 12,
+    linkedBike: data.linkedBike || {
+      bikeId: 'bike-1',
+      brand: 'KTM',
+      model: '390 Adventure',
+      registrationNumber: 'WB 74 AB 8921'
+    },
+    features: data.features || {
+      maxFreeBreakdowns: 4,
+      usedBreakdowns: 0,
+      towingDistanceLimitKm: 50,
+      includesPunctureRepair: true,
+      includesBatteryJumpstart: true,
+      includesMinorMechanicalLabor: true,
+      includesFuelDeliveryLabor: true,
+      includesMountainWinchRecovery: false,
+      highwayPriorityDispatch: true
+    },
+    waitingPeriodHours: 48,
+    startDate: new Date().toISOString(),
+    endDate: new Date(Date.now() + 365 * 86400000).toISOString(),
+    status: 'ACTIVE',
+    paymentDetails: data.paymentDetails || {
+      paymentMode: 'TEST_DEMO',
+      transactionRef: `TXN-${Date.now().toString(36).toUpperCase()}`,
+      paidAmount: data.priceInr || 1999,
+      paidAt: new Date().toISOString()
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  saveStoredSubscription(localSub);
+  return localSub;
+}
+
+export async function fetchUserSubscriptionsApi(userId?: string): Promise<UserSubscription[]> {
+  if (hasBackendApi()) {
+    try {
+      const query = userId ? `?userId=${userId}` : '';
+      const res = await fetch(`${API_BASE_URL}/api/subscriptions${query}`, {
+        headers: { ...getAuthHeader() }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.data || [];
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return getStoredSubscriptions(userId);
+}
+
+export async function cancelSubscriptionApi(subscriptionId: string): Promise<UserSubscription | null> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/subscriptions/${subscriptionId}/cancel`, {
+        method: 'POST',
+        headers: { ...getAuthHeader() }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        cancelStoredSubscription(subscriptionId);
+        return json.data;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return cancelStoredSubscription(subscriptionId) || null;
+}
+
+// ----------------------------------------------------
+// MOTOASSIST HELP-LINE QR: VEHICLE QR API
+// ----------------------------------------------------
+export async function fetchVehicleQrTagApi(token: string): Promise<VehicleQrTag | null> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/qr/tag/${token}`);
+      if (res.ok) {
+        const json = await res.json();
+        return json.data || null;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return getStoredQrTag(token) || null;
+}
+
+export async function submitQrContactRequestApi(
+  token: string, 
+  req: {
+    requestType: 'PARKED_OBSTRUCTION' | 'LIGHTS_ON' | 'VEHICLE_TIPPED' | 'ACCIDENT_EMERGENCY' | 'GENERAL_MESSAGE';
+    senderName?: string;
+    senderPhone?: string;
+    message: string;
+    locationPin?: { lat: number; lng: number; address?: string };
+  }
+): Promise<QrContactRequest | null> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/qr/tag/${token}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(req)
+      });
+      if (res.ok) {
+        const json = await res.json();
+        submitStoredQrContactRequest(token, req);
+        return json.data;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return submitStoredQrContactRequest(token, req) || null;
+}
+
+export async function generateBikeQrTagApi(bikeId: string, emergencyInstructions?: string): Promise<VehicleQrTag | null> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/qr/bike/${bikeId}/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ emergencyInstructions })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        saveStoredQrTag(json.data);
+        return json.data;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+
+  const token = `qr_sec_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
+  const localTag: VehicleQrTag = {
+    token,
+    userId: 'user-rider-1',
+    bikeId,
+    vehicleNickname: 'My Motorcycle',
+    brand: 'Motorcycle',
+    model: 'Standard',
+    registrationNumber: 'WB 74 AB 8921',
+    emergencyInstructions: emergencyInstructions || 'Emergency medical card in tank bag. In case of accident or unattended bike, notify 112 and send a beacon below.',
+    allowPublicContact: true,
+    contactRequests: [],
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  saveStoredQrTag(localTag);
+  return localTag;
+}
+
+export async function revokeBikeQrTagApi(bikeId: string): Promise<boolean> {
+  if (hasBackendApi()) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/qr/bike/${bikeId}/revoke`, {
+        method: 'POST',
+        headers: { ...getAuthHeader() }
+      });
+      if (res.ok) {
+        revokeStoredQrTag(bikeId);
+        return true;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+  return revokeStoredQrTag(bikeId);
 }

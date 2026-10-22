@@ -107,7 +107,33 @@ export function PublicLayout() {
                 Home
               </NavLink>
 
-              {/* 2. HELP */}
+              {/* 2. SERVICES CATALOGUE */}
+              <NavLink
+                to="/services"
+                onClick={closeMenu}
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
+                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  }`
+                }
+              >
+                Services
+              </NavLink>
+
+              {/* 3. RSA SUBSCRIPTION PLANS */}
+              <NavLink
+                to="/subscriptions"
+                onClick={closeMenu}
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
+                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  }`
+                }
+              >
+                RSA Plans
+              </NavLink>
+
+              {/* 4. HELP */}
               <NavLink
                 to="/nearby-services"
                 onClick={closeMenu}
