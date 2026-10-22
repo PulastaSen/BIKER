@@ -777,7 +777,7 @@ export function MyBikesPage() {
                       Protected Public Scanner URL:
                     </span>
                     <span className="text-xs font-mono text-[#FFF174] break-all block mt-0.5">
-                      {window.location.origin}{window.location.pathname}#/qr/{activeQrTag.token}
+                      {window.location.origin}{window.location.pathname.replace(/\/?$/, '/')}#/qr/{activeQrTag.token}
                     </span>
                   </div>
                 </div>
@@ -798,7 +798,7 @@ export function MyBikesPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      const url = `${window.location.origin}${window.location.pathname}#/qr/${activeQrTag.token}`;
+                      const url = `${window.location.origin}${window.location.pathname.replace(/\/?$/, '/')}#/qr/${activeQrTag.token}`;
                       navigator.clipboard.writeText(url);
                       setQrCopied(true);
                       setTimeout(() => setQrCopied(false), 2500);

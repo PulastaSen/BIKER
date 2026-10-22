@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Navigation, Menu, X, ArrowRight, LogOut, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,34 @@ export function PublicLayout() {
   const location = useLocation();
 
   const closeMenu = () => setMenuOpen(false);
+
+  // Prevent background scrolling when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
+  // Handle Escape key to close mobile menu
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && menuOpen) {
+        closeMenu();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [menuOpen]);
+
+  // Auto-close menu on route navigation
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   const isEmergencyMode = location.pathname === '/sos';
   const isFullScreenMode =
@@ -83,7 +111,7 @@ export function PublicLayout() {
 
             {/* Mobile Hamburger toggle */}
             <button
-              className="menu-button md:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-white"
+              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer"
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(!menuOpen)}
@@ -239,13 +267,13 @@ export function PublicLayout() {
             </div>
           </nav>
           {menuOpen && (
-            <div className="nav-backdrop fixed inset-0 bg-black/60 z-30 md:hidden" onClick={closeMenu} aria-hidden="true" />
+            <div className="nav-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm z-30 lg:hidden" onClick={closeMenu} aria-hidden="true" />
           )}
         </header>
       )}
 
       {/* MAIN VIEW */}
-      <main className="public-main flex-1 pb-28 md:pb-0" key={location.pathname}>
+      <main className="public-main flex-1 pb-28 md:pb-8" key={location.pathname}>
         <div className="page-transition">
           <Outlet />
         </div>

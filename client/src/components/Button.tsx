@@ -19,9 +19,10 @@ export function Button({
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
+    const isSynthetic = e.clientX === 0 && e.clientY === 0;
     setRipple({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: isSynthetic ? rect.width / 2 : e.clientX - rect.left,
+      y: isSynthetic ? rect.height / 2 : e.clientY - rect.top,
     });
     setTimeout(() => setRipple(null), 600);
 

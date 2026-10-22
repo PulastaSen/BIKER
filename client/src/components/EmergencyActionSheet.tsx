@@ -267,6 +267,29 @@ export function EmergencyActionSheet({
 
   const navigate = useNavigate();
 
+  // Prevent background scrolling when action sheet is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  // Handle Escape key to dismiss action sheet
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   // Category B state: problem filter
   const [bikeIssueFilter, setBikeIssueFilter] = useState<BikeProblemType>('ALL');
 

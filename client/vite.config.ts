@@ -3,47 +3,51 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig({
-  base: './',
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
-      manifest: {
-        name: 'MotoAssist — Motorcycle Roadside Assistance',
-        short_name: 'MotoAssist',
-        description: 'Highway & Hills Emergency Motorcycle Roadside Assistance Network',
-        theme_color: '#151515',
-        background_color: '#151515',
-        display: 'standalone',
-        orientation: 'portrait',
-        start_url: './',
-        scope: './',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: 'maskable-icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable any'
-          }
-        ]
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}']
-      }
-    })
-  ],
+export default defineConfig(({ mode }) => {
+  const isProd = mode === 'production';
+  const base = process.env.VITE_BASE || (isProd ? '/BIKER/' : '/');
+
+  return {
+    base,
+    plugins: [
+      react(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
+        manifest: {
+          name: 'MotoAssist — Motorcycle Roadside Assistance',
+          short_name: 'MotoAssist',
+          description: 'Highway & Hills Emergency Motorcycle Roadside Assistance Network',
+          theme_color: '#151515',
+          background_color: '#151515',
+          display: 'standalone',
+          orientation: 'portrait',
+          start_url: base,
+          scope: base,
+          icons: [
+            {
+              src: `${base}pwa-192x192.png`,
+              sizes: '192x192',
+              type: 'image/png'
+            },
+            {
+              src: `${base}pwa-512x512.png`,
+              sizes: '512x512',
+              type: 'image/png'
+            },
+            {
+              src: `${base}maskable-icon-512x512.png`,
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable any'
+            }
+          ]
+        },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}']
+        }
+      })
+    ],
   server: { 
     port: 5173,
     host: true,
@@ -58,4 +62,5 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
   },
+};
 });

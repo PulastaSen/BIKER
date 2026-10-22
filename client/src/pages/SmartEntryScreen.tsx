@@ -136,6 +136,19 @@ export function SmartEntryScreen() {
             </div>
           </button>
 
+          {/* Quick Direct Exploration without Login */}
+          <div className="pt-1 flex flex-col sm:flex-row items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/services')}
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#FFF174]/40 text-gray-200 hover:text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer min-h-[44px]"
+              aria-label="Explore Platform Services and Roadside Assistance Plans"
+            >
+              <Navigation size={15} className="text-[#FFF174]" />
+              <span>Explore Platform & Roadside Plans (No Login Required)</span>
+              <ArrowRight size={14} className="text-gray-400" />
+            </button>
+          </div>
         </div>
 
         {/* Quick Resilience & Safety Links */}

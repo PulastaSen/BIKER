@@ -107,7 +107,7 @@ export function EmergencyAssistPage() {
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors cursor-pointer min-h-[40px] px-2"
+            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors cursor-pointer min-h-[44px] min-w-[44px] px-2.5"
             aria-label="Return to home screen"
           >
             <ArrowLeft size={16} />
@@ -125,7 +125,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => setShowMedicalModal(true)}
-              className="px-2.5 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-xs font-bold text-red-200 flex items-center gap-1.5 transition-colors cursor-pointer min-h-[40px]"
+              className="px-3 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-xs font-bold text-red-200 flex items-center gap-1.5 transition-colors cursor-pointer min-h-[44px] min-w-[44px]"
               title="Emergency Medical ID"
               aria-label="Open Medical ID card"
             >
@@ -136,11 +136,11 @@ export function EmergencyAssistPage() {
             {/* Quick 112 Call in Top Bar */}
             <a
               href="tel:112"
-              className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 transition-transform active:scale-95 shadow-[0_0_12px_rgba(239,68,68,0.5)] min-h-[40px]"
+              className="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 transition-transform active:scale-95 shadow-[0_0_12px_rgba(239,68,68,0.5)] min-h-[44px] min-w-[44px]"
               title="Immediate Call 112"
               aria-label="Call 112 National Emergency"
             >
-              <PhoneCall size={13} />
+              <PhoneCall size={14} />
               <span>112</span>
             </a>
           </div>

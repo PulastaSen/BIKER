@@ -774,19 +774,23 @@ textarea:focus {
   z-index: 998;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
   .nav__links {
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 72px;
+    top: 68px;
     left: 0;
     width: 100%;
     background: #0D0D0D;
-    padding: 1.75rem 1.5rem;
-    border-bottom: 2px solid rgba(255, 241, 116, 0.2);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    padding: 1.5rem;
+    border-bottom: 2px solid rgba(255, 241, 116, 0.25);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
     z-index: 999;
+    max-height: calc(100dvh - 68px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
   
   .nav__links.is-open,
@@ -798,15 +802,21 @@ textarea:focus {
 
   .nav__links > a:not(.nav-register):not(.button) {
     width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 1.05rem;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    min-height: 44px;
+    padding: 0.85rem 1.15rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
   
-  .nav__links > a:not(.nav-register):not(.button):hover {
-    background: rgba(255, 241, 116, 0.08);
+  .nav__links > a:not(.nav-register):not(.button):hover,
+  .nav__links > a:not(.nav-register):not(.button):active {
+    background: rgba(255, 241, 116, 0.12);
+    border-color: rgba(255, 241, 116, 0.3);
   }
 
   .nav__links > a:not(.nav-register):not(.button)::after {
@@ -821,7 +831,24 @@ textarea:focus {
   }
   
   .menu-button {
-    display: flex;
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .menu-button {
+    display: none !important;
+  }
+
+  .nav__links {
+    display: flex !important;
+    position: static;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+    max-height: none;
+    overflow: visible;
   }
 }
 

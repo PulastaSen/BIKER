@@ -32,9 +32,33 @@ export function DashboardLayout() {
 
   const closeDrawer = () => setMobileDrawerOpen(false);
 
+  // Prevent background scrolling when mobile drawer is open
+  useEffect(() => {
+    if (mobileDrawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileDrawerOpen]);
+
+  // Handle Escape key to close drawer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileDrawerOpen) {
+        closeDrawer();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileDrawerOpen]);
+
   // Reset scroll position on route change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+    setMobileDrawerOpen(false);
   }, [location.pathname]);
 
   const handleLogout = async () => {
@@ -130,7 +154,7 @@ export function DashboardLayout() {
             type="button"
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 border border-red-500/30 transition-all flex items-center justify-center min-w-[38px] min-h-[38px] cursor-pointer"
+            className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 border border-red-500/30 transition-all flex items-center justify-center min-w-[44px] min-h-[44px] cursor-pointer"
             title="Log Out"
             aria-label="Log Out of MotoAssist"
           >
@@ -141,7 +165,7 @@ export function DashboardLayout() {
           <button
             type="button"
             onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-            className="p-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors min-w-[38px] min-h-[38px] flex items-center justify-center cursor-pointer"
+            className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
             aria-label="Toggle navigation drawer"
             aria-expanded={mobileDrawerOpen}
           >
@@ -169,7 +193,7 @@ export function DashboardLayout() {
               <button
                 type="button"
                 onClick={closeDrawer}
-                className="p-2 text-gray-400 hover:text-white rounded-xl bg-white/5 border border-white/10 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                className="p-2.5 text-gray-400 hover:text-white rounded-xl bg-white/5 border border-white/10 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Close navigation drawer"
               >
                 <X size={18} />
