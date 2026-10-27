@@ -12,7 +12,6 @@ export function MobileBottomNav() {
     location.pathname === '/emergency' ||
     location.pathname === '/emergency-assist' ||
     location.pathname === '/entry' ||
-    (location.pathname === '/' && !user) ||
     location.pathname === '/accident-assistant';
 
   if (isEmergencyMode) {

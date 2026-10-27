@@ -352,7 +352,7 @@ export function RequestDetailsPage() {
 
   if (!request) {
     return (
-      <div className="min-h-screen bg-[#090D14] flex items-center justify-center text-white">
+      <div className="min-h-screen bg-[#090A08] flex items-center justify-center text-[#EFF2F7]">
         <div className="animate-spin w-8 h-8 border-4 border-[#FFF174] border-t-transparent rounded-full"></div>
       </div>
     );
@@ -362,7 +362,7 @@ export function RequestDetailsPage() {
   const currentIndex = STATUS_FLOW.findIndex(s => s.key === normalizedCurrent);
 
   return (
-    <div className="min-h-screen bg-[#090D14] text-white pt-20 pb-20 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#090A08] text-[#EFF2F7] pt-20 pb-20 font-sans selection:bg-[#FFF174] selection:text-black">
       <div className="container mx-auto px-4 max-w-4xl space-y-6">
         
         {/* ACTIVE INCIDENT HUD: First thing visible per Section 11! */}
@@ -385,25 +385,26 @@ export function RequestDetailsPage() {
         {/* Header Block */}
         <div className="flex flex-wrap justify-between items-end gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[#FFF174] text-xs font-black tracking-wider uppercase">
-                REQUEST #{request.requestId}
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="font-mono text-[#FFF174] text-xs font-bold tracking-widest uppercase bg-[#FFF174]/10 border border-[#FFF174]/30 px-2 py-0.5 rounded">
+                INCIDENT #{request.requestId}
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-black uppercase">
-                LIVE RESCUE TRACKER
+              <span className="px-2 py-0.5 rounded bg-[#EF4444]/20 border border-[#EF4444]/40 text-[#EF4444] text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#EF4444] animate-ping" />
+                LIVE RESCUE DISPATCH
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black">{request.problemCategory} Assistance</h1>
-            <div className="flex flex-wrap items-center gap-2 mt-1">
-              <p className="text-gray-400 text-xs">
-                Location: {typeof request.location === 'object' ? request.location.address || 'Location provided' : request.location}
+            <h1 className="text-2xl sm:text-3xl font-display font-black tracking-tight text-[#EFF2F7]">{request.problemCategory} Assistance</h1>
+            <div className="flex flex-wrap items-center gap-2 mt-1.5">
+              <p className="text-[#A8A6A3] text-xs font-medium">
+                Location: <span className="text-[#EFF2F7]">{typeof request.location === 'object' ? request.location.address || 'Location provided' : request.location}</span>
               </p>
               {request.locationProvenance && (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                  request.locationProvenance === 'GPS_FRESH' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' :
-                  request.locationProvenance === 'GPS_STALE' ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' :
-                  request.locationProvenance === 'MANUAL_LANDMARK' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' :
-                  'bg-gray-500/10 text-gray-400 border-gray-500/30'
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
+                  request.locationProvenance === 'GPS_FRESH' ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30' :
+                  request.locationProvenance === 'GPS_STALE' ? 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30' :
+                  request.locationProvenance === 'MANUAL_LANDMARK' ? 'bg-[#B1D8E3]/15 text-[#B1D8E3] border-[#B1D8E3]/30' :
+                  'bg-[#383A32] text-[#A8A6A3] border-[#383A32]'
                 }`}>
                   {request.locationProvenance === 'GPS_FRESH' ? 'GPS Fresh' :
                    request.locationProvenance === 'GPS_STALE' ? 'Stale GPS' :
@@ -417,7 +418,7 @@ export function RequestDetailsPage() {
           {currentIndex < STATUS_FLOW.length - 1 && (
             <button 
               onClick={simulateNextStatus} 
-              className="px-3.5 py-2 bg-yellow-500/10 text-xs font-bold rounded-xl border border-[#FFF174]/40 hover:bg-[#FFF174]/20 text-[#FFF174] flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 bg-[#FFF174]/10 text-xs font-bold rounded-xl border border-[#FFF174]/40 hover:bg-[#FFF174]/20 text-[#FFF174] flex items-center gap-1.5 cursor-pointer min-h-[44px]"
               title="Development testing simulation only"
             >
               <span className="px-1.5 py-0.5 rounded bg-[#FFF174] text-black text-[9px] font-black uppercase">DEV/DEMO</span>
@@ -427,11 +428,11 @@ export function RequestDetailsPage() {
         </div>
 
         {/* MOTORCYCLE IDENTIFICATION & SCOPE CARD */}
-        <div className="p-4 rounded-3xl bg-[#111622] border border-white/10 space-y-2 text-xs">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+        <div className="p-4 sm:p-5 rounded-2xl bg-[#151613] border border-[#383A32] space-y-3 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#383A32] pb-3">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FFF174]" />
-              <span className="font-bold text-white uppercase text-[11px] tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-[#FFF174]" />
+              <span className="font-display font-bold text-[#EFF2F7] uppercase text-xs tracking-wider">
                 Assisted Motorcycle & Policy Record
               </span>
             </div>
@@ -537,13 +538,28 @@ export function RequestDetailsPage() {
 
         <div className="grid lg:grid-cols-3 gap-6">
           
-          {/* Section 2: Real-time Status Flow Tracker */}
-          <div className="lg:col-span-1 p-6 rounded-3xl bg-[#111622] border border-white/10">
-            <h3 className="text-xs font-black uppercase tracking-wider text-gray-400 mb-6">
-              RESCUE PROGRESSION
-            </h3>
+          {/* Section 2: Real-time Status Flow Tracker with Route Motifs */}
+          <div className="lg:col-span-1 p-5 sm:p-6 rounded-2xl bg-[#151613] border border-[#383A32]">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-xs font-display font-bold uppercase tracking-widest text-[#A8A6A3]">
+                RESCUE PROGRESSION
+              </h3>
+              <span className="text-[10px] font-mono text-[#DFF127] bg-[#DFF127]/10 px-2 py-0.5 rounded border border-[#DFF127]/25">
+                STEP {currentIndex + 1} OF {STATUS_FLOW.length}
+              </span>
+            </div>
+            
             <div className="relative">
-              <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-white/10"></div>
+              {/* Route line track */}
+              <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-[#383A32]" />
+              
+              {/* Active traversed route segment */}
+              <div 
+                className="absolute left-4 top-4 w-0.5 bg-gradient-to-b from-[#10B981] via-[#DFF127] to-[#DFF127] transition-all duration-500"
+                style={{
+                  height: `${Math.min(100, Math.max(0, (currentIndex / (STATUS_FLOW.length - 1)) * 100))}%`
+                }}
+              />
               
               {STATUS_FLOW.map((flowStep, index) => {
                 const isCompleted = index < currentIndex;
@@ -552,21 +568,26 @@ export function RequestDetailsPage() {
                 
                 return (
                   <div key={flowStep.key} className="relative flex items-center gap-3.5 mb-5 last:mb-0 z-10">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors ${
-                      isCompleted ? 'bg-emerald-600 border-emerald-600 text-white' : 
-                      isActive ? 'bg-[#FFF174] border-[#FFF174] text-black ring-4 ring-[#FFF174]/20 animate-pulse' : 
-                      'bg-[#161B26] border-white/20 text-gray-500'
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-all ${
+                      isCompleted ? 'bg-[#10B981] border-[#10B981] text-black shadow-sm' : 
+                      isActive ? 'bg-[#DFF127] border-[#DFF127] text-black ring-4 ring-[#DFF127]/20 animate-pulse font-black' : 
+                      'bg-[#20211D] border-[#383A32] text-[#545347]'
                     }`}>
-                      {isCompleted ? <CheckCircle size={16} /> : 
-                       isActive ? <Clock size={16} /> : 
-                       <div className="w-2 h-2 rounded-full bg-gray-500"></div>}
+                      {isCompleted ? <CheckCircle size={15} className="text-black stroke-[2.5]" /> : 
+                       isActive ? <Clock size={15} className="text-black stroke-[2.5]" /> : 
+                       <div className="w-1.5 h-1.5 rounded-full bg-[#545347]" />}
                     </div>
                     <div>
-                      <p className={`font-bold text-xs leading-tight ${isActive ? 'text-[#FFF174]' : isFuture ? 'text-gray-500' : 'text-gray-300'}`}>
+                      <p className={`font-display text-xs font-bold leading-tight uppercase tracking-wider ${
+                        isActive ? 'text-[#DFF127]' : isFuture ? 'text-[#545347]' : 'text-[#EFF2F7]'
+                      }`}>
                         {flowStep.label}
                       </p>
                       {isActive && (
-                        <span className="text-[10px] text-gray-400 block mt-0.5">Active state</span>
+                        <span className="text-[10px] font-mono text-[#FFF174] flex items-center gap-1 mt-0.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#DFF127] animate-ping" />
+                          Live active status
+                        </span>
                       )}
                     </div>
                   </div>
@@ -578,37 +599,37 @@ export function RequestDetailsPage() {
           {/* Details, Provider & Transparent Pricing */}
           <div className="lg:col-span-2 space-y-5">
             
-            {/* SECTION 39 & 45: ACTIVE RESCUE HUD - "WHO IS COMING TO HELP ME?" */}
+            {/* ACTIVE RESCUE HUD: Confirmed Provider Card */}
             {request.provider && ['ACCEPTED', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS', 'COMPLETED'].includes(request.status) ? (
-              <div className="p-5 rounded-3xl bg-gradient-to-r from-[#141A28] to-[#111622] border-2 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.12)] space-y-3">
+              <div className="p-5 rounded-2xl bg-[#151613] border-2 border-[#DFF127]/40 shadow-[0_0_30px_rgba(223,241,39,0.06)] space-y-3.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#DFF127] flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#DFF127] animate-pulse" />
                     CONFIRMED PROVIDER ACCEPTED
                   </span>
-                  <span className="text-[11px] font-black text-[#FFF174] bg-[#FFF174]/15 px-2.5 py-0.5 rounded-full border border-[#FFF174]/30">
+                  <span className="text-[11px] font-mono font-bold text-black bg-[#DFF127] px-2.5 py-0.5 rounded-md shadow-sm">
                     ETA {request.eta || '15-20 min'}
                   </span>
                 </div>
 
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-[#FFF174] text-black font-black flex items-center justify-center text-xl shrink-0 shadow-md">
-                      👨🔧
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-xl bg-[#20211D] border border-[#383A32] text-xl flex items-center justify-center shrink-0">
+                      🛠️
                     </div>
                     <div>
-                      <h3 className="text-lg font-black text-white flex items-center gap-2">
+                      <h3 className="text-base sm:text-lg font-display font-black text-[#EFF2F7] flex items-center gap-2">
                         {request.provider.name}
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                          <ShieldCheck size={12} /> Verified
+                        <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">
+                          <ShieldCheck size={11} /> VERIFIED
                         </span>
                       </h3>
-                      <div className="flex flex-wrap items-center gap-2.5 text-xs text-gray-400 mt-0.5">
-                        <span className="text-[#FFF174] font-bold">🔧 {request.problemCategory}</span>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#A8A6A3] mt-1 font-medium">
+                        <span className="text-[#FFF174] font-bold">{request.problemCategory}</span>
                         <span>•</span>
-                        <span>📍 {request.provider.distance || 'In sector'}</span>
+                        <span>{request.provider.distance || 'In corridor'}</span>
                         <span>•</span>
-                        <span className="flex items-center gap-1 text-yellow-300 font-bold">
+                        <span className="flex items-center gap-1 text-[#FFF174] font-bold">
                           <Star size={12} fill="#FFF174" /> {request.provider.rating || 4.8}
                         </span>
                       </div>
@@ -617,37 +638,37 @@ export function RequestDetailsPage() {
                 </div>
 
                 {/* Real-time telemetry notification */}
-                <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 text-[11px] text-gray-300 flex items-center justify-between">
+                <div className="p-2.5 rounded-xl bg-[#20211D] border border-[#383A32] text-[11px] text-[#A8A6A3] flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${liveHelperPos ? 'bg-emerald-400' : 'bg-gray-500'}`} />
-                    Live GPS Telemetry: {liveHelperPos ? 'Active responder stream connected' : 'Awaiting responder telemetry connection'}
+                    <span className={`w-1.5 h-1.5 rounded-full ${liveHelperPos ? 'bg-[#10B981] animate-ping' : 'bg-[#545347]'}`} />
+                    GPS Telemetry: {liveHelperPos ? 'Active responder stream connected' : 'Awaiting responder telemetry connection'}
                   </span>
-                  <span className="text-[10px] text-gray-400 font-mono">
+                  <span className="text-[10px] text-[#A8A6A3] font-mono">
                     {liveHelperPos ? `${liveHelperPos.lat.toFixed(4)}, ${liveHelperPos.lng.toFixed(4)}${lastTelemetryUpdate ? ` (${lastTelemetryUpdate})` : ''}` : 'Cellular dispatch'}
                   </span>
                 </div>
               </div>
             ) : (
-              <div className="p-5 rounded-3xl bg-gradient-to-r from-[#141A28] to-[#111622] border-2 border-[#FFF174]/40 shadow-lg space-y-3">
+              <div className="p-5 rounded-2xl bg-[#151613] border border-[#383A32] space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FFF174] flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#FFF174] animate-pulse" />
                     SEARCHING FOR VERIFIED ROADSIDE RESPONDER
                   </span>
-                  <span className="text-[11px] font-bold text-gray-400 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
+                  <span className="text-[11px] font-mono text-[#A8A6A3] bg-[#20211D] px-2.5 py-0.5 rounded border border-[#383A32]">
                     Awaiting Acceptance
                   </span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-black/40 border border-white/10 space-y-2">
-                  <p className="text-sm font-bold text-white">Your incident is actively broadcast to verified responders in your corridor.</p>
-                  <p className="text-xs text-gray-400 leading-relaxed">
+                <div className="p-4 rounded-xl bg-[#20211D] border border-[#383A32] space-y-2">
+                  <p className="text-sm font-display font-bold text-[#EFF2F7]">Your incident is actively broadcast to verified responders in your corridor.</p>
+                  <p className="text-xs text-[#A8A6A3] leading-relaxed">
                     Per automotive safety policy, a provider is only shown once valid confirmation is received from their dispatch terminal. No simulated responders are assigned.
                   </p>
                   <div className="flex flex-wrap gap-2 pt-2">
                     <a 
                       href="tel:112" 
-                      className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 min-h-[44px] transition-colors"
+                      className="px-4 py-2.5 bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 min-h-[44px] transition-colors"
                     >
                       <PhoneCall size={14} /> Immediate Emergency? Call 112 Voice Line
                     </a>
@@ -680,20 +701,20 @@ export function RequestDetailsPage() {
               />
             </div>
 
-            {/* Provider Actions & WhatsApp Emergency Sharing (Section 18 & 19) */}
-            <div className="p-5 rounded-3xl bg-[#111622] border border-white/10 space-y-3">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {/* Provider Actions & WhatsApp Emergency Sharing */}
+            <div className="p-5 rounded-2xl bg-[#151613] border border-[#383A32] space-y-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {request.provider?.phone ? (
                   <a 
                     href={`tel:${request.provider.phone.replace(/[^0-9+]/g, '')}`}
-                    className="py-3 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
+                    className="py-3 px-3 bg-[#10B981] hover:bg-[#059669] text-black font-display font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 min-h-[44px]"
                   >
                     <PhoneCall size={15} /> Call Helper
                   </a>
                 ) : (
                   <a 
                     href="tel:18002100007"
-                    className="py-3 px-3 bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5"
+                    className="py-3 px-3 bg-[#FFF174]/15 hover:bg-[#FFF174]/25 text-[#FFF174] border border-[#FFF174]/30 font-display font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 min-h-[44px]"
                     title="Awaiting responder assignment. Call central 24/7 helpline."
                   >
                     <PhoneCall size={15} /> 1800 2100 007
@@ -702,7 +723,7 @@ export function RequestDetailsPage() {
                 <button
                   type="button"
                   onClick={() => alert(`Starting secure masked chat with ${request.provider?.name || 'Assigned Responder'}`)}
-                  className="py-3 px-3 bg-white/10 hover:bg-white/15 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                  className="py-3 px-3 bg-[#20211D] hover:bg-[#2A2C26] text-[#EFF2F7] border border-[#383A32] font-display font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer min-h-[44px]"
                 >
                   <MessageSquare size={15} /> Chat
                 </button>
@@ -714,25 +735,28 @@ export function RequestDetailsPage() {
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="py-3 px-3 bg-emerald-700/40 hover:bg-emerald-700/60 text-emerald-200 font-bold text-xs rounded-2xl border border-emerald-500/40 flex items-center justify-center gap-1.5 transition-all active:scale-95"
+                  className="py-3 px-3 bg-[#10B981]/20 hover:bg-[#10B981]/30 text-[#10B981] font-display font-bold text-xs uppercase tracking-wider rounded-xl border border-[#10B981]/30 flex items-center justify-center gap-1.5 transition-all active:scale-95 min-h-[44px]"
                 >
-                  <MessageSquare size={15} /> Share WhatsApp
+                  <MessageSquare size={15} /> WhatsApp
                 </a>
                 <a
                   href="tel:112"
-                  className="py-3 px-3 bg-red-600/40 hover:bg-red-600/60 text-red-200 font-bold text-xs rounded-2xl border border-red-500/40 flex items-center justify-center gap-1.5 transition-all active:scale-95"
+                  className="py-3 px-3 bg-[#EF4444]/20 hover:bg-[#EF4444]/30 text-[#EF4444] font-display font-bold text-xs uppercase tracking-wider rounded-xl border border-[#EF4444]/40 flex items-center justify-center gap-1.5 transition-all active:scale-95 min-h-[44px]"
                 >
                   <PhoneCall size={15} /> Dial 112
                 </a>
               </div>
 
               {/* Transparent WhatsApp & Location Architecture Note */}
-              <div className="pt-1 flex items-center justify-between text-[10px] text-gray-400">
-                <span>📍 Real-time GPS location active</span>
+              <div className="pt-1 flex items-center justify-between text-[10px] text-[#A8A6A3]">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+                  Real-time GPS telemetry active
+                </span>
                 <button
                   type="button"
                   onClick={() => setShowWhatsAppModal(true)}
-                  className="text-[#FFF174] hover:underline cursor-pointer"
+                  className="text-[#FFF174] hover:underline cursor-pointer font-bold"
                 >
                   WhatsApp live-location guide →
                 </button>
@@ -740,68 +764,68 @@ export function RequestDetailsPage() {
             </div>
 
             {/* Section 3: Transparent Pricing Card */}
-            <div className="p-6 rounded-3xl bg-gradient-to-br from-[#151C2B] to-[#111622] border border-[#FFF174]/30 space-y-4">
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#151613] border border-[#383A32] space-y-4">
+              <div className="flex items-center justify-between border-b border-[#383A32] pb-3">
                 <div className="flex items-center gap-2">
                   <DollarSign size={18} className="text-[#FFF174]" />
-                  <h3 className="text-sm font-black uppercase tracking-wider text-white">Transparent Pricing</h3>
+                  <h3 className="text-xs font-display font-bold uppercase tracking-widest text-[#EFF2F7]">Transparent Pricing Tariff</h3>
                 </div>
-                <span className="text-[11px] font-semibold text-gray-400">Fixed call-out policy</span>
+                <span className="text-[11px] font-mono text-[#A8A6A3]">Fixed corridor policy</span>
               </div>
 
               {request.estimatedPrice?.isAvailable !== false ? (
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between text-gray-300">
+                <div className="space-y-2.5 text-xs">
+                  <div className="flex justify-between text-[#A8A6A3]">
                     <span>CALL-OUT FEE</span>
-                    <span>₹{request.estimatedPrice?.calloutFee ?? 150}</span>
+                    <span className="font-mono text-[#EFF2F7]">₹{request.estimatedPrice?.calloutFee ?? 150}</span>
                   </div>
-                  <div className="flex justify-between text-gray-300">
-                    <span>TRAVEL</span>
-                    <span>₹{request.estimatedPrice?.travelFee ?? 100}</span>
+                  <div className="flex justify-between text-[#A8A6A3]">
+                    <span>TRAVEL / CORRIDOR</span>
+                    <span className="font-mono text-[#EFF2F7]">₹{request.estimatedPrice?.travelFee ?? 100}</span>
                   </div>
-                  <div className="flex justify-between text-gray-300">
+                  <div className="flex justify-between text-[#A8A6A3]">
                     <span>BASE SERVICE / PUNCTURE</span>
-                    <span>₹{request.estimatedPrice?.serviceFee ?? 100}</span>
+                    <span className="font-mono text-[#EFF2F7]">₹{request.estimatedPrice?.serviceFee ?? 100}</span>
                   </div>
-                  <div className="border-t border-white/10 pt-2 flex justify-between font-black text-sm text-white">
+                  <div className="border-t border-[#383A32] pt-2.5 flex justify-between font-display font-bold text-sm text-[#EFF2F7]">
                     <span>ESTIMATED TOTAL</span>
-                    <span className="text-[#FFF174]">₹{request.estimatedPrice?.estimatedTotal ?? 350}</span>
+                    <span className="text-[#FFF174] font-mono text-base font-bold">₹{request.estimatedPrice?.estimatedTotal ?? 350}</span>
                   </div>
-                  <p className="text-[11px] text-gray-400 pt-1 flex items-start gap-1.5">
+                  <p className="text-[11px] text-[#A8A6A3] pt-1 flex items-start gap-1.5">
                     <Info size={14} className="text-[#FFF174] shrink-0 mt-0.5" />
-                    Final price may change if additional parts or work are required.
+                    Final price may change only if supplementary replacement parts or heavy recovery transport are authorized.
                   </p>
                 </div>
               ) : (
-                <p className="text-xs text-yellow-400 font-semibold">
-                  Price unavailable — confirm with provider.
+                <p className="text-xs text-[#F59E0B] font-semibold">
+                  Price tariff unavailable — confirm directly with verified dispatch terminal.
                 </p>
               )}
 
-              {/* Receipts Button after Completion */}
-              <div className="pt-2 flex flex-wrap gap-2">
+              {/* Action Buttons */}
+              <div className="pt-2 flex flex-wrap gap-2.5">
                 <button
                   type="button"
                   onClick={() => setShowReceiptModal(true)}
-                  className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#20211D] hover:bg-[#2A2C26] text-[#EFF2F7] font-display font-bold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer border border-[#383A32] min-h-[44px]"
                 >
-                  <Receipt size={16} /> View Digital Receipt
+                  <Receipt size={16} className="text-[#FFF174]" /> View Digital Receipt
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowIssueModal(true)}
-                  className="px-4 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/40 text-red-300 font-bold text-xs border border-red-500/30 flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#EF4444]/15 hover:bg-[#EF4444]/25 text-[#EF4444] font-display font-bold text-xs uppercase tracking-wider border border-[#EF4444]/30 flex items-center gap-2 cursor-pointer min-h-[44px]"
                 >
-                  <AlertCircle size={16} /> Report Issue
+                  <AlertCircle size={16} /> Report Issue / Dispute
                 </button>
               </div>
             </div>
 
             {/* Completion Feedback & Rating */}
             {request.status === 'COMPLETED' && !request.rating && (
-              <div className="p-6 rounded-3xl bg-[#151D2A] border border-[#FFF174]/40 space-y-4">
-                <h3 className="text-lg font-black text-[#FFF174]">Rate Service & Provider</h3>
-                <p className="text-gray-300 text-xs">Help other riders across Himalayan corridors make informed decisions.</p>
+              <div className="p-6 rounded-2xl bg-[#151613] border border-[#FFF174]/40 space-y-4">
+                <h3 className="text-base font-display font-black uppercase tracking-wider text-[#FFF174]">Rate Service & Provider</h3>
+                <p className="text-[#A8A6A3] text-xs">Help other riders across Himalayan corridors make informed decisions.</p>
                 
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map(star => (
@@ -811,7 +835,7 @@ export function RequestDetailsPage() {
                       className="p-1 transition-transform hover:scale-110 cursor-pointer"
                       aria-label={`Rate ${star} stars`}
                     >
-                      <Star size={32} fill={rating >= star ? '#FFF174' : 'transparent'} stroke={rating >= star ? '#FFF174' : '#64748B'} />
+                      <Star size={32} fill={rating >= star ? '#FFF174' : 'transparent'} stroke={rating >= star ? '#FFF174' : '#545347'} />
                     </button>
                   ))}
                 </div>
@@ -821,13 +845,13 @@ export function RequestDetailsPage() {
                   value={reviewText}
                   onChange={e => setReviewText(e.target.value)}
                   placeholder="Optional review note (e.g. fast arrival, genuine parts, polite mechanic)..."
-                  className="w-full bg-[#0F1420] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500"
+                  className="w-full bg-[#20211D] border border-[#383A32] rounded-xl px-3.5 py-2.5 text-xs text-[#EFF2F7] placeholder-[#A8A6A3]/60 focus:outline-none focus:border-[#FFF174]"
                 />
                 
                 <button 
                   onClick={submitRating}
                   disabled={rating === 0}
-                  className="px-6 py-3 bg-[#FFF174] text-black font-black text-xs uppercase rounded-xl hover:bg-yellow-400 disabled:opacity-50 cursor-pointer"
+                  className="px-6 py-3 bg-[#FFF174] text-black font-display font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#ffe83b] disabled:opacity-50 cursor-pointer min-h-[44px]"
                 >
                   Submit Verified Review
                 </button>
@@ -835,20 +859,20 @@ export function RequestDetailsPage() {
             )}
 
             {request.rating && (
-              <div className="p-5 rounded-3xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 flex items-center gap-3">
+              <div className="p-5 rounded-2xl bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] flex items-center gap-3">
                 <CheckCircle size={22} />
                 <span className="font-bold text-xs">Thank you! Your verified rating of {request.rating}★ has been saved.</span>
               </div>
             )}
 
-            {/* SECTION 42: CLIENT SATISFACTION SURVEY */}
+            {/* Incident Resolution & Safety Confirmation */}
             {(request.status === 'COMPLETED' || request.status === 'RESOLVED') && (
-              <div className="p-6 rounded-3xl bg-[#121620] border border-white/10 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <h3 className="text-sm font-black uppercase tracking-wider text-white">
+              <div className="p-6 rounded-2xl bg-[#151613] border border-[#383A32] space-y-4">
+                <div className="flex items-center justify-between border-b border-[#383A32] pb-3">
+                  <h3 className="text-xs font-display font-bold uppercase tracking-widest text-[#EFF2F7]">
                     Incident Resolution & Safety Confirmation
                   </h3>
-                  <span className="text-[10px] text-[#FFF174] font-bold">Feedback</span>
+                  <span className="text-[10px] font-mono text-[#FFF174] font-bold">Feedback</span>
                 </div>
 
                 {!satisfactionSubmitted ? (
@@ -962,53 +986,53 @@ export function RequestDetailsPage() {
       {/* Digital Service Receipt Modal */}
       {showReceiptModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#111622] border border-white/20 rounded-3xl max-w-md w-full p-6 space-y-5">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="bg-[#151613] border border-[#383A32] rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#383A32] pb-3">
               <div className="flex items-center gap-2.5">
                 <FileText size={20} className="text-[#FFF174]" />
-                <h3 className="text-base font-black text-white">DIGITAL SERVICE RECEIPT</h3>
+                <h3 className="text-xs font-display font-bold uppercase tracking-widest text-[#EFF2F7]">DIGITAL SERVICE RECEIPT</h3>
               </div>
-              <button onClick={() => setShowReceiptModal(false)} className="text-gray-400 hover:text-white">
+              <button onClick={() => setShowReceiptModal(false)} className="text-[#A8A6A3] hover:text-[#EFF2F7] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center">
                 <X size={20} />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-[#A8A6A3]">
                 <span>Receipt Number:</span>
-                <span className="text-white font-mono">{receiptData?.receiptId || `RCP-${request.requestId.slice(-6)}`}</span>
+                <span className="text-[#EFF2F7] font-mono">{receiptData?.receiptId || `RCP-${request.requestId.slice(-6)}`}</span>
               </div>
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-[#A8A6A3]">
                 <span>Provider:</span>
-                <span className="text-white font-bold">{request.provider?.name || 'Raj Motors'}</span>
+                <span className="text-[#EFF2F7] font-bold">{request.provider?.name || 'Corridor RSA Terminal'}</span>
               </div>
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-[#A8A6A3]">
                 <span>Service Date:</span>
-                <span className="text-white">{new Date().toLocaleDateString()}</span>
+                <span className="text-[#EFF2F7]">{new Date().toLocaleDateString()}</span>
               </div>
 
-              <div className="border-t border-b border-white/10 py-3 space-y-2">
-                <div className="flex justify-between text-gray-300">
+              <div className="border-t border-b border-[#383A32] py-3 space-y-2">
+                <div className="flex justify-between text-[#A8A6A3]">
                   <span>Labour Fee</span>
-                  <span>₹{receiptData?.laborFee || 200}</span>
+                  <span className="text-[#EFF2F7]">₹{receiptData?.laborFee || 200}</span>
                 </div>
-                <div className="flex justify-between text-gray-300">
+                <div className="flex justify-between text-[#A8A6A3]">
                   <span>Parts (Puncture Seal & Valve)</span>
-                  <span>₹{receiptData?.partsFee || 150}</span>
+                  <span className="text-[#EFF2F7]">₹{receiptData?.partsFee || 150}</span>
                 </div>
-                <div className="flex justify-between text-gray-300">
+                <div className="flex justify-between text-[#A8A6A3]">
                   <span>Call-out & Travel</span>
-                  <span>₹{(receiptData?.calloutFee || 150) + (receiptData?.travelFee || 100)}</span>
+                  <span className="text-[#EFF2F7]">₹{(receiptData?.calloutFee || 150) + (receiptData?.travelFee || 100)}</span>
                 </div>
-                <div className="flex justify-between text-gray-300">
+                <div className="flex justify-between text-[#A8A6A3]">
                   <span>Taxes (GST 18%)</span>
-                  <span>₹{receiptData?.taxes || 50}</span>
+                  <span className="text-[#EFF2F7]">₹{receiptData?.taxes || 50}</span>
                 </div>
               </div>
 
-              <div className="flex justify-between text-base font-black text-white">
+              <div className="flex justify-between text-base font-display font-bold text-[#EFF2F7]">
                 <span>TOTAL PAID</span>
-                <span className="text-[#FFF174]">₹{receiptData?.total || 650}</span>
+                <span className="text-[#FFF174] font-mono text-lg font-bold">₹{receiptData?.total || 650}</span>
               </div>
             </div>
 
@@ -1016,14 +1040,14 @@ export function RequestDetailsPage() {
               <button
                 type="button"
                 onClick={() => alert('Receipt downloaded as PDF')}
-                className="flex-1 py-3 bg-[#FFF174] text-black font-bold text-xs rounded-xl flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-[#FFF174] text-black font-display font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 hover:bg-[#ffe83b] min-h-[44px]"
               >
                 <Download size={16} /> Download PDF
               </button>
               <button
                 type="button"
                 onClick={() => setShowReceiptModal(false)}
-                className="py-3 px-4 bg-white/10 text-white font-bold text-xs rounded-xl"
+                className="py-3 px-4 bg-[#20211D] hover:bg-[#2A2C26] text-[#EFF2F7] font-display font-bold text-xs uppercase tracking-wider rounded-xl border border-[#383A32] min-h-[44px]"
               >
                 Close
               </button>
@@ -1035,31 +1059,31 @@ export function RequestDetailsPage() {
       {/* Report Issue & Dispute Modal */}
       {(showIssueModal || showDisputeModal) && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#111622] border border-amber-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h3 className="text-base font-black text-amber-300 flex items-center gap-2">
-                <AlertCircle size={20} /> Report Pricing Dispute / Discrepancy
+          <div className="bg-[#151613] border border-[#F59E0B]/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#383A32] pb-3">
+              <h3 className="text-xs font-display font-bold uppercase tracking-widest text-[#F59E0B] flex items-center gap-2">
+                <AlertCircle size={18} /> Report Pricing Dispute / Discrepancy
               </h3>
               <button 
                 onClick={() => {
                   setShowIssueModal(false);
                   setShowDisputeModal(false);
                 }} 
-                className="text-gray-400 hover:text-white"
+                className="text-[#A8A6A3] hover:text-[#EFF2F7] min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 <X size={20} />
               </button>
             </div>
-            <p className="text-xs text-gray-300">
+            <p className="text-xs text-[#A8A6A3]">
               Disputes are reviewed against official manufacturer RSA policy (Royal Enfield & Europ Assistance standard):
             </p>
             
             <div className="space-y-1">
-              <label className="text-[11px] text-gray-400 block">Select Discrepancy Category:</label>
+              <label className="text-[11px] font-mono text-[#A8A6A3] block uppercase">Discrepancy Category:</label>
               <select
                 value={disputeReason}
                 onChange={e => setDisputeReason(e.target.value)}
-                className="w-full bg-[#182030] border border-white/15 rounded-xl p-2.5 text-xs text-white"
+                className="w-full bg-[#20211D] border border-[#383A32] rounded-xl p-2.5 text-xs text-[#EFF2F7] focus:outline-none focus:border-[#F59E0B]"
               >
                 <option value="Excess charges above ₹45/km towing tariff">Excess charges above ₹45/km towing tariff</option>
                 <option value="Demanded cash for on-site minor labor (Covered under RSA)">Demanded cash for on-site minor labor (Covered under RSA)</option>
@@ -1071,24 +1095,24 @@ export function RequestDetailsPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[11px] text-gray-400 block">Disputed Overcharge Amount (₹, if applicable):</label>
+              <label className="text-[11px] font-mono text-[#A8A6A3] block uppercase">Disputed Overcharge Amount (₹):</label>
               <input
                 type="number"
                 value={disputeAmount}
                 onChange={e => setDisputeAmount(e.target.value)}
                 placeholder="e.g. 500"
-                className="w-full bg-[#182030] border border-white/15 rounded-xl p-2.5 text-xs text-white"
+                className="w-full bg-[#20211D] border border-[#383A32] rounded-xl p-2.5 text-xs text-[#EFF2F7] focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-[11px] text-gray-400 block">Additional Explanation & Invoices:</label>
+              <label className="text-[11px] font-mono text-[#A8A6A3] block uppercase">Additional Notes & Invoices:</label>
               <textarea
                 value={disputeNotes}
                 onChange={e => setDisputeNotes(e.target.value)}
                 placeholder="Specify what happened, technician receipt number, or excess kms charged..."
                 rows={3}
-                className="w-full bg-[#182030] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500 resize-none"
+                className="w-full bg-[#20211D] border border-[#383A32] rounded-xl p-3 text-xs text-[#EFF2F7] focus:outline-none focus:border-[#F59E0B] resize-none"
               />
             </div>
 
@@ -1116,7 +1140,7 @@ export function RequestDetailsPage() {
                   setShowDisputeModal(false);
                   fetchRequest();
                 }}
-                className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 font-bold text-xs text-black rounded-xl"
+                className="flex-1 py-2.5 bg-[#F59E0B] hover:bg-[#d97706] font-display font-bold text-xs uppercase tracking-wider text-black rounded-xl min-h-[44px]"
               >
                 {disputeSubmitting ? 'Logging Dispute...' : 'Submit Official Dispute'}
               </button>
@@ -1126,7 +1150,7 @@ export function RequestDetailsPage() {
                   setShowIssueModal(false);
                   setShowDisputeModal(false);
                 }}
-                className="py-2.5 px-4 bg-white/10 text-xs font-bold text-white rounded-xl"
+                className="py-2.5 px-4 bg-[#20211D] hover:bg-[#2A2C26] text-xs font-display font-bold uppercase tracking-wider text-[#EFF2F7] rounded-xl border border-[#383A32] min-h-[44px]"
               >
                 Cancel
               </button>
@@ -1135,40 +1159,40 @@ export function RequestDetailsPage() {
         </div>
       )}
 
-      {/* SECTION 18 & 19: WHATSAPP EMERGENCY SHARING & LIVE LOCATION GUIDE MODAL */}
+      {/* WHATSAPP EMERGENCY SHARING MODAL */}
       {showWhatsAppModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#10141D] border border-emerald-500/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="bg-[#151613] border border-[#10B981]/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#383A32] pb-3">
               <div className="flex items-center gap-2">
-                <MessageSquare size={20} className="text-emerald-400" />
-                <h3 className="text-base font-black text-white">WHATSAPP SAFETY DISPATCH</h3>
+                <MessageSquare size={20} className="text-[#10B981]" />
+                <h3 className="text-xs font-display font-bold uppercase tracking-widest text-[#EFF2F7]">WHATSAPP SAFETY DISPATCH</h3>
               </div>
-              <button onClick={() => setShowWhatsAppModal(false)} className="text-gray-400 hover:text-white cursor-pointer">
+              <button onClick={() => setShowWhatsAppModal(false)} className="text-[#A8A6A3] hover:text-[#EFF2F7] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center">
                 <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-3 text-xs text-gray-300">
-              <div className="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200">
-                <strong className="block font-bold text-white mb-1">Architecture Disclosure:</strong>
+            <div className="space-y-3 text-xs text-[#A8A6A3]">
+              <div className="p-3 rounded-xl bg-[#10B981]/10 border border-[#10B981]/25 text-[#10B981]">
+                <strong className="block font-bold text-[#EFF2F7] mb-1">Architecture Disclosure:</strong>
                 <span>
                   MotoAssist provides one-tap verified Google Maps emergency snapshot links. True continuous WhatsApp Live Location requires triggering from within WhatsApp's native client.
                 </span>
               </div>
 
               <div className="space-y-2">
-                <strong className="text-white block">Step-by-step for continuous WhatsApp Live Tracking:</strong>
-                <ol className="list-decimal list-inside space-y-1 text-gray-400">
+                <strong className="text-[#EFF2F7] block">Step-by-step for continuous WhatsApp Live Tracking:</strong>
+                <ol className="list-decimal list-inside space-y-1 text-[#A8A6A3]">
                   <li>Tap the green button below to send your current emergency snapshot.</li>
-                  <li>In the opened WhatsApp chat, tap the <strong className="text-white">+ or Paperclip</strong> icon.</li>
-                  <li>Select <strong className="text-white">Location → Share Live Location</strong>.</li>
+                  <li>In the opened WhatsApp chat, tap the <strong className="text-[#EFF2F7]">+ or Paperclip</strong> icon.</li>
+                  <li>Select <strong className="text-[#EFF2F7]">Location → Share Live Location</strong>.</li>
                   <li>Choose duration (1 Hour / 8 Hours) for verified background sharing.</li>
                 </ol>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-black/50 border border-white/10 font-mono text-[11px] text-gray-400">
-                Status: One-tap Emergency Link ready • Automated server delivery awaiting confirmed webhook
+              <div className="p-2.5 rounded-xl bg-[#20211D] border border-[#383A32] font-mono text-[11px] text-[#A8A6A3]">
+                Status: One-tap Emergency Link ready • Verified dispatch payload formatted
               </div>
             </div>
 
@@ -1182,14 +1206,14 @@ export function RequestDetailsPage() {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => setShowWhatsAppModal(false)}
-                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-md transition-all"
+                className="flex-1 py-3 bg-[#10B981] hover:bg-[#059669] text-black font-display font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-md transition-all min-h-[44px]"
               >
                 <MessageSquare size={16} /> Open WhatsApp Chat
               </a>
               <button
                 type="button"
                 onClick={() => setShowWhatsAppModal(false)}
-                className="py-3 px-4 bg-white/10 text-white font-bold text-xs rounded-xl hover:bg-white/15"
+                className="py-3 px-4 bg-[#20211D] hover:bg-[#2A2C26] text-[#EFF2F7] font-display font-bold text-xs uppercase tracking-wider rounded-xl border border-[#383A32] min-h-[44px]"
               >
                 Close
               </button>

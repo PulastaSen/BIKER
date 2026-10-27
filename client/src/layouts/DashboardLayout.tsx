@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
-  Navigation,
   LayoutDashboard,
   PlusCircle,
   Clock,
@@ -23,6 +22,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { MobileBottomNav } from '../components/MobileBottomNav';
 import { StickyEmergencySOS } from '../components/StickyEmergencySOS';
+import { MotoAssistBrandMark } from '../components/graphics';
 
 export function DashboardLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -72,13 +72,13 @@ export function DashboardLayout() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#151515] text-white flex items-center justify-center p-6">
-        <div className="bg-[#1D1D1D] p-8 rounded-3xl border border-white/10 text-center max-w-md w-full shadow-2xl">
-          <h1 className="text-2xl font-black mb-4 text-[#FFF174]">Access Restricted</h1>
-          <p className="text-[#C5C5C5] mb-8">Please log in to access the dashboard portal.</p>
+      <div className="min-h-screen bg-[#090A08] text-[#EFF2F7] flex items-center justify-center p-6">
+        <div className="bg-[#151613] p-8 rounded-3xl border border-[#383A32] text-center max-w-md w-full shadow-2xl">
+          <h1 className="text-2xl font-black mb-4 text-[#FFF174] font-display">Access Restricted</h1>
+          <p className="text-[#A8A6A3] mb-8">Please log in to access the dashboard portal.</p>
           <Link
             to="/login"
-            className="inline-block px-8 py-3 bg-[#FFF174] text-black font-bold rounded-xl hover:bg-yellow-400 active:scale-95 transition-transform"
+            className="inline-block px-8 py-3 bg-[#FFF174] text-[#090A08] font-bold rounded-xl hover:bg-yellow-400 active:scale-95 transition-transform"
           >
             Go to Login
           </Link>
@@ -126,13 +126,12 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#090A08] text-[#EFF2F7] flex flex-col md:flex-row selection:bg-[#FFF174] selection:text-[#090A08]">
       
-      {/* Mobile & Tablet Top Bar (Sticky with accessible Logout & Menu) */}
-      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#1D1D1D]/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
-        <Link className="flex items-center gap-2 font-black text-lg text-[#FFF174]" to="/" onClick={closeDrawer}>
-          <Navigation size={20} />
-          <span>MotoAssist</span>
+      {/* Mobile & Tablet Top Bar */}
+      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#090A08]/95 backdrop-blur-md border-b border-[#383A32] sticky top-0 z-40">
+        <Link to="/" onClick={closeDrawer} aria-label="MotoAssist Home">
+          <MotoAssistBrandMark size={30} withText subtext="PORTAL" />
         </Link>
 
         <div className="flex items-center gap-2">
@@ -179,21 +178,14 @@ export function DashboardLayout() {
         <div className="md:hidden fixed inset-0 z-50 flex animate-in fade-in duration-150">
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm cursor-pointer" onClick={closeDrawer} aria-hidden="true" />
           
-          <div className="relative w-4/5 max-w-xs bg-[#1D1D1D] border-r border-white/15 h-[100dvh] max-h-[100dvh] flex flex-col z-10 shadow-2xl">
+          <div className="relative w-4/5 max-w-xs bg-[#151613] border-r border-[#383A32] h-[100dvh] max-h-[100dvh] flex flex-col z-10 shadow-2xl">
             {/* Drawer Header */}
-            <div className="p-5 border-b border-white/10 flex items-center justify-between shrink-0 bg-[#252525]">
-              <div>
-                <div className="flex items-center gap-2 font-black text-lg text-[#FFF174]">
-                  <Navigation size={20} /> MotoAssist
-                </div>
-                <span className="text-[10px] font-bold text-[#C5C5C5] uppercase tracking-widest mt-0.5 block">
-                  {role} PORTAL
-                </span>
-              </div>
+            <div className="p-4 border-b border-[#383A32] flex items-center justify-between shrink-0 bg-[#20211D]">
+              <MotoAssistBrandMark size={28} withText subtext={`${role} PORTAL`} />
               <button
                 type="button"
                 onClick={closeDrawer}
-                className="p-2.5 text-gray-400 hover:text-white rounded-xl bg-white/5 border border-white/10 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 text-[#A8A6A3] hover:text-white rounded-xl bg-white/5 border border-[#383A32] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Close navigation drawer"
               >
                 <X size={18} />
@@ -213,8 +205,8 @@ export function DashboardLayout() {
                       closeDrawer();
                       window.scrollTo({ top: 0, behavior: 'instant' });
                     }}
-                    className={`flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all ${
-                      isActive ? 'bg-[#FFF174] text-black font-black shadow-md' : 'text-[#C5C5C5] hover:bg-white/5 hover:text-white font-medium'
+                    className={`flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all min-h-[44px] ${
+                      isActive ? 'bg-[#FFF174] text-[#090A08] font-black shadow-md' : 'text-[#A8A6A3] hover:bg-white/5 hover:text-white font-medium'
                     }`}
                   >
                     <Icon size={18} />
@@ -226,18 +218,18 @@ export function DashboardLayout() {
             </nav>
 
             {/* Drawer Footer with User identity & prominent Logout */}
-            <div className="p-5 border-t border-white/10 shrink-0 bg-[#252525] space-y-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            <div className="p-4 border-t border-[#383A32] shrink-0 bg-[#20211D] space-y-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
               <Link
                 to={getProfilePath()}
                 onClick={closeDrawer}
-                className="flex items-center gap-3 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+                className="flex items-center gap-3 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-[#383A32]"
               >
                 <div className="w-10 h-10 rounded-full bg-[#FFF174]/20 border border-[#FFF174]/40 text-[#FFF174] flex items-center justify-center shrink-0 font-bold">
                   <UserIcon size={18} />
                 </div>
                 <div className="overflow-hidden min-w-0">
                   <p className="font-bold text-sm text-white truncate">{user.name}</p>
-                  <p className="text-xs text-[#C5C5C5] truncate">{user.email}</p>
+                  <p className="text-xs text-[#A8A6A3] truncate">{user.email}</p>
                 </div>
               </Link>
 
@@ -265,14 +257,11 @@ export function DashboardLayout() {
       )}
 
       {/* Desktop Sidebar (Visible on md+) */}
-      <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 bg-[#1D1D1D] border-r border-white/10 z-40">
-        <div className="p-6 border-b border-white/10">
-          <Link className="flex items-center gap-2 font-black text-xl text-[#FFF174]" to="/">
-            <Navigation size={24} /> MotoAssist
+      <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 bg-[#151613] border-r border-[#383A32] z-40">
+        <div className="p-5 border-b border-[#383A32]">
+          <Link to="/" aria-label="MotoAssist Home">
+            <MotoAssistBrandMark size={34} withText subtext={`${role} PORTAL`} />
           </Link>
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-white/5 px-2.5 py-1 rounded-md mt-2 inline-block">
-            {role} PORTAL
-          </span>
         </div>
         
         <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5">
@@ -295,14 +284,14 @@ export function DashboardLayout() {
           })}
         </nav>
 
-        <div className="p-5 border-t border-white/10 bg-[#252525] space-y-3">
+        <div className="p-5 border-t border-[#383A32] bg-[#20211D] space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#FFF174]/20 border border-[#FFF174]/40 text-[#FFF174] flex items-center justify-center shrink-0 font-bold">
               <UserIcon size={18} />
             </div>
             <div className="overflow-hidden min-w-0">
               <p className="font-bold text-sm text-white truncate">{user.name}</p>
-              <p className="text-xs text-[#C5C5C5] truncate">{user.email}</p>
+              <p className="text-xs text-[#A8A6A3] truncate">{user.email}</p>
             </div>
           </div>
 
@@ -310,7 +299,7 @@ export function DashboardLayout() {
             type="button"
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="w-full flex items-center justify-center gap-2 py-2.5 bg-red-500/15 text-red-300 border border-red-500/30 hover:bg-red-500/25 active:scale-98 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer min-h-[42px]"
+            className="w-full flex items-center justify-center gap-2 py-2.5 bg-red-500/15 text-red-300 border border-red-500/30 hover:bg-red-500/25 active:scale-98 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer min-h-[44px]"
           >
             {isLoggingOut ? (
               <>

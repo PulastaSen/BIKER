@@ -895,3 +895,5 @@ export function DualEmergencyGraphic({ size = 44, className = '' }: { size?: num
   );
 }
 
+export { MotoAssistBrandMark, RouteArcMotif, HighwayTelemetryBadge } from './MotoAssistBrandMark';
+

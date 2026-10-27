@@ -686,7 +686,7 @@ export function EmergencyActionSheet({
                 onClose();
               }
             }}
-            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#1D1D1D] border-t sm:border ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.9)] z-10 flex flex-col overflow-hidden text-white`}
+            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#151613] border-t sm:border border-[#383A32] ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.95)] z-10 flex flex-col overflow-hidden text-[#EFF2F7]`}
           >
             {/* Visual Touch Drag Handle */}
             <div className="pt-2.5 pb-1 flex justify-center sm:hidden cursor-grab active:cursor-grabbing shrink-0">
@@ -694,14 +694,14 @@ export function EmergencyActionSheet({
             </div>
 
             {/* Header: Title, Short Explanation & Close Button */}
-            <div className="px-4 sm:px-6 py-3 border-b border-white/10 flex items-start justify-between gap-3 shrink-0 bg-[#252525]">
+            <div className="px-4 sm:px-6 py-3 border-b border-[#383A32] flex items-start justify-between gap-3 shrink-0 bg-[#20211D]">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="shrink-0 select-none">
                   <CategoryGraphic size={36} />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h2 id="emergency-sheet-title" className="text-base sm:text-lg font-black text-white truncate tracking-tight">
+                    <h2 id="emergency-sheet-title" className="text-base sm:text-lg font-black text-[#EFF2F7] truncate tracking-tight font-display">
                       {meta.title}
                     </h2>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${meta.badgeColor} hidden sm:inline-block shrink-0`}>

@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { PublicLayout } from './layouts/PublicLayout';
 import { DashboardLayout } from './layouts/DashboardLayout';
-import { ResponsiveHome } from './pages/ResponsiveHome';
+import { HomePage } from './pages/HomePage';
 import { SOSPage } from './pages/SOSPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
 import { SafetyPage } from './pages/SafetyPage';
@@ -74,16 +74,13 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 
 function SmartEntryOrDashboard() {
   const { user } = useAuth();
-  if (!user) {
-    return <SmartEntryScreen />;
-  }
-  if (user.role === 'HELPER') {
+  if (user?.role === 'HELPER') {
     return <HelperDashboardPage />;
   }
-  if (user.role === 'ADMIN') {
+  if (user?.role === 'ADMIN') {
     return <AdminDashboardPage />;
   }
-  return <ResponsiveHome />;
+  return <HomePage />;
 }
 
 function AppRoutes() {

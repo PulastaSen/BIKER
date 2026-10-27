@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Navigation, Menu, X, ArrowRight, LogOut, ShieldAlert } from 'lucide-react';
+import { Menu, X, ArrowRight, LogOut, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { MobileBottomNav } from '../components/MobileBottomNav';
 import { StickyEmergencySOS } from '../components/StickyEmergencySOS';
+import { MotoAssistBrandMark } from '../components/graphics';
 
 export function PublicLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,9 +43,7 @@ export function PublicLayout() {
   }, [location.pathname]);
 
   const isEmergencyMode = location.pathname === '/sos';
-  const isFullScreenMode =
-    ['/emergency', '/emergency-assist', '/entry'].includes(location.pathname) ||
-    (location.pathname === '/' && !user);
+  const isFullScreenMode = ['/entry'].includes(location.pathname);
 
   // Informational pages where long scrolling, full footer, and marketing CTA are acceptable
   const isInformationalPage = [
@@ -57,7 +56,7 @@ export function PublicLayout() {
 
   if (isFullScreenMode) {
     return (
-      <div className="public-layout min-h-screen flex flex-col bg-[#090909] text-white">
+      <div className="public-layout min-h-screen flex flex-col bg-[#090A08] text-[#EFF2F7]">
         <main className="public-main flex-1">
           <Outlet />
         </main>
@@ -78,14 +77,14 @@ export function PublicLayout() {
   };
 
   return (
-    <div className="public-layout min-h-screen flex flex-col bg-[#151515] text-white">
+    <div className="public-layout min-h-screen flex flex-col bg-[#090A08] text-[#EFF2F7] selection:bg-[#FFF174] selection:text-[#090A08]">
       {/* If in Dedicated Emergency Mode, render minimal Emergency Header */}
       {isEmergencyMode ? (
-        <header className="sticky top-0 z-50 bg-[#160808]/95 border-b border-red-500/40 backdrop-blur-md px-4 py-3">
+        <header className="sticky top-0 z-50 bg-[#150A0A]/95 border-b border-red-500/40 backdrop-blur-md px-4 py-3">
           <div className="max-w-xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-              <span className="font-black text-xs sm:text-sm text-red-200 tracking-wider uppercase flex items-center gap-1.5">
+              <span className="font-black text-xs sm:text-sm text-red-200 tracking-wider uppercase flex items-center gap-1.5 font-display">
                 <ShieldAlert size={16} className="text-red-400" />
                 EMERGENCY RESCUE MODE
               </span>
@@ -93,25 +92,22 @@ export function PublicLayout() {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 active:scale-95 text-xs font-bold text-gray-200 transition-all border border-white/10 cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 active:scale-95 text-xs font-bold text-gray-200 transition-all border border-white/10 cursor-pointer min-h-[44px]"
             >
               Exit Emergency
             </button>
           </div>
         </header>
       ) : (
-        <header className="site-header sticky top-0 z-40 bg-[#1D1D1D]/95 border-b border-white/10 backdrop-blur-md">
+        <header className="site-header sticky top-0 z-40 bg-[#090A08]/92 border-b border-[#383A32] backdrop-blur-md">
           <nav className="nav page-container flex items-center justify-between max-w-7xl mx-auto px-4 py-3" aria-label="Primary navigation">
-            <Link className="brand flex items-center gap-2 font-black text-lg text-white" to="/" onClick={closeMenu}>
-              <span className="brand-mark w-8 h-8 rounded-xl bg-[#FFF174] text-black flex items-center justify-center">
-                <Navigation size={18} />
-              </span>
-              <span>MotoAssist</span>
+            <Link className="brand flex items-center gap-2" to="/" onClick={closeMenu} aria-label="MotoAssist Home">
+              <MotoAssistBrandMark size={34} withText subtext="ROADSIDE RESCUE" />
             </Link>
 
             {/* Mobile Hamburger toggle */}
             <button
-              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-white/5 border border-white/10 text-white flex items-center justify-center cursor-pointer"
+              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-[#151613] border border-[#383A32] text-white flex items-center justify-center cursor-pointer transition-colors hover:border-[#FFF174]/40"
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(!menuOpen)}
@@ -119,7 +115,7 @@ export function PublicLayout() {
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
 
-            {/* CONSOLIDATED PRIMARY RIDER NAVIGATION (Section 1) */}
+            {/* CONSOLIDATED PRIMARY RIDER NAVIGATION */}
             <div className={`nav__links ${menuOpen ? 'nav__links--open' : ''} flex items-center gap-1 sm:gap-2`}>
               {/* 1. HOME */}
               <NavLink
@@ -127,139 +123,140 @@ export function PublicLayout() {
                 end
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
                   }`
                 }
               >
                 Home
               </NavLink>
 
-              {/* 2. SERVICES CATALOGUE */}
+              {/* 2. ROADSIDE RESCUE */}
+              <NavLink
+                to="/im-stranded"
+                onClick={closeMenu}
+                className={({ isActive }) =>
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                  }`
+                }
+              >
+                Roadside
+              </NavLink>
+
+              {/* 3. SERVICES CATALOGUE */}
               <NavLink
                 to="/services"
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
                   }`
                 }
               >
                 Services
               </NavLink>
 
-              {/* 3. RSA SUBSCRIPTION PLANS */}
+              {/* 4. RSA SUBSCRIPTION PLANS */}
               <NavLink
                 to="/subscriptions"
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
                   }`
                 }
               >
                 RSA Plans
               </NavLink>
 
-              {/* 4. HELP */}
+              {/* 5. NEARBY ASSISTANCE */}
               <NavLink
                 to="/nearby-services"
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
                   }`
                 }
               >
-                Help
+                Nearby
               </NavLink>
 
-              {/* 3. REMOTE READINESS */}
+              {/* 6. REMOTE READINESS */}
               <NavLink
                 to="/remote-readiness"
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
                   }`
                 }
               >
                 Remote
               </NavLink>
 
-              {/* 4. OPS DESK */}
-              <NavLink
-                to="/ops"
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
-                  }`
-                }
-              >
-                Ops Desk
-              </NavLink>
-
-              {/* 5. RIDES */}
+              {/* 7. SAFE RIDES */}
               <NavLink
                 to="/safe-ride"
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
                   }`
                 }
               >
                 Rides
               </NavLink>
 
-              {/* 4. GARAGE */}
+              {/* 8. GARAGE */}
               <NavLink
                 to={getGaragePath()}
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
                   }`
                 }
               >
                 Garage
               </NavLink>
 
-              {/* 5. PROFILE / LOGIN */}
+              {/* 9. PROFILE / SIGN IN */}
               <NavLink
                 to={getProfilePath()}
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-colors ${
-                    isActive ? 'bg-[#FFF174]/15 text-[#FFF174]' : 'text-gray-300 hover:text-white'
+                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
+                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
                   }`
                 }
               >
                 {user ? 'Profile' : 'Sign In'}
               </NavLink>
 
-              {/* PERSISTENT HEADER SOS ACTION (Section 1) */}
+              {/* PERSISTENT HEADER SOS ACTION */}
               <Link
                 to="/sos"
                 onClick={closeMenu}
-                className="ml-2 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(220,38,38,0.4)] transition-all"
+                className="ml-2 px-3.5 py-2 min-h-[44px] rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(239,68,68,0.45)] border border-red-400/50 transition-all shrink-0 font-display"
                 aria-label="Direct Emergency SOS"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                <span>SOS</span>
+                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                <span>SOS 112</span>
               </Link>
 
               {user && (
                 <button
                   type="button"
-                  className="p-1.5 text-gray-400 hover:text-white transition-colors ml-1 cursor-pointer"
+                  className="p-2 min-w-[44px] min-h-[44px] text-gray-400 hover:text-white rounded-xl hover:bg-white/5 border border-transparent hover:border-[#383A32] flex items-center justify-center transition-colors ml-1 cursor-pointer"
                   onClick={() => {
                     logout();
                     navigate('/');
                     closeMenu();
                   }}
                   title="Logout"
+                  aria-label="Logout"
                 >
                   <LogOut size={16} />
                 </button>
@@ -306,10 +303,10 @@ export function PublicLayout() {
         <footer className="site-footer bg-[#0c0c0c] border-t border-white/10 py-12 px-4 text-xs text-gray-400">
           <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-8">
             <div className="space-y-3">
-              <div className="flex items-center gap-2 font-black text-white text-base">
-                <Navigation size={18} className="text-[#FFF174]" /> MotoAssist
+              <div className="flex items-center gap-2">
+                <MotoAssistBrandMark size={22} withText textClassName="text-white text-base font-display font-black tracking-tight" />
               </div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-[#A8A6A3]">
                 Roadside assistance & emergency network for Himalayan motorcycle riders.
               </p>
             </div>

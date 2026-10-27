@@ -302,26 +302,26 @@ export function ServicesCatalogPage() {
       });
 
       setBookingConfirmed(booking);
-    } catch (err: any) {
-      setErrorMessage(err.message || 'Failed to submit service booking. Please check connection and try again.');
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to submit service booking. Please check connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-20 pb-24 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#090A08] text-[#EFF2F7] pt-20 pb-24 px-4 sm:px-6 font-sans">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#383A32] pb-6">
           <div>
-            <div className="flex items-center gap-2 text-xs font-black uppercase text-[#FFF174] tracking-widest mb-1">
+            <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-[#FFF174] tracking-widest mb-1.5">
               <Wrench size={16} />
               <span>MOTORCYCLE ROADSIDE & SERVICE CATALOGUE</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight">On-Demand Two-Wheeler Care</h1>
-            <p className="text-sm text-[#C5C5C5] mt-1 max-w-2xl">
+            <h1 className="text-3xl sm:text-4xl font-display font-black tracking-tight text-[#EFF2F7]">On-Demand Two-Wheeler Care</h1>
+            <p className="text-sm text-[#A8A6A3] mt-1 max-w-2xl font-medium">
               Transparent, doorstep, and highway mechanical assistance engineered exclusively for motorcycles. Upfront transparent rates, verified mechanics, and real tracking.
             </p>
           </div>
@@ -329,7 +329,7 @@ export function ServicesCatalogPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/subscriptions')}
-              className="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-[#FFF174]/50 hover:bg-white/10 text-xs font-bold text-[#FFF174] flex items-center gap-1.5 transition-all"
+              className="px-4 py-2.5 rounded-xl bg-[#151613] border border-[#383A32] hover:border-[#FFF174]/50 hover:bg-[#20211D] text-xs font-display font-bold uppercase tracking-wider text-[#FFF174] flex items-center gap-1.5 transition-all min-h-[44px]"
             >
               <ShieldCheck size={16} />
               <span>View RSA Subscription Plans</span>
@@ -340,18 +340,18 @@ export function ServicesCatalogPage() {
         {/* Search & Category Filter Navigation */}
         <div className="space-y-4">
           <div className="relative">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A8A6A3]" />
             <input
               type="text"
               placeholder="Search services (e.g. tubeless puncture, 390 Adventure chain, flatbed tow, jumpstart)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#1D1D1D] border border-white/10 rounded-2xl pl-11 pr-4 py-3.5 text-sm focus:border-[#FFF174] focus:outline-none transition-colors"
+              className="w-full bg-[#151613] border border-[#383A32] rounded-2xl pl-11 pr-4 py-3.5 text-sm text-[#EFF2F7] placeholder-[#A8A6A3]/60 focus:border-[#FFF174] focus:outline-none transition-colors min-h-[48px]"
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A8A6A3] hover:text-[#EFF2F7] min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 <X size={16} />
               </button>
@@ -370,10 +370,10 @@ export function ServicesCatalogPage() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all border ${
+                className={`px-4 py-2.5 rounded-xl text-xs font-display font-bold uppercase tracking-wider whitespace-nowrap transition-all border min-h-[44px] cursor-pointer ${
                   activeCategory === cat.id
-                    ? 'bg-[#FFF174] text-black border-[#FFF174] shadow-md shadow-yellow-500/10'
-                    : 'bg-[#1D1D1D] text-[#C5C5C5] border-white/10 hover:border-white/20 hover:text-white'
+                    ? 'bg-[#FFF174] text-black border-[#FFF174] shadow-md'
+                    : 'bg-[#151613] text-[#A8A6A3] border-[#383A32] hover:border-[#FFF174]/40 hover:text-[#EFF2F7]'
                 }`}
               >
                 {cat.label}
@@ -387,46 +387,46 @@ export function ServicesCatalogPage() {
           {filteredServices.map(service => (
             <div 
               key={service.id}
-              className="bg-[#1D1D1D] border border-white/10 hover:border-[#FFF174]/50 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:shadow-xl hover:shadow-black/50"
+              className="bg-[#151613] border border-[#383A32] hover:border-[#FFF174]/50 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:shadow-xl hover:shadow-black/50"
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#FFF174] group-hover:bg-[#FFF174] group-hover:text-black transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-[#20211D] border border-[#383A32] flex items-center justify-center text-[#FFF174] group-hover:bg-[#FFF174] group-hover:text-black transition-colors">
                     <Wrench size={20} />
                   </div>
                   {service.badge && (
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#FFF174]/15 border border-[#FFF174]/30 text-[#FFF174]">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#FFF174]/15 border border-[#FFF174]/30 text-[#FFF174]">
                       {service.badge}
                     </span>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-black text-white group-hover:text-[#FFF174] transition-colors">{service.title}</h3>
-                  <p className="text-xs text-[#C5C5C5] line-clamp-2 mt-1">{service.shortDesc}</p>
+                  <h3 className="text-base sm:text-lg font-display font-bold text-[#EFF2F7] group-hover:text-[#FFF174] transition-colors">{service.title}</h3>
+                  <p className="text-xs text-[#A8A6A3] line-clamp-2 mt-1">{service.shortDesc}</p>
                 </div>
 
-                <div className="pt-2 border-t border-white/5 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                <div className="pt-2 border-t border-[#383A32] space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs text-[#A8A6A3]">
                     <Clock size={14} className="text-[#FFF174]" />
-                    <span>Avg Response: <strong className="text-white">{service.turnaroundMinutes} mins</strong></span>
+                    <span>Avg Response: <strong className="text-[#EFF2F7] font-mono">{service.turnaroundMinutes} mins</strong></span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                    <ShieldCheck size={14} className="text-emerald-400" />
+                  <div className="flex items-center gap-1.5 text-xs text-[#A8A6A3]">
+                    <ShieldCheck size={14} className="text-[#10B981]" />
                     <span className="line-clamp-1">{service.supportedVehicles[0]}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
+              <div className="pt-4 mt-4 border-t border-[#383A32] flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-gray-400 block">Starting At</span>
-                  <span className="text-lg font-black text-[#FFF174]">₹{service.basePrice}</span>
+                  <span className="text-[10px] uppercase font-mono font-bold text-[#A8A6A3] block">Starting At</span>
+                  <span className="text-lg font-mono font-bold text-[#FFF174]">₹{service.basePrice}</span>
                 </div>
 
                 <button
                   onClick={() => setSelectedService(service)}
-                  className="px-4 py-2 rounded-xl bg-[#FFF174] text-black font-extrabold text-xs flex items-center gap-1 hover:bg-yellow-400 active:scale-95 transition-all shadow-md shadow-yellow-500/20"
+                  className="px-4 py-2.5 rounded-xl bg-[#FFF174] text-black font-display font-bold text-xs uppercase tracking-wider flex items-center gap-1 hover:bg-[#ffe83b] active:scale-95 transition-all shadow-md min-h-[44px]"
                 >
                   <span>Book Now</span>
                   <ChevronRight size={14} />
@@ -437,13 +437,13 @@ export function ServicesCatalogPage() {
         </div>
 
         {filteredServices.length === 0 && (
-          <div className="bg-[#1D1D1D] border border-white/10 rounded-3xl p-12 text-center max-w-md mx-auto space-y-4">
-            <AlertCircle size={36} className="text-gray-500 mx-auto" />
-            <h3 className="text-lg font-bold">No services found</h3>
-            <p className="text-xs text-gray-400">Try searching with a broader term or reset category filters.</p>
+          <div className="bg-[#151613] border border-[#383A32] rounded-2xl p-12 text-center max-w-md mx-auto space-y-4">
+            <AlertCircle size={36} className="text-[#A8A6A3] mx-auto" />
+            <h3 className="text-lg font-display font-bold text-[#EFF2F7]">No services found</h3>
+            <p className="text-xs text-[#A8A6A3]">Try searching with a broader term or reset category filters.</p>
             <button
               onClick={() => { setActiveCategory('ALL'); setSearchQuery(''); }}
-              className="px-4 py-2 bg-white/10 hover:bg-white/15 text-white rounded-xl text-xs font-bold"
+              className="px-4 py-2 bg-[#20211D] hover:bg-[#2A2C26] border border-[#383A32] text-[#EFF2F7] rounded-xl text-xs font-display font-bold uppercase tracking-wider min-h-[44px]"
             >
               Reset Filters
             </button>
@@ -454,25 +454,25 @@ export function ServicesCatalogPage() {
       {/* COMPACT MODAL: REAL ON-DEMAND BOOKING OVERLAY */}
       {selectedService && !bookingConfirmed && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="bg-[#1D1D1D] border border-white/15 rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-7 space-y-6 shadow-2xl relative">
+          <div className="bg-[#151613] border border-[#383A32] rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-7 space-y-6 shadow-2xl relative">
             
             {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
+            <div className="flex items-start justify-between gap-4 border-b border-[#383A32] pb-4">
               <div>
-                <span className="text-[10px] font-black uppercase text-[#FFF174] tracking-widest block">CONFIRM SERVICE BOOKING</span>
-                <h2 className="text-2xl font-black text-white">{selectedService.title}</h2>
-                <p className="text-xs text-[#C5C5C5] mt-0.5">{selectedService.shortDesc}</p>
+                <span className="text-[10px] font-mono font-bold uppercase text-[#FFF174] tracking-widest block">CONFIRM SERVICE BOOKING</span>
+                <h2 className="text-xl sm:text-2xl font-display font-black text-[#EFF2F7]">{selectedService.title}</h2>
+                <p className="text-xs text-[#A8A6A3] mt-0.5">{selectedService.shortDesc}</p>
               </div>
               <button
                 onClick={() => setSelectedService(null)}
-                className="p-2 text-gray-400 hover:text-white rounded-xl bg-white/5 border border-white/10"
+                className="p-2 text-[#A8A6A3] hover:text-[#EFF2F7] rounded-xl bg-[#20211D] border border-[#383A32] min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 <X size={18} />
               </button>
             </div>
 
             {errorMessage && (
-              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300 text-xs flex items-center gap-2">
+              <div className="p-3 bg-[#EF4444]/15 border border-[#EF4444]/30 rounded-xl text-[#EF4444] text-xs flex items-center gap-2">
                 <AlertTriangle size={16} />
                 <span>{errorMessage}</span>
               </div>
@@ -482,7 +482,7 @@ export function ServicesCatalogPage() {
               
               {/* Motorcycle Selection */}
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
+                <label className="text-xs font-display font-bold uppercase tracking-wider text-[#EFF2F7] flex items-center gap-1.5">
                   <BikeIcon size={14} className="text-[#FFF174]" />
                   <span>Select Motorcycle</span>
                 </label>
@@ -491,7 +491,7 @@ export function ServicesCatalogPage() {
                   <select
                     value={selectedBikeId}
                     onChange={(e) => setSelectedBikeId(e.target.value)}
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:border-[#FFF174] focus:outline-none"
+                    className="w-full bg-[#20211D] border border-[#383A32] rounded-xl px-3.5 py-3 text-xs text-[#EFF2F7] focus:border-[#FFF174] focus:outline-none min-h-[44px]"
                   >
                     {userBikes.map(b => (
                       <option key={b.id} value={b.id}>
@@ -506,7 +506,7 @@ export function ServicesCatalogPage() {
                       placeholder="Brand (e.g. KTM)"
                       value={customBrand}
                       onChange={(e) => setCustomBrand(e.target.value)}
-                      className="bg-[#252525] border border-white/10 rounded-xl px-3 py-2 text-xs text-white"
+                      className="bg-[#20211D] border border-[#383A32] rounded-xl px-3 py-2 text-xs text-[#EFF2F7] min-h-[44px]"
                       required
                     />
                     <input
@@ -514,7 +514,7 @@ export function ServicesCatalogPage() {
                       placeholder="Model (e.g. 390 Adventure)"
                       value={customModel}
                       onChange={(e) => setCustomModel(e.target.value)}
-                      className="bg-[#252525] border border-white/10 rounded-xl px-3 py-2 text-xs text-white"
+                      className="bg-[#20211D] border border-[#383A32] rounded-xl px-3 py-2 text-xs text-[#EFF2F7] min-h-[44px]"
                       required
                     />
                     <input
@@ -522,7 +522,7 @@ export function ServicesCatalogPage() {
                       placeholder="Reg Plate (e.g. WB-74-XXXX)"
                       value={customReg}
                       onChange={(e) => setCustomReg(e.target.value)}
-                      className="bg-[#252525] border border-white/10 rounded-xl px-3 py-2 text-xs text-white uppercase"
+                      className="bg-[#20211D] border border-[#383A32] rounded-xl px-3 py-2 text-xs text-[#EFF2F7] uppercase font-mono min-h-[44px]"
                       required
                     />
                   </div>
@@ -531,7 +531,7 @@ export function ServicesCatalogPage() {
 
               {/* Service Location */}
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
+                <label className="text-xs font-display font-bold uppercase tracking-wider text-[#EFF2F7] flex items-center gap-1.5">
                   <MapPin size={14} className="text-[#FFF174]" />
                   <span>Breakdown / Service Location</span>
                 </label>
@@ -540,7 +540,7 @@ export function ServicesCatalogPage() {
                   value={locationAddress}
                   onChange={(e) => setLocationAddress(e.target.value)}
                   placeholder="Street, Landmark, or Highway Milestone..."
-                  className="w-full bg-[#252525] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:border-[#FFF174] focus:outline-none"
+                  className="w-full bg-[#20211D] border border-[#383A32] rounded-xl px-3.5 py-3 text-xs text-[#EFF2F7] focus:border-[#FFF174] focus:outline-none min-h-[44px]"
                   required
                 />
                 <input
@@ -548,14 +548,14 @@ export function ServicesCatalogPage() {
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
                   placeholder="Nearby Landmark / Gate / Viewpoint (Optional)"
-                  className="w-full bg-[#252525] border border-white/10 rounded-xl px-3 py-2 text-xs text-gray-300 focus:border-[#FFF174] focus:outline-none"
+                  className="w-full bg-[#20211D] border border-[#383A32] rounded-xl px-3.5 py-2.5 text-xs text-[#A8A6A3] focus:border-[#FFF174] focus:outline-none min-h-[44px]"
                 />
               </div>
 
               {/* Scheduling (Immediate vs Later) */}
               {selectedService.category === 'DOORSTEP_CARE' || selectedService.category === 'WORKSHOP_SERVICE' ? (
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
+                  <label className="text-xs font-display font-bold uppercase tracking-wider text-[#EFF2F7] flex items-center gap-1.5">
                     <Calendar size={14} className="text-[#FFF174]" />
                     <span>Preferred Appointment Date & Time</span>
                   </label>
@@ -563,39 +563,39 @@ export function ServicesCatalogPage() {
                     type="datetime-local"
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:border-[#FFF174] focus:outline-none"
+                    className="w-full bg-[#20211D] border border-[#383A32] rounded-xl px-3.5 py-2.5 text-xs text-[#EFF2F7] focus:border-[#FFF174] focus:outline-none min-h-[44px]"
                   />
                 </div>
               ) : null}
 
               {/* Transparent Price & Policy Disclosure */}
-              <div className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-2 text-xs">
-                <div className="flex justify-between items-center text-gray-300">
+              <div className="p-4 bg-[#20211D] border border-[#383A32] rounded-xl space-y-2 text-xs">
+                <div className="flex justify-between items-center text-[#A8A6A3]">
                   <span>Base Service Fee</span>
-                  <span className="font-bold text-white">₹{selectedService.basePrice}</span>
+                  <span className="font-mono font-bold text-[#EFF2F7]">₹{selectedService.basePrice}</span>
                 </div>
-                <div className="flex justify-between items-center text-gray-300">
+                <div className="flex justify-between items-center text-[#A8A6A3]">
                   <span>Travel / Technician Callout Fee</span>
-                  <span className="font-bold text-white">₹{selectedService.category === 'TOWING_RECOVERY' ? 250 : 100}</span>
+                  <span className="font-mono font-bold text-[#EFF2F7]">₹{selectedService.category === 'TOWING_RECOVERY' ? 250 : 100}</span>
                 </div>
-                <div className="border-t border-white/10 pt-2 flex justify-between items-center text-sm font-black">
+                <div className="border-t border-[#383A32] pt-2 flex justify-between items-center text-sm font-display font-bold">
                   <span className="text-[#FFF174]">Total Estimated Cost</span>
-                  <span className="text-[#FFF174]">
+                  <span className="text-[#FFF174] font-mono text-base font-bold">
                     ₹{selectedService.basePrice + (selectedService.category === 'TOWING_RECOVERY' ? 250 : 100)}
                   </span>
                 </div>
-                <p className="text-[11px] text-gray-400 italic pt-1">
+                <p className="text-[11px] text-[#A8A6A3] italic pt-1">
                   {selectedService.priceNote}
                 </p>
               </div>
 
               {/* Inclusions summary */}
               <div className="space-y-1.5">
-                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">What's Covered:</span>
+                <span className="text-[11px] font-mono font-bold text-[#A8A6A3] uppercase tracking-wider block">What's Covered:</span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                   {selectedService.inclusions.map((inc, i) => (
-                    <div key={i} className="flex items-center gap-1.5 text-xs text-gray-300">
-                      <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
+                    <div key={i} className="flex items-center gap-1.5 text-xs text-[#A8A6A3]">
+                      <CheckCircle2 size={13} className="text-[#10B981] shrink-0" />
                       <span className="truncate">{inc}</span>
                     </div>
                   ))}
@@ -607,14 +607,14 @@ export function ServicesCatalogPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedService(null)}
-                  className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-xs hover:bg-white/10 transition-colors"
+                  className="flex-1 py-3 rounded-xl bg-[#20211D] hover:bg-[#2A2C26] border border-[#383A32] text-[#EFF2F7] font-display font-bold text-xs uppercase tracking-wider transition-colors min-h-[44px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-2 py-3 rounded-xl bg-[#FFF174] text-black font-black text-xs hover:bg-yellow-400 active:scale-95 transition-all shadow-lg shadow-yellow-500/20 disabled:opacity-50"
+                  className="flex-2 py-3 rounded-xl bg-[#FFF174] text-black font-display font-bold text-xs uppercase tracking-wider hover:bg-[#ffe83b] active:scale-95 transition-all shadow-md disabled:opacity-50 min-h-[44px]"
                 >
                   {isSubmitting ? 'Confirming Dispatch...' : `Confirm & Request Dispatch (₹${selectedService.basePrice + (selectedService.category === 'TOWING_RECOVERY' ? 250 : 100)})`}
                 </button>
@@ -628,35 +628,35 @@ export function ServicesCatalogPage() {
       {/* BOOKING CONFIRMED SUCCESS DIALOG */}
       {bookingConfirmed && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="bg-[#1D1D1D] border border-emerald-500/30 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 text-center shadow-2xl">
-            <div className="w-16 h-16 rounded-3xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
+          <div className="bg-[#151613] border border-[#10B981]/40 rounded-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 text-center shadow-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-[#10B981]/15 text-[#10B981] flex items-center justify-center mx-auto border border-[#10B981]/30">
               <CheckCircle2 size={36} />
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">BOOKING RECORDED & PERSISTED</span>
-              <h2 className="text-2xl font-black text-white">Technician Dispatch Initiated</h2>
-              <p className="text-xs text-[#C5C5C5]">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#10B981]">BOOKING RECORDED & PERSISTED</span>
+              <h2 className="text-2xl font-display font-black text-[#EFF2F7]">Technician Dispatch Initiated</h2>
+              <p className="text-xs text-[#A8A6A3]">
                 Your booking ID is <strong className="text-[#FFF174] font-mono">{bookingConfirmed.bookingId}</strong>. Nearby verified mechanics have received your vehicle details.
               </p>
             </div>
 
-            <div className="p-4 bg-white/5 border border-white/10 rounded-2xl text-left space-y-2 text-xs">
+            <div className="p-4 bg-[#20211D] border border-[#383A32] rounded-xl text-left space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-gray-400">Service:</span>
-                <span className="font-bold text-white">{bookingConfirmed.serviceName}</span>
+                <span className="text-[#A8A6A3]">Service:</span>
+                <span className="font-bold text-[#EFF2F7]">{bookingConfirmed.serviceName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Motorcycle:</span>
+                <span className="text-[#A8A6A3]">Motorcycle:</span>
                 <span className="font-bold text-[#FFF174]">{bookingConfirmed.bikeDetails.brand} {bookingConfirmed.bikeDetails.model} ({bookingConfirmed.bikeDetails.registrationNumber})</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Location:</span>
-                <span className="font-bold text-white line-clamp-1">{bookingConfirmed.location.address}</span>
+                <span className="text-[#A8A6A3]">Location:</span>
+                <span className="font-bold text-[#EFF2F7] line-clamp-1">{bookingConfirmed.location.address}</span>
               </div>
-              <div className="flex justify-between border-t border-white/10 pt-2">
-                <span className="text-gray-400">Initial Status:</span>
-                <span className="font-black text-emerald-400 uppercase tracking-wider">{bookingConfirmed.status}</span>
+              <div className="flex justify-between border-t border-[#383A32] pt-2">
+                <span className="text-[#A8A6A3]">Initial Status:</span>
+                <span className="font-mono font-bold text-[#10B981] uppercase tracking-wider">{bookingConfirmed.status}</span>
               </div>
             </div>
 
@@ -666,13 +666,13 @@ export function ServicesCatalogPage() {
                   setBookingConfirmed(null);
                   setSelectedService(null);
                 }}
-                className="flex-1 py-3 rounded-xl bg-white/10 text-white font-bold text-xs hover:bg-white/15 transition-colors"
+                className="flex-1 py-3 rounded-xl bg-[#20211D] hover:bg-[#2A2C26] text-[#EFF2F7] font-display font-bold text-xs uppercase tracking-wider transition-colors min-h-[44px]"
               >
                 Close
               </button>
               <button
                 onClick={() => navigate('/rider/requests')}
-                className="flex-1 py-3 rounded-xl bg-[#FFF174] text-black font-black text-xs hover:bg-yellow-400 transition-colors shadow-md shadow-yellow-500/20"
+                className="flex-1 py-3 rounded-xl bg-[#FFF174] text-black font-display font-bold text-xs uppercase tracking-wider hover:bg-[#ffe83b] transition-colors shadow-md min-h-[44px]"
               >
                 Track on Dashboard
               </button>
