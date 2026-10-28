@@ -6,18 +6,16 @@ import {
   ArrowLeft,
   Heart,
   ChevronRight,
-  Loader2
+  Loader2,
+  Wrench,
+  Truck,
+  ShieldAlert
 } from 'lucide-react';
 import { useUserLocation } from '../hooks/useUserLocation';
 import { MedicalIdQuickModal } from '../components/MedicalIdQuickModal';
 import {
   MountainContourPattern,
   AnimatedRoadLines,
-  MedicalEmergencyGraphic,
-  BikeBreakdownGraphic,
-  PersonalSafetyGraphic,
-  TowingRecoveryGraphic,
-  GuidedTriageGraphic,
   DualEmergencyGraphic
 } from '../components/graphics';
 import { EmergencyActionSheet, type EmergencyCategory } from '../components/EmergencyActionSheet';
@@ -290,173 +288,185 @@ export function EmergencyAssistPage() {
             <span className="text-[11px] text-[#FFF174]">Tap to open overlay</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* 1. Medical emergency */}
+          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
+            {/* 1. Medical Assistance */}
             <button
               type="button"
               onClick={() => selectCategory('MEDICAL')}
-              className="p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.99] border-2 border-[#383A32] hover:border-red-500/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
-              aria-label="Medical emergency - Accidents, injuries, trauma care"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-red-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              aria-label="Medical Assistance - Accidents, injuries, trauma care"
             >
-              <div className="flex items-center gap-3">
-                <div className="shrink-0 group-hover:scale-105 transition-transform">
-                  <MedicalEmergencyGraphic size={48} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <strong className="text-base font-black text-[#EFF2F7] group-hover:text-red-300 transition-colors block font-display">
-                      Medical emergency
-                    </strong>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/30">
-                      TRAUMA
-                    </span>
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0 group-hover:scale-105 transition-transform">
+                    <Heart size={20} className="text-red-400" />
                   </div>
-                  <span className="text-xs text-[#A8A6A3] block mt-0.5">
-                    For accidents, injuries or urgent medical assistance. Call 112 & trauma care.
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/30 shrink-0">
+                    TRAUMA
                   </span>
                 </div>
+                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-red-300 transition-colors block font-display leading-tight">
+                  Medical Assistance
+                </strong>
+                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                  Accidents, injuries, 112 ambulance & emergency hospital finder.
+                </p>
               </div>
-              <ChevronRight size={18} className="text-[#A8A6A3] group-hover:text-red-400 group-hover:translate-x-1 transition-all shrink-0" />
+
+              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-red-400">
+                <span>Call 112 & Care</span>
+                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
 
-            {/* 2. Bike problem */}
+            {/* 2. Bike Breakdown */}
             <button
               type="button"
               onClick={() => selectCategory('BIKE_PROBLEM')}
-              className="p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.99] border-2 border-[#383A32] hover:border-[#FFF174]/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
-              aria-label="Bike problem - For punctures, battery failure, engine problems, fuel and repairs"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-[#FFF174]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              aria-label="Bike Breakdown - Punctures, battery failure, engine problems, fuel and repairs"
             >
-              <div className="flex items-center gap-3">
-                <div className="shrink-0 group-hover:scale-105 transition-transform">
-                  <BikeBreakdownGraphic size={48} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <strong className="text-base font-black text-[#EFF2F7] group-hover:text-[#FFF174] transition-colors block font-display">
-                      Bike problem
-                    </strong>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
-                      RESCUE
-                    </span>
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-[#FFF174]/15 border border-[#FFF174]/30 flex items-center justify-center text-[#FFF174] shrink-0 group-hover:scale-105 transition-transform">
+                    <Wrench size={20} />
                   </div>
-                  <span className="text-xs text-[#A8A6A3] block mt-0.5">
-                    Punctures, battery failure, chain snaps, engine stalls & emergency fuel.
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 shrink-0">
+                    RESCUE
                   </span>
                 </div>
+                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-[#FFF174] transition-colors block font-display leading-tight">
+                  Bike Breakdown
+                </strong>
+                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                  Punctures, battery jumpstart, chain snaps & roadside mechanics.
+                </p>
               </div>
-              <ChevronRight size={18} className="text-[#A8A6A3] group-hover:text-[#FFF174] group-hover:translate-x-1 transition-all shrink-0" />
+
+              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-[#FFF174]">
+                <span>Dispatch Help</span>
+                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
 
-            {/* 3. I feel unsafe */}
+            {/* 3. Personal Safety */}
             <button
               type="button"
               onClick={() => selectCategory('UNSAFE')}
-              className="p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.99] border-2 border-[#383A32] hover:border-amber-500/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
-              aria-label="I feel unsafe - For threats, harassment, being followed or feeling unsafe"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-amber-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              aria-label="Personal Safety - Threats, harassment, being followed or feeling unsafe"
             >
-              <div className="flex items-center gap-3">
-                <div className="shrink-0 group-hover:scale-105 transition-transform">
-                  <PersonalSafetyGraphic size={48} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <strong className="text-base font-black text-[#EFF2F7] group-hover:text-amber-300 transition-colors block font-display">
-                      I feel unsafe
-                    </strong>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                      SAFETY
-                    </span>
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 group-hover:scale-105 transition-transform">
+                    <ShieldAlert size={20} />
                   </div>
-                  <span className="text-xs text-[#A8A6A3] block mt-0.5">
-                    For threats, harassment, being stranded in isolated spots or feeling unsafe.
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">
+                    SAFETY
                   </span>
                 </div>
+                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-amber-300 transition-colors block font-display leading-tight">
+                  Personal Safety
+                </strong>
+                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                  Police 112, emergency circle alert & safe haven checkpoints.
+                </p>
               </div>
-              <ChevronRight size={18} className="text-[#A8A6A3] group-hover:text-amber-400 group-hover:translate-x-1 transition-all shrink-0" />
+
+              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-amber-400">
+                <span>Trigger Net</span>
+                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
 
-            {/* 4. I need towing */}
+            {/* 4. Towing & Recovery */}
             <button
               type="button"
               onClick={() => selectCategory('TOWING')}
-              className="p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.99] border-2 border-[#383A32] hover:border-[#B1D8E3]/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
-              aria-label="I need towing - For motorcycles that cannot safely be ridden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-[#B1D8E3]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              aria-label="Towing and Recovery - Dedicated 2-wheeler flatbeds"
             >
-              <div className="flex items-center gap-3">
-                <div className="shrink-0 group-hover:scale-105 transition-transform">
-                  <TowingRecoveryGraphic size={48} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <strong className="text-base font-black text-[#EFF2F7] group-hover:text-[#B1D8E3] transition-colors block font-display">
-                      I need towing
-                    </strong>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-[#B1D8E3] border border-blue-500/30">
-                      FLATBED
-                    </span>
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-[#B1D8E3] shrink-0 group-hover:scale-105 transition-transform">
+                    <Truck size={20} />
                   </div>
-                  <span className="text-xs text-[#A8A6A3] block mt-0.5">
-                    Specialized motorcycle flatbed recovery with winch & wheel cradles.
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-[#B1D8E3] border border-blue-500/30 shrink-0">
+                    FLATBED
                   </span>
                 </div>
+                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-[#B1D8E3] transition-colors block font-display leading-tight">
+                  Towing & Recovery
+                </strong>
+                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                  Dedicated motorcycle flatbed recovery with winch & wheel chocks.
+                </p>
               </div>
-              <ChevronRight size={18} className="text-[#A8A6A3] group-hover:text-[#B1D8E3] group-hover:translate-x-1 transition-all shrink-0" />
+
+              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-[#B1D8E3]">
+                <span>Book Flatbed</span>
+                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
 
-            {/* 5. Guided Triage / I'm not sure */}
+            {/* 5. Nearby Support */}
             <button
               type="button"
-              onClick={() => selectCategory('NOT_SURE')}
-              className="p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.99] border-2 border-[#383A32] hover:border-purple-400/80 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
-              aria-label="I'm not sure - For users who cannot identify the problem"
+              onClick={() => selectCategory('NEARBY_SUPPORT')}
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-emerald-400/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              aria-label="Nearby Support - Verified repair points, mechanics and fuel"
             >
-              <div className="flex items-center gap-3">
-                <div className="shrink-0 group-hover:scale-105 transition-transform">
-                  <GuidedTriageGraphic size={48} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <strong className="text-base font-black text-[#EFF2F7] group-hover:text-purple-300 transition-colors block font-display">
-                      I'm not sure (Triage)
-                    </strong>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                      DIAGNOSIS
-                    </span>
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-105 transition-transform">
+                    <MapPin size={20} />
                   </div>
-                  <span className="text-xs text-[#A8A6A3] block mt-0.5">
-                    Uncertain what is wrong? 3 step-by-step diagnostic checks to pinpoint rescue.
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+                    RADAR
                   </span>
                 </div>
+                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-emerald-300 transition-colors block font-display leading-tight">
+                  Nearby Support
+                </strong>
+                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                  Find verified 2-wheeler mechanics, OEM service hubs & 24/7 fuel.
+                </p>
               </div>
-              <ChevronRight size={18} className="text-[#A8A6A3] group-hover:text-purple-400 group-hover:translate-x-1 transition-all shrink-0" />
+
+              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-emerald-400">
+                <span>Find Services</span>
+                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
 
-            {/* 6. Combined: Medical & Bike Recovery */}
+            {/* 6. Unsure / Need Multiple Types of Help */}
             <button
               type="button"
               onClick={() => selectCategory('BOTH')}
-              className="p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.99] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex items-center justify-between gap-3 min-h-[88px] text-left shadow-lg shadow-black/20"
-              aria-label="Need Both Medical and Motorcycle Assistance"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              aria-label="Unsure / Need Multiple Types of Help - Combined medical and bike assistance or guided triage"
             >
-              <div className="flex items-center gap-3">
-                <div className="shrink-0 group-hover:scale-105 transition-transform">
-                  <DualEmergencyGraphic size={48} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <strong className="text-base font-black text-[#EFF2F7] group-hover:text-red-300 transition-colors block font-display">
-                      Need Both (Medical & Bike)
-                    </strong>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-red-600/30 text-red-200 border border-red-500/50">
-                      HIGH PRIORITY
-                    </span>
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0 group-hover:scale-105 transition-transform">
+                    <DualEmergencyGraphic size={24} />
                   </div>
-                  <span className="text-xs text-[#A8A6A3] block mt-0.5">
-                    Accident with motorcycle down. First-aid & medical care first, recovery second.
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-200 border border-purple-500/40 shrink-0">
+                    MULTI-NEED
                   </span>
                 </div>
+                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-purple-300 transition-colors block font-display leading-tight">
+                  Unsure / Both
+                </strong>
+                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                  Combined trauma & motorcycle rescue or guided triage diagnosis.
+                </p>
               </div>
-              <ChevronRight size={18} className="text-[#A8A6A3] group-hover:text-red-400 group-hover:translate-x-1 transition-all shrink-0" />
+
+              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-purple-300">
+                <span>Get Guidance</span>
+                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
           </div>
         </section>

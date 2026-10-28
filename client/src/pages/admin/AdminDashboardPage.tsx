@@ -208,7 +208,8 @@ export function AdminDashboardPage() {
             </Button>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="border-b border-white/10 text-gray-400 uppercase tracking-wider">
                 <tr>
@@ -261,6 +262,42 @@ export function AdminDashboardPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile 2-Column Responsive Cards */}
+          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
+            {requests.slice(0, 10).map((r) => (
+              <div key={r.id} className="p-3 rounded-xl bg-[#20211D] border border-[#383A32] flex flex-col justify-between space-y-2">
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="font-mono font-bold text-[#FFF174]">#{r.id.slice(-4)}</span>
+                    <StatusBadge status={r.status} />
+                  </div>
+                  <strong className="text-xs text-white block truncate">{r.riderName}</strong>
+                  <span className="text-[10px] text-gray-400 block truncate">{r.bike.brand} {r.bike.model}</span>
+                  <div className="mt-1.5">
+                    <span className="px-1.5 py-0.5 rounded bg-white/10 text-white font-bold text-[9px] uppercase inline-block">
+                      {r.issue.replaceAll('_', ' ')}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-gray-400 flex items-center gap-1 mt-1.5 truncate">
+                    <MapPin size={10} className="text-[#FFF174] shrink-0" />
+                    <span className="truncate">{r.approximateLocation || 'Live GPS'}</span>
+                  </p>
+                </div>
+                <div className="pt-2 border-t border-[#383A32] flex items-center justify-between">
+                  <span className="text-[9px] text-gray-400 truncate max-w-[80px]">
+                    {r.assignedHelperName || 'Unassigned'}
+                  </span>
+                  <button
+                    onClick={() => navigate(`/requests/${r.id}`)}
+                    className="px-2.5 py-1 bg-white/10 hover:bg-[#FFF174] hover:text-black rounded-lg text-[10px] font-bold transition-colors min-h-[32px]"
+                  >
+                    Inspect
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -280,7 +317,8 @@ export function AdminDashboardPage() {
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="border-b border-[#383A32] text-[#A8A6A3] uppercase tracking-wider font-mono">
                 <tr>
@@ -363,6 +401,56 @@ export function AdminDashboardPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile 2-Column Responsive Cards */}
+          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
+            {bookings.map((b) => (
+              <div key={b.bookingId} className="p-3 rounded-xl bg-[#20211D] border border-[#383A32] flex flex-col justify-between space-y-2">
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="font-mono font-bold text-[#FFF174]">#{b.bookingId.slice(-4)}</span>
+                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase ${
+                      b.status === 'COMPLETED' ? 'bg-[#10B981]/15 text-[#10B981]' :
+                      b.status === 'CANCELLED' ? 'bg-[#EF4444]/15 text-[#EF4444]' :
+                      'bg-[#F59E0B]/15 text-[#F59E0B]'
+                    }`}>
+                      {b.status}
+                    </span>
+                  </div>
+                  <strong className="text-xs text-white block line-clamp-1">{b.serviceName}</strong>
+                  <span className="text-[10px] text-gray-400 block truncate">{b.bikeDetails.brand} {b.bikeDetails.model}</span>
+                  <div className="mt-1 flex items-center justify-between text-[10px]">
+                    <span className="text-gray-400 truncate">{b.riderName}</span>
+                    <span className="font-mono font-bold text-[#FFF174]">₹{b.pricing.totalEstimated}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-[#383A32]">
+                  {b.status === 'REQUESTED' && (
+                    <button
+                      onClick={() => handleUpdateBooking(b.bookingId, 'ASSIGNED')}
+                      className="w-full py-1.5 bg-[#FFF174] text-black font-display font-bold text-[10px] uppercase tracking-wider rounded-lg hover:bg-[#ffe83b] min-h-[34px]"
+                    >
+                      Dispatch
+                    </button>
+                  )}
+                  {b.status === 'ASSIGNED' && (
+                    <button
+                      onClick={() => handleUpdateBooking(b.bookingId, 'COMPLETED')}
+                      className="w-full py-1.5 bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 font-display font-bold text-[10px] uppercase tracking-wider rounded-lg min-h-[34px]"
+                    >
+                      Complete
+                    </button>
+                  )}
+                  {b.status === 'COMPLETED' && (
+                    <span className="text-[#10B981] font-mono font-bold text-[10px] flex items-center justify-center gap-1 py-1">
+                      <CheckCircle2 size={12} /> Closed
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -382,7 +470,8 @@ export function AdminDashboardPage() {
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="border-b border-[#383A32] text-[#A8A6A3] uppercase tracking-wider font-mono">
                 <tr>
@@ -433,6 +522,39 @@ export function AdminDashboardPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile 2-Column Responsive Cards */}
+          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
+            {subscriptions.map((s) => (
+              <div key={s.subscriptionId} className="p-3 rounded-xl bg-[#20211D] border border-[#383A32] flex flex-col justify-between space-y-2">
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="font-mono font-bold text-[#FFF174]">#{s.subscriptionId.slice(-4)}</span>
+                    <span className="px-1.5 py-0.5 rounded bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] font-mono font-bold text-[9px] uppercase">
+                      {s.status}
+                    </span>
+                  </div>
+                  <strong className="text-xs text-white block line-clamp-1">{s.planName}</strong>
+                  <span className="text-[10px] text-gray-400 block truncate">{s.linkedBike.brand} {s.linkedBike.model}</span>
+                  <div className="mt-1 space-y-0.5 text-[10px]">
+                    <div className="flex justify-between text-gray-400">
+                      <span>Callouts:</span>
+                      <span className="text-[#10B981] font-mono font-bold">{s.features.maxFreeBreakdowns - s.features.usedBreakdowns} Left</span>
+                    </div>
+                    <div className="flex justify-between text-gray-400">
+                      <span>Towing:</span>
+                      <span className="text-white font-mono">{s.features.towingDistanceLimitKm}km free</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-[#383A32] flex items-center justify-between text-[10px] text-gray-400">
+                  <span className="truncate">{new Date(s.endDate).toLocaleDateString()}</span>
+                  <span className="font-mono font-bold text-[#FFF174]">₹{s.priceInr}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

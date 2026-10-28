@@ -364,8 +364,8 @@ export function NearbyServicesPage() {
           </div>
         </div>
 
-        {/* MAP CONTAINER (Desktop: 3/5 width, Mobile: full height with bottom sheet) */}
-        <div className="flex-1 w-full h-[50vh] md:h-auto min-h-[400px] relative bg-[#121212]">
+        {/* MAP CONTAINER (Desktop: 3/5 width, Mobile: balanced proportion) */}
+        <div className="flex-1 w-full h-[36vh] sm:h-[45vh] md:h-auto min-h-[220px] relative bg-[#121212]">
           <iframe
             title="Service Centers Map"
             src={mapSrc}
@@ -377,101 +377,103 @@ export function NearbyServicesPage() {
           />
         </div>
 
-        {/* MOBILE BOTTOM SHEET (Section 7: MAP + BOTTOM SHEET on mobile) */}
+        {/* MOBILE BOTTOM SHEET (Section 7: MAP + 2-COLUMN RESPONSIVE RESULTS SHEET on mobile) */}
         <div
-          className={`md:hidden fixed bottom-14 left-0 right-0 z-40 bg-[#121212] border-t-2 border-white/15 rounded-t-3xl shadow-2xl transition-all duration-300 ${
-            mobileSheetOpen ? 'max-h-[60vh]' : 'max-h-[64px]'
+          className={`md:hidden fixed bottom-16 left-0 right-0 z-40 bg-[#121212]/95 backdrop-blur-md border-t border-white/15 rounded-t-3xl shadow-2xl transition-all duration-300 ${
+            mobileSheetOpen ? 'max-h-[58vh]' : 'max-h-[50px]'
           } flex flex-col`}
         >
           {/* Sheet Handle */}
           <button
             type="button"
             onClick={() => setMobileSheetOpen(!mobileSheetOpen)}
-            className="w-full py-2.5 flex items-center justify-center gap-1 text-gray-400 hover:text-white cursor-pointer"
+            className="w-full py-2 flex items-center justify-center gap-1.5 text-gray-400 hover:text-white cursor-pointer"
           >
-            <div className="w-10 h-1 bg-white/20 rounded-full mb-1" />
-            <span className="text-[11px] font-bold uppercase tracking-wider block">
+            <div className="w-10 h-1 bg-white/30 rounded-full" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
+              <span>{providersWithDistance.length} Providers</span>
               {mobileSheetOpen ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
             </span>
           </button>
 
-          {/* Sheet Content */}
+          {/* Sheet Content: 2-column responsive grid on mobile! */}
           {mobileSheetOpen && (
-            <div className="overflow-y-auto p-4 space-y-3 pb-8">
+            <div className="overflow-y-auto p-3 space-y-2 pb-6">
               <div className="flex items-center justify-between pb-1">
-                <span className="text-xs font-black uppercase tracking-wider text-gray-300">
-                  {providersWithDistance.length} Providers Nearby
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-300">
+                  Nearby Repair & OEM Centers
                 </span>
-                <span className="text-[10px] text-[#FFF174] font-bold">Tap card to focus</span>
+                <span className="text-[10px] text-[#FFF174] font-bold">Tap to map</span>
               </div>
 
-              {providersWithDistance.map((p) => {
-                const isSelected = activeProvider?.id === p.id;
-                return (
-                  <div
-                    key={p.id}
-                    onClick={() => setSelectedProvider(p)}
-                    className={`p-3.5 rounded-2xl border text-left transition-all ${
-                      isSelected
-                        ? 'bg-[#181818] border-[#FFF174]'
-                        : 'bg-black/40 border-white/10'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
+              <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2">
+                {providersWithDistance.map((p) => {
+                  const isSelected = activeProvider?.id === p.id;
+                  return (
+                    <div
+                      key={p.id}
+                      onClick={() => setSelectedProvider(p)}
+                      className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#181818] border-[#FFF174] shadow-[0_0_10px_rgba(255,241,116,0.15)]'
+                          : 'bg-black/50 border-white/10 hover:border-white/20'
+                      }`}
+                    >
                       <div>
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <strong className="text-xs font-black text-white">{p.name}</strong>
+                        <div className="flex items-start justify-between gap-1">
+                          <strong className="text-xs font-bold text-white line-clamp-1">{p.name}</strong>
                           {p.isDemo ? (
-                            <span className="text-[8px] font-black uppercase bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded">
+                            <span className="text-[7px] font-mono font-bold uppercase bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded shrink-0">
                               DEMO
                             </span>
                           ) : (
-                            <span className="text-[8px] font-black uppercase bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded">
+                            <span className="text-[7px] font-mono font-bold uppercase bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded shrink-0">
                               VERIFIED
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 text-[11px] text-gray-400 mt-0.5">
-                          <span className="text-[#FFF174] font-bold">★ {p.rating}</span>
+                        <div className="flex items-center gap-1.5 text-[10px] text-gray-400 mt-1">
+                          <span className="text-[#FFF174] font-bold flex items-center gap-0.5">
+                            <Star size={10} fill="#FFF174" /> {p.rating}
+                          </span>
                           <span>•</span>
-                          <span className="text-white font-semibold">{p.distanceStr}</span>
+                          <span className="text-white font-semibold truncate">{p.distanceStr}</span>
                         </div>
+
+                        {p.services.length > 0 && (
+                          <div className="mt-1.5">
+                            <span className="text-[9px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-gray-300 line-clamp-1 inline-block">
+                              {p.services[0]}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Actions: Call & Directions */}
+                      <div className="grid grid-cols-2 gap-1.5 mt-2 pt-2 border-t border-white/10">
+                        <a
+                          href={`tel:${p.phone}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/15 text-[10px] font-bold text-white flex items-center justify-center gap-1 text-center min-h-[36px]"
+                        >
+                          <PhoneCall size={11} className="text-emerald-400 shrink-0" />
+                          <span>Call</span>
+                        </a>
+                        <a
+                          href={`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="py-1.5 px-2 rounded-lg bg-[#FFF174] hover:bg-yellow-400 text-black font-bold text-[10px] flex items-center justify-center gap-1 text-center min-h-[36px]"
+                        >
+                          <Navigation size={11} className="shrink-0" />
+                          <span>Dir</span>
+                        </a>
                       </div>
                     </div>
-
-                    {/* 2-3 Services */}
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {p.services.slice(0, 3).map((s, idx) => (
-                        <span key={idx} className="text-[9px] bg-white/5 px-1.5 py-0.5 rounded text-gray-300">
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Actions: Call & Directions */}
-                    <div className="grid grid-cols-2 gap-2 mt-2.5 pt-2 border-t border-white/10">
-                      <a
-                        href={`tel:${p.phone}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="py-1.5 px-3 rounded-xl bg-white/10 text-xs font-bold text-white flex items-center justify-center gap-1"
-                      >
-                        <PhoneCall size={12} className="text-emerald-400" />
-                        <span>Call</span>
-                      </a>
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="py-1.5 px-3 rounded-xl bg-[#FFF174] text-black font-black text-xs flex items-center justify-center gap-1"
-                      >
-                        <Navigation size={12} />
-                        <span>Directions</span>
-                      </a>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

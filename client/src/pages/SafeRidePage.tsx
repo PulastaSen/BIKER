@@ -373,7 +373,7 @@ export function SafeRidePage() {
                 STEP 1: WHERE ARE YOU GOING?
               </span>
 
-              <div className="space-y-1.5">
+              <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2">
                 {POPULAR_DESTINATIONS.map((d) => (
                   <button
                     key={d.name}
@@ -383,14 +383,14 @@ export function SafeRidePage() {
                       setCustomDestination('');
                       setDurationMins(d.durationMins);
                     }}
-                    className={`w-full p-3 rounded-xl text-left text-xs font-bold border transition-all cursor-pointer flex justify-between items-center ${
+                    className={`p-2.5 rounded-xl text-left text-xs font-bold border transition-all cursor-pointer flex flex-col justify-between min-h-[56px] ${
                       destinationName === d.name && !customDestination
                         ? 'bg-emerald-500/20 border-emerald-400 text-white'
                         : 'bg-black/40 border-white/10 text-gray-300 hover:text-white'
                     }`}
                   >
-                    <span>{d.name}</span>
-                    <span className="text-[10px] text-gray-400 font-semibold">{d.durationMins} min</span>
+                    <span className="line-clamp-2 leading-tight">{d.name}</span>
+                    <span className="text-[10px] text-gray-400 font-semibold mt-1">{d.durationMins} min</span>
                   </button>
                 ))}
               </div>
@@ -415,14 +415,14 @@ export function SafeRidePage() {
                 <span className="text-[10px] text-emerald-400 font-bold">No app required</span>
               </div>
 
-              <div className="space-y-1.5 text-xs">
+              <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2 text-xs">
                 {familyMembers.map((m) => (
-                  <div key={m.id} className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex justify-between items-center">
+                  <div key={m.id} className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex flex-col justify-between">
                     <div>
-                      <strong className="text-white block font-bold">{m.name}</strong>
-                      <span className="text-[10px] text-gray-400">{m.relationship} • {m.phone}</span>
+                      <strong className="text-white block font-bold truncate">{m.name}</strong>
+                      <span className="text-[10px] text-gray-400 truncate block">{m.relationship} • {m.phone}</span>
                     </div>
-                    <span className="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
+                    <span className="text-[9px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded mt-1.5 self-start">
                       WhatsApp / SMS
                     </span>
                   </div>

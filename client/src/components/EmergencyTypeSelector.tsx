@@ -101,7 +101,7 @@ export function EmergencyTypeSelector({ selectedCategory, onSelect }: EmergencyT
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2 sm:gap-2.5">
         {CATEGORY_OPTIONS.map((opt) => {
           const isSelected = selectedCategory === opt.id;
           return (
@@ -109,35 +109,37 @@ export function EmergencyTypeSelector({ selectedCategory, onSelect }: EmergencyT
               key={opt.id}
               type="button"
               onClick={() => onSelect(opt.id)}
-              className={`p-4 rounded-2xl border text-left transition-all active:scale-98 flex items-start gap-3.5 cursor-pointer relative ${
+              className={`p-3 sm:p-4 rounded-2xl border text-left transition-all active:scale-98 flex flex-col justify-between min-h-[140px] cursor-pointer relative ${
                 isSelected
                   ? opt.activeBgClass
                   : `${opt.bgClass} border-white/10 ${opt.borderClass}`
               }`}
             >
-              <div className="w-12 h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0 mt-0.5">
-                {opt.icon}
-              </div>
-
-              <div className="flex-1 min-w-0 pr-6">
-                <div className="flex items-center gap-1.5">
-                  <strong className="text-sm sm:text-base font-black text-white tracking-tight block truncate">
-                    {opt.title}
-                  </strong>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0">
+                    {opt.icon}
+                  </div>
+                  {isSelected && (
+                    <div className="text-white animate-in zoom-in-75">
+                      <CheckCircle2 size={18} className="text-[#FFF174]" />
+                    </div>
+                  )}
                 </div>
-                <p className="text-[11px] text-gray-300 leading-snug mt-1">
+
+                <strong className="text-xs sm:text-sm font-black text-white tracking-tight block truncate">
+                  {opt.title}
+                </strong>
+                <p className="text-[10px] sm:text-[11px] text-gray-300 leading-snug mt-1 line-clamp-2">
                   {opt.subtitle}
                 </p>
-                <span className="inline-block mt-2 px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase">
+              </div>
+
+              <div className="mt-2 pt-1 border-t border-white/10">
+                <span className="inline-block px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-bold text-gray-300 uppercase truncate max-w-full">
                   {opt.badgeText}
                 </span>
               </div>
-
-              {isSelected && (
-                <div className="absolute top-3.5 right-3.5 text-white animate-in zoom-in-75">
-                  <CheckCircle2 size={18} className="text-[#FFF174]" />
-                </div>
-              )}
             </button>
           );
         })}

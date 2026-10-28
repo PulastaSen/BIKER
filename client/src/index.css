@@ -166,17 +166,146 @@ img {
   }
 }
 
+/* ==========================================================
+   RESPONSIVE DESIGN SYSTEM GRIDS & UTILITIES
+   Mobile-First: 2-column compact on phones (>= 340px)
+   Fallback to 1-col on ultra-narrow (< 340px)
+   3-col on tablets (>= 768px), 4-col on desktop (>= 1200px)
+   ========================================================== */
+.responsive-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.responsive-feature-card {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 16px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 339px) {
+  .responsive-feature-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-feature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .responsive-feature-card {
+    padding: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .responsive-feature-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+/* Emergency Services 2-Column Priority Grid */
+.emergency-service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 339px) {
+  .emergency-service-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .emergency-service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .emergency-service-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+/* Compact Emergency & Feature Card */
+.compact-emergency-card {
+  min-width: 0;
+  min-height: 148px;
+  padding: 12px;
+  border-radius: 18px;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.compact-emergency-card:hover {
+  background-color: var(--color-surface-elevated);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.compact-emergency-card:active {
+  transform: scale(0.98);
+}
+
 .responsive-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 339px) {
+  .responsive-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
 }
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
   margin-bottom: 2rem;
+}
+
+@media (max-width: 339px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
 }
 
 .section {
@@ -2434,8 +2563,22 @@ textarea:focus {
    ========================================================== */
 .bikes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 339px) {
+  .bikes-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .bikes-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
 }
 
 
@@ -2771,11 +2914,25 @@ textarea:focus {
   font-size: 0.95rem;
 }
 
-/* Bikes Grid */
+/* Bikes Grid handled by responsive utility */
 .bikes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 339px) {
+  .bikes-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .bikes-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
 }
 
 .bike-garage-card {
@@ -3238,21 +3395,45 @@ textarea:focus {
    ========================================================== */
 .contacts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 339px) {
+  .contacts-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .contacts-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
 }
 
 .contact-card {
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0.75rem;
   background: #111111;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1rem;
   transition: all var(--transition-fast);
   color: #FFFFFF;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 640px) {
+  .contact-card {
+    padding: 1.25rem;
+  }
 }
 
 .contact-card:hover {
@@ -3323,8 +3504,22 @@ textarea:focus {
 
 .hotlines-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 340px) {
+  .hotlines-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .hotlines-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
 }
 
 .hotline-item {
@@ -3332,6 +3527,25 @@ textarea:focus {
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.25rem;
   border-radius: 12px;
+}
+
+@media (max-width: 639px) {
+  .hotline-item {
+    padding: 0.75rem;
+  }
+  .hotline-item strong {
+    font-size: 0.95rem;
+  }
+  .hotline-item span {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .hotline-item a {
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.5rem;
+  }
 }
 
 .hotline-item strong {
@@ -5311,8 +5525,34 @@ textarea:focus {
   .bikes-grid,
   .contacts-grid,
   .responsive-grid {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .bike-garage-card__image {
+    height: 130px !important;
+  }
+
+  .bike-garage-card__body {
+    padding: 0.75rem !important;
+  }
+
+  .bike-card-title {
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .contact-card__actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.4rem;
+  }
+
+  .contact-card__actions a,
+  .contact-card__actions button {
+    width: 100%;
+    justify-content: center;
   }
 
   .filter-bar {
@@ -5335,6 +5575,18 @@ textarea:focus {
   .header-actions a,
   .header-actions button {
     width: 100%;
+  }
+}
+
+@media (max-width: 339px) {
+  .dashboard-grid,
+  .bikes-grid,
+  .contacts-grid,
+  .responsive-grid,
+  .responsive-feature-grid,
+  .emergency-service-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
   }
 }
 

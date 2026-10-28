@@ -289,45 +289,45 @@ export function HelperDashboardPage() {
         </div>
 
         {availableRequests.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 sm:gap-3.5">
             {availableRequests.slice(0, 4).map((req) => (
               <div
                 key={req.id}
-                className="p-5 rounded-2xl bg-[#151613] border border-[#383A32] hover:border-[#FFF174]/40 transition-all flex flex-col justify-between gap-4"
+                className="p-3.5 sm:p-5 rounded-2xl bg-[#151613] border border-[#383A32] hover:border-[#FFF174]/40 transition-all flex flex-col justify-between gap-3"
               >
-                <div className="space-y-2">
+                <div className="space-y-1.5 sm:space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-[#A8A6A3]">REQ-{req.id.slice(-4)}</span>
-                    <span className="text-xs font-mono text-[#10B981] font-bold bg-[#10B981]/15 border border-[#10B981]/30 px-2 py-0.5 rounded">
+                    <span className="font-mono text-[#A8A6A3] text-[10px] sm:text-xs">REQ-{req.id.slice(-4)}</span>
+                    <span className="text-[10px] sm:text-xs font-mono text-[#10B981] font-bold bg-[#10B981]/15 border border-[#10B981]/30 px-1.5 py-0.5 rounded">
                       Est. ₹350
                     </span>
                   </div>
                   <div>
-                    <strong className="text-base font-display font-bold text-[#EFF2F7] block">
+                    <strong className="text-xs sm:text-base font-display font-bold text-[#EFF2F7] block leading-tight line-clamp-2">
                       {req.bike.brand} {req.bike.model} — {req.issue.replaceAll('_', ' ')}
                     </strong>
-                    <p className="text-xs text-[#A8A6A3] mt-1 line-clamp-2">{req.description}</p>
+                    <p className="text-[11px] sm:text-xs text-[#A8A6A3] mt-1 line-clamp-2">{req.description}</p>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-[#A8A6A3] pt-1">
-                    <MapPin size={13} className="text-[#FFF174]" />
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-[#A8A6A3] pt-1">
+                    <MapPin size={12} className="text-[#FFF174] shrink-0" />
                     <span className="truncate">{req.approximateLocation || 'Himalayan Corridor'}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-[#383A32]">
+                <div className="flex items-center gap-1.5 sm:gap-2 pt-2 border-t border-[#383A32]">
                   <button
                     type="button"
                     onClick={() => handleAcceptRequest(req.id)}
-                    className="flex-1 py-2.5 rounded-xl bg-[#FFF174] hover:bg-[#ffe83b] font-display font-bold text-xs uppercase tracking-wider text-black flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer min-h-[44px]"
+                    className="flex-1 py-2 sm:py-2.5 px-2 rounded-xl bg-[#FFF174] hover:bg-[#ffe83b] font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider text-black flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]"
                   >
-                    <Check size={15} />
-                    <span>Accept Job</span>
+                    <Check size={14} />
+                    <span>Accept</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => navigate(`/requests/${req.id}`)}
-                    className="py-2.5 px-4 rounded-xl bg-[#20211D] hover:bg-[#2A2C26] border border-[#383A32] font-display font-bold text-xs uppercase tracking-wider text-[#EFF2F7] transition-colors cursor-pointer min-h-[44px]"
+                    className="py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl bg-[#20211D] hover:bg-[#2A2C26] border border-[#383A32] font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider text-[#EFF2F7] transition-colors cursor-pointer min-h-[40px] sm:min-h-[44px]"
                   >
                     Details
                   </button>

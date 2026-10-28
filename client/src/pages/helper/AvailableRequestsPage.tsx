@@ -155,43 +155,43 @@ export function AvailableRequestsPage() {
 
       {tab === 'EMERGENCY' ? (
         filteredRequests.length > 0 ? (
-          <div className="requests-list grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="requests-list grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 sm:gap-4">
             {filteredRequests.map((req) => (
-              <div key={req.id} className="bg-[#1D1D1D] border border-white/10 rounded-2xl p-5 space-y-4 hover:border-white/20 transition-all flex flex-col justify-between">
+              <div key={req.id} className="bg-[#1D1D1D] border border-white/10 rounded-2xl p-3.5 sm:p-5 space-y-3 hover:border-white/20 transition-all flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1.5">
                     <strong className="text-xs font-mono font-bold text-[#FFF174]">#{req.id}</strong>
                     <StatusBadge status={req.status} />
                   </div>
 
-                  <h3 className="font-bold text-base text-white">
+                  <h3 className="font-bold text-xs sm:text-base text-white leading-tight">
                     {req.riderName} • {(req.bikeDetails?.brand || req.bike?.brand || 'Royal Enfield')} {(req.bikeDetails?.model || req.bike?.model || '')}
                   </h3>
 
                   {(req.bikeDetails?.registrationNumber || req.bike?.registrationNumber) && (
-                    <span className="font-mono text-[10px] bg-white/10 px-2 py-0.5 rounded font-bold text-yellow-300 inline-block mt-1">
+                    <span className="font-mono text-[9px] sm:text-[10px] bg-white/10 px-1.5 py-0.5 rounded font-bold text-yellow-300 inline-block mt-1">
                       {req.bikeDetails?.registrationNumber || req.bike?.registrationNumber}
                     </span>
                   )}
 
-                  <p className="text-xs font-bold text-red-400 uppercase mt-2">
+                  <p className="text-[11px] sm:text-xs font-bold text-red-400 uppercase mt-1.5">
                     {req.issue?.replaceAll('_', ' ')}
                   </p>
-                  <p className="text-xs text-gray-300 line-clamp-2 mt-1">{req.description}</p>
+                  <p className="text-[11px] sm:text-xs text-gray-300 line-clamp-2 mt-0.5">{req.description}</p>
 
                   {req.approximateLocation && (
-                    <p className="text-xs text-gray-400 flex items-center gap-1.5 mt-3 bg-black/30 p-2 rounded-xl">
-                      <MapPin size={14} className="text-[#FFF174] shrink-0" /> {req.approximateLocation}
+                    <p className="text-[10px] sm:text-xs text-gray-400 flex items-center gap-1.5 mt-2 bg-black/30 p-1.5 sm:p-2 rounded-xl truncate">
+                      <MapPin size={12} className="text-[#FFF174] shrink-0" /> <span className="truncate">{req.approximateLocation}</span>
                     </p>
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 pt-3 border-t border-white/10">
-                  <Button variant="secondary" className="flex-1" onClick={() => navigate(`/requests/${req.id}`)}>
-                    View Details
+                <div className="flex items-center gap-1.5 pt-2 border-t border-white/10">
+                  <Button variant="secondary" className="flex-1 text-[10px] sm:text-xs min-h-[40px] sm:min-h-[44px] py-1.5 px-2" onClick={() => navigate(`/requests/${req.id}`)}>
+                    Details
                   </Button>
-                  <Button className="flex-1" onClick={() => handleAcceptAndDispatch(req)}>
-                    <ShieldCheck size={16} /> Accept & Dispatch
+                  <Button className="flex-1 text-[10px] sm:text-xs min-h-[40px] sm:min-h-[44px] py-1.5 px-2" onClick={() => handleAcceptAndDispatch(req)}>
+                    <ShieldCheck size={14} className="shrink-0" /> <span>Accept</span>
                   </Button>
                 </div>
               </div>
@@ -207,13 +207,13 @@ export function AvailableRequestsPage() {
       ) : (
         /* SERVICE BOOKINGS TAB */
         filteredBookings.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 sm:gap-4">
             {filteredBookings.map((b) => (
-              <div key={b.bookingId} className="bg-[#1D1D1D] border border-white/10 rounded-2xl p-5 space-y-4 hover:border-white/20 transition-all flex flex-col justify-between">
+              <div key={b.bookingId} className="bg-[#1D1D1D] border border-white/10 rounded-2xl p-3.5 sm:p-5 space-y-3 hover:border-white/20 transition-all flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1.5">
                     <span className="text-xs font-mono font-bold text-[#FFF174]">{b.bookingId}</span>
-                    <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
+                    <span className={`text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
                       b.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-300' :
                       b.status === 'ACCEPTED' || b.status === 'DISPATCHED' ? 'bg-blue-500/20 text-blue-300' :
                       'bg-amber-500/20 text-amber-300'
@@ -222,49 +222,43 @@ export function AvailableRequestsPage() {
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-base text-white">{b.serviceName}</h3>
-                  <p className="text-xs text-gray-300 mt-1">
-                    Customer: <span className="text-white font-medium">{b.riderName}</span> • <span className="font-mono text-gray-400">{b.riderPhone}</span>
+                  <h3 className="font-bold text-xs sm:text-base text-white leading-tight">{b.serviceName}</h3>
+                  <p className="text-[11px] sm:text-xs text-gray-300 mt-1 line-clamp-1">
+                    Customer: <span className="text-white font-medium">{b.riderName}</span>
                   </p>
-                  <p className="text-xs text-gray-300">
-                    Bike: <span className="text-white font-medium">{b.bikeDetails.brand} {b.bikeDetails.model}</span> ({b.bikeDetails.registrationNumber})
+                  <p className="text-[11px] sm:text-xs text-gray-300 line-clamp-1">
+                    Bike: <span className="text-white font-medium">{b.bikeDetails.brand} {b.bikeDetails.model}</span>
                   </p>
 
-                  <div className="mt-3 bg-black/30 p-2.5 rounded-xl space-y-1.5 text-xs text-gray-300">
-                    <p className="flex items-center gap-1.5">
-                      <MapPin size={13} className="text-[#FFF174] shrink-0" />
-                      <span>{b.location.address} {b.location.landmark ? `(${b.location.landmark})` : ''}</span>
+                  <div className="mt-2 bg-black/30 p-2 rounded-xl space-y-1 text-[11px] text-gray-300">
+                    <p className="flex items-center gap-1.5 truncate">
+                      <MapPin size={12} className="text-[#FFF174] shrink-0" />
+                      <span className="truncate">{b.location.address}</span>
                     </p>
                     <p className="flex items-center justify-between font-mono font-bold text-white pt-1 border-t border-white/5">
-                      <span>Quotation / Labor Rate:</span>
+                      <span>Labor:</span>
                       <span className="text-[#FFF174]">₹{b.pricing.totalEstimated}</span>
                     </p>
                   </div>
-
-                  {b.pricing.isCoveredBySubscription && (
-                    <p className="text-[11px] text-emerald-400 mt-2 font-medium">
-                      🛡️ Covered under {b.pricing.coveragePlanName}
-                    </p>
-                  )}
                 </div>
 
-                <div className="pt-3 border-t border-white/10 space-y-2">
+                <div className="pt-2 border-t border-white/10 space-y-1.5">
                   {b.status === 'PENDING' || b.status === 'SEARCHING' ? (
-                    <Button className="w-full" onClick={() => handleAcceptBooking(b)}>
-                      <ShieldCheck size={16} /> Accept Service Job
+                    <Button className="w-full text-[10px] sm:text-xs min-h-[40px] sm:min-h-[44px]" onClick={() => handleAcceptBooking(b)}>
+                      <ShieldCheck size={14} /> Accept Job
                     </Button>
                   ) : b.status === 'ACCEPTED' ? (
-                    <div className="flex gap-2">
-                      <Button variant="secondary" className="flex-1" onClick={() => handleAdvanceBookingStatus(b, 'DISPATCHED')}>
-                        Dispatch / En Route
+                    <div className="flex gap-1.5">
+                      <Button variant="secondary" className="flex-1 text-[10px] sm:text-xs min-h-[40px] sm:min-h-[44px] px-1" onClick={() => handleAdvanceBookingStatus(b, 'DISPATCHED')}>
+                        Dispatch
                       </Button>
-                      <Button className="flex-1" onClick={() => handleAdvanceBookingStatus(b, 'COMPLETED')}>
-                        Mark Completed
+                      <Button className="flex-1 text-[10px] sm:text-xs min-h-[40px] sm:min-h-[44px] px-1" onClick={() => handleAdvanceBookingStatus(b, 'COMPLETED')}>
+                        Complete
                       </Button>
                     </div>
                   ) : b.status === 'DISPATCHED' ? (
-                    <Button className="w-full" onClick={() => handleAdvanceBookingStatus(b, 'COMPLETED')}>
-                      <CheckCircle2 size={16} /> Mark Completed
+                    <Button className="w-full text-[10px] sm:text-xs min-h-[40px] sm:min-h-[44px]" onClick={() => handleAdvanceBookingStatus(b, 'COMPLETED')}>
+                      <CheckCircle2 size={14} /> Mark Completed
                     </Button>
                   ) : (
                     <div className="text-center py-1 text-xs text-emerald-400 font-bold">

@@ -12,7 +12,12 @@ import {
   X, 
   MapPin, 
   Bike as BikeIcon, 
-  AlertCircle
+  AlertCircle,
+  Disc,
+  Zap,
+  Fuel,
+  Truck,
+  Key
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getBikes } from '../utils/appStorage';
@@ -383,57 +388,75 @@ export function ServicesCatalogPage() {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredServices.map(service => (
-            <div 
-              key={service.id}
-              className="bg-[#151613] border border-[#383A32] hover:border-[#FFF174]/50 rounded-2xl p-5 flex flex-col justify-between transition-all group hover:shadow-xl hover:shadow-black/50"
-            >
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#20211D] border border-[#383A32] flex items-center justify-center text-[#FFF174] group-hover:bg-[#FFF174] group-hover:text-black transition-colors">
-                    <Wrench size={20} />
+        <div className="grid grid-cols-1 min-[340px]:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+          {filteredServices.map(service => {
+            const renderIcon = () => {
+              switch (service.iconName) {
+                case 'Disc': return <Disc className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFF174] group-hover:text-black transition-colors" />;
+                case 'Zap': return <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFF174] group-hover:text-black transition-colors" />;
+                case 'Fuel': return <Fuel className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFF174] group-hover:text-black transition-colors" />;
+                case 'Truck': return <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFF174] group-hover:text-black transition-colors" />;
+                case 'Key': return <Key className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFF174] group-hover:text-black transition-colors" />;
+                case 'Calendar': return <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFF174] group-hover:text-black transition-colors" />;
+                default: return <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFF174] group-hover:text-black transition-colors" />;
+              }
+            };
+
+            return (
+              <div 
+                key={service.id}
+                className="bg-[#151613] border border-[#383A32] hover:border-[#FFF174]/50 rounded-2xl p-3 sm:p-5 flex flex-col justify-between transition-all group hover:shadow-xl hover:shadow-black/50"
+              >
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#20211D] border border-[#383A32] flex items-center justify-center shrink-0 group-hover:bg-[#FFF174] transition-colors">
+                      {renderIcon()}
+                    </div>
+                    {service.badge && (
+                      <span className="text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-[#FFF174]/15 border border-[#FFF174]/30 text-[#FFF174] truncate max-w-[120px]">
+                        {service.badge}
+                      </span>
+                    )}
                   </div>
-                  {service.badge && (
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#FFF174]/15 border border-[#FFF174]/30 text-[#FFF174]">
-                      {service.badge}
-                    </span>
-                  )}
+
+                  <div>
+                    <h3 className="text-xs sm:text-base font-display font-bold text-[#EFF2F7] leading-tight line-clamp-2 group-hover:text-[#FFF174] transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                      {service.shortDesc}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-[#383A32] space-y-1">
+                    <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-[#A8A6A3]">
+                      <Clock size={12} className="text-[#FFF174] shrink-0 sm:w-3.5 sm:h-3.5" />
+                      <span className="truncate">Avg: <strong className="text-[#EFF2F7] font-mono">{service.turnaroundMinutes}m</strong></span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-[#A8A6A3]">
+                      <ShieldCheck size={12} className="text-[#10B981] shrink-0 sm:w-3.5 sm:h-3.5" />
+                      <span className="truncate">{service.supportedVehicles[0]}</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <h3 className="text-base sm:text-lg font-display font-bold text-[#EFF2F7] group-hover:text-[#FFF174] transition-colors">{service.title}</h3>
-                  <p className="text-xs text-[#A8A6A3] line-clamp-2 mt-1">{service.shortDesc}</p>
-                </div>
+                <div className="pt-3 mt-3 border-t border-[#383A32] flex items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[9px] sm:text-[10px] uppercase font-mono font-bold text-[#A8A6A3] block">Starting At</span>
+                    <span className="text-sm sm:text-lg font-mono font-bold text-[#FFF174]">₹{service.basePrice}</span>
+                  </div>
 
-                <div className="pt-2 border-t border-[#383A32] space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs text-[#A8A6A3]">
-                    <Clock size={14} className="text-[#FFF174]" />
-                    <span>Avg Response: <strong className="text-[#EFF2F7] font-mono">{service.turnaroundMinutes} mins</strong></span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-[#A8A6A3]">
-                    <ShieldCheck size={14} className="text-[#10B981]" />
-                    <span className="line-clamp-1">{service.supportedVehicles[0]}</span>
-                  </div>
+                  <button
+                    onClick={() => setSelectedService(service)}
+                    className="px-2.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-[#FFF174] text-black font-display font-bold text-[11px] sm:text-xs uppercase tracking-wider flex items-center gap-1 hover:bg-[#ffe83b] active:scale-95 transition-all shadow-md min-h-[40px] sm:min-h-[44px]"
+                  >
+                    <span>Book</span>
+                    <ChevronRight size={13} />
+                  </button>
                 </div>
               </div>
-
-              <div className="pt-4 mt-4 border-t border-[#383A32] flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-mono font-bold text-[#A8A6A3] block">Starting At</span>
-                  <span className="text-lg font-mono font-bold text-[#FFF174]">₹{service.basePrice}</span>
-                </div>
-
-                <button
-                  onClick={() => setSelectedService(service)}
-                  className="px-4 py-2.5 rounded-xl bg-[#FFF174] text-black font-display font-bold text-xs uppercase tracking-wider flex items-center gap-1 hover:bg-[#ffe83b] active:scale-95 transition-all shadow-md min-h-[44px]"
-                >
-                  <span>Book Now</span>
-                  <ChevronRight size={14} />
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {filteredServices.length === 0 && (

@@ -48,7 +48,7 @@ import {
 } from '../utils/appStorage';
 import { API_BASE_URL, hasBackendApi } from '../config/api';
 
-export type EmergencyCategory = 'MEDICAL' | 'BIKE_PROBLEM' | 'UNSAFE' | 'TOWING' | 'NOT_SURE' | 'BOTH';
+export type EmergencyCategory = 'MEDICAL' | 'BIKE_PROBLEM' | 'UNSAFE' | 'TOWING' | 'NEARBY_SUPPORT' | 'NOT_SURE' | 'BOTH';
 export type BikeProblemType = 'ALL' | 'TYRE' | 'BATTERY' | 'CHAIN' | 'ENGINE' | 'FUEL' | 'ELECTRICAL' | 'OTHER';
 
 export interface ProviderListing {
@@ -449,6 +449,7 @@ export function EmergencyActionSheet({
       BIKE_PROBLEM: 'MECHANICAL',
       UNSAFE: 'SAFETY',
       TOWING: 'TOWING',
+      NEARBY_SUPPORT: 'MECHANICAL',
       NOT_SURE: 'MECHANICAL',
       BOTH: 'BOTH'
     };
@@ -504,12 +505,19 @@ export function EmergencyActionSheet({
 
     if (hasBackendApi()) {
       try {
-        await fetch(`${API_BASE_URL}/api/assistance`, {
+        const response = await fetch(`${API_BASE_URL}/api/assistance`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newRequest)
         });
-      } catch {}
+        if (!response.ok) {
+          throw new Error('Backend dispatch unconfirmed');
+        }
+      } catch (err) {
+        setDispatchPending(false);
+        setDispatchStatus('UNFULFILLED');
+        return;
+      }
     }
 
     setCreatedRequestId(requestId);
@@ -620,6 +628,14 @@ export function EmergencyActionSheet({
           badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
           borderColor: 'border-blue-500/50',
           Graphic: TowingRecoveryGraphic
+        };
+      case 'NEARBY_SUPPORT':
+        return {
+          title: 'Nearby Support & Repair Hubs',
+          subtitle: 'Verified local mechanics, OEM service centres & 24/7 highway fuel stations',
+          badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+          borderColor: 'border-emerald-500/50',
+          Graphic: GuidedTriageGraphic
         };
       case 'NOT_SURE':
         return {
@@ -1701,6 +1717,92 @@ export function EmergencyActionSheet({
                       </button>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* ==============================================================
+                  CATEGORY: NEARBY SUPPORT & REPAIR HUBS
+                  ============================================================== */}
+              {category === 'NEARBY_SUPPORT' && (
+                <div className="space-y-4">
+                  {/* Emergency Continuous Dial */}
+                  <div className="p-3 rounded-xl bg-red-950/40 border border-red-500/40 flex items-center justify-between gap-2 text-xs">
+                    <span className="text-red-200">Critical medical emergency?</span>
+                    <a
+                      href="tel:112"
+                      className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-black text-xs uppercase shrink-0"
+                    >
+                      Call 112
+                    </a>
+                  </div>
+
+                  {/* Open Radar Shortcut */}
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-[#182015] to-[#151613] border border-[#10B981]/40 flex items-center justify-between gap-3 shadow-md">
+                    <div>
+                      <strong className="text-sm font-black text-white block">Interactive Live Map & Radar</strong>
+                      <p className="text-xs text-[#A8A6A3] mt-0.5">Explore full corridor coverage with live GPS pins.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        navigate('/nearby-services');
+                      }}
+                      className="px-4 py-2 bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl shrink-0 cursor-pointer min-h-[44px]"
+                    >
+                      Open Map
+                    </button>
+                  </div>
+
+                  {/* List of Verified Nearby Providers */}
+                  <div className="space-y-2.5">
+                    <span className="text-xs font-black uppercase tracking-wider text-gray-400 block px-1">
+                      Verified Mechanics & Workshops Nearby
+                    </span>
+
+                    <div className="space-y-2.5">
+                      {EMERGENCY_MECHANICAL_PROVIDERS.map((p) => (
+                        <div
+                          key={p.id}
+                          className="p-3.5 rounded-xl bg-[#181818] border border-white/10 hover:border-white/20 transition-all flex flex-col gap-2.5 text-xs"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <strong className="text-sm font-bold text-white">{p.name}</strong>
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                  {p.badge}
+                                </span>
+                              </div>
+                              <p className="text-[#A8A6A3] text-[11px] mt-0.5">{p.address} • {p.distance}</p>
+                            </div>
+                            <span className="text-xs font-mono font-bold text-[#FFF174] shrink-0">
+                              ETA {p.eta}
+                            </span>
+                          </div>
+
+                          <div className="flex gap-2 pt-1 border-t border-white/10">
+                            <a
+                              href={`tel:${p.phone.replaceAll(' ', '')}`}
+                              className="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 min-h-[40px]"
+                            >
+                              <PhoneCall size={13} />
+                              <span>Call {p.phone}</span>
+                            </a>
+                            <a
+                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ' ' + p.address)}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-3.5 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white font-bold text-xs flex items-center justify-center gap-1 min-h-[40px]"
+                            >
+                              <ExternalLink size={13} />
+                              <span>Directions</span>
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
 

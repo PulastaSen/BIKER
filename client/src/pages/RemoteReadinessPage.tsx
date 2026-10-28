@@ -536,7 +536,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
             </div>
           </div>
 
-          <div className="grid gap-3.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {TRUSTED_CORRIDOR_STOPS.map(stop => (
               <div 
                 key={stop.id}
