@@ -1,6 +1,7 @@
 import { HashRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { AccessibilityProvider } from './context/AccessibilityContext';
 import { PublicLayout } from './layouts/PublicLayout';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { HomePage } from './pages/HomePage';
@@ -167,12 +168,14 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <HashRouter>
-        <ScrollToTop />
-        <OfflineNotice />
-        <AppRoutes />
-      </HashRouter>
-    </AuthProvider>
+    <AccessibilityProvider>
+      <AuthProvider>
+        <HashRouter>
+          <ScrollToTop />
+          <OfflineNotice />
+          <AppRoutes />
+        </HashRouter>
+      </AuthProvider>
+    </AccessibilityProvider>
   );
 }

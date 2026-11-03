@@ -43,17 +43,17 @@ export function RiderDashboardPage() {
   const primaryBike = bikes.find(b => b.isPrimary) || bikes[0];
 
   return (
-    <div className="bg-[#090A08] min-h-screen text-[#EFF2F7] pb-28 font-sans flex flex-col">
+    <div className="bg-[#101214] min-h-screen text-white pb-28 font-sans flex flex-col">
 
       {/* Main Container: Mobile phone width on small screens, expands dynamically to max-w-6xl on desktop */}
       <main className="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-12 flex-1 flex flex-col gap-6">
         
         {/* Desktop Welcome Banner */}
-        <div className="hidden md:flex items-center justify-between bg-[#151613] border border-[#383A32] rounded-2xl p-6 shadow-xl">
+        <div className="hidden md:flex items-center justify-between bg-[#22272B] border border-[#343B42] rounded-2xl p-6 shadow-xl">
           <div>
             <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#FFF174]">RIDER COMMAND CENTER</span>
-            <h1 className="text-2xl font-display font-black tracking-tight mt-1 text-[#EFF2F7]">Welcome back, {user?.name || 'Rider'}</h1>
-            <p className="text-[#A8A6A3] text-sm mt-1">24/7 Roadside Assistance & Emergency Network Active</p>
+            <h1 className="text-2xl font-display font-black tracking-tight mt-1 text-white">Welcome back, {user?.name || 'Rider'}</h1>
+            <p className="text-[#B8C0C5] text-sm mt-1">24/7 Roadside Assistance & Emergency Network Active</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] text-xs font-mono font-bold">
@@ -67,13 +67,13 @@ export function RiderDashboardPage() {
 
         {/* Mobile Status Header */}
         <div className="md:hidden text-center mb-1">
-          <h2 className="text-2xl font-display font-black mb-1 text-[#EFF2F7]">Are you safe?</h2>
-          <p className="text-[#A8A6A3] text-xs">Select an option below to get immediate assistance.</p>
+          <h2 className="text-2xl font-display font-black mb-1 text-white">Are you safe?</h2>
+          <p className="text-[#B8C0C5] text-xs">Select an option below to get immediate assistance.</p>
         </div>
 
         {/* Active Request Alert (if present) */}
         {activeRequest && (
-          <div className="border-2 border-[#DFF127]/50 bg-[#151613] rounded-2xl p-5 relative overflow-hidden shadow-lg">
+          <div className="border-2 border-[#DFF127]/50 bg-[#22272B] rounded-2xl p-5 relative overflow-hidden shadow-lg">
             <div className="absolute top-0 left-0 w-1.5 h-full bg-[#DFF127]"></div>
             <div className="flex flex-wrap justify-between items-center gap-2 mb-3">
               <div className="flex items-center gap-2">
@@ -84,8 +84,8 @@ export function RiderDashboardPage() {
             </div>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <p className="font-display font-black text-lg text-[#EFF2F7] mb-1">{activeRequest.issue.replaceAll('_', ' ')}</p>
-                <p className="text-xs text-[#A8A6A3] flex items-center gap-1.5">
+                <p className="font-display font-black text-lg text-[#FFFFFF] mb-1">{activeRequest.issue.replaceAll('_', ' ')}</p>
+                <p className="text-xs text-[#B8C0C5] flex items-center gap-1.5">
                   <MapPin size={14} className="text-[#FFF174]" /> {activeRequest.approximateLocation || 'Live GPS tracked'}
                 </p>
               </div>
@@ -134,7 +134,7 @@ export function RiderDashboardPage() {
             <h2 id="quick-actions-heading" className="text-xs font-mono font-bold uppercase tracking-widest text-[#FFF174]">
               RIDER SERVICES & SHORTCUTS
             </h2>
-            <span className="text-[11px] text-[#A8A6A3]">Quick Access</span>
+            <span className="text-[11px] text-[#B8C0C5]">Quick Access</span>
           </div>
 
           <div className="grid grid-cols-1 min-[340px]:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
@@ -142,7 +142,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/request-help')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] border border-[#383A32] hover:bg-[#20211D] hover:border-[#FFF174]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] border border-[#343B42] hover:bg-[#191D20] hover:border-[#FFF174]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-[#FFF174]/10 text-[#FFF174] flex items-center justify-center border border-[#FFF174]/30 group-hover:scale-105 transition-transform">
@@ -153,10 +153,10 @@ export function RiderDashboardPage() {
                 </span>
               </div>
               <div>
-                <strong className="font-display font-black text-sm text-[#EFF2F7] group-hover:text-[#FFF174] transition-colors block">
+                <strong className="font-display font-black text-sm text-[#FFFFFF] group-hover:text-[#FFF174] transition-colors block">
                   Request Assistance
                 </strong>
-                <p className="text-[11px] text-[#A8A6A3] line-clamp-1 mt-0.5">Puncture, battery, fuel, tow</p>
+                <p className="text-[11px] text-[#B8C0C5] line-clamp-1 mt-0.5">Puncture, battery, fuel, tow</p>
               </div>
             </button>
 
@@ -164,7 +164,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/nearby-services')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] border border-[#383A32] hover:bg-[#20211D] hover:border-[#B1D8E3]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] border border-[#343B42] hover:bg-[#191D20] hover:border-[#B1D8E3]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-[#B1D8E3]/10 text-[#B1D8E3] flex items-center justify-center border border-[#B1D8E3]/30 group-hover:scale-105 transition-transform">
@@ -175,10 +175,10 @@ export function RiderDashboardPage() {
                 </span>
               </div>
               <div>
-                <strong className="font-display font-black text-sm text-[#EFF2F7] group-hover:text-[#B1D8E3] transition-colors block">
+                <strong className="font-display font-black text-sm text-[#FFFFFF] group-hover:text-[#B1D8E3] transition-colors block">
                   Nearby Repair Hubs
                 </strong>
-                <p className="text-[11px] text-[#A8A6A3] line-clamp-1 mt-0.5">Live map, mechanics & fuel</p>
+                <p className="text-[11px] text-[#B8C0C5] line-clamp-1 mt-0.5">Live map, mechanics & fuel</p>
               </div>
             </button>
 
@@ -186,7 +186,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/safe-ride')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] border border-[#383A32] hover:bg-[#20211D] hover:border-[#10B981]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] border border-[#343B42] hover:bg-[#191D20] hover:border-[#10B981]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-[#10B981]/10 text-[#10B981] flex items-center justify-center border border-[#10B981]/30 group-hover:scale-105 transition-transform">
@@ -197,10 +197,10 @@ export function RiderDashboardPage() {
                 </span>
               </div>
               <div>
-                <strong className="font-display font-black text-sm text-[#EFF2F7] group-hover:text-[#10B981] transition-colors block">
+                <strong className="font-display font-black text-sm text-[#FFFFFF] group-hover:text-[#10B981] transition-colors block">
                   Start Safe Ride
                 </strong>
-                <p className="text-[11px] text-[#A8A6A3] line-clamp-1 mt-0.5">Share live route & ETA</p>
+                <p className="text-[11px] text-[#B8C0C5] line-clamp-1 mt-0.5">Share live route & ETA</p>
               </div>
             </button>
 
@@ -208,7 +208,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/rider/requests')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] border border-[#383A32] hover:bg-[#20211D] hover:border-[#DFF127]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] border border-[#343B42] hover:bg-[#191D20] hover:border-[#DFF127]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-[#DFF127]/10 text-[#DFF127] flex items-center justify-center border border-[#DFF127]/30 group-hover:scale-105 transition-transform">
@@ -219,10 +219,10 @@ export function RiderDashboardPage() {
                 </span>
               </div>
               <div>
-                <strong className="font-display font-black text-sm text-[#EFF2F7] group-hover:text-[#DFF127] transition-colors block">
+                <strong className="font-display font-black text-sm text-[#FFFFFF] group-hover:text-[#DFF127] transition-colors block">
                   Help Requests Log
                 </strong>
-                <p className="text-[11px] text-[#A8A6A3] line-clamp-1 mt-0.5">Active & past dispatches</p>
+                <p className="text-[11px] text-[#B8C0C5] line-clamp-1 mt-0.5">Active & past dispatches</p>
               </div>
             </button>
 
@@ -230,7 +230,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/rider/bikes')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] border border-[#383A32] hover:bg-[#20211D] hover:border-[#FFF174]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] border border-[#343B42] hover:bg-[#191D20] hover:border-[#FFF174]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-[#FFF174]/10 text-[#FFF174] flex items-center justify-center border border-[#FFF174]/30 group-hover:scale-105 transition-transform">
@@ -241,10 +241,10 @@ export function RiderDashboardPage() {
                 </span>
               </div>
               <div>
-                <strong className="font-display font-black text-sm text-[#EFF2F7] group-hover:text-[#FFF174] transition-colors block">
+                <strong className="font-display font-black text-sm text-[#FFFFFF] group-hover:text-[#FFF174] transition-colors block">
                   My Garage
                 </strong>
-                <p className="text-[11px] text-[#A8A6A3] line-clamp-1 mt-0.5">Motorcycles & QR tags</p>
+                <p className="text-[11px] text-[#B8C0C5] line-clamp-1 mt-0.5">Motorcycles & QR tags</p>
               </div>
             </button>
 
@@ -252,7 +252,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/rider/emergency-contacts')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] border border-[#383A32] hover:bg-[#20211D] hover:border-red-500/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] border border-[#343B42] hover:bg-[#191D20] hover:border-red-500/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center border border-red-500/30 group-hover:scale-105 transition-transform">
@@ -263,10 +263,10 @@ export function RiderDashboardPage() {
                 </span>
               </div>
               <div>
-                <strong className="font-display font-black text-sm text-[#EFF2F7] group-hover:text-red-300 transition-colors block">
+                <strong className="font-display font-black text-sm text-[#FFFFFF] group-hover:text-red-300 transition-colors block">
                   Emergency Contacts
                 </strong>
-                <p className="text-[11px] text-[#A8A6A3] line-clamp-1 mt-0.5">Family & trusted circle</p>
+                <p className="text-[11px] text-[#B8C0C5] line-clamp-1 mt-0.5">Family & trusted circle</p>
               </div>
             </button>
 
@@ -274,7 +274,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/subscriptions')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] border border-[#383A32] hover:bg-[#20211D] hover:border-[#10B981]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] border border-[#343B42] hover:bg-[#191D20] hover:border-[#10B981]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/30 group-hover:scale-105 transition-transform">
@@ -285,10 +285,10 @@ export function RiderDashboardPage() {
                 </span>
               </div>
               <div>
-                <strong className="font-display font-black text-sm text-[#EFF2F7] group-hover:text-emerald-400 transition-colors block">
+                <strong className="font-display font-black text-sm text-[#FFFFFF] group-hover:text-emerald-400 transition-colors block">
                   RSA Subscriptions
                 </strong>
-                <p className="text-[11px] text-[#A8A6A3] line-clamp-1 mt-0.5">Zero-cost rescues</p>
+                <p className="text-[11px] text-[#B8C0C5] line-clamp-1 mt-0.5">Zero-cost rescues</p>
               </div>
             </button>
 
@@ -296,7 +296,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/rider/profile')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] border border-[#383A32] hover:bg-[#20211D] hover:border-red-500/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] border border-[#343B42] hover:bg-[#191D20] hover:border-red-500/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center border border-red-500/30 group-hover:scale-105 transition-transform">
@@ -307,10 +307,10 @@ export function RiderDashboardPage() {
                 </span>
               </div>
               <div>
-                <strong className="font-display font-black text-sm text-[#EFF2F7] group-hover:text-red-300 transition-colors block">
+                <strong className="font-display font-black text-sm text-[#FFFFFF] group-hover:text-red-300 transition-colors block">
                   Medical ID & Account
                 </strong>
-                <p className="text-[11px] text-[#A8A6A3] line-clamp-1 mt-0.5">Blood group, allergies, ICE</p>
+                <p className="text-[11px] text-[#B8C0C5] line-clamp-1 mt-0.5">Blood group, allergies, ICE</p>
               </div>
             </button>
           </div>
@@ -320,13 +320,13 @@ export function RiderDashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           
           {/* Garage Snapshot */}
-          <div className="bg-[#151613] border border-[#383A32] rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+          <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-[#FFF174]/10 text-[#FFF174] flex items-center justify-center border border-[#FFF174]/20">
                   <BikeIcon size={16} />
                 </div>
-                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-[#EFF2F7]">My Garage</h3>
+                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-[#FFFFFF]">My Garage</h3>
               </div>
               <Link to="/rider/bikes" className="text-xs font-mono font-bold text-[#FFF174] hover:underline flex items-center gap-1 min-h-[44px]">
                 View All ({bikes.length}) <ChevronRight size={13} />
@@ -334,21 +334,21 @@ export function RiderDashboardPage() {
             </div>
 
             {primaryBike ? (
-              <div className="bg-[#20211D] border border-[#383A32] rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-2">
+              <div className="bg-[#191D20] border border-[#343B42] rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-2">
                 <div className="min-w-0">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-[#FFF174] bg-[#FFF174]/10 px-1.5 py-0.5 rounded border border-[#FFF174]/20">
                     Primary Ride
                   </span>
-                  <h4 className="font-display font-bold text-xs sm:text-sm text-[#EFF2F7] mt-1 truncate">{primaryBike.brand} {primaryBike.model}</h4>
-                  <p className="text-[11px] font-mono text-[#A8A6A3]">{primaryBike.registrationNumber}</p>
+                  <h4 className="font-display font-bold text-xs sm:text-sm text-[#FFFFFF] mt-1 truncate">{primaryBike.brand} {primaryBike.model}</h4>
+                  <p className="text-[11px] font-mono text-[#B8C0C5]">{primaryBike.registrationNumber}</p>
                 </div>
-                <Link to="/rider/bikes" className="text-xs text-[#EFF2F7] hover:text-[#FFF174] px-3 py-1.5 bg-[#151613] rounded-lg border border-[#383A32] min-h-[40px] flex items-center shrink-0">
+                <Link to="/rider/bikes" className="text-xs text-[#FFFFFF] hover:text-[#FFF174] px-3 py-1.5 bg-[#22272B] rounded-lg border border-[#343B42] min-h-[40px] flex items-center shrink-0">
                   Manage
                 </Link>
               </div>
             ) : (
-              <div className="bg-[#20211D] border border-[#383A32] rounded-xl p-3.5 text-center">
-                <p className="text-xs text-[#A8A6A3] mb-1.5">No motorcycles registered yet.</p>
+              <div className="bg-[#191D20] border border-[#343B42] rounded-xl p-3.5 text-center">
+                <p className="text-xs text-[#B8C0C5] mb-1.5">No motorcycles registered yet.</p>
                 <Link to="/rider/bikes" className="inline-flex items-center gap-1 text-xs font-bold text-[#FFF174] hover:underline min-h-[40px]">
                   <Plus size={14} /> Add your motorcycle
                 </Link>
@@ -357,13 +357,13 @@ export function RiderDashboardPage() {
           </div>
 
           {/* Emergency Contacts Snapshot */}
-          <div className="bg-[#151613] border border-[#383A32] rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+          <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-[#EF4444]/15 text-[#EF4444] flex items-center justify-center border border-[#EF4444]/30">
                   <PhoneCall size={16} />
                 </div>
-                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-[#EFF2F7]">Emergency Contacts (ICE)</h3>
+                <h3 className="font-display font-bold text-xs uppercase tracking-wider text-[#FFFFFF]">Emergency Contacts (ICE)</h3>
               </div>
               <Link to="/rider/emergency-contacts" className="text-xs font-mono font-bold text-[#FFF174] hover:underline flex items-center gap-1 min-h-[44px]">
                 Manage ({contacts.length}) <ChevronRight size={13} />
@@ -371,11 +371,11 @@ export function RiderDashboardPage() {
             </div>
 
             {contacts.length > 0 ? (
-              <div className="bg-[#20211D] border border-[#383A32] rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-2">
+              <div className="bg-[#191D20] border border-[#343B42] rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <span className="text-[9px] font-mono text-[#A8A6A3] uppercase tracking-wider">Primary Contact</span>
-                  <h4 className="font-bold text-xs sm:text-sm text-[#EFF2F7] mt-0.5 truncate">{contacts[0].name} ({contacts[0].relationship})</h4>
-                  <p className="text-[11px] font-mono text-[#A8A6A3]">{contacts[0].phone}</p>
+                  <span className="text-[9px] font-mono text-[#B8C0C5] uppercase tracking-wider">Primary Contact</span>
+                  <h4 className="font-bold text-xs sm:text-sm text-[#FFFFFF] mt-0.5 truncate">{contacts[0].name} ({contacts[0].relationship})</h4>
+                  <p className="text-[11px] font-mono text-[#B8C0C5]">{contacts[0].phone}</p>
                 </div>
                 <a 
                   href={`tel:${contacts[0].phone}`} 
@@ -385,8 +385,8 @@ export function RiderDashboardPage() {
                 </a>
               </div>
             ) : (
-              <div className="bg-[#20211D] border border-[#383A32] rounded-xl p-3.5 text-center">
-                <p className="text-xs text-[#A8A6A3] mb-1.5">No emergency contacts saved.</p>
+              <div className="bg-[#191D20] border border-[#343B42] rounded-xl p-3.5 text-center">
+                <p className="text-xs text-[#B8C0C5] mb-1.5">No emergency contacts saved.</p>
                 <Link to="/rider/emergency-contacts" className="inline-flex items-center gap-1 text-xs font-bold text-[#FFF174] hover:underline min-h-[40px]">
                   <Plus size={14} /> Add ICE Contact
                 </Link>

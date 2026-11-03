@@ -168,3 +168,21 @@ export function buildWhatsAppBreakdownAlertUrl(options: ShareLocationOptions & {
   return `${baseUrl}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * Direct SMS Emergency Alert URL (works offline without mobile data)
+ */
+export function buildSmsEmergencyAlertUrl(options: ShareLocationOptions & { situation?: string }): string {
+  const { latitude, longitude, landmark, phone, riderName = 'Rider', situation = 'Emergency Assistance' } = options;
+  let loc = 'Location pending';
+  if (latitude !== undefined && longitude !== undefined) {
+    loc = `https://maps.google.com/?q=${latitude},${longitude}`;
+  } else if (landmark) {
+    loc = landmark;
+  }
+  const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const message = `EMERGENCY SOS (${riderName}): Need urgent ${situation}. Coordinates: ${loc}${landmark ? ` | Near: ${landmark}` : ''} at ${timeStr}. Please call 112 or dispatch assistance.`;
+
+  const cleanPhone = phone ? phone.replace(/[^0-9]/g, '') : '';
+  return cleanPhone ? `sms:${cleanPhone}?body=${encodeURIComponent(message)}` : `sms:?body=${encodeURIComponent(message)}`;
+}
+

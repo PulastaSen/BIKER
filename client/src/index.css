@@ -8,17 +8,18 @@
    ========================================================== */
 :root {
   /* Surfaces & Elevation */
-  --color-bg: #090A08;
-  --color-surface: #151613;
-  --color-surface-elevated: #20211D;
-  --color-surface-interactive: #2A2C26;
-  --color-border: #383A32;
-  --color-border-subtle: #262822;
+  --color-bg: #101214;
+  --color-surface: #191D20;
+  --color-card: #22272B;
+  --color-surface-elevated: #22272B;
+  --color-surface-interactive: #2D3339;
+  --color-border: #343B42;
+  --color-border-subtle: #262B30;
 
   /* Typography Colors */
-  --color-text-primary: #EFF2F7;
-  --color-text-secondary: #A8A6A3;
-  --color-text-muted: #7E7C74;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #B8C0C5;
+  --color-text-muted: #8E98A0;
 
   /* Accent & Semantic Roles */
   --color-brand-yellow: #FFF174;
@@ -34,11 +35,11 @@
   /* Compatibility with existing theme classes */
   --color-primary: #FFF174;
   --color-primary-hover: #FCEB50;
-  --color-navy: #151613;
-  --color-text: #EFF2F7;
-  --color-muted: #A8A6A3;
-  --color-background: #090A08;
-  --color-surface-secondary: #20211D;
+  --color-navy: #191D20;
+  --color-text: #FFFFFF;
+  --color-muted: #B8C0C5;
+  --color-background: #101214;
+  --color-surface-secondary: #22272B;
   --color-danger: #EF4444;
 
   /* Automotive & Technical Typography */
@@ -5631,14 +5632,14 @@ textarea:focus {
     z-index: 1000;
     height: calc(64px + env(safe-area-inset-bottom, 0px));
     padding-bottom: max(6px, env(safe-area-inset-bottom, 0px));
-    background: rgba(21, 22, 19, 0.94);
+    background: rgba(25, 29, 32, 0.96);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid #383A32;
+    border-top: 1px solid #343B42;
     display: flex;
     align-items: center;
     justify-content: space-around;
-    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.85);
   }
 
   .mobile-nav-item {
@@ -5647,7 +5648,7 @@ textarea:focus {
     align-items: center;
     justify-content: center;
     gap: 3px;
-    color: #A8A6A3;
+    color: #B8C0C5;
     text-decoration: none;
     font-size: 0.72rem;
     font-weight: 600;

@@ -244,6 +244,7 @@ export interface EmergencyActionSheetProps {
   onClose: () => void;
   category: EmergencyCategory | null;
   onSelectCategory: (category: EmergencyCategory) => void;
+  initialProblemType?: BikeProblemType;
   coords?: { lat: number; lng: number } | null;
   accuracy?: number | null;
   address?: string | null;
@@ -256,6 +257,7 @@ export function EmergencyActionSheet({
   onClose,
   category,
   onSelectCategory,
+  initialProblemType,
   coords,
   accuracy,
   address,
@@ -291,7 +293,13 @@ export function EmergencyActionSheet({
   }, [isOpen, onClose]);
 
   // Category B state: problem filter
-  const [bikeIssueFilter, setBikeIssueFilter] = useState<BikeProblemType>('ALL');
+  const [bikeIssueFilter, setBikeIssueFilter] = useState<BikeProblemType>(initialProblemType || 'ALL');
+
+  useEffect(() => {
+    if (initialProblemType) {
+      setBikeIssueFilter(initialProblemType);
+    }
+  }, [initialProblemType, isOpen]);
 
   // Motorcycle Identification State
   const [bikesList] = useState<any[]>(() => {
@@ -702,7 +710,7 @@ export function EmergencyActionSheet({
                 onClose();
               }
             }}
-            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#151613] border-t sm:border border-[#383A32] ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.95)] z-10 flex flex-col overflow-hidden text-[#EFF2F7]`}
+            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#22272B] border-t sm:border border-[#343B42] ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.95)] z-10 flex flex-col overflow-hidden text-[#FFFFFF]`}
           >
             {/* Visual Touch Drag Handle */}
             <div className="pt-2.5 pb-1 flex justify-center sm:hidden cursor-grab active:cursor-grabbing shrink-0">
@@ -710,14 +718,14 @@ export function EmergencyActionSheet({
             </div>
 
             {/* Header: Title, Short Explanation & Close Button */}
-            <div className="px-4 sm:px-6 py-3 border-b border-[#383A32] flex items-start justify-between gap-3 shrink-0 bg-[#20211D]">
+            <div className="px-4 sm:px-6 py-3 border-b border-[#343B42] flex items-start justify-between gap-3 shrink-0 bg-[#191D20]">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="shrink-0 select-none">
                   <CategoryGraphic size={36} />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h2 id="emergency-sheet-title" className="text-base sm:text-lg font-black text-[#EFF2F7] truncate tracking-tight font-display">
+                    <h2 id="emergency-sheet-title" className="text-base sm:text-lg font-black text-[#FFFFFF] truncate tracking-tight font-display">
                       {meta.title}
                     </h2>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${meta.badgeColor} hidden sm:inline-block shrink-0`}>
@@ -1737,10 +1745,10 @@ export function EmergencyActionSheet({
                   </div>
 
                   {/* Open Radar Shortcut */}
-                  <div className="p-4 rounded-2xl bg-gradient-to-r from-[#182015] to-[#151613] border border-[#10B981]/40 flex items-center justify-between gap-3 shadow-md">
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-[#182015] to-[#22272B] border border-[#10B981]/40 flex items-center justify-between gap-3 shadow-md">
                     <div>
                       <strong className="text-sm font-black text-white block">Interactive Live Map & Radar</strong>
-                      <p className="text-xs text-[#A8A6A3] mt-0.5">Explore full corridor coverage with live GPS pins.</p>
+                      <p className="text-xs text-[#B8C0C5] mt-0.5">Explore full corridor coverage with live GPS pins.</p>
                     </div>
                     <button
                       type="button"
@@ -1774,7 +1782,7 @@ export function EmergencyActionSheet({
                                   {p.badge}
                                 </span>
                               </div>
-                              <p className="text-[#A8A6A3] text-[11px] mt-0.5">{p.address} • {p.distance}</p>
+                              <p className="text-[#B8C0C5] text-[11px] mt-0.5">{p.address} • {p.distance}</p>
                             </div>
                             <span className="text-xs font-mono font-bold text-[#FFF174] shrink-0">
                               ETA {p.eta}

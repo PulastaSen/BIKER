@@ -56,7 +56,7 @@ export function PublicLayout() {
 
   if (isFullScreenMode) {
     return (
-      <div className="public-layout min-h-screen flex flex-col bg-[#090A08] text-[#EFF2F7]">
+      <div className="public-layout min-h-screen flex flex-col bg-[#101214] text-[#FFFFFF]">
         <main className="public-main flex-1">
           <Outlet />
         </main>
@@ -77,7 +77,7 @@ export function PublicLayout() {
   };
 
   return (
-    <div className="public-layout min-h-screen flex flex-col bg-[#090A08] text-[#EFF2F7] selection:bg-[#FFF174] selection:text-[#090A08]">
+    <div className="public-layout min-h-screen flex flex-col bg-[#101214] text-[#FFFFFF] selection:bg-[#FFF174] selection:text-[#101214]">
       {/* If in Dedicated Emergency Mode, render minimal Emergency Header */}
       {isEmergencyMode ? (
         <header className="sticky top-0 z-50 bg-[#150A0A]/95 border-b border-red-500/40 backdrop-blur-md px-4 py-3">
@@ -99,7 +99,7 @@ export function PublicLayout() {
           </div>
         </header>
       ) : (
-        <header className="site-header sticky top-0 z-40 bg-[#090A08]/92 border-b border-[#383A32] backdrop-blur-md">
+        <header className="site-header sticky top-0 z-40 bg-[#101214]/92 border-b border-[#343B42] backdrop-blur-md">
           <nav className="nav page-container flex items-center justify-between max-w-7xl mx-auto px-4 py-3" aria-label="Primary navigation">
             <Link className="brand flex items-center gap-2" to="/" onClick={closeMenu} aria-label="MotoAssist Home">
               <MotoAssistBrandMark size={34} withText subtext="ROADSIDE RESCUE" />
@@ -107,7 +107,7 @@ export function PublicLayout() {
 
             {/* Mobile Hamburger toggle */}
             <button
-              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-[#151613] border border-[#383A32] text-white flex items-center justify-center cursor-pointer transition-colors hover:border-[#FFF174]/40"
+              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-[#22272B] border border-[#343B42] text-white flex items-center justify-center cursor-pointer transition-colors hover:border-[#FFF174]/40"
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(!menuOpen)}
@@ -124,7 +124,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -137,7 +137,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -150,7 +150,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -163,7 +163,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -176,7 +176,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -189,7 +189,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -202,7 +202,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -215,7 +215,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -228,7 +228,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#20211D] text-[#FFF174] border border-[#383A32]' : 'text-[#A8A6A3] hover:text-white'
+                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
                   }`
                 }
               >
@@ -249,7 +249,7 @@ export function PublicLayout() {
               {user && (
                 <button
                   type="button"
-                  className="p-2 min-w-[44px] min-h-[44px] text-gray-400 hover:text-white rounded-xl hover:bg-white/5 border border-transparent hover:border-[#383A32] flex items-center justify-center transition-colors ml-1 cursor-pointer"
+                  className="p-2 min-w-[44px] min-h-[44px] text-gray-400 hover:text-white rounded-xl hover:bg-white/5 border border-transparent hover:border-[#343B42] flex items-center justify-center transition-colors ml-1 cursor-pointer"
                   onClick={() => {
                     logout();
                     navigate('/');
@@ -306,7 +306,7 @@ export function PublicLayout() {
               <div className="flex items-center gap-2">
                 <MotoAssistBrandMark size={22} withText textClassName="text-white text-base font-display font-black tracking-tight" />
               </div>
-              <p className="text-xs text-[#A8A6A3]">
+              <p className="text-xs text-[#B8C0C5]">
                 Roadside assistance & emergency network for Himalayan motorcycle riders.
               </p>
             </div>

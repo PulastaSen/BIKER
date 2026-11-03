@@ -18,7 +18,7 @@ import {
   AnimatedRoadLines,
   DualEmergencyGraphic
 } from '../components/graphics';
-import { EmergencyActionSheet, type EmergencyCategory } from '../components/EmergencyActionSheet';
+import { EmergencyActionSheet, type EmergencyCategory, type BikeProblemType } from '../components/EmergencyActionSheet';
 
 export type HelpCategory = EmergencyCategory;
 
@@ -37,8 +37,9 @@ export function EmergencyAssistPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Read category from URL parameter to allow browser back/forward and deep-linking
+  // Read category and subcategory from URL parameter to allow deep-linking
   const catParam = searchParams.get('cat') as EmergencyCategory | null;
+  const subParam = searchParams.get('sub') as BikeProblemType | null;
   const [selectedCategory, setSelectedCategory] = useState<EmergencyCategory | null>(catParam);
 
   // Modals
@@ -89,7 +90,7 @@ export function EmergencyAssistPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090A08] text-[#EFF2F7] flex flex-col font-sans selection:bg-red-500 selection:text-white pb-16 relative">
+    <div className="min-h-screen bg-[#101214] text-[#FFFFFF] flex flex-col font-sans selection:bg-red-500 selection:text-white pb-16 relative">
       <AnimatedRoadLines opacity={0.08} />
       <MountainContourPattern height={140} opacity={0.15} />
 
@@ -105,7 +106,7 @@ export function EmergencyAssistPage() {
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="flex items-center gap-1.5 text-xs text-[#A8A6A3] hover:text-white transition-colors cursor-pointer min-h-[44px] min-w-[44px] px-2.5"
+            className="flex items-center gap-1.5 text-xs text-[#B8C0C5] hover:text-white transition-colors cursor-pointer min-h-[44px] min-w-[44px] px-2.5"
             aria-label="Return to home screen"
           >
             <ArrowLeft size={16} />
@@ -150,10 +151,10 @@ export function EmergencyAssistPage() {
         
         {/* Header text */}
         <div className="space-y-1 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-black text-[#EFF2F7] tracking-tight font-display">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#FFFFFF] tracking-tight font-display">
             What emergency are you facing?
           </h1>
-          <p className="text-xs sm:text-sm text-[#A8A6A3] font-medium">
+          <p className="text-xs sm:text-sm text-[#B8C0C5] font-medium">
             Tap your issue below. Immediate actions appear directly in a focused overlay without scrolling.
           </p>
         </div>
@@ -293,7 +294,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('MEDICAL')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-red-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] hover:bg-[#191D20] active:scale-[0.98] border-2 border-[#343B42] hover:border-red-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Medical Assistance - Accidents, injuries, trauma care"
             >
               <div>
@@ -305,15 +306,15 @@ export function EmergencyAssistPage() {
                     TRAUMA
                   </span>
                 </div>
-                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-red-300 transition-colors block font-display leading-tight">
+                <strong className="text-sm sm:text-base font-black text-[#FFFFFF] group-hover:text-red-300 transition-colors block font-display leading-tight">
                   Medical Assistance
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#B8C0C5] line-clamp-2 mt-1 leading-snug">
                   Accidents, injuries, 112 ambulance & emergency hospital finder.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-red-400">
+              <div className="pt-2 border-t border-[#343B42]/60 flex items-center justify-between text-[11px] font-bold text-red-400">
                 <span>Call 112 & Care</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -323,7 +324,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('BIKE_PROBLEM')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-[#FFF174]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] hover:bg-[#191D20] active:scale-[0.98] border-2 border-[#343B42] hover:border-[#FFF174]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Bike Breakdown - Punctures, battery failure, engine problems, fuel and repairs"
             >
               <div>
@@ -335,15 +336,15 @@ export function EmergencyAssistPage() {
                     RESCUE
                   </span>
                 </div>
-                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-[#FFF174] transition-colors block font-display leading-tight">
+                <strong className="text-sm sm:text-base font-black text-[#FFFFFF] group-hover:text-[#FFF174] transition-colors block font-display leading-tight">
                   Bike Breakdown
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#B8C0C5] line-clamp-2 mt-1 leading-snug">
                   Punctures, battery jumpstart, chain snaps & roadside mechanics.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-[#FFF174]">
+              <div className="pt-2 border-t border-[#343B42]/60 flex items-center justify-between text-[11px] font-bold text-[#FFF174]">
                 <span>Dispatch Help</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -353,7 +354,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('UNSAFE')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-amber-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] hover:bg-[#191D20] active:scale-[0.98] border-2 border-[#343B42] hover:border-amber-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Personal Safety - Threats, harassment, being followed or feeling unsafe"
             >
               <div>
@@ -365,15 +366,15 @@ export function EmergencyAssistPage() {
                     SAFETY
                   </span>
                 </div>
-                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-amber-300 transition-colors block font-display leading-tight">
+                <strong className="text-sm sm:text-base font-black text-[#FFFFFF] group-hover:text-amber-300 transition-colors block font-display leading-tight">
                   Personal Safety
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#B8C0C5] line-clamp-2 mt-1 leading-snug">
                   Police 112, emergency circle alert & safe haven checkpoints.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-amber-400">
+              <div className="pt-2 border-t border-[#343B42]/60 flex items-center justify-between text-[11px] font-bold text-amber-400">
                 <span>Trigger Net</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -383,7 +384,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('TOWING')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-[#B1D8E3]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] hover:bg-[#191D20] active:scale-[0.98] border-2 border-[#343B42] hover:border-[#B1D8E3]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Towing and Recovery - Dedicated 2-wheeler flatbeds"
             >
               <div>
@@ -395,15 +396,15 @@ export function EmergencyAssistPage() {
                     FLATBED
                   </span>
                 </div>
-                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-[#B1D8E3] transition-colors block font-display leading-tight">
+                <strong className="text-sm sm:text-base font-black text-[#FFFFFF] group-hover:text-[#B1D8E3] transition-colors block font-display leading-tight">
                   Towing & Recovery
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#B8C0C5] line-clamp-2 mt-1 leading-snug">
                   Dedicated motorcycle flatbed recovery with winch & wheel chocks.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-[#B1D8E3]">
+              <div className="pt-2 border-t border-[#343B42]/60 flex items-center justify-between text-[11px] font-bold text-[#B1D8E3]">
                 <span>Book Flatbed</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -413,7 +414,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('NEARBY_SUPPORT')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-[#383A32] hover:border-emerald-400/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] hover:bg-[#191D20] active:scale-[0.98] border-2 border-[#343B42] hover:border-emerald-400/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Nearby Support - Verified repair points, mechanics and fuel"
             >
               <div>
@@ -425,15 +426,15 @@ export function EmergencyAssistPage() {
                     RADAR
                   </span>
                 </div>
-                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-emerald-300 transition-colors block font-display leading-tight">
+                <strong className="text-sm sm:text-base font-black text-[#FFFFFF] group-hover:text-emerald-300 transition-colors block font-display leading-tight">
                   Nearby Support
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#B8C0C5] line-clamp-2 mt-1 leading-snug">
                   Find verified 2-wheeler mechanics, OEM service hubs & 24/7 fuel.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-emerald-400">
+              <div className="pt-2 border-t border-[#343B42]/60 flex items-center justify-between text-[11px] font-bold text-emerald-400">
                 <span>Find Services</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -443,7 +444,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('BOTH')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#151613] hover:bg-[#20211D] active:scale-[0.98] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#22272B] hover:bg-[#191D20] active:scale-[0.98] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Unsure / Need Multiple Types of Help - Combined medical and bike assistance or guided triage"
             >
               <div>
@@ -455,15 +456,15 @@ export function EmergencyAssistPage() {
                     MULTI-NEED
                   </span>
                 </div>
-                <strong className="text-sm sm:text-base font-black text-[#EFF2F7] group-hover:text-purple-300 transition-colors block font-display leading-tight">
+                <strong className="text-sm sm:text-base font-black text-[#FFFFFF] group-hover:text-purple-300 transition-colors block font-display leading-tight">
                   Unsure / Both
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#A8A6A3] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#B8C0C5] line-clamp-2 mt-1 leading-snug">
                   Combined trauma & motorcycle rescue or guided triage diagnosis.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#383A32]/60 flex items-center justify-between text-[11px] font-bold text-purple-300">
+              <div className="pt-2 border-t border-[#343B42]/60 flex items-center justify-between text-[11px] font-bold text-purple-300">
                 <span>Get Guidance</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -483,6 +484,7 @@ export function EmergencyAssistPage() {
         onClose={handleBackToCategories}
         category={selectedCategory}
         onSelectCategory={selectCategory}
+        initialProblemType={subParam || undefined}
         coords={coords}
         accuracy={accuracy}
         address={address}

@@ -218,7 +218,7 @@ export function EmergencyServicesPage() {
         </div>
 
         {/* Section 11: Official Emergency Helplines Direct Dial */}
-        <div className="p-6 rounded-3xl bg-[#111622] border border-red-500/30 mb-8 space-y-4">
+        <div className="p-6 rounded-3xl bg-[#22272B] border border-red-500/30 mb-8 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-black uppercase tracking-wider text-red-400 flex items-center gap-2">
               <PhoneCall size={14} /> National Emergency Numbers (India)
@@ -237,7 +237,7 @@ export function EmergencyServicesPage() {
 
             <a
               href="tel:100"
-              className="p-4 rounded-2xl bg-[#182030] border border-white/10 hover:border-blue-400 text-center text-white transition-all active:scale-95"
+              className="p-4 rounded-2xl bg-[#191D20] border border-white/10 hover:border-blue-400 text-center text-white transition-all active:scale-95"
             >
               <strong className="block text-2xl font-black text-blue-400">100</strong>
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-300 block mt-0.5">Police Control</span>
@@ -245,7 +245,7 @@ export function EmergencyServicesPage() {
 
             <a
               href="tel:108"
-              className="p-4 rounded-2xl bg-[#182030] border border-white/10 hover:border-emerald-400 text-center text-white transition-all active:scale-95"
+              className="p-4 rounded-2xl bg-[#191D20] border border-white/10 hover:border-emerald-400 text-center text-white transition-all active:scale-95"
             >
               <strong className="block text-2xl font-black text-emerald-400">108</strong>
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-300 block mt-0.5">Govt Ambulance</span>
@@ -253,7 +253,7 @@ export function EmergencyServicesPage() {
 
             <a
               href="tel:101"
-              className="p-4 rounded-2xl bg-[#182030] border border-white/10 hover:border-orange-400 text-center text-white transition-all active:scale-95"
+              className="p-4 rounded-2xl bg-[#191D20] border border-white/10 hover:border-orange-400 text-center text-white transition-all active:scale-95"
             >
               <strong className="block text-2xl font-black text-orange-400">101</strong>
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-300 block mt-0.5">Fire & Rescue</span>
@@ -280,7 +280,7 @@ export function EmergencyServicesPage() {
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 filter === f.key
                   ? 'bg-[#FFF174] text-black shadow-md'
-                  : 'bg-[#111622] border border-white/10 text-gray-300 hover:text-white'
+                  : 'bg-[#22272B] border border-white/10 text-gray-300 hover:text-white'
               }`}
             >
               {f.label}
@@ -295,7 +295,7 @@ export function EmergencyServicesPage() {
             return (
               <div
                 key={fac.id}
-                className="p-5 rounded-3xl bg-[#111622] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 rounded-3xl bg-[#22272B] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="flex items-start gap-3.5">
                   <div className={`p-3 rounded-2xl shrink-0 ${

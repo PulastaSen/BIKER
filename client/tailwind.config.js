@@ -7,12 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        motoBg: '#090A08',
-        motoSurface: '#151613',
-        motoElevated: '#20211D',
-        motoInteractive: '#2A2C26',
-        motoBorder: '#383A32',
-        motoBorderSubtle: '#262822',
+        motoBg: '#101214',
+        motoSurface: '#191D20',
+        motoCard: '#22272B',
+        motoElevated: '#22272B',
+        motoInteractive: '#2D3339',
+        motoBorder: '#343B42',
+        motoBorderSubtle: '#262B30',
         motoAccent: '#FFF174',
         motoChartreuse: '#DFF127',
         motoBlue: '#B1D8E3',
@@ -22,8 +23,8 @@ export default {
         motoMedical: '#B1D8E3',
         motoSuccess: '#10B981',
         motoWarning: '#F59E0B',
-        motoText: '#EFF2F7',
-        motoMuted: '#A8A6A3',
+        motoText: '#FFFFFF',
+        motoMuted: '#B8C0C5',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
