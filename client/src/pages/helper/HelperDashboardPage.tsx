@@ -83,18 +83,18 @@ export function HelperDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#101214] text-[#FFFFFF] p-4 sm:p-6 md:p-8 space-y-6 pb-28 md:pb-12 max-w-5xl mx-auto font-sans">
+    <div className="min-h-screen bg-[#F8F9FA] text-gray-900 p-4 sm:p-6 md:p-8 space-y-6 pb-28 md:pb-12 max-w-5xl mx-auto font-sans">
       
       {/* 1. HEADER & AVAILABILITY TOGGLE */}
-      <header className="rounded-2xl bg-[#22272B] border border-[#343B42] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+      <header className="rounded-2xl bg-white border border-gray-200 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
         <div>
           <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FFF174] block">
             HELPER COMMAND DESK
           </span>
-          <h1 className="text-2xl sm:text-3xl font-display font-black text-[#FFFFFF] tracking-tight mt-0.5">
+          <h1 className="text-2xl sm:text-3xl font-display font-black text-gray-900 tracking-tight mt-0.5">
             Good day, {user?.name || 'Helper'}
           </h1>
-          <p className="text-xs text-[#B8C0C5] mt-1 font-medium">
+          <p className="text-xs text-gray-600 mt-1 font-medium">
             {profile?.businessName || 'Roadside Assistance Provider'} • {profile?.serviceAreas?.join(', ') || 'Siliguri & Corridors'}
           </p>
         </div>
@@ -107,7 +107,7 @@ export function HelperDashboardPage() {
             className={`px-5 py-3 rounded-xl font-display font-bold text-xs uppercase tracking-wider flex items-center gap-2.5 transition-all shadow-lg active:scale-95 min-h-[44px] cursor-pointer ${
               profile?.isAvailable
                 ? 'bg-[#10B981]/15 border-2 border-[#10B981] text-[#10B981]'
-                : 'bg-[#191D20] border border-[#343B42] text-[#B8C0C5]'
+                : 'bg-gray-50 border border-gray-200 text-gray-600'
             }`}
           >
             <span
@@ -135,15 +135,15 @@ export function HelperDashboardPage() {
 
       {/* 2. ACTIVE JOB COCKPIT */}
       {currentJob ? (
-        <section className="rounded-2xl bg-[#22272B] border-2 border-[#DFF127]/50 p-5 sm:p-7 shadow-[0_10px_40px_rgba(223,241,39,0.08)] space-y-5">
-          <div className="flex items-center justify-between border-b border-[#343B42] pb-4">
+        <section className="rounded-2xl bg-white border-2 border-[#DFF127]/50 p-5 sm:p-7 shadow-[0_10px_40px_rgba(223,241,39,0.08)] space-y-5">
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
             <div className="flex items-center gap-2.5">
               <span className="w-2.5 h-2.5 rounded-full bg-[#DFF127] animate-ping" />
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#DFF127] block">
                   CURRENT ACTIVE DISPATCH
                 </span>
-                <strong className="text-lg font-display font-black text-[#FFFFFF]">
+                <strong className="text-lg font-display font-black text-gray-900">
                   {currentJob.issue.replaceAll('_', ' ')}
                 </strong>
               </div>
@@ -151,38 +151,38 @@ export function HelperDashboardPage() {
             <StatusBadge status={currentJob.status} />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-[#191D20] p-4 rounded-xl border border-[#343B42]">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-gray-50 p-4 rounded-xl border border-gray-200">
             <div>
-              <span className="text-[10px] text-[#B8C0C5] block font-mono font-bold uppercase tracking-wider">Stranded Rider</span>
-              <strong className="text-[#FFFFFF] text-sm block mt-0.5">{currentJob.riderName}</strong>
-              <span className="text-[#B8C0C5] text-[11px]">{currentJob.bike.brand} {currentJob.bike.model}</span>
+              <span className="text-[10px] text-gray-600 block font-mono font-bold uppercase tracking-wider">Stranded Rider</span>
+              <strong className="text-gray-900 text-sm block mt-0.5">{currentJob.riderName}</strong>
+              <span className="text-gray-600 text-[11px]">{currentJob.bike.brand} {currentJob.bike.model}</span>
             </div>
             <div>
-              <span className="text-[10px] text-[#B8C0C5] block font-mono font-bold uppercase tracking-wider">Location</span>
-              <strong className="text-[#FFFFFF] text-sm block mt-0.5 flex items-center gap-1">
+              <span className="text-[10px] text-gray-600 block font-mono font-bold uppercase tracking-wider">Location</span>
+              <strong className="text-gray-900 text-sm block mt-0.5 flex items-center gap-1">
                 <MapPin size={14} className="text-[#FFF174]" />
                 {currentJob.approximateLocation || 'Himalayan Corridor'}
               </strong>
               <span className="text-[#10B981] text-[11px] font-mono font-bold">~2.4 km away</span>
             </div>
             <div>
-              <span className="text-[10px] text-[#B8C0C5] block font-mono font-bold uppercase tracking-wider">Estimated Tariff</span>
+              <span className="text-[10px] text-gray-600 block font-mono font-bold uppercase tracking-wider">Estimated Tariff</span>
               <strong className="text-[#FFF174] font-mono text-base block mt-0.5 font-bold">₹350 – ₹600</strong>
-              <span className="text-[#B8C0C5] text-[11px]">Direct digital or cash receipt</span>
+              <span className="text-gray-600 text-[11px]">Direct digital or cash receipt</span>
             </div>
           </div>
 
           {/* Job Timeline Indicator */}
           <div className="pt-1">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#B8C0C5] block mb-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-600 block mb-2">
               Dispatch Workflow Progression
             </span>
             <IncidentTimeline currentStep={getJobStepIndex(currentJob.status)} />
           </div>
 
           {/* Status Progression Controls */}
-          <div className="p-3.5 rounded-xl bg-[#191D20] border border-[#343B42] space-y-2.5">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#B8C0C5] block">
+          <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-200 space-y-2.5">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-600 block">
               STATUS TRANSITION (1-TAP):
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold font-display">
@@ -192,7 +192,7 @@ export function HelperDashboardPage() {
                 className={`py-2.5 px-2 rounded-xl border text-center transition-all cursor-pointer min-h-[44px] ${
                   currentJob.status === 'EN_ROUTE'
                     ? 'bg-[#DFF127] text-black border-[#DFF127]'
-                    : 'bg-[#22272B] border-[#343B42] text-[#FFFFFF] hover:border-[#DFF127]/50'
+                    : 'bg-white border-gray-200 text-gray-900 hover:border-[#DFF127]/50'
                 }`}
               >
                 ● EN ROUTE
@@ -204,7 +204,7 @@ export function HelperDashboardPage() {
                 className={`py-2.5 px-2 rounded-xl border text-center transition-all cursor-pointer min-h-[44px] ${
                   currentJob.status === 'ARRIVED'
                     ? 'bg-[#B1D8E3] text-black border-[#B1D8E3]'
-                    : 'bg-[#22272B] border-[#343B42] text-[#FFFFFF] hover:border-[#B1D8E3]/50'
+                    : 'bg-white border-gray-200 text-gray-900 hover:border-[#B1D8E3]/50'
                 }`}
               >
                 ● ARRIVED
@@ -216,7 +216,7 @@ export function HelperDashboardPage() {
                 className={`py-2.5 px-2 rounded-xl border text-center transition-all cursor-pointer min-h-[44px] ${
                   currentJob.status === 'IN_PROGRESS'
                     ? 'bg-[#F59E0B] text-black border-[#F59E0B]'
-                    : 'bg-[#22272B] border-[#343B42] text-[#FFFFFF] hover:border-[#F59E0B]/50'
+                    : 'bg-white border-gray-200 text-gray-900 hover:border-[#F59E0B]/50'
                 }`}
               >
                 ● ASSISTANCE
@@ -228,7 +228,7 @@ export function HelperDashboardPage() {
                 className={`py-2.5 px-2 rounded-xl border text-center transition-all cursor-pointer min-h-[44px] ${
                   currentJob.status === 'RESOLVED' || currentJob.status === 'COMPLETED'
                     ? 'bg-[#10B981] text-black border-[#10B981]'
-                    : 'bg-[#22272B] border-[#343B42] text-[#FFFFFF] hover:border-[#10B981]/50'
+                    : 'bg-white border-gray-200 text-gray-900 hover:border-[#10B981]/50'
                 }`}
               >
                 ✓ COMPLETED
@@ -244,7 +244,7 @@ export function HelperDashboardPage() {
               )}`}
               target="_blank"
               rel="noreferrer"
-              className="py-3 px-4 rounded-xl bg-[#191D20] hover:bg-[#2A2C26] font-display font-bold text-xs uppercase tracking-wider text-[#FFFFFF] border border-[#343B42] flex items-center justify-center gap-2 active:scale-95 transition-all text-center min-h-[44px]"
+              className="py-3 px-4 rounded-xl bg-gray-50 hover:bg-[#2A2C26] font-display font-bold text-xs uppercase tracking-wider text-gray-900 border border-gray-200 flex items-center justify-center gap-2 active:scale-95 transition-all text-center min-h-[44px]"
             >
               <Navigation size={15} className="text-[#B1D8E3]" />
               <span>Start Navigation</span>
@@ -252,7 +252,7 @@ export function HelperDashboardPage() {
 
             <a
               href={`tel:${currentJob.riderPhone}`}
-              className="py-3 px-4 rounded-xl bg-[#191D20] hover:bg-[#2A2C26] font-display font-bold text-xs uppercase tracking-wider text-[#FFFFFF] border border-[#343B42] flex items-center justify-center gap-2 active:scale-95 transition-all text-center min-h-[44px]"
+              className="py-3 px-4 rounded-xl bg-gray-50 hover:bg-[#2A2C26] font-display font-bold text-xs uppercase tracking-wider text-gray-900 border border-gray-200 flex items-center justify-center gap-2 active:scale-95 transition-all text-center min-h-[44px]"
             >
               <PhoneCall size={15} className="text-[#10B981]" />
               <span>Call Rider</span>
@@ -274,10 +274,10 @@ export function HelperDashboardPage() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-display font-bold uppercase tracking-widest text-[#FFFFFF] flex items-center gap-2">
+            <h2 className="text-sm font-display font-bold uppercase tracking-widest text-gray-900 flex items-center gap-2">
               <Search size={16} className="text-[#FFF174]" /> New Requests Feed
             </h2>
-            <p className="text-xs text-[#B8C0C5]">Stranded riders nearby requesting dispatch</p>
+            <p className="text-xs text-gray-600">Stranded riders nearby requesting dispatch</p>
           </div>
           <Link
             to="/helper/available-requests"
@@ -293,28 +293,28 @@ export function HelperDashboardPage() {
             {availableRequests.slice(0, 4).map((req) => (
               <div
                 key={req.id}
-                className="p-3.5 sm:p-5 rounded-2xl bg-[#22272B] border border-[#343B42] hover:border-[#FFF174]/40 transition-all flex flex-col justify-between gap-3"
+                className="p-3.5 sm:p-5 rounded-2xl bg-white border border-gray-200 hover:border-[#FFF174]/40 transition-all flex flex-col justify-between gap-3"
               >
                 <div className="space-y-1.5 sm:space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-[#B8C0C5] text-[10px] sm:text-xs">REQ-{req.id.slice(-4)}</span>
+                    <span className="font-mono text-gray-600 text-[10px] sm:text-xs">REQ-{req.id.slice(-4)}</span>
                     <span className="text-[10px] sm:text-xs font-mono text-[#10B981] font-bold bg-[#10B981]/15 border border-[#10B981]/30 px-1.5 py-0.5 rounded">
                       Est. ₹350
                     </span>
                   </div>
                   <div>
-                    <strong className="text-xs sm:text-base font-display font-bold text-[#FFFFFF] block leading-tight line-clamp-2">
+                    <strong className="text-xs sm:text-base font-display font-bold text-gray-900 block leading-tight line-clamp-2">
                       {req.bike.brand} {req.bike.model} — {req.issue.replaceAll('_', ' ')}
                     </strong>
-                    <p className="text-[11px] sm:text-xs text-[#B8C0C5] mt-1 line-clamp-2">{req.description}</p>
+                    <p className="text-[11px] sm:text-xs text-gray-600 mt-1 line-clamp-2">{req.description}</p>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-[#B8C0C5] pt-1">
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-gray-600 pt-1">
                     <MapPin size={12} className="text-[#FFF174] shrink-0" />
                     <span className="truncate">{req.approximateLocation || 'Himalayan Corridor'}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 sm:gap-2 pt-2 border-t border-[#343B42]">
+                <div className="flex items-center gap-1.5 sm:gap-2 pt-2 border-t border-gray-200">
                   <button
                     type="button"
                     onClick={() => handleAcceptRequest(req.id)}
@@ -327,7 +327,7 @@ export function HelperDashboardPage() {
                   <button
                     type="button"
                     onClick={() => navigate(`/requests/${req.id}`)}
-                    className="py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl bg-[#191D20] hover:bg-[#2A2C26] border border-[#343B42] font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider text-[#FFFFFF] transition-colors cursor-pointer min-h-[40px] sm:min-h-[44px]"
+                    className="py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl bg-gray-50 hover:bg-[#2A2C26] border border-gray-200 font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider text-gray-900 transition-colors cursor-pointer min-h-[40px] sm:min-h-[44px]"
                   >
                     Details
                   </button>
@@ -348,27 +348,27 @@ export function HelperDashboardPage() {
 
       {/* 4. METRICS / EARNINGS ROW */}
       <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-4 rounded-2xl bg-[#22272B] border border-[#343B42] space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase text-[#B8C0C5] block">Nearby Requests</span>
-          <strong className="text-2xl font-display font-black text-[#FFFFFF]">{availableRequests.length}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">Waiting in service zone</span>
+        <div className="p-4 rounded-2xl bg-white border border-gray-200 space-y-1">
+          <span className="text-[10px] font-mono font-bold uppercase text-gray-600 block">Nearby Requests</span>
+          <strong className="text-2xl font-display font-black text-gray-900">{availableRequests.length}</strong>
+          <span className="text-[10px] text-gray-600 block">Waiting in service zone</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#22272B] border border-[#343B42] space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase text-[#B8C0C5] block">Completed Assists</span>
+        <div className="p-4 rounded-2xl bg-white border border-gray-200 space-y-1">
+          <span className="text-[10px] font-mono font-bold uppercase text-gray-600 block">Completed Assists</span>
           <strong className="text-2xl font-display font-black text-[#10B981]">{profile?.completedAssists || 0}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">Lifetime rescued</span>
+          <span className="text-[10px] text-gray-600 block">Lifetime rescued</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#22272B] border border-[#343B42] space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase text-[#B8C0C5] block">Provider Rating</span>
+        <div className="p-4 rounded-2xl bg-white border border-gray-200 space-y-1">
+          <span className="text-[10px] font-mono font-bold uppercase text-gray-600 block">Provider Rating</span>
           <strong className="text-2xl font-display font-black text-[#FFF174]">★ {profile?.rating?.toFixed(1) || '5.0'}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">Verified rider reviews</span>
+          <span className="text-[10px] text-gray-600 block">Verified rider reviews</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#22272B] border border-[#343B42] space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase text-[#B8C0C5] block">Est. Day Earnings</span>
-          <strong className="text-2xl font-display font-black text-[#FFFFFF]">₹{((profile?.completedAssists || 1) * 350).toLocaleString()}</strong>
+        <div className="p-4 rounded-2xl bg-white border border-gray-200 space-y-1">
+          <span className="text-[10px] font-mono font-bold uppercase text-gray-600 block">Est. Day Earnings</span>
+          <strong className="text-2xl font-display font-black text-gray-900">₹{((profile?.completedAssists || 1) * 350).toLocaleString()}</strong>
           <span className="text-[10px] text-[#10B981] block">Daily settlement active</span>
         </div>
       </section>

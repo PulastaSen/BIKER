@@ -113,7 +113,7 @@ export function HomePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#101214] text-[#FFFFFF] flex flex-col font-sans pb-28 md:pb-16 selection:bg-[#FFF174] selection:text-[#101214]">
+    <div className="min-h-screen bg-[#F8F9FA] text-[#111827] flex flex-col font-sans pb-28 md:pb-16 selection:bg-red-500 selection:text-white">
       
       {/* Crash Detection Modal */}
       <CrashDetectionModal
@@ -140,12 +140,12 @@ export function HomePage() {
       />
 
       {/* TOP ACCESSIBILITY & TELEMETRY BAR */}
-      <div className="bg-[#191D20] border-b border-[#343B42] px-4 py-2 text-xs">
+      <div className="bg-white border-b border-gray-200 shadow-sm px-4 py-2 text-xs">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
           {/* GPS Telemetry Pill */}
           <div className="flex items-center gap-2 min-w-0">
             <span className={`w-2 h-2 rounded-full shrink-0 ${coords ? 'bg-[#10B981] animate-pulse' : 'bg-[#F59E0B]'}`} />
-            <div className="truncate text-[11px] text-[#B8C0C5]">
+            <div className="truncate text-[11px] text-gray-600">
               {coords ? (
                 <span>📍 Location active {accuracy ? `(±${accuracy}m)` : ''} • {updatedText || 'Live'}</span>
               ) : locStatus === 'denied' ? (
@@ -161,18 +161,18 @@ export function HomePage() {
           {/* Quick Accessibility Toggles */}
           <div className="flex items-center gap-1.5 shrink-0">
             {/* Language Switcher */}
-            <div className="flex items-center bg-[#22272B] rounded-lg border border-[#343B42] p-0.5 text-[10px] font-bold">
+            <div className="flex items-center bg-gray-100 rounded-lg border border-gray-200 p-0.5 text-[10px] font-bold">
               <button
                 type="button"
                 onClick={() => setLanguage('en')}
-                className={`px-2 py-1 rounded transition-colors ${language === 'en' ? 'bg-[#FFF174] text-black font-extrabold' : 'text-[#B8C0C5] hover:text-white'}`}
+                className={`px-2 py-1 rounded transition-colors ${language === 'en' ? 'bg-red-600 text-white font-extrabold' : 'text-gray-600 hover:text-gray-900'}`}
               >
                 EN
               </button>
               <button
                 type="button"
                 onClick={() => setLanguage('hi')}
-                className={`px-2 py-1 rounded transition-colors ${language === 'hi' ? 'bg-[#FFF174] text-black font-extrabold' : 'text-[#B8C0C5] hover:text-white'}`}
+                className={`px-2 py-1 rounded transition-colors ${language === 'hi' ? 'bg-red-600 text-white font-extrabold' : 'text-gray-600 hover:text-gray-900'}`}
               >
                 हिंदी
               </button>
@@ -184,8 +184,8 @@ export function HomePage() {
               onClick={toggleVoice}
               className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 min-h-[34px] transition-colors ${
                 voiceEnabled
-                  ? 'bg-[#10B981]/20 border-[#10B981] text-[#10B981]'
-                  : 'bg-[#22272B] border-[#343B42] text-[#B8C0C5] hover:text-white'
+                  ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                  : 'bg-white border-gray-200 text-gray-700 hover:text-gray-900 shadow-sm'
               }`}
               title="Toggle voice instructions"
               aria-label="Toggle voice guidance"
@@ -200,8 +200,8 @@ export function HomePage() {
               onClick={toggleSimpleMode}
               className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 min-h-[34px] transition-colors ${
                 isSimpleMode
-                  ? 'bg-[#FFF174] text-black border-[#FFF174] font-extrabold'
-                  : 'bg-[#22272B] border-[#343B42] text-[#B8C0C5] hover:text-white'
+                  ? 'bg-red-50 text-red-600 border-red-300 font-extrabold'
+                  : 'bg-white border-gray-200 text-gray-700 hover:text-gray-900 shadow-sm'
               }`}
               title="Toggle simple mode for high readability"
               aria-label="Toggle simple view mode"
@@ -233,7 +233,7 @@ export function HomePage() {
             A. EMERGENCY SOS — TOP HIGH-VISIBILITY BANNER (NO LOGIN NEEDED)
             ======================================================== */}
         <section aria-labelledby="sos-section-title">
-          <div className="bg-gradient-to-r from-[#B91C1C] via-[#DC2626] to-[#991B1B] rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-red-400 shadow-[0_10px_35px_rgba(220,38,38,0.4)] flex flex-col sm:flex-row items-center justify-between gap-4 text-white">
+          <div className="bg-gradient-to-r from-red-600 via-red-500 to-red-700 shadow-lg shadow-red-500/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-red-400 shadow-[0_10px_35px_rgba(220,38,38,0.4)] flex flex-col sm:flex-row items-center justify-between gap-4 text-white">
             <div className="space-y-1 text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping" />
@@ -253,9 +253,9 @@ export function HomePage() {
               <a
                 href="tel:112"
                 onClick={() => handleVoiceRead('Calling 112 National Emergency')}
-                className="flex-1 sm:flex-initial px-5 py-3.5 bg-black hover:bg-neutral-900 text-[#FFF174] font-display font-black text-sm uppercase tracking-wider rounded-xl border border-[#FFF174]/40 flex items-center justify-center gap-2 transition-all min-h-[48px] shadow-lg active:scale-95"
+                className="flex-1 sm:flex-initial px-5 py-3.5 bg-black hover:bg-neutral-900 text-red-600 font-display font-black text-sm uppercase tracking-wider rounded-xl border border-red-300 flex items-center justify-center gap-2 transition-all min-h-[48px] shadow-lg active:scale-95"
               >
-                <PhoneCall size={18} className="text-[#FFF174]" />
+                <PhoneCall size={18} className="text-red-600" />
                 <span>Call 112</span>
               </a>
 
@@ -276,10 +276,10 @@ export function HomePage() {
 
         {/* SCREEN TITLE: WHAT DO YOU NEED HELP WITH? */}
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-4xl font-display font-black text-[#FFFFFF] tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-display font-black text-gray-900 tracking-tight">
             What do you need help with?
           </h1>
-          <p className="text-xs sm:text-sm text-[#B8C0C5] max-w-2xl font-normal">
+          <p className="text-xs sm:text-sm text-gray-600 max-w-2xl font-normal">
             Choose your problem below. We connect you directly to verified mechanics, emergency dispatch, and nearby highway support.
           </p>
         </div>
@@ -290,16 +290,16 @@ export function HomePage() {
         <section aria-labelledby="bike-problem-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-[#22272B] border border-[#343B42] text-[#FFF174]">
+              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-red-600">
                 <Wrench size={16} />
               </span>
-              <h2 id="bike-problem-heading" className="text-lg sm:text-xl font-display font-bold text-[#FFFFFF]">
+              <h2 id="bike-problem-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
                 {t('home.bike_help', 'Get help with your bike')}
               </h2>
             </div>
             <button
               onClick={() => navigate('/services')}
-              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-red-600 hover:underline flex items-center gap-1"
             >
               <span>Service List</span>
               <ChevronRight size={14} />
@@ -313,7 +313,7 @@ export function HomePage() {
                 title: "Bike won't start",
                 sub: 'BATTERY',
                 icon: Zap,
-                color: 'text-[#FFF174]',
+                color: 'text-red-600',
                 desc: 'Dead battery, starter issue or ignition'
               },
               {
@@ -345,7 +345,7 @@ export function HomePage() {
                 title: 'Battery problem',
                 sub: 'BATTERY',
                 icon: Zap,
-                color: 'text-[#FFF174]',
+                color: 'text-red-600',
                 desc: '12V jump-start or battery test'
               },
               {
@@ -369,7 +369,7 @@ export function HomePage() {
                 title: 'Other problem',
                 sub: 'OTHER',
                 icon: HelpCircle,
-                color: 'text-[#B8C0C5]',
+                color: 'text-gray-500',
                 desc: 'Brakes, clutch wire, levers or unlisted issue'
               }
             ].map((prob) => {
@@ -381,7 +381,7 @@ export function HomePage() {
                     handleVoiceRead(`Opening help for ${prob.title}`);
                     navigate(`/emergency?cat=BIKE_PROBLEM&sub=${prob.sub}`);
                   }}
-                  className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] active:scale-[0.98] border border-[#343B42] hover:border-[#FFF174]/60 transition-all cursor-pointer flex flex-col justify-between min-h-[115px] sm:min-h-[125px] shadow-sm group"
+                  className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 active:scale-[0.98] border border-gray-200 hover:border-red-300 transition-all cursor-pointer flex flex-col justify-between min-h-[115px] sm:min-h-[125px] shadow-sm group"
                   role="button"
                   tabIndex={0}
                   aria-label={`${prob.title} - ${prob.desc}`}
@@ -391,15 +391,15 @@ export function HomePage() {
                 >
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <div className="w-8 h-8 rounded-lg bg-[#191D20] border border-[#343B42] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                         <IconComponent size={16} className={prob.color} />
                       </div>
-                      <ChevronRight size={15} className="text-[#B8C0C5] group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                      <ChevronRight size={15} className="text-gray-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                     </div>
-                    <strong className="text-xs sm:text-sm font-display font-bold text-[#FFFFFF] block leading-tight pt-1 group-hover:text-[#FFF174] transition-colors">
+                    <strong className="text-xs sm:text-sm font-display font-bold text-gray-900 block leading-tight pt-1 group-hover:text-red-600 transition-colors">
                       {prob.title}
                     </strong>
-                    <p className="text-[10px] sm:text-[11px] text-[#B8C0C5] line-clamp-2 leading-snug">
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 line-clamp-2 leading-snug">
                       {prob.desc}
                     </p>
                   </div>
@@ -414,10 +414,10 @@ export function HomePage() {
             ======================================================== */}
         <section aria-labelledby="medical-heading" className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-[#22272B] border border-[#343B42] text-red-400">
+            <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-red-400">
               <Heart size={16} />
             </span>
-            <h2 id="medical-heading" className="text-lg sm:text-xl font-display font-bold text-[#FFFFFF]">
+            <h2 id="medical-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
               {t('home.medical_help', 'Medical emergency & hospitals')}
             </h2>
           </div>
@@ -427,14 +427,14 @@ export function HomePage() {
             <a
               href="tel:112"
               onClick={() => handleVoiceRead('Calling 112 Ambulance')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-red-500/40 hover:border-red-500 flex flex-col justify-between transition-all min-h-[110px] group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-red-500/40 hover:border-red-500 flex flex-col justify-between transition-all min-h-[110px] group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-red-400 uppercase">Emergency Dispatch</span>
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-300">
                   Call 112 / 108 Ambulance
                 </strong>
-                <p className="text-[10px] text-[#B8C0C5] mt-1">Official state trauma dispatch</p>
+                <p className="text-[10px] text-gray-500 mt-1">Official state trauma dispatch</p>
               </div>
               <div className="flex items-center gap-1 text-[11px] font-bold text-red-400 mt-2">
                 <PhoneCall size={12} /> <span>1-Tap Dial</span>
@@ -447,14 +447,14 @@ export function HomePage() {
                 handleVoiceRead('Searching nearby hospitals and trauma centers');
                 navigate('/nearby-services');
               }}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-[#FFF174]/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-300 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#B1D8E3] uppercase">Trauma Hubs</span>
-                <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#FFF174]">
+                <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-600">
                   Nearby Hospitals
                 </strong>
-                <p className="text-[10px] text-[#B8C0C5] mt-1">Find government & private emergency rooms</p>
+                <p className="text-[10px] text-gray-500 mt-1">Find government & private emergency rooms</p>
               </div>
               <div className="flex items-center justify-between text-[11px] font-bold text-[#B1D8E3] mt-2">
                 <span>View on map</span>
@@ -468,14 +468,14 @@ export function HomePage() {
               target="_blank"
               rel="noreferrer"
               onClick={() => handleVoiceRead('Sharing location on WhatsApp')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[110px] group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[110px] group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase">Live Coordinates</span>
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#10B981]">
                   Share Location
                 </strong>
-                <p className="text-[10px] text-[#B8C0C5] mt-1">Send GPS coordinates via WhatsApp</p>
+                <p className="text-[10px] text-gray-500 mt-1">Send GPS coordinates via WhatsApp</p>
               </div>
               <div className="flex items-center gap-1 text-[11px] font-bold text-[#10B981] mt-2">
                 <Share2 size={12} /> <span>Send WhatsApp</span>
@@ -485,14 +485,14 @@ export function HomePage() {
             {/* 4. Medical ID & Blood Group */}
             <div
               onClick={() => setShowMedicalModal(true)}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-red-400/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-400/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-red-300 uppercase">Emergency Profile</span>
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-300">
                   Medical ID Card
                 </strong>
-                <p className="text-[10px] text-[#B8C0C5] mt-1">Blood group, allergies & ICE contacts</p>
+                <p className="text-[10px] text-gray-500 mt-1">Blood group, allergies & ICE contacts</p>
               </div>
               <div className="flex items-center justify-between text-[11px] font-bold text-red-300 mt-2">
                 <span>Open card</span>
@@ -508,10 +508,10 @@ export function HomePage() {
         <section aria-labelledby="safety-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-[#22272B] border border-[#343B42] text-[#F59E0B]">
+              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#F59E0B]">
                 <ShieldCheck size={16} />
               </span>
-              <h2 id="safety-heading" className="text-lg sm:text-xl font-display font-bold text-[#FFFFFF]">
+              <h2 id="safety-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
                 {t('home.safety_help', 'Personal safety & women rider network')}
               </h2>
             </div>
@@ -531,14 +531,14 @@ export function HomePage() {
                 handleVoiceRead('Opening personal safety support modal');
                 setShowUnsafeModal(true);
               }}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#F59E0B]/40 hover:border-[#F59E0B] flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-[#F59E0B]/40 hover:border-[#F59E0B] flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#F59E0B] uppercase">Immediate Alert</span>
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#F59E0B]">
                   I Feel Unsafe
                 </strong>
-                <p className="text-[10px] text-[#B8C0C5] mt-1">Dark road, being followed or breakdown alone</p>
+                <p className="text-[10px] text-gray-500 mt-1">Dark road, being followed or breakdown alone</p>
               </div>
               <div className="flex items-center justify-between text-[11px] font-bold text-[#F59E0B] mt-2">
                 <span>Alert trusted circle</span>
@@ -550,14 +550,14 @@ export function HomePage() {
             <a
               href="tel:1091"
               onClick={() => handleVoiceRead('Calling 1091 Women Safety Helpline')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-purple-400 flex flex-col justify-between transition-all min-h-[110px] group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-purple-400 flex flex-col justify-between transition-all min-h-[110px] group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-purple-400 uppercase">Govt Helpline</span>
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-purple-300">
                   Call Helpline 1091
                 </strong>
-                <p className="text-[10px] text-[#B8C0C5] mt-1">24/7 dedicated women police desk</p>
+                <p className="text-[10px] text-gray-500 mt-1">24/7 dedicated women police desk</p>
               </div>
               <div className="flex items-center gap-1 text-[11px] font-bold text-purple-400 mt-2">
                 <PhoneCall size={12} /> <span>1-Tap Dial</span>
@@ -567,20 +567,20 @@ export function HomePage() {
             {/* 3. Trusted Contacts */}
             <div
               onClick={() => navigate('/rider/emergency-contacts')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-[#FFF174]/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-300 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
-                <span className="text-[10px] font-mono font-bold text-[#FFF174] uppercase">ICE Circle</span>
-                <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#FFF174]">
+                <span className="text-[10px] font-mono font-bold text-red-600 uppercase">ICE Circle</span>
+                <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-600">
                   Trusted Contacts
                 </strong>
-                <p className="text-[10px] text-[#B8C0C5] mt-1">
+                <p className="text-[10px] text-gray-500 mt-1">
                   {emergencyContacts.length > 0 
                     ? `${emergencyContacts.length} contacts linked for automatic alerts`
                     : 'Add someone we can call in an emergency'}
                 </p>
               </div>
-              <div className="flex items-center justify-between text-[11px] font-bold text-[#FFF174] mt-2">
+              <div className="flex items-center justify-between text-[11px] font-bold text-red-600 mt-2">
                 <span>Manage contacts</span>
                 <ChevronRight size={13} />
               </div>
@@ -589,14 +589,14 @@ export function HomePage() {
             {/* 4. Safe Public Havens */}
             <div
               onClick={() => navigate('/remote-readiness')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase">Verified Safe Stops</span>
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#10B981]">
                   Safe Public Spots
                 </strong>
-                <p className="text-[10px] text-[#B8C0C5] mt-1">Police highway posts and 24/7 lit petrol pumps</p>
+                <p className="text-[10px] text-gray-500 mt-1">Police highway posts and 24/7 lit petrol pumps</p>
               </div>
               <div className="flex items-center justify-between text-[11px] font-bold text-[#10B981] mt-2">
                 <span>View safe stops</span>
@@ -612,16 +612,16 @@ export function HomePage() {
         <section aria-labelledby="nearby-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-[#22272B] border border-[#343B42] text-[#FFF174]">
+              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-red-600">
                 <MapPin size={16} />
               </span>
-              <h2 id="nearby-heading" className="text-lg sm:text-xl font-display font-bold text-[#FFFFFF]">
+              <h2 id="nearby-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
                 {t('home.nearby_services', 'Nearby services & repair hubs')}
               </h2>
             </div>
             <button
               onClick={() => navigate('/nearby-services')}
-              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-red-600 hover:underline flex items-center gap-1"
             >
               <span>Explore Map</span>
               <ChevronRight size={14} />
@@ -646,14 +646,14 @@ export function HomePage() {
                     handleVoiceRead(`Searching nearby ${srv.label}`);
                     navigate('/nearby-services');
                   }}
-                  className="p-3 rounded-xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-[#FFF174]/40 flex flex-col items-center justify-center text-center gap-1.5 transition-all min-h-[82px] cursor-pointer group"
+                  className="p-3 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-300 flex flex-col items-center justify-center text-center gap-1.5 transition-all min-h-[82px] cursor-pointer group"
                 >
-                  <SrvIcon size={18} className="text-[#FFF174] group-hover:scale-110 transition-transform" />
+                  <SrvIcon size={18} className="text-red-600 group-hover:scale-110 transition-transform" />
                   <div>
-                    <strong className="text-xs font-display font-bold text-white block group-hover:text-[#FFF174] leading-tight">
+                    <strong className="text-xs font-display font-bold text-white block group-hover:text-red-600 leading-tight">
                       {srv.label}
                     </strong>
-                    <span className="text-[9px] font-mono text-[#B8C0C5] block">{srv.count}</span>
+                    <span className="text-[9px] font-mono text-gray-500 block">{srv.count}</span>
                   </div>
                 </button>
               );
@@ -667,26 +667,26 @@ export function HomePage() {
         <section aria-labelledby="garage-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-[#22272B] border border-[#343B42] text-[#B1D8E3]">
+              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#B1D8E3]">
                 <BikeIcon size={16} />
               </span>
-              <h2 id="garage-heading" className="text-lg sm:text-xl font-display font-bold text-[#FFFFFF]">
+              <h2 id="garage-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
                 {t('home.my_bike', 'My Bike & Garage')}
               </h2>
             </div>
             <button
               onClick={() => navigate('/rider/bikes')}
-              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-red-600 hover:underline flex items-center gap-1"
             >
               <span>Manage Garage</span>
               <ChevronRight size={14} />
             </button>
           </div>
 
-          <div className="bg-[#191D20] border border-[#343B42] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {primaryBike ? (
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-xl bg-[#22272B] border border-[#343B42] flex items-center justify-center text-[#FFF174] shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-red-600 shrink-0">
                   <BikeIcon size={24} />
                 </div>
                 <div>
@@ -698,7 +698,7 @@ export function HomePage() {
                       PRIMARY
                     </span>
                   </div>
-                  <p className="text-xs text-[#B8C0C5] font-mono mt-0.5">
+                  <p className="text-xs text-gray-500 font-mono mt-0.5">
                     Plate: <span className="text-white font-bold">{primaryBike.registrationNumber}</span> • Year {primaryBike.year}
                   </p>
                 </div>
@@ -706,7 +706,7 @@ export function HomePage() {
             ) : (
               <div>
                 <strong className="text-sm font-display font-bold text-white block">No motorcycles registered yet</strong>
-                <p className="text-xs text-[#B8C0C5] mt-0.5">Add your motorcycle so roadside helpers know your model and parts.</p>
+                <p className="text-xs text-gray-500 mt-0.5">Add your motorcycle so roadside helpers know your model and parts.</p>
               </div>
             )}
 
@@ -714,7 +714,7 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => navigate('/rider/bikes')}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors min-h-[44px]"
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors min-h-[44px]"
               >
                 <Plus size={14} />
                 <span>Add / Manage Bikes</span>
@@ -722,7 +722,7 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => navigate('/services')}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors min-h-[44px]"
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-red-600 text-white hover:bg-yellow-400 text-black font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors min-h-[44px]"
               >
                 <span>Book Service</span>
               </button>
@@ -736,10 +736,10 @@ export function HomePage() {
         <section aria-labelledby="ride-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-[#22272B] border border-[#343B42] text-[#10B981]">
+              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#10B981]">
                 <Compass size={16} />
               </span>
-              <h2 id="ride-heading" className="text-lg sm:text-xl font-display font-bold text-[#FFFFFF]">
+              <h2 id="ride-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
                 {t('home.ride_plan', 'Ride planning & mountain safety')}
               </h2>
             </div>
@@ -756,14 +756,14 @@ export function HomePage() {
             {/* 1. Safe Ride Cockpit */}
             <div
               onClick={() => navigate('/safe-ride')}
-              className="p-4 rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
+              className="p-4 rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase">Live Journey</span>
                 <strong className="text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#10B981]">
                   Start Safe Ride
                 </strong>
-                <p className="text-[11px] text-[#B8C0C5] mt-1">
+                <p className="text-[11px] text-gray-500 mt-1">
                   1-tap 'I am safe' check-in, periodic arrival timer, and family WhatsApp sharing.
                 </p>
               </div>
@@ -776,18 +776,18 @@ export function HomePage() {
             {/* 2. Remote Readiness & Offline Passes */}
             <div
               onClick={() => navigate('/remote-readiness')}
-              className="p-4 rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-[#FFF174]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
+              className="p-4 rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-300 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
             >
               <div>
-                <span className="text-[10px] font-mono font-bold text-[#FFF174] uppercase">Zero Signal Prep</span>
-                <strong className="text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#FFF174]">
+                <span className="text-[10px] font-mono font-bold text-red-600 uppercase">Zero Signal Prep</span>
+                <strong className="text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-600">
                   Remote Area Readiness
                 </strong>
-                <p className="text-[11px] text-[#B8C0C5] mt-1">
+                <p className="text-[11px] text-gray-500 mt-1">
                   Download offline emergency card, check corridor stops, and prepare for dead zones.
                 </p>
               </div>
-              <div className="flex items-center justify-between text-xs font-bold text-[#FFF174] mt-2">
+              <div className="flex items-center justify-between text-xs font-bold text-red-600 mt-2">
                 <span>Open guide</span>
                 <ChevronRight size={14} />
               </div>
@@ -796,14 +796,14 @@ export function HomePage() {
             {/* 3. Road Hazard Reports */}
             <div
               onClick={() => navigate('/road-hazards')}
-              className="p-4 rounded-2xl bg-[#22272B] hover:bg-[#2D3339] border border-[#343B42] hover:border-[#F59E0B]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
+              className="p-4 rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#F59E0B]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#F59E0B] uppercase">Rider Intel</span>
                 <strong className="text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#F59E0B]">
                   Road Hazards & Landslides
                 </strong>
-                <p className="text-[11px] text-[#B8C0C5] mt-1">
+                <p className="text-[11px] text-gray-500 mt-1">
                   Real-time rider alerts for landslides, oil spills, and mountain roadblocks.
                 </p>
               </div>

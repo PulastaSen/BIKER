@@ -187,30 +187,30 @@ export function EmergencyServicesPage() {
     : VERIFIED_FACILITIES.filter(f => f.type === filter);
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-[#F8F9FA] text-[#111827] pt-20 pb-24 font-sans selection:bg-red-500 selection:text-white">
       <div className="container mx-auto px-4 max-w-4xl">
         
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white"
+            className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-black cursor-pointer font-bold"
           >
             <ArrowLeft size={16} /> Back
           </button>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50 text-red-600 border border-red-200">
             Emergency Resource Discovery
           </span>
         </div>
 
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center text-white shadow-lg">
+            <div className="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center text-white shadow-lg shadow-red-600/30">
               <ShieldAlert size={24} />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black">EMERGENCY SERVICES</h1>
-              <p className="text-gray-400 text-xs mt-0.5">
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900">EMERGENCY SERVICES</h1>
+              <p className="text-gray-600 text-xs mt-0.5">
                 Immediate access to official Indian emergency services, hospitals, ambulances, and verified safe waiting locations.
               </p>
             </div>
@@ -218,18 +218,18 @@ export function EmergencyServicesPage() {
         </div>
 
         {/* Section 11: Official Emergency Helplines Direct Dial */}
-        <div className="p-6 rounded-3xl bg-[#22272B] border border-red-500/30 mb-8 space-y-4">
+        <div className="p-6 rounded-3xl bg-white border border-red-200 shadow-md mb-8 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-black uppercase tracking-wider text-red-400 flex items-center gap-2">
+            <h2 className="text-xs font-black uppercase tracking-wider text-red-600 flex items-center gap-2">
               <PhoneCall size={14} /> National Emergency Numbers (India)
             </h2>
-            <span className="text-[10px] text-gray-400">Toll-Free 24/7</span>
+            <span className="text-[10px] text-gray-500 font-bold">Toll-Free 24/7</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <a
               href="tel:112"
-              className="p-4 rounded-2xl bg-gradient-to-br from-red-600 to-red-800 text-center text-white hover:from-red-500 hover:to-red-700 transition-all shadow-lg active:scale-95"
+              className="p-4 rounded-2xl bg-gradient-to-br from-red-600 to-red-700 text-center text-white hover:from-red-500 hover:to-red-600 transition-all shadow-lg shadow-red-600/20 active:scale-95"
             >
               <strong className="block text-2xl font-black">112</strong>
               <span className="text-[10px] font-bold uppercase tracking-wider text-red-100 block mt-0.5">National All-in-One</span>
@@ -237,26 +237,26 @@ export function EmergencyServicesPage() {
 
             <a
               href="tel:100"
-              className="p-4 rounded-2xl bg-[#191D20] border border-white/10 hover:border-blue-400 text-center text-white transition-all active:scale-95"
+              className="p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-blue-400 text-center text-gray-900 transition-all active:scale-95 shadow-sm"
             >
-              <strong className="block text-2xl font-black text-blue-400">100</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-300 block mt-0.5">Police Control</span>
+              <strong className="block text-2xl font-black text-blue-600">100</strong>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Police Control</span>
             </a>
 
             <a
               href="tel:108"
-              className="p-4 rounded-2xl bg-[#191D20] border border-white/10 hover:border-emerald-400 text-center text-white transition-all active:scale-95"
+              className="p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-emerald-400 text-center text-gray-900 transition-all active:scale-95 shadow-sm"
             >
-              <strong className="block text-2xl font-black text-emerald-400">108</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-300 block mt-0.5">Govt Ambulance</span>
+              <strong className="block text-2xl font-black text-emerald-600">108</strong>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Govt Ambulance</span>
             </a>
 
             <a
               href="tel:101"
-              className="p-4 rounded-2xl bg-[#191D20] border border-white/10 hover:border-orange-400 text-center text-white transition-all active:scale-95"
+              className="p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-orange-400 text-center text-gray-900 transition-all active:scale-95 shadow-sm"
             >
-              <strong className="block text-2xl font-black text-orange-400">101</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-300 block mt-0.5">Fire & Rescue</span>
+              <strong className="block text-2xl font-black text-orange-600">101</strong>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Fire & Rescue</span>
             </a>
           </div>
 
@@ -277,10 +277,10 @@ export function EmergencyServicesPage() {
             <button
               key={f.key}
               onClick={() => setFilter(f.key as typeof filter)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 filter === f.key
-                  ? 'bg-[#FFF174] text-black shadow-md'
-                  : 'bg-[#22272B] border border-white/10 text-gray-300 hover:text-white'
+                  ? 'bg-red-600 text-white shadow-sm'
+                  : 'bg-white border border-gray-200 text-gray-700 hover:text-black hover:border-gray-300 shadow-sm'
               }`}
             >
               {f.label}
@@ -295,14 +295,14 @@ export function EmergencyServicesPage() {
             return (
               <div
                 key={fac.id}
-                className="p-5 rounded-3xl bg-[#22272B] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="flex items-start gap-3.5">
                   <div className={`p-3 rounded-2xl shrink-0 ${
-                    fac.type === 'HOSPITAL' ? 'bg-red-500/20 text-red-400' :
-                    fac.type === 'AMBULANCE' ? 'bg-emerald-500/20 text-emerald-400' :
-                    fac.type === 'POLICE' ? 'bg-blue-500/20 text-blue-400' :
-                    'bg-[#FFF174]/20 text-[#FFF174]'
+                    fac.type === 'HOSPITAL' ? 'bg-red-50 text-red-600' :
+                    fac.type === 'AMBULANCE' ? 'bg-emerald-50 text-emerald-600' :
+                    fac.type === 'POLICE' ? 'bg-blue-50 text-blue-600' :
+                    'bg-amber-50 text-amber-600'
                   }`}>
                     {fac.type === 'HOSPITAL' && <Hospital size={22} />}
                     {fac.type === 'AMBULANCE' && <HeartPulse size={22} />}
@@ -312,23 +312,23 @@ export function EmergencyServicesPage() {
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-white">{fac.name}</h3>
+                      <h3 className="text-base font-bold text-gray-900">{fac.name}</h3>
                       {fac.emergencyCapable247 && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                           24/7 Verified
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-400 mt-0.5">{fac.address}</p>
+                    <p className="text-xs text-gray-600 mt-0.5">{fac.address}</p>
                     {fac.notes && (
-                      <p className="text-[11px] text-gray-300 mt-1 italic font-medium">{fac.notes}</p>
+                      <p className="text-[11px] text-gray-500 mt-1 italic font-medium">{fac.notes}</p>
                     )}
-                    <div className="flex items-center gap-3 text-xs text-gray-400 mt-2">
-                      <span className="font-semibold text-white">
+                    <div className="flex items-center gap-3 text-xs text-gray-500 mt-2">
+                      <span className="font-semibold text-gray-800">
                         {coords ? `~${computeDistanceKm(coords.lat, coords.lng, fac.lat, fac.lng)} km away` : 'Location needed for distance'}
                       </span>
                       <span>•</span>
-                      <span>Phone: <strong className="text-gray-200">{fac.phone}</strong></span>
+                      <span>Phone: <strong className="text-gray-900">{fac.phone}</strong></span>
                     </div>
                   </div>
                 </div>
@@ -336,7 +336,7 @@ export function EmergencyServicesPage() {
                 <div className="flex sm:flex-col gap-2 shrink-0">
                   <a
                     href={`tel:${fac.phone.replaceAll(' ', '')}`}
-                    className="flex-1 sm:flex-none py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-md active:scale-95"
+                    className="flex-1 sm:flex-none py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all"
                   >
                     <PhoneCall size={14} /> Call Now
                   </a>
@@ -344,7 +344,7 @@ export function EmergencyServicesPage() {
                     href={mapLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 sm:flex-none py-2.5 px-4 bg-white/10 hover:bg-white/15 text-gray-200 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 active:scale-95"
+                    className="flex-1 sm:flex-none py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all"
                   >
                     <Navigation size={14} /> Directions
                   </a>

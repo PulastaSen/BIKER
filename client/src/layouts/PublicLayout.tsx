@@ -56,7 +56,7 @@ export function PublicLayout() {
 
   if (isFullScreenMode) {
     return (
-      <div className="public-layout min-h-screen flex flex-col bg-[#101214] text-[#FFFFFF]">
+      <div className="public-layout min-h-screen flex flex-col bg-[#F8F9FA] text-[#111827]">
         <main className="public-main flex-1">
           <Outlet />
         </main>
@@ -77,29 +77,29 @@ export function PublicLayout() {
   };
 
   return (
-    <div className="public-layout min-h-screen flex flex-col bg-[#101214] text-[#FFFFFF] selection:bg-[#FFF174] selection:text-[#101214]">
-      {/* If in Dedicated Emergency Mode, render minimal Emergency Header */}
+    <div className="public-layout min-h-screen flex flex-col bg-[#F8F9FA] text-[#111827] selection:bg-red-500 selection:text-white">
+      {/* If in Dedicated Emergency Mode, render minimal Emergency Header (Red & White) */}
       {isEmergencyMode ? (
-        <header className="sticky top-0 z-50 bg-[#150A0A]/95 border-b border-red-500/40 backdrop-blur-md px-4 py-3">
+        <header className="sticky top-0 z-50 bg-red-600 border-b border-red-700 shadow-md backdrop-blur-md px-4 py-3">
           <div className="max-w-xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-              <span className="font-black text-xs sm:text-sm text-red-200 tracking-wider uppercase flex items-center gap-1.5 font-display">
-                <ShieldAlert size={16} className="text-red-400" />
+              <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping" />
+              <span className="font-black text-xs sm:text-sm text-white tracking-wider uppercase flex items-center gap-1.5 font-display">
+                <ShieldAlert size={16} className="text-white" />
                 EMERGENCY RESCUE MODE
               </span>
             </div>
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 active:scale-95 text-xs font-bold text-gray-200 transition-all border border-white/10 cursor-pointer min-h-[44px]"
+              className="px-3.5 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 active:scale-95 text-xs font-bold text-white transition-all border border-white/30 cursor-pointer min-h-[44px]"
             >
               Exit Emergency
             </button>
           </div>
         </header>
       ) : (
-        <header className="site-header sticky top-0 z-40 bg-[#101214]/92 border-b border-[#343B42] backdrop-blur-md">
+        <header className="site-header sticky top-0 z-40 bg-white/95 border-b border-gray-200 shadow-sm backdrop-blur-md">
           <nav className="nav page-container flex items-center justify-between max-w-7xl mx-auto px-4 py-3" aria-label="Primary navigation">
             <Link className="brand flex items-center gap-2" to="/" onClick={closeMenu} aria-label="MotoAssist Home">
               <MotoAssistBrandMark size={34} withText subtext="ROADSIDE RESCUE" />
@@ -107,7 +107,7 @@ export function PublicLayout() {
 
             {/* Mobile Hamburger toggle */}
             <button
-              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-[#22272B] border border-[#343B42] text-white flex items-center justify-center cursor-pointer transition-colors hover:border-[#FFF174]/40"
+              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-gray-100 border border-gray-200 text-gray-800 flex items-center justify-center cursor-pointer transition-colors hover:border-red-400"
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(!menuOpen)}
@@ -124,7 +124,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-red-50 text-red-600 border border-red-200' : 'text-gray-600 hover:text-gray-900'
                   }`
                 }
               >
@@ -137,7 +137,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-red-50 text-red-600 border border-red-200' : 'text-gray-600 hover:text-gray-900'
                   }`
                 }
               >

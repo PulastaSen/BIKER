@@ -72,13 +72,13 @@ export function DashboardLayout() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#101214] text-[#FFFFFF] flex items-center justify-center p-6">
-        <div className="bg-[#22272B] p-8 rounded-3xl border border-[#343B42] text-center max-w-md w-full shadow-2xl">
-          <h1 className="text-2xl font-black mb-4 text-[#FFF174] font-display">Access Restricted</h1>
-          <p className="text-[#B8C0C5] mb-8">Please log in to access the dashboard portal.</p>
+      <div className="min-h-screen bg-[#F8F9FA] text-[#111827] flex items-center justify-center p-6">
+        <div className="bg-white p-8 rounded-3xl border border-gray-200 text-center max-w-md w-full shadow-lg">
+          <h1 className="text-2xl font-black mb-4 text-red-600 font-display">Access Restricted</h1>
+          <p className="text-gray-600 mb-8">Please log in to access the dashboard portal.</p>
           <Link
             to="/login"
-            className="inline-block px-8 py-3 bg-[#FFF174] text-[#101214] font-bold rounded-xl hover:bg-yellow-400 active:scale-95 transition-transform"
+            className="inline-block px-8 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 active:scale-95 transition-transform"
           >
             Go to Login
           </Link>
@@ -126,10 +126,10 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#101214] text-[#FFFFFF] flex flex-col md:flex-row selection:bg-[#FFF174] selection:text-[#101214]">
+    <div className="min-h-screen bg-[#F8F9FA] text-[#111827] flex flex-col md:flex-row selection:bg-red-500 selection:text-white">
       
       {/* Mobile & Tablet Top Bar */}
-      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#101214]/95 backdrop-blur-md border-b border-[#343B42] sticky top-0 z-40">
+      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-white/95 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40 shadow-sm">
         <Link to="/" onClick={closeDrawer} aria-label="MotoAssist Home">
           <MotoAssistBrandMark size={30} withText subtext="PORTAL" />
         </Link>
@@ -139,11 +139,11 @@ export function DashboardLayout() {
           <Link
             to={getProfilePath()}
             onClick={closeDrawer}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 border border-gray-200 hover:bg-gray-200 transition-colors"
             title="View Profile"
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#C5C5C5]">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-gray-700">
               {role}
             </span>
           </Link>
@@ -176,16 +176,16 @@ export function DashboardLayout() {
       {/* Mobile & Tablet Drawer Modal */}
       {mobileDrawerOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex animate-in fade-in duration-150">
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm cursor-pointer" onClick={closeDrawer} aria-hidden="true" />
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm cursor-pointer" onClick={closeDrawer} aria-hidden="true" />
           
-          <div className="relative w-4/5 max-w-xs bg-[#22272B] border-r border-[#343B42] h-[100dvh] max-h-[100dvh] flex flex-col z-10 shadow-2xl">
+          <div className="relative w-4/5 max-w-xs bg-white border-r border-gray-200 h-[100dvh] max-h-[100dvh] flex flex-col z-10 shadow-2xl">
             {/* Drawer Header */}
-            <div className="p-4 border-b border-[#343B42] flex items-center justify-between shrink-0 bg-[#191D20]">
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between shrink-0 bg-gray-50">
               <MotoAssistBrandMark size={28} withText subtext={`${role} PORTAL`} />
               <button
                 type="button"
                 onClick={closeDrawer}
-                className="p-2 text-[#B8C0C5] hover:text-white rounded-xl bg-white/5 border border-[#343B42] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 text-gray-600 hover:text-black rounded-xl bg-gray-100 border border-gray-200 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Close navigation drawer"
               >
                 <X size={18} />
@@ -206,7 +206,7 @@ export function DashboardLayout() {
                       window.scrollTo({ top: 0, behavior: 'instant' });
                     }}
                     className={`flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all min-h-[44px] ${
-                      isActive ? 'bg-[#FFF174] text-[#101214] font-black shadow-md' : 'text-[#B8C0C5] hover:bg-white/5 hover:text-white font-medium'
+                      isActive ? 'bg-red-50 text-red-600 font-bold border border-red-200 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium'
                     }`}
                   >
                     <Icon size={18} />
@@ -218,18 +218,18 @@ export function DashboardLayout() {
             </nav>
 
             {/* Drawer Footer with User identity & prominent Logout */}
-            <div className="p-4 border-t border-[#343B42] shrink-0 bg-[#191D20] space-y-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            <div className="p-4 border-t border-gray-200 shrink-0 bg-gray-50 space-y-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
               <Link
                 to={getProfilePath()}
                 onClick={closeDrawer}
-                className="flex items-center gap-3 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-[#343B42]"
+                className="flex items-center gap-3 p-2 rounded-xl bg-white hover:bg-gray-100 transition-colors border border-gray-200 shadow-sm"
               >
-                <div className="w-10 h-10 rounded-full bg-[#FFF174]/20 border border-[#FFF174]/40 text-[#FFF174] flex items-center justify-center shrink-0 font-bold">
+                <div className="w-10 h-10 rounded-full bg-red-100 border border-red-200 text-red-600 flex items-center justify-center shrink-0 font-bold">
                   <UserIcon size={18} />
                 </div>
                 <div className="overflow-hidden min-w-0">
-                  <p className="font-bold text-sm text-white truncate">{user.name}</p>
-                  <p className="text-xs text-[#B8C0C5] truncate">{user.email}</p>
+                  <p className="font-bold text-sm text-gray-900 truncate">{user.name}</p>
+                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
                 </div>
               </Link>
 
@@ -237,7 +237,7 @@ export function DashboardLayout() {
                 type="button"
                 onClick={handleLogout}
                 disabled={isLoggingOut}
-                className="w-full flex items-center justify-center gap-2 py-3 bg-red-500/15 text-red-300 border border-red-500/30 hover:bg-red-500/25 active:scale-98 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer min-h-[44px]"
+                className="w-full flex items-center justify-center gap-2 py-3 bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 active:scale-98 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer min-h-[44px]"
               >
                 {isLoggingOut ? (
                   <>
@@ -257,8 +257,8 @@ export function DashboardLayout() {
       )}
 
       {/* Desktop Sidebar (Visible on md+) */}
-      <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 bg-[#22272B] border-r border-[#343B42] z-40">
-        <div className="p-5 border-b border-[#343B42]">
+      <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 bg-white border-r border-gray-200 z-40 shadow-sm">
+        <div className="p-5 border-b border-gray-200">
           <Link to="/" aria-label="MotoAssist Home">
             <MotoAssistBrandMark size={34} withText subtext={`${role} PORTAL`} />
           </Link>
@@ -273,7 +273,7 @@ export function DashboardLayout() {
                 key={link.to}
                 to={link.to}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive ? 'bg-[#FFF174] text-black font-black shadow-md' : 'text-[#C5C5C5] hover:bg-white/5 hover:text-white'
+                  isActive ? 'bg-red-50 text-red-600 font-bold border border-red-200 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
                 <Icon size={18} />

@@ -85,17 +85,17 @@ export function AdminDashboardPage() {
   };
 
   return (
-    <div className="dashboard-page max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8 text-[#FFFFFF] font-sans">
+    <div className="dashboard-page max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8 text-gray-900 font-sans">
       
       {/* Header */}
-      <header className="dashboard-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#343B42] pb-6">
+      <header className="dashboard-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-6">
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
             <p className="eyebrow text-xs font-mono font-bold uppercase text-[#FFF174] tracking-widest">OPERATIONS COMMAND CENTRE</p>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-display font-black text-[#FFFFFF] mt-1 tracking-tight">MotoAssist Platform Command</h1>
-          <p className="text-xs text-[#B8C0C5] mt-1">Real-time supervision of dispatches, on-demand services, active subscriptions, and emergency vehicle alerts.</p>
+          <h1 className="text-2xl sm:text-4xl font-display font-black text-gray-900 mt-1 tracking-tight">MotoAssist Platform Command</h1>
+          <p className="text-xs text-gray-600 mt-1">Real-time supervision of dispatches, on-demand services, active subscriptions, and emergency vehicle alerts.</p>
         </div>
 
         {user && (
@@ -118,57 +118,57 @@ export function AdminDashboardPage() {
 
       {/* Primary KPI Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#B8C0C5] uppercase tracking-wider flex items-center gap-1">
+        <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1">
             <Clock size={13} className="text-[#FFF174]" /> Dispatches
           </span>
-          <strong className="text-2xl font-display font-black text-[#FFFFFF]">{openRequests.length}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">Highway & Emergency</span>
+          <strong className="text-2xl font-display font-black text-gray-900">{openRequests.length}</strong>
+          <span className="text-[10px] text-gray-600 block">Highway & Emergency</span>
         </div>
 
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#B8C0C5] uppercase tracking-wider flex items-center gap-1">
+        <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1">
             <Wrench size={13} className="text-[#FFF174]" /> Bookings
           </span>
           <strong className="text-2xl font-display font-black text-[#FFF174]">{bookings.length}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">On-demand services</span>
+          <span className="text-[10px] text-gray-600 block">On-demand services</span>
         </div>
 
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#B8C0C5] uppercase tracking-wider flex items-center gap-1">
+        <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1">
             <CreditCard size={13} className="text-[#10B981]" /> Subscriptions
           </span>
           <strong className="text-2xl font-display font-black text-[#10B981]">{activeSubs.length}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">Active Shield Plans</span>
+          <span className="text-[10px] text-gray-600 block">Active Shield Plans</span>
         </div>
 
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#B8C0C5] uppercase tracking-wider flex items-center gap-1">
+        <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1">
             <ShieldCheck size={13} className="text-[#F59E0B]" /> Pending
           </span>
           <strong className="text-2xl font-display font-black text-[#F59E0B]">{pendingHelpers.length}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">Awaiting verification</span>
+          <span className="text-[10px] text-gray-600 block">Awaiting verification</span>
         </div>
 
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#B8C0C5] uppercase tracking-wider flex items-center gap-1">
+        <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1">
             <QrCode size={13} className="text-[#B1D8E3]" /> QR Beacons
           </span>
           <strong className="text-2xl font-display font-black text-[#B1D8E3]">{allQrAlerts.length}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">Vehicle alerts</span>
+          <span className="text-[10px] text-gray-600 block">Vehicle alerts</span>
         </div>
 
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#B8C0C5] uppercase tracking-wider flex items-center gap-1">
-            <Users size={13} className="text-[#B8C0C5]" /> Platform Users
+        <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1">
+            <Users size={13} className="text-gray-600" /> Platform Users
           </span>
-          <strong className="text-2xl font-display font-black text-[#FFFFFF]">{users.length}</strong>
-          <span className="text-[10px] text-[#B8C0C5] block">Registered accounts</span>
+          <strong className="text-2xl font-display font-black text-gray-900">{users.length}</strong>
+          <span className="text-[10px] text-gray-600 block">Registered accounts</span>
         </div>
       </div>
 
       {/* Command Centre Tab Navigation */}
-      <div className="flex items-center gap-2 border-b border-[#343B42] overflow-x-auto pb-3">
+      <div className="flex items-center gap-2 border-b border-gray-200 overflow-x-auto pb-3">
         {[
           { id: 'DISPATCH_QUEUE', label: 'Emergency & Roadside Queue', count: openRequests.length },
           { id: 'SERVICE_BOOKINGS', label: 'Service Bookings Catalogue', count: bookings.length },
@@ -182,12 +182,12 @@ export function AdminDashboardPage() {
             className={`px-4 py-2.5 rounded-xl text-xs font-display font-bold uppercase tracking-wider whitespace-nowrap transition-all border flex items-center gap-2 min-h-[44px] cursor-pointer ${
               activeTab === tab.id
                 ? 'bg-[#FFF174] text-black border-[#FFF174] shadow-md'
-                : 'bg-[#22272B] text-[#B8C0C5] border-[#343B42] hover:border-[#FFF174]/40 hover:text-[#FFFFFF]'
+                : 'bg-white text-gray-600 border-gray-200 hover:border-[#FFF174]/40 hover:text-gray-900'
             }`}
           >
             <span>{tab.label}</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
-              activeTab === tab.id ? 'bg-black text-[#FFF174]' : 'bg-[#191D20] text-[#B8C0C5] border border-[#343B42]'
+              activeTab === tab.id ? 'bg-black text-[#FFF174]' : 'bg-gray-50 text-gray-600 border border-gray-200'
             }`}>
               {tab.count}
             </span>
@@ -197,7 +197,7 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: EMERGENCY & DISPATCH QUEUE */}
       {activeTab === 'DISPATCH_QUEUE' && (
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-black text-white flex items-center gap-2">
               <Clock size={18} className="text-[#FFF174]" />
@@ -266,7 +266,7 @@ export function AdminDashboardPage() {
           {/* Mobile 2-Column Responsive Cards */}
           <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
             {requests.slice(0, 10).map((r) => (
-              <div key={r.id} className="p-3 rounded-xl bg-[#191D20] border border-[#343B42] flex flex-col justify-between space-y-2">
+              <div key={r.id} className="p-3 rounded-xl bg-gray-50 border border-gray-200 flex flex-col justify-between space-y-2">
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="font-mono font-bold text-[#FFF174]">#{r.id.slice(-4)}</span>
@@ -284,7 +284,7 @@ export function AdminDashboardPage() {
                     <span className="truncate">{r.approximateLocation || 'Live GPS'}</span>
                   </p>
                 </div>
-                <div className="pt-2 border-t border-[#343B42] flex items-center justify-between">
+                <div className="pt-2 border-t border-gray-200 flex items-center justify-between">
                   <span className="text-[9px] text-gray-400 truncate max-w-[80px]">
                     {r.assignedHelperName || 'Unassigned'}
                   </span>
@@ -303,9 +303,9 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: SERVICE BOOKINGS */}
       {activeTab === 'SERVICE_BOOKINGS' && (
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-display font-bold uppercase tracking-wider text-[#FFFFFF] flex items-center gap-2">
+            <h2 className="text-base font-display font-bold uppercase tracking-wider text-gray-900 flex items-center gap-2">
               <Wrench size={18} className="text-[#FFF174]" />
               <span>Service Catalogue Bookings ({bookings.length})</span>
             </h2>
@@ -320,7 +320,7 @@ export function AdminDashboardPage() {
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-[#343B42] text-[#B8C0C5] uppercase tracking-wider font-mono">
+              <thead className="border-b border-gray-200 text-gray-600 uppercase tracking-wider font-mono">
                 <tr>
                   <th className="py-3 px-3">Booking ID</th>
                   <th className="py-3 px-3">Service Name</th>
@@ -334,19 +334,19 @@ export function AdminDashboardPage() {
               </thead>
               <tbody className="divide-y divide-[#343B42]/50">
                 {bookings.map((b) => (
-                  <tr key={b.bookingId} className="hover:bg-[#191D20] transition-colors">
+                  <tr key={b.bookingId} className="hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-3 font-mono font-bold text-[#FFF174]">{b.bookingId}</td>
                     <td className="py-3 px-3">
-                      <strong className="text-[#FFFFFF] block font-display">{b.serviceName}</strong>
-                      <span className="text-[10px] text-[#B8C0C5] uppercase font-mono">{b.serviceType}</span>
+                      <strong className="text-gray-900 block font-display">{b.serviceName}</strong>
+                      <span className="text-[10px] text-gray-600 uppercase font-mono">{b.serviceType}</span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="text-[#FFFFFF] block font-bold">{b.riderName}</span>
-                      <span className="text-[#B8C0C5] text-[11px] font-mono">{b.riderPhone}</span>
+                      <span className="text-gray-900 block font-bold">{b.riderName}</span>
+                      <span className="text-gray-600 text-[11px] font-mono">{b.riderPhone}</span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="font-bold text-[#FFFFFF] block">{b.bikeDetails.brand} {b.bikeDetails.model}</span>
-                      <span className="text-[10px] font-mono text-[#B8C0C5]">{b.bikeDetails.registrationNumber}</span>
+                      <span className="font-bold text-gray-900 block">{b.bikeDetails.brand} {b.bikeDetails.model}</span>
+                      <span className="text-[10px] font-mono text-gray-600">{b.bikeDetails.registrationNumber}</span>
                     </td>
                     <td className="py-3 px-3">
                       <span className="font-mono font-bold text-[#FFF174]">₹{b.pricing.totalEstimated}</span>
@@ -370,7 +370,7 @@ export function AdminDashboardPage() {
                           Disputed: ₹{b.dispute.amount}
                         </span>
                       ) : (
-                        <span className="text-[#B8C0C5] text-[11px]">No disputes</span>
+                        <span className="text-gray-600 text-[11px]">No disputes</span>
                       )}
                     </td>
                     <td className="py-3 px-3">
@@ -405,7 +405,7 @@ export function AdminDashboardPage() {
           {/* Mobile 2-Column Responsive Cards */}
           <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
             {bookings.map((b) => (
-              <div key={b.bookingId} className="p-3 rounded-xl bg-[#191D20] border border-[#343B42] flex flex-col justify-between space-y-2">
+              <div key={b.bookingId} className="p-3 rounded-xl bg-gray-50 border border-gray-200 flex flex-col justify-between space-y-2">
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="font-mono font-bold text-[#FFF174]">#{b.bookingId.slice(-4)}</span>
@@ -425,7 +425,7 @@ export function AdminDashboardPage() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#343B42]">
+                <div className="pt-2 border-t border-gray-200">
                   {b.status === 'REQUESTED' && (
                     <button
                       onClick={() => handleUpdateBooking(b.bookingId, 'ASSIGNED')}
@@ -456,9 +456,9 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: SUBSCRIPTIONS */}
       {activeTab === 'SUBSCRIPTIONS' && (
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-display font-bold uppercase tracking-wider text-[#FFFFFF] flex items-center gap-2">
+            <h2 className="text-base font-display font-bold uppercase tracking-wider text-gray-900 flex items-center gap-2">
               <CreditCard size={18} className="text-[#FFF174]" />
               <span>Active Roadside Assistance Subscriptions ({subscriptions.length})</span>
             </h2>
@@ -473,7 +473,7 @@ export function AdminDashboardPage() {
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-[#343B42] text-[#B8C0C5] uppercase tracking-wider font-mono">
+              <thead className="border-b border-gray-200 text-gray-600 uppercase tracking-wider font-mono">
                 <tr>
                   <th className="py-3 px-3">Subscription ID</th>
                   <th className="py-3 px-3">Plan Tier</th>
@@ -487,29 +487,29 @@ export function AdminDashboardPage() {
               </thead>
               <tbody className="divide-y divide-[#343B42]/50">
                 {subscriptions.map((s) => (
-                  <tr key={s.subscriptionId} className="hover:bg-[#191D20] transition-colors">
+                  <tr key={s.subscriptionId} className="hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-3 font-mono font-bold text-[#FFF174]">{s.subscriptionId}</td>
                     <td className="py-3 px-3">
-                      <strong className="text-[#FFFFFF] block font-display">{s.planName}</strong>
-                      <span className="text-[10px] text-[#B8C0C5] uppercase font-mono">{s.planTier}</span>
+                      <strong className="text-gray-900 block font-display">{s.planName}</strong>
+                      <span className="text-[10px] text-gray-600 uppercase font-mono">{s.planTier}</span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="font-bold text-[#FFFFFF] block">{s.linkedBike.brand} {s.linkedBike.model}</span>
-                      <span className="text-[10px] font-mono text-[#B8C0C5]">{s.linkedBike.registrationNumber}</span>
+                      <span className="font-bold text-gray-900 block">{s.linkedBike.brand} {s.linkedBike.model}</span>
+                      <span className="text-[10px] font-mono text-gray-600">{s.linkedBike.registrationNumber}</span>
                     </td>
                     <td className="py-3 px-3">
                       <span className="font-mono font-bold text-[#10B981]">
                         {s.features.maxFreeBreakdowns - s.features.usedBreakdowns} / {s.features.maxFreeBreakdowns} Left
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-mono font-bold text-[#FFFFFF]">
+                    <td className="py-3 px-3 font-mono font-bold text-gray-900">
                       {s.features.towingDistanceLimitKm} km Free
                     </td>
-                    <td className="py-3 px-3 text-[#B8C0C5] font-mono">
+                    <td className="py-3 px-3 text-gray-600 font-mono">
                       {new Date(s.endDate).toLocaleDateString()}
                     </td>
                     <td className="py-3 px-3">
-                      <span className="px-2 py-0.5 rounded bg-[#191D20] text-[#B8C0C5] border border-[#343B42] text-[10px] font-mono">
+                      <span className="px-2 py-0.5 rounded bg-gray-50 text-gray-600 border border-gray-200 text-[10px] font-mono">
                         {s.paymentDetails.paymentMode} (₹{s.priceInr})
                       </span>
                     </td>
@@ -527,7 +527,7 @@ export function AdminDashboardPage() {
           {/* Mobile 2-Column Responsive Cards */}
           <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
             {subscriptions.map((s) => (
-              <div key={s.subscriptionId} className="p-3 rounded-xl bg-[#191D20] border border-[#343B42] flex flex-col justify-between space-y-2">
+              <div key={s.subscriptionId} className="p-3 rounded-xl bg-gray-50 border border-gray-200 flex flex-col justify-between space-y-2">
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="font-mono font-bold text-[#FFF174]">#{s.subscriptionId.slice(-4)}</span>
@@ -549,7 +549,7 @@ export function AdminDashboardPage() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#343B42] flex items-center justify-between text-[10px] text-gray-400">
+                <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px] text-gray-400">
                   <span className="truncate">{new Date(s.endDate).toLocaleDateString()}</span>
                   <span className="font-mono font-bold text-[#FFF174]">₹{s.priceInr}</span>
                 </div>
@@ -561,9 +561,9 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: VEHICLE QR ALERTS LOG */}
       {activeTab === 'QR_ALERTS' && (
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-display font-bold uppercase tracking-wider text-[#FFFFFF] flex items-center gap-2">
+            <h2 className="text-base font-display font-bold uppercase tracking-wider text-gray-900 flex items-center gap-2">
               <QrCode size={18} className="text-[#FFF174]" />
               <span>Public Vehicle QR Contact Alerts Log ({allQrAlerts.length})</span>
             </h2>
@@ -571,28 +571,28 @@ export function AdminDashboardPage() {
 
           <div className="space-y-3">
             {allQrAlerts.map(alert => (
-              <div key={alert.id} className="p-4 bg-[#191D20] border border-[#343B42] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div key={alert.id} className="p-4 bg-gray-50 border border-gray-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-[#FFF174]">{alert.id}</span>
                     <span className="px-2 py-0.5 rounded bg-[#B1D8E3]/15 text-[#B1D8E3] border border-[#B1D8E3]/30 font-mono font-bold text-[10px] uppercase">
                       {alert.requestType.replaceAll('_', ' ')}
                     </span>
-                    <span className="text-[#B8C0C5] font-mono text-[11px]">
+                    <span className="text-gray-600 font-mono text-[11px]">
                       {new Date(alert.createdAt).toLocaleString()}
                     </span>
                   </div>
-                  <p className="text-[#FFFFFF] font-medium italic">"{alert.message}"</p>
-                  <div className="flex items-center gap-3 text-[#B8C0C5] text-[11px] pt-1">
-                    <span>Target: <strong className="text-[#FFFFFF]">{alert.bikeInfo}</strong></span>
-                    {alert.senderName && <span>Reporter: <strong className="text-[#FFFFFF]">{alert.senderName}</strong> ({alert.senderPhone || 'No phone'})</span>}
+                  <p className="text-gray-900 font-medium italic">"{alert.message}"</p>
+                  <div className="flex items-center gap-3 text-gray-600 text-[11px] pt-1">
+                    <span>Target: <strong className="text-gray-900">{alert.bikeInfo}</strong></span>
+                    {alert.senderName && <span>Reporter: <strong className="text-gray-900">{alert.senderName}</strong> ({alert.senderPhone || 'No phone'})</span>}
                   </div>
                 </div>
 
                 {alert.locationPin && (
                   <div className="text-right shrink-0">
-                    <span className="text-[10px] text-[#B8C0C5] uppercase block font-mono">Landmark</span>
-                    <span className="text-xs font-mono font-bold text-[#FFFFFF] flex items-center gap-1 justify-end">
+                    <span className="text-[10px] text-gray-600 uppercase block font-mono">Landmark</span>
+                    <span className="text-xs font-mono font-bold text-gray-900 flex items-center gap-1 justify-end">
                       <MapPin size={12} className="text-[#FFF174]" />
                       {alert.locationPin.address || `${alert.locationPin.lat}, ${alert.locationPin.lng}`}
                     </span>
@@ -602,7 +602,7 @@ export function AdminDashboardPage() {
             ))}
 
             {allQrAlerts.length === 0 && (
-              <div className="text-center py-8 text-[#B8C0C5]">
+              <div className="text-center py-8 text-gray-600">
                 No public vehicle QR alerts logged yet.
               </div>
             )}
@@ -612,9 +612,9 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: HELPERS */}
       {activeTab === 'HELPERS' && (
-        <div className="bg-[#22272B] border border-[#343B42] rounded-2xl p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-display font-bold uppercase tracking-wider text-[#FFFFFF] flex items-center gap-2">
+            <h2 className="text-base font-display font-bold uppercase tracking-wider text-gray-900 flex items-center gap-2">
               <ShieldCheck size={18} className="text-[#FFF174]" />
               <span>Helper Network & Verification ({helpers.length})</span>
             </h2>
@@ -625,7 +625,7 @@ export function AdminDashboardPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-[#343B42] text-[#B8C0C5] uppercase tracking-wider font-mono">
+              <thead className="border-b border-gray-200 text-gray-600 uppercase tracking-wider font-mono">
                 <tr>
                   <th className="py-3 px-3">Helper Name</th>
                   <th className="py-3 px-3">Service Type</th>
@@ -638,20 +638,20 @@ export function AdminDashboardPage() {
               </thead>
               <tbody className="divide-y divide-[#343B42]/50">
                 {helpers.map((h) => (
-                  <tr key={h.id} className="hover:bg-[#191D20] transition-colors">
+                  <tr key={h.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-3">
-                      <strong className="text-[#FFFFFF] block font-display">{h.name}</strong>
-                      <span className="text-[#B8C0C5] text-[11px] font-mono">{h.email} • {h.phone}</span>
+                      <strong className="text-gray-900 block font-display">{h.name}</strong>
+                      <span className="text-gray-600 text-[11px] font-mono">{h.email} • {h.phone}</span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="px-2 py-0.5 rounded bg-[#191D20] border border-[#343B42] text-[#FFFFFF] font-mono font-bold">
+                      <span className="px-2 py-0.5 rounded bg-gray-50 border border-gray-200 text-gray-900 font-mono font-bold">
                         {h.serviceType}
                       </span>
                     </td>
-                    <td className="py-3 px-3 text-[#B8C0C5]">{h.businessName || 'Independent Mechanic'}</td>
-                    <td className="py-3 px-3 text-[#B8C0C5]">{h.serviceAreas.join(', ')}</td>
+                    <td className="py-3 px-3 text-gray-600">{h.businessName || 'Independent Mechanic'}</td>
+                    <td className="py-3 px-3 text-gray-600">{h.serviceAreas.join(', ')}</td>
                     <td className="py-3 px-3">
-                      <strong className="text-[#FFF174]">{h.rating} ★</strong> <span className="text-[#B8C0C5]">({h.completedAssists} assists)</span>
+                      <strong className="text-[#FFF174]">{h.rating} ★</strong> <span className="text-gray-600">({h.completedAssists} assists)</span>
                     </td>
                     <td className="py-3 px-3">
                       <StatusBadge status={h.verificationStatus} />
