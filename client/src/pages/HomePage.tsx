@@ -414,7 +414,7 @@ export function HomePage() {
             ======================================================== */}
         <section aria-labelledby="medical-heading" className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-red-400">
+            <span className="p-1.5 rounded-lg bg-[#1E252D] border border-[#2E3844] text-red-400">
               <Heart size={16} />
             </span>
             <h2 id="medical-heading" className="text-lg sm:text-xl font-display font-bold text-white">
@@ -508,7 +508,7 @@ export function HomePage() {
         <section aria-labelledby="safety-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#F59E0B]">
+              <span className="p-1.5 rounded-lg bg-[#1E252D] border border-[#2E3844] text-[#FFF174]">
                 <ShieldCheck size={16} />
               </span>
               <h2 id="safety-heading" className="text-lg sm:text-xl font-display font-bold text-white">
@@ -517,7 +517,7 @@ export function HomePage() {
             </div>
             <button
               onClick={() => navigate('/women-safety')}
-              className="text-xs font-bold text-[#F59E0B] hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
             >
               <span>Safety Center</span>
               <ChevronRight size={14} />
@@ -589,14 +589,14 @@ export function HomePage() {
             {/* 4. Safe Public Havens */}
             <div
               onClick={() => navigate('/remote-readiness')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase">Verified Safe Stops</span>
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#10B981]">
                   Safe Public Spots
                 </strong>
-                <p className="text-[10px] text-gray-500 mt-1">Police highway posts and 24/7 lit petrol pumps</p>
+                <p className="text-[10px] text-[#94A3B8] mt-1">Police highway posts and 24/7 lit petrol pumps</p>
               </div>
               <div className="flex items-center justify-between text-[11px] font-bold text-[#10B981] mt-2">
                 <span>View safe stops</span>
@@ -667,7 +667,7 @@ export function HomePage() {
         <section aria-labelledby="garage-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#B1D8E3]">
+              <span className="p-1.5 rounded-lg bg-[#1E252D] border border-[#2E3844] text-[#FFF174]">
                 <BikeIcon size={16} />
               </span>
               <h2 id="garage-heading" className="text-lg sm:text-xl font-display font-bold text-white">
@@ -736,7 +736,7 @@ export function HomePage() {
         <section aria-labelledby="ride-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#10B981]">
+              <span className="p-1.5 rounded-lg bg-[#1E252D] border border-[#2E3844] text-[#10B981]">
                 <Compass size={16} />
               </span>
               <h2 id="ride-heading" className="text-lg sm:text-xl font-display font-bold text-white">
@@ -756,14 +756,14 @@ export function HomePage() {
             {/* 1. Safe Ride Cockpit */}
             <div
               onClick={() => navigate('/safe-ride')}
-              className="p-4 rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
+              className="p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase">Live Journey</span>
                 <strong className="text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#10B981]">
                   Start Safe Ride
                 </strong>
-                <p className="text-[11px] text-gray-500 mt-1">
+                <p className="text-[11px] text-[#94A3B8] mt-1">
                   1-tap 'I am safe' check-in, periodic arrival timer, and family WhatsApp sharing.
                 </p>
               </div>
@@ -776,18 +776,18 @@ export function HomePage() {
             {/* 2. Remote Readiness & Offline Passes */}
             <div
               onClick={() => navigate('/remote-readiness')}
-              className="p-4 rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-300 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
+              className="p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#FFF174] flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
             >
               <div>
-                <span className="text-[10px] font-mono font-bold text-red-600 uppercase">Zero Signal Prep</span>
-                <strong className="text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-600">
+                <span className="text-[10px] font-mono font-bold text-[#FFF174] uppercase">Zero Signal Prep</span>
+                <strong className="text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#FFF174]">
                   Remote Area Readiness
                 </strong>
-                <p className="text-[11px] text-gray-500 mt-1">
+                <p className="text-[11px] text-[#94A3B8] mt-1">
                   Download offline emergency card, check corridor stops, and prepare for dead zones.
                 </p>
               </div>
-              <div className="flex items-center justify-between text-xs font-bold text-red-600 mt-2">
+              <div className="flex items-center justify-between text-xs font-bold text-[#FFF174] mt-2">
                 <span>Open guide</span>
                 <ChevronRight size={14} />
               </div>
@@ -796,14 +796,14 @@ export function HomePage() {
             {/* 3. Road Hazard Reports */}
             <div
               onClick={() => navigate('/road-hazards')}
-              className="p-4 rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#F59E0B]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
+              className="p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#F59E0B]/50 flex flex-col justify-between transition-all min-h-[120px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#F59E0B] uppercase">Rider Intel</span>
                 <strong className="text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#F59E0B]">
                   Road Hazards & Landslides
                 </strong>
-                <p className="text-[11px] text-gray-500 mt-1">
+                <p className="text-[11px] text-[#94A3B8] mt-1">
                   Real-time rider alerts for landslides, oil spills, and mountain roadblocks.
                 </p>
               </div>

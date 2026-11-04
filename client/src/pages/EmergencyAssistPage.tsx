@@ -444,7 +444,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('BOTH')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-white hover:bg-gray-50 active:scale-[0.98] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Unsure / Need Multiple Types of Help - Combined medical and bike assistance or guided triage"
             >
               <div>

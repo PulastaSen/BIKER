@@ -174,7 +174,7 @@ export function BikeDocumentsPage() {
           </p>
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-5 py-2.5 rounded-xl bg-white hover:bg-gray-100 text-black text-xs font-black transition-colors"
+            className="px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] text-xs font-black transition-colors"
           >
             Add Your First Document
           </button>

@@ -279,8 +279,8 @@ export function EmergencyServicesPage() {
               onClick={() => setFilter(f.key as typeof filter)}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 filter === f.key
-                  ? 'bg-red-600 text-white shadow-sm'
-                  : 'bg-white border border-gray-200 text-gray-700 hover:text-black hover:border-gray-300 shadow-sm'
+                  ? 'bg-[#FFF174] text-[#12161A] font-black shadow-md'
+                  : 'bg-[#1E252D] border border-[#2E3844] text-[#94A3B8] hover:text-white hover:border-[#FFF174] shadow-sm'
               }`}
             >
               {f.label}
@@ -299,10 +299,10 @@ export function EmergencyServicesPage() {
               >
                 <div className="flex items-start gap-3.5">
                   <div className={`p-3 rounded-2xl shrink-0 ${
-                    fac.type === 'HOSPITAL' ? 'bg-red-50 text-red-600' :
-                    fac.type === 'AMBULANCE' ? 'bg-emerald-50 text-emerald-600' :
-                    fac.type === 'POLICE' ? 'bg-blue-50 text-blue-600' :
-                    'bg-amber-50 text-amber-600'
+                    fac.type === 'HOSPITAL' ? 'bg-red-950/40 text-red-400 border border-red-800' :
+                    fac.type === 'AMBULANCE' ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-800' :
+                    fac.type === 'POLICE' ? 'bg-blue-950/40 text-blue-400 border border-blue-800' :
+                    'bg-amber-950/40 text-amber-400 border border-amber-800'
                   }`}>
                     {fac.type === 'HOSPITAL' && <Hospital size={22} />}
                     {fac.type === 'AMBULANCE' && <HeartPulse size={22} />}
@@ -314,21 +314,21 @@ export function EmergencyServicesPage() {
                     <div className="flex items-center gap-2">
                       <h3 className="text-base font-bold text-white">{fac.name}</h3>
                       {fac.emergencyCapable247 && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950/40 text-emerald-400 border border-emerald-800">
                           24/7 Verified
                         </span>
                       )}
                     </div>
                     <p className="text-xs text-[#94A3B8] mt-0.5">{fac.address}</p>
                     {fac.notes && (
-                      <p className="text-[11px] text-gray-500 mt-1 italic font-medium">{fac.notes}</p>
+                      <p className="text-[11px] text-[#94A3B8] mt-1 italic font-medium">{fac.notes}</p>
                     )}
-                    <div className="flex items-center gap-3 text-xs text-gray-500 mt-2">
-                      <span className="font-semibold text-gray-800">
+                    <div className="flex items-center gap-3 text-xs text-[#94A3B8] mt-2">
+                      <span className="font-semibold text-white">
                         {coords ? `~${computeDistanceKm(coords.lat, coords.lng, fac.lat, fac.lng)} km away` : 'Location needed for distance'}
                       </span>
                       <span>•</span>
-                      <span>Phone: <strong className="text-gray-900">{fac.phone}</strong></span>
+                      <span>Phone: <strong className="text-white">{fac.phone}</strong></span>
                     </div>
                   </div>
                 </div>

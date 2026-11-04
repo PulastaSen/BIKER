@@ -288,7 +288,7 @@ export function PreRideCheckPage() {
         </div>
         <button
           onClick={() => navigate('/safe-ride')}
-          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white hover:bg-gray-100 text-black font-black text-xs flex items-center justify-center gap-2 transition-colors shrink-0"
+          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-black text-xs flex items-center justify-center gap-2 transition-colors shrink-0"
         >
           <span>Launch Safe Ride Mode</span> <ArrowRight size={14} />
         </button>

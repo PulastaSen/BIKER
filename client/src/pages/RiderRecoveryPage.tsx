@@ -204,7 +204,7 @@ export function RiderRecoveryPage() {
             onClick={() => setSelectedCategory(tab.key as any)}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
               selectedCategory === tab.key
-                ? 'bg-white text-black'
+                ? 'bg-[#FFF174] text-[#12161A]'
                 : 'bg-white/5 text-gray-400 hover:bg-white/10'
             }`}
           >

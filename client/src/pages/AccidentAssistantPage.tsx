@@ -620,7 +620,7 @@ export function AccidentAssistantPage() {
           {activeStep < STEPS.length - 1 ? (
             <button
               onClick={handleNext}
-              className="px-5 py-2.5 rounded-xl bg-white hover:bg-gray-100 text-black text-xs font-black flex items-center gap-1.5 transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] text-xs font-black flex items-center gap-1.5 transition-colors"
             >
               Continue <ArrowRight size={16} />
             </button>

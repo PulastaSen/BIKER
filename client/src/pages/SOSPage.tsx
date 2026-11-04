@@ -804,24 +804,24 @@ export function SOSPage() {
                       onClick={() => setSelectedProblem(prob.id)}
                       className={`min-h-[96px] p-3 rounded-2xl border text-left transition-all active:scale-[0.98] flex flex-col justify-between cursor-pointer ${
                         isSelected
-                          ? 'bg-red-50 border-2 border-red-600 shadow-sm'
-                          : 'bg-white border-gray-200 hover:border-red-300 text-gray-900 shadow-sm'
+                          ? 'bg-red-950/40 border-2 border-red-500 text-white shadow-xl'
+                          : 'bg-[#1E252D] border-[#2E3844] hover:border-[#FFF174] text-white shadow-md'
                       }`}
                     >
                       <div className="flex items-start justify-between">
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                          isSelected ? 'bg-red-600 text-white' : 'bg-red-50 text-red-600'
+                          isSelected ? 'bg-red-600 text-white' : 'bg-[#242D37] text-red-400'
                         }`}>
                           <Icon size={18} />
                         </div>
-                        {isSelected && <CheckCircle2 size={16} className="text-red-600" />}
+                        {isSelected && <CheckCircle2 size={16} className="text-red-400" />}
                       </div>
 
                       <div className="mt-2">
-                        <strong className="block text-xs sm:text-sm font-black text-gray-900 leading-tight">
+                        <strong className="block text-xs sm:text-sm font-black text-white leading-tight">
                           {isSimpleMode ? prob.simpleTitle : prob.title}
                         </strong>
-                        <p className="text-[10px] text-gray-500 line-clamp-1 mt-0.5">
+                        <p className="text-[10px] text-[#94A3B8] line-clamp-1 mt-0.5">
                           {prob.description}
                         </p>
                       </div>
@@ -836,12 +836,12 @@ export function SOSPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                    lat !== null ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'
+                    lat !== null ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800' : 'bg-[#242D37] text-[#94A3B8] border border-[#2E3844]'
                   }`}>
                     <MapPin size={18} />
                   </div>
                   <div>
-                    <strong className="block text-xs font-black text-gray-900">
+                    <strong className="block text-xs font-black text-white">
                       {lat !== null ? 'GPS Fix Acquired' : gpsLoading ? 'Locating...' : 'GPS Pending'}
                     </strong>
                     <span className="text-[11px] text-[#94A3B8] font-medium">
@@ -856,7 +856,7 @@ export function SOSPage() {
                   <button
                     type="button"
                     onClick={() => setShowLandmarkInput(!showLandmarkInput)}
-                    className="text-xs font-bold text-red-600 hover:underline cursor-pointer"
+                    className="text-xs font-bold text-[#FFF174] hover:underline cursor-pointer"
                   >
                     {landmark ? 'Edit Landmark' : '+ Landmark'}
                   </button>
@@ -864,7 +864,7 @@ export function SOSPage() {
                     type="button"
                     onClick={acquireLocation}
                     disabled={gpsLoading}
-                    className="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 cursor-pointer transition-colors"
+                    className="p-2 rounded-xl bg-[#242D37] hover:bg-[#2E3844] border border-[#2E3844] text-[#94A3B8] hover:text-white cursor-pointer transition-colors"
                     title="Refresh GPS"
                     aria-label="Refresh GPS"
                   >
@@ -876,7 +876,7 @@ export function SOSPage() {
               {/* Landmark input if toggled or populated */}
               {(showLandmarkInput || landmark) && (
                 <div className="pt-2 border-t border-[#2E3844] space-y-1">
-                  <label htmlFor="landmark-input" className="block text-[11px] font-bold text-gray-700">
+                  <label htmlFor="landmark-input" className="block text-[11px] font-bold text-[#94A3B8]">
                     Highway milestone / landmark:
                   </label>
                   <input
@@ -885,7 +885,7 @@ export function SOSPage() {
                     value={landmark}
                     onChange={(e) => setLandmark(e.target.value)}
                     placeholder="e.g., NH-10 KM 42 near Sevoke Bridge"
-                    className="w-full min-h-[44px] px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 text-xs focus:outline-none focus:border-red-500"
+                    className="w-full min-h-[44px] px-3 py-2 rounded-xl bg-[#12161A] border border-[#2E3844] text-white text-xs placeholder-[#64748B] focus:outline-none focus:border-[#FFF174]"
                   />
                 </div>
               )}
