@@ -187,14 +187,14 @@ export function EmergencyServicesPage() {
     : VERIFIED_FACILITIES.filter(f => f.type === filter);
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-[#111827] pt-20 pb-24 font-sans selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-[#12161A] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-[#12161A]">
       <div className="container mx-auto px-4 max-w-4xl">
         
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-black cursor-pointer font-bold"
+            className="flex items-center gap-1.5 text-xs text-[#94A3B8] hover:text-white cursor-pointer font-bold"
           >
             <ArrowLeft size={16} /> Back
           </button>
@@ -209,8 +209,8 @@ export function EmergencyServicesPage() {
               <ShieldAlert size={24} />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-gray-900">EMERGENCY SERVICES</h1>
-              <p className="text-gray-600 text-xs mt-0.5">
+              <h1 className="text-2xl sm:text-3xl font-black text-white">EMERGENCY SERVICES</h1>
+              <p className="text-[#94A3B8] text-xs mt-0.5">
                 Immediate access to official Indian emergency services, hospitals, ambulances, and verified safe waiting locations.
               </p>
             </div>
@@ -218,7 +218,7 @@ export function EmergencyServicesPage() {
         </div>
 
         {/* Section 11: Official Emergency Helplines Direct Dial */}
-        <div className="p-6 rounded-3xl bg-white border border-red-200 shadow-md mb-8 space-y-4">
+        <div className="p-6 rounded-3xl bg-[#1A2026] border border-[#2E3844] shadow-xl mb-8 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-black uppercase tracking-wider text-red-600 flex items-center gap-2">
               <PhoneCall size={14} /> National Emergency Numbers (India)
@@ -237,7 +237,7 @@ export function EmergencyServicesPage() {
 
             <a
               href="tel:100"
-              className="p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-blue-400 text-center text-gray-900 transition-all active:scale-95 shadow-sm"
+              className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-blue-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
               <strong className="block text-2xl font-black text-blue-600">100</strong>
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Police Control</span>
@@ -245,7 +245,7 @@ export function EmergencyServicesPage() {
 
             <a
               href="tel:108"
-              className="p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-emerald-400 text-center text-gray-900 transition-all active:scale-95 shadow-sm"
+              className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-emerald-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
               <strong className="block text-2xl font-black text-emerald-600">108</strong>
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Govt Ambulance</span>
@@ -253,7 +253,7 @@ export function EmergencyServicesPage() {
 
             <a
               href="tel:101"
-              className="p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-orange-400 text-center text-gray-900 transition-all active:scale-95 shadow-sm"
+              className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-orange-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
               <strong className="block text-2xl font-black text-orange-600">101</strong>
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Fire & Rescue</span>
@@ -295,7 +295,7 @@ export function EmergencyServicesPage() {
             return (
               <div
                 key={fac.id}
-                className="p-5 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 rounded-3xl bg-[#1E252D] border border-[#2E3844] shadow-lg hover:border-[#FFF174] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="flex items-start gap-3.5">
                   <div className={`p-3 rounded-2xl shrink-0 ${
@@ -312,14 +312,14 @@ export function EmergencyServicesPage() {
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-gray-900">{fac.name}</h3>
+                      <h3 className="text-base font-bold text-white">{fac.name}</h3>
                       {fac.emergencyCapable247 && (
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                           24/7 Verified
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-600 mt-0.5">{fac.address}</p>
+                    <p className="text-xs text-[#94A3B8] mt-0.5">{fac.address}</p>
                     {fac.notes && (
                       <p className="text-[11px] text-gray-500 mt-1 italic font-medium">{fac.notes}</p>
                     )}
@@ -344,7 +344,7 @@ export function EmergencyServicesPage() {
                     href={mapLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 sm:flex-none py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                    className="flex-1 sm:flex-none py-2.5 px-4 bg-[#242D37] hover:bg-[#2A3440] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all border border-[#2E3844]"
                   >
                     <Navigation size={14} /> Directions
                   </a>

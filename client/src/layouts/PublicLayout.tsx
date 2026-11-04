@@ -56,7 +56,7 @@ export function PublicLayout() {
 
   if (isFullScreenMode) {
     return (
-      <div className="public-layout min-h-screen flex flex-col bg-[#F8F9FA] text-[#111827]">
+      <div className="public-layout min-h-screen flex flex-col bg-[#12161A] text-white">
         <main className="public-main flex-1">
           <Outlet />
         </main>
@@ -77,7 +77,7 @@ export function PublicLayout() {
   };
 
   return (
-    <div className="public-layout min-h-screen flex flex-col bg-[#F8F9FA] text-[#111827] selection:bg-red-500 selection:text-white">
+    <div className="public-layout min-h-screen flex flex-col bg-[#12161A] text-white selection:bg-[#FFF174] selection:text-[#12161A]">
       {/* If in Dedicated Emergency Mode, render minimal Emergency Header (Red & White) */}
       {isEmergencyMode ? (
         <header className="sticky top-0 z-50 bg-red-600 border-b border-red-700 shadow-md backdrop-blur-md px-4 py-3">
@@ -99,7 +99,7 @@ export function PublicLayout() {
           </div>
         </header>
       ) : (
-        <header className="site-header sticky top-0 z-40 bg-white/95 border-b border-gray-200 shadow-sm backdrop-blur-md">
+        <header className="site-header sticky top-0 z-40 bg-[#1A2026]/95 border-b border-[#2E3844] shadow-md backdrop-blur-md">
           <nav className="nav page-container flex items-center justify-between max-w-7xl mx-auto px-4 py-3" aria-label="Primary navigation">
             <Link className="brand flex items-center gap-2" to="/" onClick={closeMenu} aria-label="MotoAssist Home">
               <MotoAssistBrandMark size={34} withText subtext="ROADSIDE RESCUE" />
@@ -107,7 +107,7 @@ export function PublicLayout() {
 
             {/* Mobile Hamburger toggle */}
             <button
-              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-gray-100 border border-gray-200 text-gray-800 flex items-center justify-center cursor-pointer transition-colors hover:border-red-400"
+              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-[#242D37] border border-[#2E3844] text-[#94A3B8] hover:text-white flex items-center justify-center cursor-pointer transition-colors hover:border-[#FFF174]"
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen(!menuOpen)}
@@ -124,7 +124,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-red-50 text-red-600 border border-red-200' : 'text-gray-600 hover:text-gray-900'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >
@@ -137,7 +137,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-red-50 text-red-600 border border-red-200' : 'text-gray-600 hover:text-gray-900'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >
@@ -150,7 +150,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >
@@ -163,7 +163,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >
@@ -176,7 +176,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >
@@ -189,7 +189,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >
@@ -202,7 +202,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >
@@ -215,7 +215,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >
@@ -228,7 +228,7 @@ export function PublicLayout() {
                 onClick={closeMenu}
                 className={({ isActive }) =>
                   `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#191D20] text-[#FFF174] border border-[#343B42]' : 'text-[#B8C0C5] hover:text-white'
+                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
                   }`
                 }
               >

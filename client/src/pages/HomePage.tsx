@@ -113,7 +113,7 @@ export function HomePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-[#111827] flex flex-col font-sans pb-28 md:pb-16 selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-[#12161A] text-white flex flex-col font-sans pb-28 md:pb-16 selection:bg-[#FFF174] selection:text-[#12161A]">
       
       {/* Crash Detection Modal */}
       <CrashDetectionModal
@@ -140,12 +140,12 @@ export function HomePage() {
       />
 
       {/* TOP ACCESSIBILITY & TELEMETRY BAR */}
-      <div className="bg-white border-b border-gray-200 shadow-sm px-4 py-2 text-xs">
+      <div className="bg-[#1A2026] border-b border-[#2E3844] shadow-md px-4 py-2 text-xs">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
           {/* GPS Telemetry Pill */}
           <div className="flex items-center gap-2 min-w-0">
             <span className={`w-2 h-2 rounded-full shrink-0 ${coords ? 'bg-[#10B981] animate-pulse' : 'bg-[#F59E0B]'}`} />
-            <div className="truncate text-[11px] text-gray-600">
+            <div className="truncate text-[11px] text-[#94A3B8]">
               {coords ? (
                 <span>📍 Location active {accuracy ? `(±${accuracy}m)` : ''} • {updatedText || 'Live'}</span>
               ) : locStatus === 'denied' ? (
@@ -161,18 +161,18 @@ export function HomePage() {
           {/* Quick Accessibility Toggles */}
           <div className="flex items-center gap-1.5 shrink-0">
             {/* Language Switcher */}
-            <div className="flex items-center bg-gray-100 rounded-lg border border-gray-200 p-0.5 text-[10px] font-bold">
+            <div className="flex items-center bg-[#242D37] rounded-lg border border-[#2E3844] p-0.5 text-[10px] font-bold">
               <button
                 type="button"
                 onClick={() => setLanguage('en')}
-                className={`px-2 py-1 rounded transition-colors ${language === 'en' ? 'bg-red-600 text-white font-extrabold' : 'text-gray-600 hover:text-gray-900'}`}
+                className={`px-2 py-1 rounded transition-colors ${language === 'en' ? 'bg-[#FFF174] text-[#12161A] font-extrabold' : 'text-[#94A3B8] hover:text-white'}`}
               >
                 EN
               </button>
               <button
                 type="button"
                 onClick={() => setLanguage('hi')}
-                className={`px-2 py-1 rounded transition-colors ${language === 'hi' ? 'bg-red-600 text-white font-extrabold' : 'text-gray-600 hover:text-gray-900'}`}
+                className={`px-2 py-1 rounded transition-colors ${language === 'hi' ? 'bg-[#FFF174] text-[#12161A] font-extrabold' : 'text-[#94A3B8] hover:text-white'}`}
               >
                 हिंदी
               </button>
@@ -185,7 +185,7 @@ export function HomePage() {
               className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 min-h-[34px] transition-colors ${
                 voiceEnabled
                   ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                  : 'bg-white border-gray-200 text-gray-700 hover:text-gray-900 shadow-sm'
+                  : 'bg-[#1E252D] border-[#2E3844] text-[#94A3B8] hover:text-white shadow-sm'
               }`}
               title="Toggle voice instructions"
               aria-label="Toggle voice guidance"
@@ -201,7 +201,7 @@ export function HomePage() {
               className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 min-h-[34px] transition-colors ${
                 isSimpleMode
                   ? 'bg-red-50 text-red-600 border-red-300 font-extrabold'
-                  : 'bg-white border-gray-200 text-gray-700 hover:text-gray-900 shadow-sm'
+                  : 'bg-[#1E252D] border-[#2E3844] text-[#94A3B8] hover:text-white shadow-sm'
               }`}
               title="Toggle simple mode for high readability"
               aria-label="Toggle simple view mode"
@@ -276,10 +276,10 @@ export function HomePage() {
 
         {/* SCREEN TITLE: WHAT DO YOU NEED HELP WITH? */}
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-4xl font-display font-black text-gray-900 tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-display font-black text-white tracking-tight">
             What do you need help with?
           </h1>
-          <p className="text-xs sm:text-sm text-gray-600 max-w-2xl font-normal">
+          <p className="text-xs sm:text-sm text-[#94A3B8] max-w-2xl font-normal">
             Choose your problem below. We connect you directly to verified mechanics, emergency dispatch, and nearby highway support.
           </p>
         </div>
@@ -290,16 +290,16 @@ export function HomePage() {
         <section aria-labelledby="bike-problem-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-red-600">
+              <span className="p-1.5 rounded-lg bg-[#1E252D] border border-[#2E3844] text-[#FFF174]">
                 <Wrench size={16} />
               </span>
-              <h2 id="bike-problem-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
+              <h2 id="bike-problem-heading" className="text-lg sm:text-xl font-display font-bold text-white">
                 {t('home.bike_help', 'Get help with your bike')}
               </h2>
             </div>
             <button
               onClick={() => navigate('/services')}
-              className="text-xs font-bold text-red-600 hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
             >
               <span>Service List</span>
               <ChevronRight size={14} />
@@ -381,7 +381,7 @@ export function HomePage() {
                     handleVoiceRead(`Opening help for ${prob.title}`);
                     navigate(`/emergency?cat=BIKE_PROBLEM&sub=${prob.sub}`);
                   }}
-                  className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 active:scale-[0.98] border border-gray-200 hover:border-red-300 transition-all cursor-pointer flex flex-col justify-between min-h-[115px] sm:min-h-[125px] shadow-sm group"
+                  className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border border-[#2E3844] hover:border-[#FFF174] transition-all cursor-pointer flex flex-col justify-between min-h-[115px] sm:min-h-[125px] shadow-md group"
                   role="button"
                   tabIndex={0}
                   aria-label={`${prob.title} - ${prob.desc}`}
@@ -391,15 +391,15 @@ export function HomePage() {
                 >
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-lg bg-[#242D37] border border-[#2E3844] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                         <IconComponent size={16} className={prob.color} />
                       </div>
                       <ChevronRight size={15} className="text-gray-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                     </div>
-                    <strong className="text-xs sm:text-sm font-display font-bold text-gray-900 block leading-tight pt-1 group-hover:text-red-600 transition-colors">
+                    <strong className="text-xs sm:text-sm font-display font-bold text-white block leading-tight pt-1 group-hover:text-[#FFF174] transition-colors">
                       {prob.title}
                     </strong>
-                    <p className="text-[10px] sm:text-[11px] text-gray-500 line-clamp-2 leading-snug">
+                    <p className="text-[10px] sm:text-[11px] text-[#94A3B8] line-clamp-2 leading-snug">
                       {prob.desc}
                     </p>
                   </div>
@@ -417,7 +417,7 @@ export function HomePage() {
             <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-red-400">
               <Heart size={16} />
             </span>
-            <h2 id="medical-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
+            <h2 id="medical-heading" className="text-lg sm:text-xl font-display font-bold text-white">
               {t('home.medical_help', 'Medical emergency & hospitals')}
             </h2>
           </div>
@@ -427,7 +427,7 @@ export function HomePage() {
             <a
               href="tel:112"
               onClick={() => handleVoiceRead('Calling 112 Ambulance')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-red-500/40 hover:border-red-500 flex flex-col justify-between transition-all min-h-[110px] group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-red-500/40 hover:border-red-500 flex flex-col justify-between transition-all min-h-[110px] group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-red-400 uppercase">Emergency Dispatch</span>
@@ -447,7 +447,7 @@ export function HomePage() {
                 handleVoiceRead('Searching nearby hospitals and trauma centers');
                 navigate('/nearby-services');
               }}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-300 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#FFF174] flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#B1D8E3] uppercase">Trauma Hubs</span>
@@ -468,7 +468,7 @@ export function HomePage() {
               target="_blank"
               rel="noreferrer"
               onClick={() => handleVoiceRead('Sharing location on WhatsApp')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[110px] group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#10B981]/50 flex flex-col justify-between transition-all min-h-[110px] group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase">Live Coordinates</span>
@@ -485,7 +485,7 @@ export function HomePage() {
             {/* 4. Medical ID & Blood Group */}
             <div
               onClick={() => setShowMedicalModal(true)}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-400/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-red-400/50 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-red-300 uppercase">Emergency Profile</span>
@@ -511,7 +511,7 @@ export function HomePage() {
               <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#F59E0B]">
                 <ShieldCheck size={16} />
               </span>
-              <h2 id="safety-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
+              <h2 id="safety-heading" className="text-lg sm:text-xl font-display font-bold text-white">
                 {t('home.safety_help', 'Personal safety & women rider network')}
               </h2>
             </div>
@@ -531,7 +531,7 @@ export function HomePage() {
                 handleVoiceRead('Opening personal safety support modal');
                 setShowUnsafeModal(true);
               }}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-[#F59E0B]/40 hover:border-[#F59E0B] flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#F59E0B]/40 hover:border-[#F59E0B] flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#F59E0B] uppercase">Immediate Alert</span>
@@ -550,7 +550,7 @@ export function HomePage() {
             <a
               href="tel:1091"
               onClick={() => handleVoiceRead('Calling 1091 Women Safety Helpline')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-purple-400 flex flex-col justify-between transition-all min-h-[110px] group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-purple-400 flex flex-col justify-between transition-all min-h-[110px] group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-purple-400 uppercase">Govt Helpline</span>
@@ -567,7 +567,7 @@ export function HomePage() {
             {/* 3. Trusted Contacts */}
             <div
               onClick={() => navigate('/rider/emergency-contacts')}
-              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-300 flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#FFF174] flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-red-600 uppercase">ICE Circle</span>
@@ -612,16 +612,16 @@ export function HomePage() {
         <section aria-labelledby="nearby-heading" className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-red-600">
+              <span className="p-1.5 rounded-lg bg-[#1E252D] border border-[#2E3844] text-[#FFF174]">
                 <MapPin size={16} />
               </span>
-              <h2 id="nearby-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
+              <h2 id="nearby-heading" className="text-lg sm:text-xl font-display font-bold text-white">
                 {t('home.nearby_services', 'Nearby services & repair hubs')}
               </h2>
             </div>
             <button
               onClick={() => navigate('/nearby-services')}
-              className="text-xs font-bold text-red-600 hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
             >
               <span>Explore Map</span>
               <ChevronRight size={14} />
@@ -646,11 +646,11 @@ export function HomePage() {
                     handleVoiceRead(`Searching nearby ${srv.label}`);
                     navigate('/nearby-services');
                   }}
-                  className="p-3 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-300 flex flex-col items-center justify-center text-center gap-1.5 transition-all min-h-[82px] cursor-pointer group"
+                  className="p-3 rounded-xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#FFF174] flex flex-col items-center justify-center text-center gap-1.5 transition-all min-h-[82px] cursor-pointer group"
                 >
-                  <SrvIcon size={18} className="text-red-600 group-hover:scale-110 transition-transform" />
+                  <SrvIcon size={18} className="text-[#FFF174] group-hover:scale-110 transition-transform" />
                   <div>
-                    <strong className="text-xs font-display font-bold text-white block group-hover:text-red-600 leading-tight">
+                    <strong className="text-xs font-display font-bold text-white block group-hover:text-[#FFF174] leading-tight">
                       {srv.label}
                     </strong>
                     <span className="text-[9px] font-mono text-gray-500 block">{srv.count}</span>
@@ -670,23 +670,23 @@ export function HomePage() {
               <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#B1D8E3]">
                 <BikeIcon size={16} />
               </span>
-              <h2 id="garage-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
+              <h2 id="garage-heading" className="text-lg sm:text-xl font-display font-bold text-white">
                 {t('home.my_bike', 'My Bike & Garage')}
               </h2>
             </div>
             <button
               onClick={() => navigate('/rider/bikes')}
-              className="text-xs font-bold text-red-600 hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
             >
               <span>Manage Garage</span>
               <ChevronRight size={14} />
             </button>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="bg-[#1A2026] border border-[#2E3844] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {primaryBike ? (
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-red-600 shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-[#242D37] border border-[#2E3844] flex items-center justify-center text-[#FFF174] shrink-0">
                   <BikeIcon size={24} />
                 </div>
                 <div>
@@ -714,7 +714,7 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => navigate('/rider/bikes')}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors min-h-[44px]"
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#242D37] hover:bg-[#2A3440] border border-[#2E3844] text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors min-h-[44px]"
               >
                 <Plus size={14} />
                 <span>Add / Manage Bikes</span>
@@ -722,7 +722,7 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => navigate('/services')}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-red-600 text-white hover:bg-yellow-400 text-black font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors min-h-[44px]"
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors min-h-[44px]"
               >
                 <span>Book Service</span>
               </button>
@@ -739,7 +739,7 @@ export function HomePage() {
               <span className="p-1.5 rounded-lg bg-white border border-gray-200 text-[#10B981]">
                 <Compass size={16} />
               </span>
-              <h2 id="ride-heading" className="text-lg sm:text-xl font-display font-bold text-gray-900">
+              <h2 id="ride-heading" className="text-lg sm:text-xl font-display font-bold text-white">
                 {t('home.ride_plan', 'Ride planning & mountain safety')}
               </h2>
             </div>

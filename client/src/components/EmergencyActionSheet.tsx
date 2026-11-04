@@ -710,7 +710,7 @@ export function EmergencyActionSheet({
                 onClose();
               }
             }}
-            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-white border-t sm:border border-gray-200 ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.95)] z-10 flex flex-col overflow-hidden text-[#FFFFFF]`}
+            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#1E252D] border-t sm:border border-[#2E3844] ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.95)] z-10 flex flex-col overflow-hidden text-[#FFFFFF]`}
           >
             {/* Visual Touch Drag Handle */}
             <div className="pt-2.5 pb-1 flex justify-center sm:hidden cursor-grab active:cursor-grabbing shrink-0">
@@ -718,7 +718,7 @@ export function EmergencyActionSheet({
             </div>
 
             {/* Header: Title, Short Explanation & Close Button */}
-            <div className="px-4 sm:px-6 py-3 border-b border-gray-200 flex items-start justify-between gap-3 shrink-0 bg-gray-50">
+            <div className="px-4 sm:px-6 py-3 border-b border-[#2E3844] flex items-start justify-between gap-3 shrink-0 bg-[#1A2026]">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="shrink-0 select-none">
                   <CategoryGraphic size={36} />
@@ -1748,7 +1748,7 @@ export function EmergencyActionSheet({
                   <div className="p-4 rounded-2xl bg-gradient-to-r from-[#182015] to-[#22272B] border border-[#10B981]/40 flex items-center justify-between gap-3 shadow-md">
                     <div>
                       <strong className="text-sm font-black text-white block">Interactive Live Map & Radar</strong>
-                      <p className="text-xs text-gray-600 mt-0.5">Explore full corridor coverage with live GPS pins.</p>
+                      <p className="text-xs text-[#94A3B8] mt-0.5">Explore full corridor coverage with live GPS pins.</p>
                     </div>
                     <button
                       type="button"
@@ -1782,7 +1782,7 @@ export function EmergencyActionSheet({
                                   {p.badge}
                                 </span>
                               </div>
-                              <p className="text-gray-600 text-[11px] mt-0.5">{p.address} • {p.distance}</p>
+                              <p className="text-[#94A3B8] text-[11px] mt-0.5">{p.address} • {p.distance}</p>
                             </div>
                             <span className="text-xs font-mono font-bold text-[#FFF174] shrink-0">
                               ETA {p.eta}
