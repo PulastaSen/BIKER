@@ -106,7 +106,7 @@ export function EmergencyAssistPage() {
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-white transition-colors cursor-pointer min-h-[44px] min-w-[44px] px-2.5"
+            className="flex items-center gap-1.5 text-xs text-[#94A3B8] hover:text-white transition-colors cursor-pointer min-h-[44px] min-w-[44px] px-2.5"
             aria-label="Return to home screen"
           >
             <ArrowLeft size={16} />
@@ -251,18 +251,18 @@ export function EmergencyAssistPage() {
                   value={searchPlace}
                   onChange={(e) => setSearchPlace(e.target.value)}
                   placeholder="Search milestone, town, or highway junction..."
-                  className="flex-1 bg-[#1c1c1c] border border-white/20 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#FFF174]"
+                  className="flex-1 bg-[#1A2026] border border-[#2E3844] rounded-xl px-3 py-2 text-xs text-white placeholder-[#94A3B8] focus:outline-none focus:border-[#FFF174]"
                 />
                 <button
                   type="submit"
-                  className="px-3.5 py-2 bg-[#FFF174] text-black font-bold text-xs rounded-xl cursor-pointer"
+                  className="px-3.5 py-2 bg-[#FFF174] text-[#12161A] font-bold text-xs rounded-xl cursor-pointer"
                 >
                   Set
                 </button>
               </form>
 
               <div className="flex flex-wrap gap-1.5 pt-0.5">
-                <span className="text-[10px] text-gray-500 w-full">Quick mountain corridor landmarks:</span>
+                <span className="text-[10px] text-[#94A3B8] w-full">Quick mountain corridor landmarks:</span>
                 {HIGHWAY_LANDMARKS.slice(0, 6).map((lm) => (
                   <button
                     key={lm}
@@ -272,7 +272,7 @@ export function EmergencyAssistPage() {
                       setSearchPlace(lm);
                       setShowLandmarkSearch(false);
                     }}
-                    className="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-medium cursor-pointer"
+                    className="text-[11px] px-2.5 py-1 rounded-lg bg-[#242D37] hover:bg-[#2A3440] border border-[#2E3844] text-[#CBD5E1] font-medium cursor-pointer"
                   >
                     {lm}
                   </button>
@@ -284,7 +284,7 @@ export function EmergencyAssistPage() {
 
         {/* 6 TOUCH-FRIENDLY CATEGORY SELECTION CARDS */}
         <section className="space-y-2.5" aria-label="Select Emergency Category">
-          <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-gray-400 px-1">
+          <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-[#94A3B8] px-1">
             <span>SELECT EMERGENCY CATEGORY</span>
             <span className="text-[11px] text-[#FFF174]">Tap to open overlay</span>
           </div>
@@ -473,7 +473,7 @@ export function EmergencyAssistPage() {
         </section>
 
         {/* Discreet Help Tip */}
-        <div className="text-center text-[11px] text-gray-400 pt-2">
+        <div className="text-center text-[11px] text-[#94A3B8] pt-2">
           <span>All emergency actions operate instantly without login or registration.</span>
         </div>
       </main>

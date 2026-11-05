@@ -135,8 +135,8 @@ export function HelperDashboardPage() {
 
       {/* 2. ACTIVE JOB COCKPIT */}
       {currentJob ? (
-        <section className="rounded-2xl bg-white border-2 border-[#DFF127]/50 p-5 sm:p-7 shadow-[0_10px_40px_rgba(223,241,39,0.08)] space-y-5">
-          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+        <section className="rounded-2xl bg-[#1E252D] border-2 border-[#DFF127]/50 p-5 sm:p-7 shadow-[0_10px_40px_rgba(223,241,39,0.08)] space-y-5">
+          <div className="flex items-center justify-between border-b border-[#2E3844] pb-4">
             <div className="flex items-center gap-2.5">
               <span className="w-2.5 h-2.5 rounded-full bg-[#DFF127] animate-ping" />
               <div>
@@ -151,7 +151,7 @@ export function HelperDashboardPage() {
             <StatusBadge status={currentJob.status} />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-gray-50 p-4 rounded-xl border border-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-[#12161A] p-4 rounded-xl border border-[#2E3844]">
             <div>
               <span className="text-[10px] text-[#94A3B8] block font-mono font-bold uppercase tracking-wider">Stranded Rider</span>
               <strong className="text-white text-sm block mt-0.5">{currentJob.riderName}</strong>
@@ -192,7 +192,7 @@ export function HelperDashboardPage() {
                 className={`py-2.5 px-2 rounded-xl border text-center transition-all cursor-pointer min-h-[44px] ${
                   currentJob.status === 'EN_ROUTE'
                     ? 'bg-[#DFF127] text-black border-[#DFF127]'
-                    : 'bg-white border-gray-200 text-white hover:border-[#DFF127]/50'
+                    : 'bg-[#242D37] border-[#2E3844] text-[#94A3B8] hover:text-white hover:border-[#DFF127]/50'
                 }`}
               >
                 ● EN ROUTE
@@ -204,7 +204,7 @@ export function HelperDashboardPage() {
                 className={`py-2.5 px-2 rounded-xl border text-center transition-all cursor-pointer min-h-[44px] ${
                   currentJob.status === 'ARRIVED'
                     ? 'bg-[#B1D8E3] text-black border-[#B1D8E3]'
-                    : 'bg-white border-gray-200 text-white hover:border-[#B1D8E3]/50'
+                    : 'bg-[#242D37] border-[#2E3844] text-[#94A3B8] hover:text-white hover:border-[#B1D8E3]/50'
                 }`}
               >
                 ● ARRIVED
@@ -216,7 +216,7 @@ export function HelperDashboardPage() {
                 className={`py-2.5 px-2 rounded-xl border text-center transition-all cursor-pointer min-h-[44px] ${
                   currentJob.status === 'IN_PROGRESS'
                     ? 'bg-[#F59E0B] text-black border-[#F59E0B]'
-                    : 'bg-white border-gray-200 text-white hover:border-[#F59E0B]/50'
+                    : 'bg-[#242D37] border-[#2E3844] text-[#94A3B8] hover:text-white hover:border-[#F59E0B]/50'
                 }`}
               >
                 ● ASSISTANCE
@@ -228,7 +228,7 @@ export function HelperDashboardPage() {
                 className={`py-2.5 px-2 rounded-xl border text-center transition-all cursor-pointer min-h-[44px] ${
                   currentJob.status === 'RESOLVED' || currentJob.status === 'COMPLETED'
                     ? 'bg-[#10B981] text-black border-[#10B981]'
-                    : 'bg-white border-gray-200 text-white hover:border-[#10B981]/50'
+                    : 'bg-[#242D37] border-[#2E3844] text-[#94A3B8] hover:text-white hover:border-[#10B981]/50'
                 }`}
               >
                 ✓ COMPLETED

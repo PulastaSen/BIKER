@@ -182,12 +182,12 @@ export function AdminDashboardPage() {
             className={`px-4 py-2.5 rounded-xl text-xs font-display font-bold uppercase tracking-wider whitespace-nowrap transition-all border flex items-center gap-2 min-h-[44px] cursor-pointer ${
               activeTab === tab.id
                 ? 'bg-[#FFF174] text-black border-[#FFF174] shadow-md'
-                : 'bg-white text-[#94A3B8] border-gray-200 hover:border-[#FFF174]/40 hover:text-white'
+                : 'bg-[#1E252D] text-[#94A3B8] border-[#2E3844] hover:border-[#FFF174]/40 hover:text-white'
             }`}
           >
             <span>{tab.label}</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
-              activeTab === tab.id ? 'bg-black text-[#FFF174]' : 'bg-gray-50 text-[#94A3B8] border border-gray-200'
+              activeTab === tab.id ? 'bg-black text-[#FFF174]' : 'bg-[#242D37] text-[#94A3B8] border border-[#2E3844]'
             }`}>
               {tab.count}
             </span>

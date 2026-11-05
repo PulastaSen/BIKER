@@ -144,7 +144,7 @@ export function ActiveIncidentHUD({
               <div className="w-12 h-12 rounded-full bg-[#2E3844] border-2 border-[#FFF174] flex items-center justify-center font-black text-white text-base">
                 {(providerName || 'Joseph Gonzalez').charAt(0)}
               </div>
-              <span className="absolute -bottom-1 -right-1 bg-[#12161A] border border-[#2E3844] text-[#FFF174] px-1 py-0.2 rounded-full text-[9px] font-bold flex items-center gap-0.5 shadow">
+              <span className="absolute -bottom-1 -right-1 bg-[#12161A] border border-[#2E3844] text-[#FFF174] px-1.5 py-0.5 rounded-full text-[9px] font-bold flex items-center gap-0.5 shadow">
                 <Star size={9} className="fill-[#FFF174] text-[#FFF174]" /> {providerRating}
               </span>
             </div>

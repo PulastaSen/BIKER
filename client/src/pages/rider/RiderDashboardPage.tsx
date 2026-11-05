@@ -164,7 +164,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/nearby-services')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-[#B1D8E3]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:bg-[#242D37] hover:border-[#B1D8E3]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-[#B1D8E3]/10 text-[#B1D8E3] flex items-center justify-center border border-[#B1D8E3]/30 group-hover:scale-105 transition-transform">
@@ -186,7 +186,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/safe-ride')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-[#10B981]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:bg-[#242D37] hover:border-[#10B981]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-[#10B981]/10 text-[#10B981] flex items-center justify-center border border-[#10B981]/30 group-hover:scale-105 transition-transform">
@@ -208,7 +208,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/rider/requests')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-[#DFF127]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:bg-[#242D37] hover:border-[#DFF127]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-[#DFF127]/10 text-[#DFF127] flex items-center justify-center border border-[#DFF127]/30 group-hover:scale-105 transition-transform">
@@ -252,7 +252,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/rider/emergency-contacts')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-red-500/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:bg-[#242D37] hover:border-red-500/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center border border-red-500/30 group-hover:scale-105 transition-transform">
@@ -274,7 +274,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/subscriptions')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-[#10B981]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:bg-[#242D37] hover:border-[#10B981]/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/30 group-hover:scale-105 transition-transform">
@@ -296,7 +296,7 @@ export function RiderDashboardPage() {
             <button 
               type="button"
               onClick={() => navigate('/rider/profile')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-red-500/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:bg-[#242D37] hover:border-red-500/60 transition-all text-left flex flex-col justify-between min-h-[128px] sm:min-h-[140px] cursor-pointer group active:scale-[0.98] shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center border border-red-500/30 group-hover:scale-105 transition-transform">

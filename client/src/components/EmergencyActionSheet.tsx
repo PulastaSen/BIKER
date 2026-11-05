@@ -892,7 +892,7 @@ export function EmergencyActionSheet({
                       <span className="flex items-center gap-1.5">
                         <Activity size={14} className="text-red-400" /> Nearby Hospital Trauma Facilities
                       </span>
-                      <span className="text-[10px] text-gray-500">Verified 24/7 centers</span>
+                      <span className="text-[10px] text-[#94A3B8]">Verified 24/7 centers</span>
                     </div>
 
                     <div className="space-y-2">
@@ -1113,7 +1113,7 @@ export function EmergencyActionSheet({
                       value={troubleNotes}
                       onChange={(e) => setTroubleNotes(e.target.value)}
                       placeholder="e.g. Clutch cable snapped at lever, strange grinding noise from primary chain, sudden stalling on climb..."
-                      className="w-full bg-black/40 border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174] placeholder:text-gray-500 resize-none"
+                      className="w-full bg-black/40 border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174] placeholder:text-[#94A3B8] resize-none"
                     />
                   </div>
 

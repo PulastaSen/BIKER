@@ -601,7 +601,7 @@ export function RequestDetailsPage() {
             
             {/* ACTIVE RESCUE HUD: Confirmed Provider Card */}
             {request.provider && ['ACCEPTED', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS', 'COMPLETED'].includes(request.status) ? (
-              <div className="p-5 rounded-2xl bg-white border-2 border-[#DFF127]/40 shadow-[0_0_30px_rgba(223,241,39,0.06)] space-y-3.5">
+              <div className="p-5 rounded-2xl bg-[#1E252D] border-2 border-[#DFF127]/40 shadow-[0_0_30px_rgba(223,241,39,0.06)] space-y-3.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#DFF127] flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-[#DFF127] animate-pulse" />
@@ -823,7 +823,7 @@ export function RequestDetailsPage() {
 
             {/* Completion Feedback & Rating */}
             {request.status === 'COMPLETED' && !request.rating && (
-              <div className="p-6 rounded-2xl bg-white border border-[#FFF174]/40 space-y-4">
+              <div className="p-6 rounded-2xl bg-[#1E252D] border border-[#FFF174]/40 space-y-4">
                 <h3 className="text-base font-display font-black uppercase tracking-wider text-[#FFF174]">Rate Service & Provider</h3>
                 <p className="text-[#94A3B8] text-xs">Help other riders across Himalayan corridors make informed decisions.</p>
                 
@@ -1059,8 +1059,8 @@ export function RequestDetailsPage() {
       {/* Report Issue & Dispute Modal */}
       {(showIssueModal || showDisputeModal) && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-[#F59E0B]/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div className="bg-[#1E252D] border border-[#F59E0B]/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
               <h3 className="text-xs font-display font-bold uppercase tracking-widest text-[#F59E0B] flex items-center gap-2">
                 <AlertCircle size={18} /> Report Pricing Dispute / Discrepancy
               </h3>
@@ -1162,8 +1162,8 @@ export function RequestDetailsPage() {
       {/* WHATSAPP EMERGENCY SHARING MODAL */}
       {showWhatsAppModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-[#10B981]/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div className="bg-[#1E252D] border border-[#10B981]/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
               <div className="flex items-center gap-2">
                 <MessageSquare size={20} className="text-[#10B981]" />
                 <h3 className="text-xs font-display font-bold uppercase tracking-widest text-white">WHATSAPP SAFETY DISPATCH</h3>

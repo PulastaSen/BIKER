@@ -198,7 +198,7 @@ export function EmergencyServicesPage() {
           >
             <ArrowLeft size={16} /> Back
           </button>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50 text-red-600 border border-red-200">
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/40">
             Emergency Resource Discovery
           </span>
         </div>
@@ -220,10 +220,10 @@ export function EmergencyServicesPage() {
         {/* Section 11: Official Emergency Helplines Direct Dial */}
         <div className="p-6 rounded-3xl bg-[#1A2026] border border-[#2E3844] shadow-xl mb-8 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-black uppercase tracking-wider text-red-600 flex items-center gap-2">
+            <h2 className="text-xs font-black uppercase tracking-wider text-red-400 flex items-center gap-2">
               <PhoneCall size={14} /> National Emergency Numbers (India)
             </h2>
-            <span className="text-[10px] text-gray-500 font-bold">Toll-Free 24/7</span>
+            <span className="text-[10px] text-[#94A3B8] font-bold">Toll-Free 24/7</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -239,28 +239,28 @@ export function EmergencyServicesPage() {
               href="tel:100"
               className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-blue-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
-              <strong className="block text-2xl font-black text-blue-600">100</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Police Control</span>
+              <strong className="block text-2xl font-black text-blue-400">100</strong>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block mt-0.5">Police Control</span>
             </a>
 
             <a
               href="tel:108"
               className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-emerald-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
-              <strong className="block text-2xl font-black text-emerald-600">108</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Govt Ambulance</span>
+              <strong className="block text-2xl font-black text-emerald-400">108</strong>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block mt-0.5">Govt Ambulance</span>
             </a>
 
             <a
               href="tel:101"
               className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-orange-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
-              <strong className="block text-2xl font-black text-orange-600">101</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 block mt-0.5">Fire & Rescue</span>
+              <strong className="block text-2xl font-black text-amber-400">101</strong>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block mt-0.5">Fire & Rescue</span>
             </a>
           </div>
 
-          <p className="text-[11px] text-gray-400 pt-1">
+          <p className="text-[11px] text-[#94A3B8] pt-1">
             Note: MotoAssist coordinates motorcycle roadside assistance and does not replace official emergency services. In severe crashes or crime events, always dial 112 first.
           </p>
         </div>

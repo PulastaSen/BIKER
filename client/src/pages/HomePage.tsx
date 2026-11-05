@@ -627,7 +627,7 @@ export function HomePage() {
                 title: 'Other problem',
                 sub: 'OTHER',
                 icon: HelpCircle,
-                color: 'text-gray-500',
+                color: 'text-[#94A3B8]',
                 desc: 'Brakes, clutch wire, levers or unlisted issue'
               }
             ].map((prob) => {
@@ -652,7 +652,7 @@ export function HomePage() {
                       <div className="w-8 h-8 rounded-lg bg-[#242D37] border border-[#2E3844] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                         <IconComponent size={16} className={prob.color} />
                       </div>
-                      <ChevronRight size={15} className="text-gray-500 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                      <ChevronRight size={15} className="text-[#94A3B8] group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                     </div>
                     <strong className="text-xs sm:text-sm font-display font-bold text-white block leading-tight pt-1 group-hover:text-[#FFF174] transition-colors">
                       {prob.title}
@@ -692,7 +692,7 @@ export function HomePage() {
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-300">
                   Call 112 / 108 Ambulance
                 </strong>
-                <p className="text-[10px] text-gray-500 mt-1">Official state trauma dispatch</p>
+                <p className="text-[10px] text-[#94A3B8] mt-1">Official state trauma dispatch</p>
               </div>
               <div className="flex items-center gap-1 text-[11px] font-bold text-red-400 mt-2">
                 <PhoneCall size={12} /> <span>1-Tap Dial</span>
@@ -709,10 +709,10 @@ export function HomePage() {
             >
               <div>
                 <span className="text-[10px] font-mono font-bold text-[#B1D8E3] uppercase">Trauma Hubs</span>
-                <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-600">
+                <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#FFF174]">
                   Nearby Hospitals
                 </strong>
-                <p className="text-[10px] text-gray-500 mt-1">Find government & private emergency rooms</p>
+                <p className="text-[10px] text-[#94A3B8] mt-1">Find government & private emergency rooms</p>
               </div>
               <div className="flex items-center justify-between text-[11px] font-bold text-[#B1D8E3] mt-2">
                 <span>View on map</span>
@@ -733,7 +733,7 @@ export function HomePage() {
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#10B981]">
                   Share Location
                 </strong>
-                <p className="text-[10px] text-gray-500 mt-1">Send GPS coordinates via WhatsApp</p>
+                <p className="text-[10px] text-[#94A3B8] mt-1">Send GPS coordinates via WhatsApp</p>
               </div>
               <div className="flex items-center gap-1 text-[11px] font-bold text-[#10B981] mt-2">
                 <Share2 size={12} /> <span>Send WhatsApp</span>
@@ -750,7 +750,7 @@ export function HomePage() {
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-300">
                   Medical ID Card
                 </strong>
-                <p className="text-[10px] text-gray-500 mt-1">Blood group, allergies & ICE contacts</p>
+                <p className="text-[10px] text-[#94A3B8] mt-1">Blood group, allergies & ICE contacts</p>
               </div>
               <div className="flex items-center justify-between text-[11px] font-bold text-red-300 mt-2">
                 <span>Open card</span>
@@ -796,7 +796,7 @@ export function HomePage() {
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-[#F59E0B]">
                   I Feel Unsafe
                 </strong>
-                <p className="text-[10px] text-gray-500 mt-1">Dark road, being followed or breakdown alone</p>
+                <p className="text-[10px] text-[#94A3B8] mt-1">Dark road, being followed or breakdown alone</p>
               </div>
               <div className="flex items-center justify-between text-[11px] font-bold text-[#F59E0B] mt-2">
                 <span>Alert trusted circle</span>
@@ -815,7 +815,7 @@ export function HomePage() {
                 <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-purple-300">
                   Call Helpline 1091
                 </strong>
-                <p className="text-[10px] text-gray-500 mt-1">24/7 dedicated women police desk</p>
+                <p className="text-[10px] text-[#94A3B8] mt-1">24/7 dedicated women police desk</p>
               </div>
               <div className="flex items-center gap-1 text-[11px] font-bold text-purple-400 mt-2">
                 <PhoneCall size={12} /> <span>1-Tap Dial</span>
@@ -828,17 +828,17 @@ export function HomePage() {
               className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] border border-[#2E3844] hover:border-[#FFF174] flex flex-col justify-between transition-all min-h-[110px] cursor-pointer group"
             >
               <div>
-                <span className="text-[10px] font-mono font-bold text-red-600 uppercase">ICE Circle</span>
-                <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-600">
+                <span className="text-[10px] font-mono font-bold text-red-400 uppercase">ICE Circle</span>
+                <strong className="text-xs sm:text-sm font-display font-bold text-white block mt-0.5 group-hover:text-red-300">
                   Trusted Contacts
                 </strong>
-                <p className="text-[10px] text-gray-500 mt-1">
+                <p className="text-[10px] text-[#94A3B8] mt-1">
                   {emergencyContacts.length > 0 
                     ? `${emergencyContacts.length} contacts linked for automatic alerts`
                     : 'Add someone we can call in an emergency'}
                 </p>
               </div>
-              <div className="flex items-center justify-between text-[11px] font-bold text-red-600 mt-2">
+              <div className="flex items-center justify-between text-[11px] font-bold text-red-400 mt-2">
                 <span>Manage contacts</span>
                 <ChevronRight size={13} />
               </div>
@@ -935,7 +935,7 @@ export function HomePage() {
               <div className="p-3 rounded-xl bg-[#1E252D] border border-[#2E3844] flex flex-col justify-between min-h-[75px]">
                 <div className="flex items-center justify-between text-[#FFF174]">
                   <BatteryCharging size={16} />
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#10B981]/20 text-[#10B981]">OPTIMAL</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981]">OPTIMAL</span>
                 </div>
                 <div>
                   <strong className="text-base font-black text-white block">12.6V</strong>
@@ -947,7 +947,7 @@ export function HomePage() {
               <div className="p-3 rounded-xl bg-[#1E252D] border border-[#2E3844] flex flex-col justify-between min-h-[75px]">
                 <div className="flex items-center justify-between text-[#B1D8E3]">
                   <Disc size={16} />
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#10B981]/20 text-[#10B981]">NORMAL</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981]">NORMAL</span>
                 </div>
                 <div>
                   <strong className="text-base font-black text-white block">32 / 36 PSI</strong>
@@ -959,7 +959,7 @@ export function HomePage() {
               <div className="p-3 rounded-xl bg-[#1E252D] border border-[#2E3844] flex flex-col justify-between min-h-[75px]">
                 <div className="flex items-center justify-between text-[#F59E0B]">
                   <Layers size={16} />
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#FFF174]/20 text-[#FFF174]">LUBED</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#FFF174]/20 text-[#FFF174]">LUBED</span>
                 </div>
                 <div>
                   <strong className="text-base font-black text-white block">28 mm</strong>
@@ -971,7 +971,7 @@ export function HomePage() {
               <div className="p-3 rounded-xl bg-[#1E252D] border border-[#2E3844] flex flex-col justify-between min-h-[75px]">
                 <div className="flex items-center justify-between text-[#10B981]">
                   <Gauge size={16} />
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#10B981]/20 text-[#10B981]">~14L</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981]">~14L</span>
                 </div>
                 <div>
                   <strong className="text-base font-black text-white block">310 km</strong>
@@ -1029,7 +1029,7 @@ export function HomePage() {
                     <strong className="text-xs font-display font-bold text-white block group-hover:text-[#FFF174] leading-tight">
                       {srv.label}
                     </strong>
-                    <span className="text-[9px] font-mono text-gray-500 block">{srv.count}</span>
+                    <span className="text-[9px] font-mono text-[#94A3B8] block">{srv.count}</span>
                   </div>
                 </button>
               );

@@ -35,7 +35,7 @@
   /* Compatibility with existing theme classes */
   --color-primary: #FFF174;
   --color-primary-hover: #FACC15;
-  --color-navy: #1A2026;
+  --color-navy: #FFFFFF;
   --color-text: #FFFFFF;
   --color-muted: #94A3B8;
   --color-background: #12161A;
@@ -81,72 +81,74 @@ body {
 }
 
 /* Controlled Typography Sizes */
-h1, h2, h3, h4, h5, h6 {
-  color: inherit;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.035em;
-  margin-bottom: 0.75rem;
-}
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    margin-bottom: 0.75rem;
+  }
 
-h1 {
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-}
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+  }
 
-h2 {
-  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-}
+  h2 {
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  }
 
-h3 {
-  font-size: clamp(1.2rem, 2vw, 1.5rem);
-}
+  h3 {
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+  }
 
-h4 {
-  font-size: 1.1rem;
-}
+  h4 {
+    font-size: 1.1rem;
+  }
 
-p {
-  margin-bottom: 1rem;
-  color: var(--color-muted);
-  line-height: 1.7;
-}
+  p {
+    margin-bottom: 1rem;
+    color: var(--color-muted);
+    line-height: 1.7;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
 
-a:hover {
-  color: inherit;
-}
+  a:hover {
+    color: inherit;
+  }
 
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-}
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
 
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 2px;
-}
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 
-ul, ol {
-  list-style: none;
-}
+  ul, ol {
+    list-style: none;
+  }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
 }
 
 /* ==========================================================
@@ -388,7 +390,7 @@ img {
 .btn-primary,
 .button--primary {
   background-color: var(--color-primary);
-  color: var(--color-navy);
+  color: #12161A !important;
   border: 1px solid rgba(16, 24, 39, 0.12);
   box-shadow: 0 4px 14px rgba(255, 241, 116, 0.4);
 }
@@ -476,7 +478,7 @@ img {
 .btn-secondary:hover,
 .button--secondary:hover {
   border-color: var(--color-navy);
-  background-color: #F1F5F9;
+  background-color: #242D37;
 }
 
 .btn-danger,
@@ -486,12 +488,12 @@ img {
 }
 
 .button--dark {
-  background-color: var(--color-navy);
+  background-color: #242D37;
   color: #FFFFFF;
 }
 
 .button--dark:hover {
-  background-color: #1E293B;
+  background-color: #FFFFFF;
 }
 
 .button--ghost {
@@ -534,7 +536,7 @@ img {
 .card:hover,
 .dash-card:hover {
   transform: translateY(-4px);
-  border-color: #CBD5E1;
+  border-color: #2E3844;
   box-shadow: 0 12px 30px rgb(15 23 42 / 0.08);
 }
 
@@ -557,11 +559,13 @@ img {
 
 .form-label,
 label {
+
   display: block;
   font-weight: 700;
   font-size: 0.9rem;
-  color: var(--color-navy);
+  color: #FFFFFF;
   margin-bottom: 0.45rem;
+
 }
 
 .form-input,
@@ -598,7 +602,7 @@ input[type="tel"]:focus,
 input[type="number"]:focus,
 select:focus,
 textarea:focus {
-  border-color: var(--color-navy);
+  border-color: #FFF174;
   box-shadow: 0 0 0 3px rgba(255, 241, 116, 0.4);
 }
 
@@ -635,9 +639,9 @@ textarea:focus {
   font-weight: 700;
 }
 
-.badge--neutral { background: #E2E8F0; color: #334155; }
+.badge--neutral { background: #E2E8F0; color: #94A3B8; }
 .badge--success { background: #DCFCE7; color: #15803D; }
-.badge--muted { background: #F1F5F9; color: #64748B; }
+.badge--muted { background: #242D37; color: #64748B; }
 .badge--warning { background: #FEF3C7; color: #B45309; }
 
 .status-badge {
@@ -1296,7 +1300,7 @@ textarea:focus {
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: #F8FAFC;
+  background: #1E252D;
   border-radius: 12px;
   border: 1px solid var(--color-border);
   margin-top: 1.5rem;
@@ -1304,7 +1308,7 @@ textarea:focus {
 
 .hiw-timeline-wrapper {
   padding: 1.5rem;
-  background: #F8FAFC;
+  background: #1E252D;
   border-top: 1px solid var(--color-border);
 }
 
@@ -1438,7 +1442,7 @@ textarea:focus {
 }
 
 .safety-card p {
-  color: #475569;
+  color: #94A3B8;
   line-height: 1.6;
   font-size: 0.95rem;
 }
@@ -1628,7 +1632,7 @@ textarea:focus {
 }
 
 .action-icon--yellow { background: #FEF9C3; color: #A16207; }
-.action-icon--navy { background: #E2E8F0; color: #1E293B; }
+.action-icon--navy { background: #E2E8F0; color: #FFFFFF; }
 .action-icon--red { background: #FEE2E2; color: #991B1B; }
 
 .network-stats-grid {
@@ -1776,8 +1780,8 @@ textarea:focus {
 }
 
 .demo-card-btn:hover {
-  background: #F8FAFC;
-  border-color: #CBD5E1;
+  background: #1E252D;
+  border-color: #2E3844;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(16, 24, 39, 0.05);
 }
@@ -1824,7 +1828,7 @@ textarea:focus {
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
   margin-bottom: 1.75rem;
-  background: #F1F5F9;
+  background: #242D37;
   padding: 0.35rem;
   border-radius: 12px;
 }
@@ -1847,8 +1851,7 @@ textarea:focus {
 
 .role-tab.is-active {
   background: #FFF174;
-  color: #12161A;
-  color: var(--color-navy);
+  color: #12161A !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -1887,9 +1890,9 @@ textarea:focus {
 }
 
 .tag-btn.is-selected {
-  background: var(--color-primary);
-  border-color: var(--color-navy);
-  color: var(--color-navy);
+  background: #FFF174;
+  border-color: #FFF174;
+  color: #12161A !important;
   font-weight: 700;
 }
 
@@ -2220,7 +2223,7 @@ textarea:focus {
 }
 
 .sidebar-link:hover {
-  background-color: #1E293B;
+  background-color: #FFFFFF;
   color: #FFFFFF;
 }
 
@@ -2260,7 +2263,7 @@ textarea:focus {
 }
 
 .sidebar-version {
-  color: #475569;
+  color: #94A3B8;
   font-size: 0.75rem;
 }
 
@@ -2813,7 +2816,7 @@ textarea:focus {
 .quick-action-item:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(16, 24, 39, 0.05);
-  border-color: #CBD5E1;
+  border-color: #2E3844;
 }
 
 .action-icon {
@@ -2878,13 +2881,13 @@ textarea:focus {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  background: #F1F5F9;
-  color: #334155;
+  background: #242D37;
+  color: #94A3B8;
   padding: 0.35rem 0.75rem;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #2E3844;
   transition: all var(--transition-fast);
 }
 
@@ -2979,8 +2982,8 @@ textarea:focus {
   position: absolute;
   top: 1.25rem;
   left: 1.25rem;
-  background: var(--color-primary);
-  color: var(--color-navy);
+  background: #FFF174;
+  color: #12161A !important;
   padding: 0.4rem 0.85rem;
   border-radius: 8px;
   font-size: 0.75rem;
@@ -3013,8 +3016,8 @@ textarea:focus {
   color: var(--color-navy);
   margin-bottom: 1rem;
   font-family: monospace;
-  background: #F1F5F9;
-  border: 1px solid #E2E8F0;
+  background: #242D37;
+  border: 1px solid #2E3844;
   border-radius: 8px;
   padding: 0.35rem 0.75rem;
   display: inline-block;
@@ -3043,10 +3046,10 @@ textarea:focus {
   grid-template-columns: repeat(2, 1fr);
   gap: 0.6rem;
   margin: 1rem 0;
-  background: #F8FAFC;
+  background: #1E252D;
   padding: 0.85rem;
   border-radius: 12px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #2E3844;
 }
 
 .bike-spec-cell {
@@ -3066,7 +3069,7 @@ textarea:focus {
 .bike-spec-value {
   font-size: 0.85rem;
   font-weight: 800;
-  color: #0F172A;
+  color: #FFFFFF;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3083,11 +3086,11 @@ textarea:focus {
 .bike-feature-chip {
   font-size: 0.75rem;
   font-weight: 700;
-  background: #F1F5F9;
-  color: #334155;
+  background: #242D37;
+  color: #94A3B8;
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #2E3844;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
@@ -3097,12 +3100,12 @@ textarea:focus {
   width: 100%;
   margin-top: 0.75rem;
   padding: 0.5rem 0.75rem;
-  background: #F1F5F9;
-  border: 1px solid #E2E8F0;
+  background: #242D37;
+  border: 1px solid #2E3844;
   border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #1E293B;
+  color: #FFFFFF;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -3114,7 +3117,7 @@ textarea:focus {
 
 .bike-specs-toggle-btn:hover {
   background: #E2E8F0;
-  color: #0F172A;
+  color: #FFFFFF;
   text-decoration: none !important;
 }
 
@@ -3142,7 +3145,7 @@ textarea:focus {
 }
 
 .bike-detail-val {
-  color: #0F172A;
+  color: #FFFFFF;
   font-weight: 700;
   text-align: right;
 }
@@ -3175,8 +3178,8 @@ textarea:focus {
 
 .bike-garage-card__footer {
   display: flex;
-  background: #F8FAFC;
-  border-top: 1px solid #E2E8F0;
+  background: #1E252D;
+  border-top: 1px solid #2E3844;
 }
 
 .icon-action-btn {
@@ -3188,7 +3191,7 @@ textarea:focus {
   padding: 0.95rem;
   background: transparent;
   border: none;
-  border-right: 1px solid #E2E8F0;
+  border-right: 1px solid #2E3844;
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--color-muted);
@@ -3202,7 +3205,7 @@ textarea:focus {
 }
 
 .icon-action-btn:hover {
-  background: #F1F5F9;
+  background: #242D37;
   color: var(--color-navy);
   text-decoration: none !important;
 }
@@ -3251,7 +3254,7 @@ textarea:focus {
 }
 
 .modal-header button {
-  background: #F1F5F9;
+  background: #242D37;
   border: none;
   width: 36px;
   height: 36px;
@@ -4174,7 +4177,7 @@ textarea:focus {
 .premium-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(16, 24, 39, 0.08);
-  border-color: #CBD5E1;
+  border-color: #2E3844;
 }
 
 .step-card__img {
@@ -4251,7 +4254,7 @@ textarea:focus {
   gap: 2rem;
   margin: 2rem 0;
   padding: 1.5rem;
-  background: white;
+  background: #1E252D;
   border-radius: 16px;
   border: 1px solid var(--color-border);
 }
@@ -4259,7 +4262,7 @@ textarea:focus {
 .stat-item strong {
   display: block;
   font-size: 2rem;
-  color: var(--color-navy);
+  color: #FFFFFF;
   line-height: 1;
   margin-bottom: 0.25rem;
 }
@@ -4410,7 +4413,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   position: relative;
-  background: linear-gradient(135deg, #F7F9FC 0%, #FFFFFF 55%, #FFF8C7 100%);
+  background: linear-gradient(135deg, #12161A 0%, #1A2026 55%, #1E252D 100%);
   border-bottom: 1px solid var(--color-border);
   overflow: hidden;
 }
@@ -4481,11 +4484,11 @@ textarea:focus {
 }
 
 .request-help-hero-visual__card {
-  background: #FFFFFF;
-  border: 1px solid #D9E1EA;
+  background: #1E252D;
+  border: 1px solid #2E3844;
   border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 12px 30px rgba(16,24,39,0.10);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.40);
   transition: transform 250ms ease;
 }
 
@@ -4631,12 +4634,12 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: #FFFFFF;
+  background: #1E252D;
   border: 1px solid var(--color-border);
   padding: 0.75rem 1.25rem;
   border-radius: 12px;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   flex-wrap: wrap;
 }
 
@@ -4718,7 +4721,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F1F5F9;
+  background: #242D37;
   color: #64748B;
   transition: all 250ms ease;
 }
@@ -4746,10 +4749,10 @@ textarea:focus {
 
 /* Stepper States */
 .stepper-card-wrapper.is-current .stepper-card {
-  border-color: var(--color-navy);
-  box-shadow: 0 12px 28px -6px rgba(255, 200, 0, 0.35), 0 0 0 2px var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 12px 28px -6px rgba(255, 241, 116, 0.25), 0 0 0 2px var(--color-primary);
   transform: translateY(-3px);
-  background: #FFFFFF;
+  background: #1E252D;
 }
 
 .stepper-card-wrapper.is-current .stepper-card__icon-badge {
@@ -4911,7 +4914,7 @@ textarea:focus {
    REQUEST SUMMARY COMPONENT
    ========================================================== */
 .summary-card {
-  background: #F8FAFC;
+  background: #1E252D;
   border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: clamp(1rem, 2.5vw, 1.75rem);
@@ -4957,10 +4960,10 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  background: #FFFFFF;
+  background: #1E252D;
   padding: 1rem 1.25rem;
   border-radius: 10px;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid var(--color-border);
 }
 
 .summary-item--full {
@@ -4992,7 +4995,7 @@ textarea:focus {
 .description-text {
   line-height: 1.6;
   white-space: pre-wrap;
-  color: #334155;
+  color: #94A3B8;
 }
 
 /* ==========================================================
@@ -5106,7 +5109,7 @@ textarea:focus {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #F1F5F9;
+  background: #242D37;
   color: #94A3B8;
   display: flex;
   align-items: center;
@@ -5922,11 +5925,11 @@ textarea:focus {
    GOOGLE MAPS LOCATOR (MECHANIC & OEM GPS RADAR)
    ========================================================== */
 .google-maps-locator-card {
-  background: #FFFFFF;
+  background: #1E252D;
   border-radius: 20px;
   border: 1px solid var(--color-border);
   padding: clamp(1.25rem, 3vw, 2rem);
-  box-shadow: 0 4px 20px rgba(16, 24, 39, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   margin-bottom: 2.5rem;
 }
 
@@ -5987,8 +5990,8 @@ textarea:focus {
   align-items: center;
   flex-wrap: wrap;
   gap: 0.75rem;
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
+  background: #1E252D;
+  border: 1px solid #2E3844;
   border-radius: 12px;
   padding: 0.75rem 1rem;
   margin-bottom: 1.5rem;
@@ -6024,8 +6027,8 @@ textarea:focus {
 
 /* Locked Search Panel */
 .locked-search-panel {
-  background: #F1F5F9;
-  border: 1px solid #CBD5E1;
+  background: #242D37;
+  border: 1px solid #2E3844;
   border-radius: 16px;
   padding: 1.25rem;
   margin-bottom: 1.5rem;
@@ -6091,7 +6094,7 @@ textarea:focus {
 }
 
 .filter-pill-btn:hover {
-  background: #F8FAFC;
+  background: #1E252D;
   border-color: #94A3B8;
   color: var(--color-navy);
 }
@@ -6108,7 +6111,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   background: #12161A;
-  border: 1px solid #CBD5E1;
+  border: 1px solid #2E3844;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -6119,7 +6122,7 @@ textarea:focus {
   align-items: center;
   gap: 0.35rem;
   background: #E2E8F0;
-  color: #475569;
+  color: #94A3B8;
   font-size: 0.78rem;
   font-weight: 700;
   padding: 0.65rem 0.85rem;
@@ -6243,7 +6246,7 @@ textarea:focus {
 }
 
 .place-card {
-  background: #FFFFFF;
+  background: #1E252D;
   border: 1px solid var(--color-border);
   border-radius: 14px;
   padding: 1.25rem;
@@ -6256,7 +6259,7 @@ textarea:focus {
 .place-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(16, 24, 39, 0.08);
-  border-color: #CBD5E1;
+  border-color: #2E3844;
 }
 
 .place-card__top {
@@ -6330,7 +6333,7 @@ textarea:focus {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.82rem;
-  color: #475569;
+  color: #94A3B8;
 }
 
 .status-indicator-dot {
@@ -6347,8 +6350,8 @@ textarea:focus {
 }
 
 .service-tag-chip {
-  background: #F1F5F9;
-  color: #475569;
+  background: #242D37;
+  color: #94A3B8;
   font-size: 0.72rem;
   font-weight: 600;
   padding: 0.2rem 0.5rem;
@@ -6360,7 +6363,7 @@ textarea:focus {
   gap: 0.6rem;
   margin-top: auto;
   padding-top: 0.75rem;
-  border-top: 1px solid #F1F5F9;
+  border-top: 1px solid #2E3844;
 }
 
 .place-actions a,
@@ -6373,7 +6376,7 @@ textarea:focus {
 /* Mockup Section */
 .hiw-mockup-section {
   padding: 5rem 0;
-  background: #F8FAFC;
+  background: #1E252D;
   border-radius: 24px;
   margin: 2rem auto;
 }
@@ -6390,13 +6393,13 @@ textarea:focus {
 
 .hiw-mockup-copy h2 {
   font-size: 2.5rem;
-  color: #0F172A;
+  color: #FFFFFF;
   margin-bottom: 1rem;
 }
 
 .hiw-mockup-copy p {
   font-size: 1.1rem;
-  color: #475569;
+  color: #94A3B8;
   line-height: 1.6;
   margin-bottom: 2rem;
 }
@@ -6422,7 +6425,7 @@ textarea:focus {
 .hiw-feature-item strong {
   display: block;
   font-size: 1.1rem;
-  color: #1E293B;
+  color: #FFFFFF;
   margin-bottom: 0.3rem;
 }
 
@@ -6434,10 +6437,10 @@ textarea:focus {
 
 .hiw-mockup-card {
   flex: 1;
-  background: #FFFFFF;
+  background: #1E252D;
   border-radius: 20px;
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
-  border: 1px solid #E2E8F0;
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+  border: 1px solid var(--color-border);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -6445,16 +6448,16 @@ textarea:focus {
 
 .hiw-mockup-card__header {
   padding: 1.5rem;
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid #2E3844;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #F8FAFC;
+  background: #1E252D;
 }
 
 .mockup-id {
   font-weight: 700;
-  color: #334155;
+  color: #94A3B8;
   margin-right: 1rem;
 }
 
@@ -6502,7 +6505,7 @@ textarea:focus {
 }
 
 .mockup-field-row strong, .mockup-field-single strong {
-  color: #1E293B;
+  color: #FFFFFF;
   font-size: 1rem;
   display: flex;
   align-items: center;
@@ -6541,7 +6544,7 @@ textarea:focus {
 
 .timeline-heading {
   font-weight: 700;
-  color: #475569;
+  color: #94A3B8;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -6581,7 +6584,7 @@ textarea:focus {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #F8FAFC;
+  background: #1E252D;
   border: 2px solid #CBD5E1;
   display: flex;
   align-items: center;
@@ -6589,7 +6592,7 @@ textarea:focus {
 }
 
 .hiw-timeline .is-done {
-  color: #1E293B;
+  color: #FFFFFF;
   font-weight: 600;
 }
 
@@ -6600,7 +6603,7 @@ textarea:focus {
 }
 
 .hiw-timeline .is-active {
-  color: #0F172A;
+  color: #FFFFFF;
   font-weight: 700;
 }
 
@@ -6611,8 +6614,8 @@ textarea:focus {
 
 .hiw-mockup-card__footer {
   padding: 1.5rem;
-  background: #F8FAFC;
-  border-top: 1px solid #F1F5F9;
+  background: #1E252D;
+  border-top: 1px solid #2E3844;
   text-align: center;
 }
 

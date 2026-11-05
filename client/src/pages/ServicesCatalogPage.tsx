@@ -378,7 +378,7 @@ export function ServicesCatalogPage() {
                 className={`px-4 py-2.5 rounded-xl text-xs font-display font-bold uppercase tracking-wider whitespace-nowrap transition-all border min-h-[44px] cursor-pointer ${
                   activeCategory === cat.id
                     ? 'bg-[#FFF174] text-black border-[#FFF174] shadow-md'
-                    : 'bg-white text-[#94A3B8] border-gray-200 hover:border-[#FFF174]/40 hover:text-white'
+                    : 'bg-[#1E252D] text-[#94A3B8] border-[#2E3844] hover:border-[#FFF174]/40 hover:text-white'
                 }`}
               >
                 {cat.label}
@@ -651,7 +651,7 @@ export function ServicesCatalogPage() {
       {/* BOOKING CONFIRMED SUCCESS DIALOG */}
       {bookingConfirmed && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="bg-white border border-[#10B981]/40 rounded-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 text-center shadow-2xl">
+          <div className="bg-[#1E252D] border border-[#10B981]/40 rounded-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 text-center shadow-2xl">
             <div className="w-16 h-16 rounded-2xl bg-[#10B981]/15 text-[#10B981] flex items-center justify-center mx-auto border border-[#10B981]/30">
               <CheckCircle2 size={36} />
             </div>
