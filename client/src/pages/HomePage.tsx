@@ -23,7 +23,14 @@ import {
   Bike as BikeIcon, 
   Compass,
   Hospital,
-  Pill
+  Pill,
+  Search,
+  Truck,
+  Shield,
+  Gauge,
+  BatteryCharging,
+  Sparkles,
+  Clock
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -58,6 +65,7 @@ export function HomePage() {
   const [detectedCrashEvent, setDetectedCrashEvent] = useState<CrashDetectionEvent | null>(null);
   const [userBikes, setUserBikes] = useState<Bike[]>([]);
   const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Real Geolocation hook without silent fallbacks
   const {
@@ -213,8 +221,51 @@ export function HomePage() {
         </div>
       </div>
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-5 sm:pt-7 space-y-6 sm:space-y-8">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-4 sm:pt-6 space-y-6 sm:space-y-8">
         
+        {/* ========================================================
+            1. AGICENT INSPIRATION: LOCATION BAR & INSTANT SEARCH
+            ======================================================== */}
+        <section aria-label="Location and Search" className="space-y-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#1A2026] border border-[#2E3844] rounded-2xl p-3 sm:px-4 sm:py-3 shadow-md">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-[#242D37] border border-[#2E3844] flex items-center justify-center text-[#FFF174] shrink-0">
+                <MapPin size={16} />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono font-bold uppercase text-[#FFF174] tracking-wider">Current Sector</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] font-bold border border-[#10B981]/40">LIVE GPS</span>
+                </div>
+                <strong className="text-xs sm:text-sm font-bold text-white block truncate">
+                  {address || 'NH-10 Himalayan Corridor • Siliguri Sector, WB'}
+                </strong>
+              </div>
+            </div>
+
+            {/* Agicent-style Search Bar */}
+            <div className="relative flex-1 sm:max-w-md w-full">
+              <Search size={15} className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-[#94A3B8]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search emergency help, tow truck, puncture, fuel..."
+                className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl pl-9 pr-3.5 py-2 text-xs text-white placeholder-[#94A3B8] focus:outline-none focus:border-[#FFF174] transition-colors"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[10px] text-[#94A3B8] hover:text-white"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* ACTIVE INCIDENT HUD: Displays at top if active rescue exists */}
         {activeRequest && (
           <ActiveIncidentHUD
@@ -230,7 +281,214 @@ export function HomePage() {
         )}
 
         {/* ========================================================
-            A. EMERGENCY SOS — TOP HIGH-VISIBILITY BANNER (NO LOGIN NEEDED)
+            2. AGICENT INSPIRATION: "SERVICES AROUND THE CLOCK" HERO
+            24x7 Roadside Rescue Banner with Signature Yellow CTA
+            ======================================================== */}
+        <section aria-label="Services Around The Clock" className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#1E252D] via-[#1A2026] to-[#12161A] border border-[#2E3844] p-5 sm:p-7 shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
+            <div className="space-y-2 max-w-xl">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#FFF174] animate-pulse" />
+                <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-[#FFF174]">
+                  24x7 HIMALAYAN HIGHWAY RESCUE
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-display font-black text-white tracking-tight">
+                Services Around The Clock
+              </h2>
+              <p className="text-xs sm:text-sm text-[#94A3B8] leading-relaxed">
+                Motorcycle broke down midway or stalled in remote mountain terrain? We've got you covered with verified roadside mechanics and flatbed recovery trucks.
+              </p>
+              
+              <div className="flex flex-wrap items-center gap-3 pt-2 text-[11px] text-[#B8C0C5]">
+                <span className="flex items-center gap-1">
+                  <Clock size={13} className="text-[#FFF174]" /> Avg 12-min dispatch
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <ShieldCheck size={13} className="text-[#10B981]" /> Verified Mechanics
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <Sparkles size={13} className="text-[#FFF174]" /> Zero Hidden Fees
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  handleVoiceRead('Requesting Roadside Assistance');
+                  navigate('/request-help');
+                }}
+                className="px-6 py-3.5 bg-[#FFF174] hover:bg-yellow-400 active:scale-95 text-[#12161A] font-display font-black text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-[#FFF174]/20 transition-all cursor-pointer min-h-[46px]"
+              >
+                <Wrench size={16} />
+                <span>Request Roadside Help</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate('/services')}
+                className="px-6 py-3 bg-[#242D37] hover:bg-[#2A3440] text-white border border-[#2E3844] font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
+              >
+                <span>Browse All Services</span>
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================
+            3. AGICENT INSPIRATION: "OUR SERVICES" 4 QUICK TILES
+            The 4 signature roadside tiles from Agicent Phone 2
+            ======================================================== */}
+        <section aria-labelledby="our-services-heading" className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded-lg bg-[#1E252D] border border-[#2E3844] text-[#FFF174]">
+                <Sparkles size={15} />
+              </span>
+              <h2 id="our-services-heading" className="text-base sm:text-lg font-display font-bold text-white">
+                Our Services
+              </h2>
+            </div>
+            <button
+              onClick={() => navigate('/services')}
+              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
+            >
+              <span>See all</span>
+              <ChevronRight size={14} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5">
+            {/* 1. Fuel Delivery */}
+            <div
+              onClick={() => {
+                handleVoiceRead('Opening fuel delivery request');
+                navigate('/emergency?cat=BIKE_PROBLEM&sub=FUEL');
+              }}
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border border-[#2E3844] hover:border-[#FFF174] transition-all cursor-pointer flex flex-col items-center text-center justify-between min-h-[110px] shadow-md group"
+              role="button"
+              tabIndex={0}
+            >
+              <div className="w-11 h-11 rounded-2xl bg-[#242D37] border border-[#2E3844] flex items-center justify-center text-[#FFF174] group-hover:scale-110 transition-transform shadow">
+                <Fuel size={20} />
+              </div>
+              <div className="mt-2">
+                <strong className="text-xs sm:text-sm font-display font-bold text-white block group-hover:text-[#FFF174]">
+                  Fuel Delivery
+                </strong>
+                <span className="text-[10px] text-[#94A3B8] block mt-0.5">2L–5L Petrol On-Demand</span>
+              </div>
+            </div>
+
+            {/* 2. Bike Towing */}
+            <div
+              onClick={() => {
+                handleVoiceRead('Opening bike towing recovery request');
+                navigate('/emergency?cat=TOWING');
+              }}
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border border-[#2E3844] hover:border-[#FFF174] transition-all cursor-pointer flex flex-col items-center text-center justify-between min-h-[110px] shadow-md group"
+              role="button"
+              tabIndex={0}
+            >
+              <div className="w-11 h-11 rounded-2xl bg-[#242D37] border border-[#2E3844] flex items-center justify-center text-[#FFF174] group-hover:scale-110 transition-transform shadow">
+                <Truck size={20} />
+              </div>
+              <div className="mt-2">
+                <strong className="text-xs sm:text-sm font-display font-bold text-white block group-hover:text-[#FFF174]">
+                  Bike Towing
+                </strong>
+                <span className="text-[10px] text-[#94A3B8] block mt-0.5">Hydraulic Flatbed Truck</span>
+              </div>
+            </div>
+
+            {/* 3. Dead Battery */}
+            <div
+              onClick={() => {
+                handleVoiceRead('Opening jump start battery request');
+                navigate('/emergency?cat=BIKE_PROBLEM&sub=BATTERY');
+              }}
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border border-[#2E3844] hover:border-[#FFF174] transition-all cursor-pointer flex flex-col items-center text-center justify-between min-h-[110px] shadow-md group"
+              role="button"
+              tabIndex={0}
+            >
+              <div className="w-11 h-11 rounded-2xl bg-[#242D37] border border-[#2E3844] flex items-center justify-center text-[#FFF174] group-hover:scale-110 transition-transform shadow">
+                <Zap size={20} />
+              </div>
+              <div className="mt-2">
+                <strong className="text-xs sm:text-sm font-display font-bold text-white block group-hover:text-[#FFF174]">
+                  Dead Battery
+                </strong>
+                <span className="text-[10px] text-[#94A3B8] block mt-0.5">12V Jump-Start / Test</span>
+              </div>
+            </div>
+
+            {/* 4. Flat Tyre / Puncture */}
+            <div
+              onClick={() => {
+                handleVoiceRead('Opening flat tyre puncture request');
+                navigate('/emergency?cat=BIKE_PROBLEM&sub=TYRE');
+              }}
+              className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border border-[#2E3844] hover:border-[#FFF174] transition-all cursor-pointer flex flex-col items-center text-center justify-between min-h-[110px] shadow-md group"
+              role="button"
+              tabIndex={0}
+            >
+              <div className="w-11 h-11 rounded-2xl bg-[#242D37] border border-[#2E3844] flex items-center justify-center text-[#FFF174] group-hover:scale-110 transition-transform shadow">
+                <Disc size={20} />
+              </div>
+              <div className="mt-2">
+                <strong className="text-xs sm:text-sm font-display font-bold text-white block group-hover:text-[#FFF174]">
+                  Flat Tyre / Plug
+                </strong>
+                <span className="text-[10px] text-[#94A3B8] block mt-0.5">Tubeless Plug & Air Refill</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================
+            4. AGICENT INSPIRATION: "BECOME OUR PREMIUM MEMBER" CARD
+            Roadside Shield membership with gold badge
+            ======================================================== */}
+        <section aria-label="Premium Roadside Shield">
+          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#1A2026] via-[#1E252D] to-[#1A2026] border border-[#FFF174]/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+            <div className="flex items-center gap-3.5 text-center sm:text-left">
+              <div className="w-12 h-12 rounded-2xl bg-[#FFF174]/10 border border-[#FFF174]/40 flex items-center justify-center text-[#FFF174] shrink-0 shadow">
+                <Shield size={24} className="fill-[#FFF174]/20 text-[#FFF174]" />
+              </div>
+              <div>
+                <div className="flex items-center justify-center sm:justify-start gap-2">
+                  <strong className="text-sm sm:text-base font-display font-bold text-white">
+                    Become our Premium Member
+                  </strong>
+                  <span className="text-[9px] font-mono font-bold bg-[#FFF174] text-[#12161A] px-1.5 py-0.5 rounded">
+                    RSA SHIELD
+                  </span>
+                </div>
+                <p className="text-xs text-[#94A3B8] mt-0.5">
+                  Get Free Roadside Assistance, unlimited mountain towing & 20% off all workshop services.
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate('/subscriptions')}
+              className="px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow shrink-0 cursor-pointer min-h-[42px]"
+            >
+              <span>Learn More</span>
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        </section>
+
+        {/* ========================================================
+            5. EMERGENCY SOS — TOP HIGH-VISIBILITY BANNER (NO LOGIN NEEDED)
+            Matches Figma Community Screen 4 & Agicent Emergency Situation
             ======================================================== */}
         <section aria-labelledby="sos-section-title">
           <div className="bg-gradient-to-r from-red-600 via-red-500 to-red-700 shadow-lg shadow-red-500/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border-2 border-red-400 shadow-[0_10px_35px_rgba(220,38,38,0.4)] flex flex-col sm:flex-row items-center justify-between gap-4 text-white">
@@ -285,7 +543,7 @@ export function HomePage() {
         </div>
 
         {/* ========================================================
-            B. BIKE PROBLEM (8 SPECIFIC CATEGORIES IN COMPACT GRID)
+            6. BIKE PROBLEM (8 SPECIFIC CATEGORIES IN COMPACT GRID)
             ======================================================== */}
         <section aria-labelledby="bike-problem-heading" className="space-y-3">
           <div className="flex items-center justify-between">
@@ -410,7 +668,7 @@ export function HomePage() {
         </section>
 
         {/* ========================================================
-            C. MEDICAL HELP & TRAUMA RESPONSE
+            7. MEDICAL HELP & TRAUMA RESPONSE
             ======================================================== */}
         <section aria-labelledby="medical-heading" className="space-y-3">
           <div className="flex items-center gap-2">
@@ -503,7 +761,7 @@ export function HomePage() {
         </section>
 
         {/* ========================================================
-            D. PERSONAL SAFETY & WOMEN RIDER ASSISTANCE
+            8. PERSONAL SAFETY & WOMEN RIDER ASSISTANCE
             ======================================================== */}
         <section aria-labelledby="safety-heading" className="space-y-3">
           <div className="flex items-center justify-between">
@@ -607,7 +865,125 @@ export function HomePage() {
         </section>
 
         {/* ========================================================
-            E. NEARBY SERVICES RADAR (REAL DIRECTORY)
+            9. VEHIMATE INSPIRATION: MOTORCYCLE PROFILE & HEALTH COCKPIT
+            Vehicle Card, Action Pills, and 4 Performance Gauges
+            ======================================================== */}
+        <section aria-labelledby="garage-heading" className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="p-1.5 rounded-lg bg-[#1E252D] border border-[#2E3844] text-[#FFF174]">
+                <BikeIcon size={16} />
+              </span>
+              <h2 id="garage-heading" className="text-lg sm:text-xl font-display font-bold text-white">
+                {t('home.my_bike', 'Vehicle Profile & Diagnostics')}
+              </h2>
+            </div>
+            <button
+              onClick={() => navigate('/rider/bikes')}
+              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
+            >
+              <span>Manage Garage</span>
+              <ChevronRight size={14} />
+            </button>
+          </div>
+
+          <div className="bg-[#1A2026] border border-[#2E3844] rounded-2xl p-4 sm:p-5 space-y-4 shadow-xl">
+            {/* VehiMate Vehicle Header Showcase */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#2E3844] pb-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-14 h-14 rounded-2xl bg-[#242D37] border border-[#2E3844] flex items-center justify-center text-[#FFF174] shrink-0 shadow">
+                  <BikeIcon size={28} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <strong className="text-base sm:text-lg font-display font-bold text-white">
+                      {primaryBike ? `${primaryBike.brand} ${primaryBike.model}` : 'Royal Enfield Himalayan 450'}
+                    </strong>
+                    <span className="text-[10px] font-mono font-bold bg-[#10B981]/20 text-[#10B981] px-2 py-0.5 rounded border border-[#10B981]/40">
+                      ACTIVE RIDE
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#94A3B8] font-mono mt-0.5">
+                    Plate: <span className="text-white font-bold">{primaryBike?.registrationNumber || 'WB-74-2024'}</span> • Year {primaryBike?.year || '2024'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => navigate('/rider/bikes')}
+                  className="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl bg-[#242D37] hover:bg-[#2A3440] border border-[#2E3844] text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors min-h-[40px]"
+                >
+                  <Plus size={14} />
+                  <span>Garage</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/services')}
+                  className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors min-h-[40px]"
+                >
+                  <span>Book Service</span>
+                </button>
+              </div>
+            </div>
+
+            {/* VehiMate: 4 Live Health Performance Gauges */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+              {/* Battery Voltage */}
+              <div className="p-3 rounded-xl bg-[#1E252D] border border-[#2E3844] flex flex-col justify-between min-h-[75px]">
+                <div className="flex items-center justify-between text-[#FFF174]">
+                  <BatteryCharging size={16} />
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#10B981]/20 text-[#10B981]">OPTIMAL</span>
+                </div>
+                <div>
+                  <strong className="text-base font-black text-white block">12.6V</strong>
+                  <span className="text-[10px] text-[#94A3B8]">Battery Health</span>
+                </div>
+              </div>
+
+              {/* Tyre Pressure */}
+              <div className="p-3 rounded-xl bg-[#1E252D] border border-[#2E3844] flex flex-col justify-between min-h-[75px]">
+                <div className="flex items-center justify-between text-[#B1D8E3]">
+                  <Disc size={16} />
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#10B981]/20 text-[#10B981]">NORMAL</span>
+                </div>
+                <div>
+                  <strong className="text-base font-black text-white block">32 / 36 PSI</strong>
+                  <span className="text-[10px] text-[#94A3B8]">Tyres (F / R)</span>
+                </div>
+              </div>
+
+              {/* Chain Tension */}
+              <div className="p-3 rounded-xl bg-[#1E252D] border border-[#2E3844] flex flex-col justify-between min-h-[75px]">
+                <div className="flex items-center justify-between text-[#F59E0B]">
+                  <Layers size={16} />
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#FFF174]/20 text-[#FFF174]">LUBED</span>
+                </div>
+                <div>
+                  <strong className="text-base font-black text-white block">28 mm</strong>
+                  <span className="text-[10px] text-[#94A3B8]">Chain Slack</span>
+                </div>
+              </div>
+
+              {/* Est Range */}
+              <div className="p-3 rounded-xl bg-[#1E252D] border border-[#2E3844] flex flex-col justify-between min-h-[75px]">
+                <div className="flex items-center justify-between text-[#10B981]">
+                  <Gauge size={16} />
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#10B981]/20 text-[#10B981]">~14L</span>
+                </div>
+                <div>
+                  <strong className="text-base font-black text-white block">310 km</strong>
+                  <span className="text-[10px] text-[#94A3B8]">Corridor Range</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================
+            10. NEARBY SERVICES RADAR (REAL DIRECTORY)
             ======================================================== */}
         <section aria-labelledby="nearby-heading" className="space-y-3">
           <div className="flex items-center justify-between">
@@ -662,76 +1038,7 @@ export function HomePage() {
         </section>
 
         {/* ========================================================
-            F. MY BIKE & GARAGE SNAPSHOT
-            ======================================================== */}
-        <section aria-labelledby="garage-heading" className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-[#1E252D] border border-[#2E3844] text-[#FFF174]">
-                <BikeIcon size={16} />
-              </span>
-              <h2 id="garage-heading" className="text-lg sm:text-xl font-display font-bold text-white">
-                {t('home.my_bike', 'My Bike & Garage')}
-              </h2>
-            </div>
-            <button
-              onClick={() => navigate('/rider/bikes')}
-              className="text-xs font-bold text-[#FFF174] hover:underline flex items-center gap-1"
-            >
-              <span>Manage Garage</span>
-              <ChevronRight size={14} />
-            </button>
-          </div>
-
-          <div className="bg-[#1A2026] border border-[#2E3844] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            {primaryBike ? (
-              <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-xl bg-[#242D37] border border-[#2E3844] flex items-center justify-center text-[#FFF174] shrink-0">
-                  <BikeIcon size={24} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <strong className="text-base font-display font-bold text-white">
-                      {primaryBike.brand} {primaryBike.model}
-                    </strong>
-                    <span className="text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] px-2 py-0.5 rounded border border-[#10B981]/30">
-                      PRIMARY
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 font-mono mt-0.5">
-                    Plate: <span className="text-white font-bold">{primaryBike.registrationNumber}</span> • Year {primaryBike.year}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <strong className="text-sm font-display font-bold text-white block">No motorcycles registered yet</strong>
-                <p className="text-xs text-gray-500 mt-0.5">Add your motorcycle so roadside helpers know your model and parts.</p>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <button
-                type="button"
-                onClick={() => navigate('/rider/bikes')}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#242D37] hover:bg-[#2A3440] border border-[#2E3844] text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors min-h-[44px]"
-              >
-                <Plus size={14} />
-                <span>Add / Manage Bikes</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/services')}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1 transition-colors min-h-[44px]"
-              >
-                <span>Book Service</span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* ========================================================
-            G. RIDE PLANNING & ROUTE RESILIENCE
+            11. RIDE PLANNING & ROUTE RESILIENCE
             ======================================================== */}
         <section aria-labelledby="ride-heading" className="space-y-3">
           <div className="flex items-center justify-between">
