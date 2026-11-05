@@ -481,7 +481,7 @@ export function SOSPage() {
               onClick={toggleVoice}
               className={`p-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center ${
                 voiceEnabled 
-                  ? 'bg-red-50 text-red-600 border-red-300' 
+                  ? 'bg-red-500/20 text-red-300 border-red-500/40' 
                   : 'bg-[#1E252D] text-[#94A3B8] border-[#2E3844] hover:text-white shadow-md'
               }`}
               aria-label={voiceEnabled ? 'Turn off voice guide' : 'Turn on voice guide'}
@@ -543,16 +543,16 @@ export function SOSPage() {
 
               {/* Clean Progression Tracker */}
               <div className="p-4 rounded-2xl bg-[#12161A] border border-[#2E3844] space-y-2.5 text-xs">
-                <div className="flex items-center justify-between text-emerald-700 font-bold">
+                <div className="flex items-center justify-between text-[#10B981] font-bold">
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle2 size={16} className="text-emerald-600" /> 1. Alert Logged
+                    <CheckCircle2 size={16} className="text-[#10B981]" /> 1. Alert Logged
                   </span>
                   <span className="text-[11px] font-mono">Confirmed</span>
                 </div>
 
-                <div className="flex items-center justify-between text-emerald-700 font-bold">
+                <div className="flex items-center justify-between text-[#10B981] font-bold">
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle2 size={16} className="text-emerald-600" /> 2. Location Acquired
+                    <CheckCircle2 size={16} className="text-[#10B981]" /> 2. Location Acquired
                   </span>
                   <span className="text-[11px] font-mono">
                     {lat && lng ? `${lat.toFixed(3)}, ${lng.toFixed(3)}` : 'Milestone only'}
@@ -891,8 +891,8 @@ export function SOSPage() {
               )}
 
               {gpsError && (
-                <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center gap-1.5">
-                  <AlertCircle size={14} className="shrink-0 text-amber-600" />
+                <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] flex items-center gap-1.5">
+                  <AlertCircle size={14} className="shrink-0 text-amber-400" />
                   <span>{gpsError}</span>
                 </div>
               )}

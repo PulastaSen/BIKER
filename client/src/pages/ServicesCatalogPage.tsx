@@ -319,7 +319,7 @@ export function ServicesCatalogPage() {
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2E3844] pb-6">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-[#FFF174] tracking-widest mb-1.5">
               <Wrench size={16} />
@@ -334,7 +334,7 @@ export function ServicesCatalogPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/subscriptions')}
-              className="px-4 py-2.5 rounded-xl bg-[#1E252D] border border-[#2E3844] hover:border-[#FFF174]/50 hover:bg-gray-50 text-xs font-display font-bold uppercase tracking-wider text-[#FFF174] flex items-center gap-1.5 transition-all min-h-[44px]"
+              className="px-4 py-2.5 rounded-xl bg-[#1E252D] border border-[#2E3844] hover:border-[#FFF174]/50 hover:bg-[#242D37] text-xs font-display font-bold uppercase tracking-wider text-[#FFF174] flex items-center gap-1.5 transition-all min-h-[44px]"
             >
               <ShieldCheck size={16} />
               <span>View RSA Subscription Plans</span>
@@ -428,7 +428,7 @@ export function ServicesCatalogPage() {
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-gray-200 space-y-1">
+                  <div className="pt-2 border-t border-[#2E3844] space-y-1">
                     <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-[#94A3B8]">
                       <Clock size={12} className="text-[#FFF174] shrink-0 sm:w-3.5 sm:h-3.5" />
                       <span className="truncate">Avg: <strong className="text-white font-mono">{service.turnaroundMinutes}m</strong></span>
@@ -440,7 +440,7 @@ export function ServicesCatalogPage() {
                   </div>
                 </div>
 
-                <div className="pt-3 mt-3 border-t border-gray-200 flex items-center justify-between gap-2">
+                <div className="pt-3 mt-3 border-t border-[#2E3844] flex items-center justify-between gap-2">
                   <div>
                     <span className="text-[9px] sm:text-[10px] uppercase font-mono font-bold text-[#94A3B8] block">Starting At</span>
                     <span className="text-sm sm:text-lg font-mono font-bold text-[#FFF174]">₹{service.basePrice}</span>
@@ -466,7 +466,7 @@ export function ServicesCatalogPage() {
             <p className="text-xs text-[#94A3B8]">Try searching with a broader term or reset category filters.</p>
             <button
               onClick={() => { setActiveCategory('ALL'); setSearchQuery(''); }}
-              className="px-4 py-2 bg-gray-50 hover:bg-[#2A2C26] border border-gray-200 text-white rounded-xl text-xs font-display font-bold uppercase tracking-wider min-h-[44px]"
+              className="px-4 py-2 bg-[#242D37] hover:bg-[#2A3440] border border-[#2E3844] text-white rounded-xl text-xs font-display font-bold uppercase tracking-wider min-h-[44px]"
             >
               Reset Filters
             </button>
@@ -480,7 +480,7 @@ export function ServicesCatalogPage() {
           <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-7 space-y-6 shadow-2xl relative">
             
             {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 border-b border-gray-200 pb-4">
+            <div className="flex items-start justify-between gap-4 border-b border-[#2E3844] pb-4">
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase text-[#FFF174] tracking-widest block">CONFIRM SERVICE BOOKING</span>
                 <h2 className="text-xl sm:text-2xl font-display font-black text-white">{selectedService.title}</h2>
@@ -601,7 +601,7 @@ export function ServicesCatalogPage() {
                   <span>Travel / Technician Callout Fee</span>
                   <span className="font-mono font-bold text-white">₹{selectedService.category === 'TOWING_RECOVERY' ? 250 : 100}</span>
                 </div>
-                <div className="border-t border-gray-200 pt-2 flex justify-between items-center text-sm font-display font-bold">
+                <div className="border-t border-[#2E3844] pt-2 flex justify-between items-center text-sm font-display font-bold">
                   <span className="text-[#FFF174]">Total Estimated Cost</span>
                   <span className="text-[#FFF174] font-mono text-base font-bold">
                     ₹{selectedService.basePrice + (selectedService.category === 'TOWING_RECOVERY' ? 250 : 100)}
@@ -630,7 +630,7 @@ export function ServicesCatalogPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedService(null)}
-                  className="flex-1 py-3 rounded-xl bg-gray-50 hover:bg-[#2A2C26] border border-gray-200 text-white font-display font-bold text-xs uppercase tracking-wider transition-colors min-h-[44px]"
+                  className="flex-1 py-3 rounded-xl bg-[#242D37] hover:bg-[#2A3440] border border-[#2E3844] text-white font-display font-bold text-xs uppercase tracking-wider transition-colors min-h-[44px]"
                 >
                   Cancel
                 </button>
@@ -677,7 +677,7 @@ export function ServicesCatalogPage() {
                 <span className="text-[#94A3B8]">Location:</span>
                 <span className="font-bold text-white line-clamp-1">{bookingConfirmed.location.address}</span>
               </div>
-              <div className="flex justify-between border-t border-gray-200 pt-2">
+              <div className="flex justify-between border-t border-[#2E3844] pt-2">
                 <span className="text-[#94A3B8]">Initial Status:</span>
                 <span className="font-mono font-bold text-[#10B981] uppercase tracking-wider">{bookingConfirmed.status}</span>
               </div>
@@ -689,7 +689,7 @@ export function ServicesCatalogPage() {
                   setBookingConfirmed(null);
                   setSelectedService(null);
                 }}
-                className="flex-1 py-3 rounded-xl bg-gray-50 hover:bg-[#2A2C26] text-white font-display font-bold text-xs uppercase tracking-wider transition-colors min-h-[44px]"
+                className="flex-1 py-3 rounded-xl bg-[#242D37] hover:bg-[#2A3440] text-white border border-[#2E3844] font-display font-bold text-xs uppercase tracking-wider transition-colors min-h-[44px]"
               >
                 Close
               </button>

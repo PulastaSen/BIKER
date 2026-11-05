@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getBikes, saveBike, deleteBike as removeBikeFromStorage } from '../../utils/appStorage';
 import { generateBikeQrTagApi, revokeBikeQrTagApi, fetchUserSubscriptionsApi } from '../../services/ecosystemApi';
 import type { Bike, FuelType, UserSubscription, VehicleQrTag } from '../../types/app';
-import { Button } from '../../components/Button';
+import { getBikeImage, getBikeDisplayName, maskRegistrationNumber, MOTORCYCLE_CATALOG } from '../../utils/bikeUtils';
 import { EmptyState } from '../../components/EmptyState';
 import {
   Bike as BikeIcon,
@@ -13,44 +14,58 @@ import {
   Star,
   Check,
   X,
-  ChevronDown,
-  ChevronUp,
   ShieldCheck,
-  Sparkles,
   QrCode,
   Copy,
-  ExternalLink,
-  AlertTriangle
+  ChevronRight,
+  Eye,
+  EyeOff,
+  Search
 } from 'lucide-react';
-import { getAssetUrl } from '../../utils/assets';
 
 export function MyBikesPage() {
+  const navigate = useNavigate();
   const { user } = useAuth();
+
   const [bikes, setBikes] = useState<Bike[]>([]);
   const [subscriptions, setSubscriptions] = useState<UserSubscription[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [editingBike, setEditingBike] = useState<Bike | undefined>();
-  const [expandedBikeIds, setExpandedBikeIds] = useState<Record<string, boolean>>({});
+  const [maskedRegs, setMaskedRegs] = useState<Record<string, boolean>>({});
 
-  // QR Modal State
+  // Add Wizard Modal State (4-step flow)
+  const [showAddWizard, setShowAddWizard] = useState(false);
+  const [wizardStep, setWizardStep] = useState<1 | 2 | 3 | 4>(1);
+  const [brandSearch, setBrandSearch] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState('Royal Enfield');
+  const [selectedModel, setSelectedModel] = useState('');
+  const [customModel, setCustomModel] = useState('');
+  const [newReg, setNewReg] = useState('');
+  const [newYear, setNewYear] = useState('2025');
+  const [newFuelType, setNewFuelType] = useState<FuelType>('PETROL');
+  const [newCategory, setNewCategory] = useState('Adventure Tourer');
+  const [newIsPrimary, setNewIsPrimary] = useState(false);
+  const [newNotes, setNewNotes] = useState('');
+
+  // Edit Modal State
+  const [editingBike, setEditingBike] = useState<Bike | null>(null);
+  const [editBrand, setEditBrand] = useState('');
+  const [editModel, setEditModel] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [editReg, setEditReg] = useState('');
+  const [editYear, setEditYear] = useState('2025');
+  const [editFuelType, setEditFuelType] = useState<FuelType>('PETROL');
+  const [editIsPrimary, setEditIsPrimary] = useState(false);
+  const [editNotes, setEditNotes] = useState('');
+
+  // QR Tag Modal State
   const [activeQrModalBike, setActiveQrModalBike] = useState<Bike | null>(null);
   const [activeQrTag, setActiveQrTag] = useState<VehicleQrTag | null>(null);
   const [qrCopied, setQrCopied] = useState(false);
   const [qrLoading, setQrLoading] = useState(false);
 
-  // Form State
-  const [brand, setBrand] = useState('');
-  const [model, setModel] = useState('');
-  const [category, setCategory] = useState('');
-  const [reg, setReg] = useState('');
-  const [year, setYear] = useState('2025');
-  const [fuelType, setFuelType] = useState<FuelType>('PETROL');
-  const [isPrimary, setIsPrimary] = useState(false);
-  const [notes, setNotes] = useState('');
-
   const loadBikes = async () => {
     if (user) {
-      setBikes(getBikes(user.id));
+      const storedBikes = getBikes(user.id);
+      setBikes(storedBikes);
       const subs = await fetchUserSubscriptionsApi(user.id);
       setSubscriptions(subs);
     }
@@ -61,7 +76,74 @@ export function MyBikesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const handleOpenQrModal = async (bike: Bike) => {
+  const toggleMask = (bikeId: string) => {
+    setMaskedRegs((prev) => ({ ...prev, [bikeId]: !prev[bikeId] }));
+  };
+
+  const handleOpenAddWizard = () => {
+    setWizardStep(1);
+    setSelectedBrand('Royal Enfield');
+    setSelectedModel('Himalayan 450');
+    setCustomModel('');
+    setNewReg('');
+    setNewYear('2025');
+    setNewFuelType('PETROL');
+    setNewCategory('Adventure Tourer');
+    setNewIsPrimary(bikes.length === 0);
+    setNewNotes('');
+    setShowAddWizard(true);
+  };
+
+  const handleOpenEditModal = (bike: Bike, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setEditingBike(bike);
+    setEditBrand(bike.brand);
+    setEditModel(bike.model);
+    setEditCategory(bike.category || '');
+    setEditReg(bike.registrationNumber);
+    setEditYear(bike.year.toString());
+    setEditFuelType(bike.fuelType);
+    setEditIsPrimary(!!bike.isPrimary);
+    setEditNotes(bike.notes || '');
+  };
+
+  const handleSaveEdit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!editingBike || !user || !editBrand || !editModel || !editReg) return;
+
+    const updated: Bike = {
+      ...editingBike,
+      brand: editBrand,
+      model: editModel,
+      category: editCategory || editingBike.category,
+      registrationNumber: editReg.toUpperCase(),
+      year: parseInt(editYear, 10) || editingBike.year,
+      fuelType: editFuelType,
+      isPrimary: editIsPrimary,
+      notes: editNotes,
+    };
+
+    saveBike(updated);
+    loadBikes();
+    setEditingBike(null);
+  };
+
+  const handleDeleteBike = (bike: Bike, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (window.confirm(`Are you sure you want to remove ${getBikeDisplayName(bike)} from your garage?`)) {
+      removeBikeFromStorage(bike.id);
+      loadBikes();
+    }
+  };
+
+  const handleSetPrimary = (bike: Bike, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    saveBike({ ...bike, isPrimary: true });
+    loadBikes();
+  };
+
+  const handleOpenQrModal = async (bike: Bike, e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setActiveQrModalBike(bike);
     setQrCopied(false);
     setQrLoading(true);
@@ -74,7 +156,7 @@ export function MyBikesPage() {
   };
 
   const handleRevokeQrTag = async (bikeId: string) => {
-    if (!window.confirm('Are you sure you want to revoke this QR tag? Any existing printed stickers or tags will stop working.')) return;
+    if (!window.confirm('Are you sure you want to revoke this QR tag?')) return;
     setQrLoading(true);
     try {
       await revokeBikeQrTagApi(bikeId);
@@ -84,759 +166,788 @@ export function MyBikesPage() {
     }
   };
 
-  const toggleSpecs = (bikeId: string) => {
-    setExpandedBikeIds((prev) => ({ ...prev, [bikeId]: !prev[bikeId] }));
-  };
+  const handleSaveNewBike = () => {
+    if (!user || !selectedBrand || (!selectedModel && !customModel) || !newReg) return;
 
-  const handleOpenAddModal = () => {
-    setEditingBike(undefined);
-    setBrand('');
-    setModel('');
-    setCategory('');
-    setReg('');
-    setYear('2025');
-    setFuelType('PETROL');
-    setIsPrimary(bikes.length === 0);
-    setNotes('');
-    setShowModal(true);
-  };
-
-  const handleOpenEditModal = (bike: Bike) => {
-    setEditingBike(bike);
-    setBrand(bike.brand);
-    setModel(bike.model);
-    setCategory(bike.category || '');
-    setReg(bike.registrationNumber);
-    setYear(bike.year.toString());
-    setFuelType(bike.fuelType);
-    setIsPrimary(!!bike.isPrimary);
-    setNotes(bike.notes || '');
-    setShowModal(true);
-  };
-
-  const handleSubmitBike = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user || !brand || !model || !reg) return;
+    const finalModel = selectedModel === '__OTHER__' ? customModel : (selectedModel || customModel || 'Motorcycle');
 
     const newBike: Bike = {
-      id: editingBike ? editingBike.id : `bike-${Date.now()}`,
+      id: `bike-${Date.now()}`,
       userId: user.id,
-      brand,
-      model,
-      registrationNumber: reg.toUpperCase(),
-      year: parseInt(year, 10) || 2025,
-      fuelType,
-      isPrimary,
-      category: category || editingBike?.category || 'Motorcycle',
-      engine: editingBike?.engine,
-      power: editingBike?.power,
-      torque: editingBike?.torque,
-      weight: editingBike?.weight,
-      tankCapacity: editingBike?.tankCapacity,
-      seatHeight: editingBike?.seatHeight,
-      groundClearance: editingBike?.groundClearance,
-      brakes: editingBike?.brakes,
-      features: editingBike?.features,
-      notes,
+      brand: selectedBrand,
+      model: finalModel,
+      registrationNumber: newReg.toUpperCase(),
+      year: parseInt(newYear, 10) || 2025,
+      fuelType: newFuelType,
+      category: newCategory,
+      isPrimary: newIsPrimary,
+      notes: newNotes,
     };
 
     saveBike(newBike);
     loadBikes();
-    setShowModal(false);
+    setShowAddWizard(false);
   };
 
-  const handleDeleteBike = (id: string) => {
-    if (window.confirm('Are you sure you want to remove this motorcycle from your garage?')) {
-      removeBikeFromStorage(id);
-      loadBikes();
-    }
-  };
+  const filteredBrands = MOTORCYCLE_CATALOG.filter((m) =>
+    m.name.toLowerCase().includes(brandSearch.toLowerCase())
+  );
 
-  const handleSetPrimary = (bike: Bike) => {
-    saveBike({ ...bike, isPrimary: true });
-    loadBikes();
-  };
-
-  // Helper function to format clear bike display name
-  const getBikeDisplayName = (bike: Bike) => {
-    const brandName = (bike.brand || '').trim();
-    const modelName = (bike.model || '').trim();
-    if (!brandName && !modelName) return 'Motorcycle';
-    if (!brandName) return modelName;
-    if (!modelName) return brandName;
-    if (modelName.toLowerCase().includes(brandName.toLowerCase())) {
-      return modelName;
-    }
-    return `${brandName} ${modelName}`;
-  };
-
-  // Helper function to resolve dynamic image path
-  const getBikeImage = (bike: Bike) => {
-    const bModel = bike.model.toLowerCase();
-    const bBrand = (bike.brand || '').toLowerCase();
-    if (bModel.includes('himalayan') || bBrand.includes('royal enfield')) {
-      return getAssetUrl('/images/bikes/himalayan-450/himalayan-450-main.jpg');
-    }
-    if (bModel.includes('transalp') || (bBrand.includes('honda') && bModel.includes('750'))) {
-      return getAssetUrl('/images/bikes/transalp-750/transalp-750-main.jpg');
-    }
-    if (bModel.includes('tiger') || bBrand.includes('triumph')) {
-      return getAssetUrl('/images/bikes/tiger-900/tiger-900-main.jpg');
-    }
-    if (bModel.includes('390 adventure') || bModel.includes('ktm') || bBrand.includes('ktm')) {
-      return getAssetUrl('/images/bikes/ktm-390-adventure/ktm-390-adventure-main.jpg');
-    }
-    if (bModel.includes('pulsar') || bModel.includes('n160') || bBrand.includes('bajaj')) {
-      return getAssetUrl('/images/bikes/pulsar-n160/pulsar-n160-main.jpg');
-    }
-    return getAssetUrl('/images/motoassist-hero.jpg');
-  };
+  const currentBrandCatalog = MOTORCYCLE_CATALOG.find((m) => m.name === selectedBrand);
 
   return (
-    <div className="dashboard-page">
-      <header className="dashboard-header">
-        <div>
-          <p className="eyebrow">YOUR GARAGE</p>
-          <h1>My Motorcycles</h1>
-          <p className="subtitle">Keep your motorcycles ready with real-time specs for faster roadside assistance.</p>
-        </div>
-        <div>
-          <Button onClick={handleOpenAddModal}>
-            <Plus size={18} /> Add Motorcycle
-          </Button>
-        </div>
-      </header>
-
-      {/* Summary Cards */}
-      {bikes.length > 0 && (
-        <div className="network-stats-grid" style={{ marginBottom: '2rem' }}>
-          <div className="stat-box">
-            <strong className="stat-number">{bikes.length}</strong>
-            <span className="stat-label">Motorcycles</span>
+    <div className="min-h-screen bg-[#12161A] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-[#12161A] pb-24">
+      
+      {/* GARAGE HEADER */}
+      <div className="bg-[#1A2026] border-b border-[#2E3844] px-4 py-6 sm:px-6 shadow-md">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#FFF174] animate-pulse" />
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FFF174]">
+                YOUR MOTORCYCLE GARAGE
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight">
+              My Motorcycles
+            </h1>
+            <p className="text-xs sm:text-sm text-[#94A3B8] max-w-xl">
+              Keep your motorcycles ready with real-time specs and maintenance history for faster roadside assistance.
+            </p>
           </div>
-          <div className="stat-box">
-            <strong className="stat-number">{bikes.filter((b) => b.isPrimary).length}</strong>
-            <span className="stat-label">Primary Bike</span>
-          </div>
-          <div className="stat-box">
-            <strong className="stat-number">{bikes.length}</strong>
-            <span className="stat-label">Ready for Support</span>
-          </div>
+
+          <button
+            type="button"
+            onClick={handleOpenAddWizard}
+            className="px-5 py-3 rounded-xl bg-[#FFF174] hover:bg-yellow-400 active:scale-95 text-[#12161A] font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#FFF174]/15 transition-all cursor-pointer shrink-0 min-h-[46px]"
+          >
+            <Plus size={16} />
+            <span>Add Motorcycle</span>
+          </button>
         </div>
-      )}
+      </div>
 
-      {bikes.length > 0 ? (
-        <div className="bikes-grid">
-          {bikes.map((b) => {
-            const isExpanded = !!expandedBikeIds[b.id];
-            return (
-              <div key={b.id} className={`bike-garage-card ${b.isPrimary ? 'is-primary' : ''}`}>
-                <div className="bike-garage-card__image">
-                  <img src={getBikeImage(b)} alt={getBikeDisplayName(b)} loading="lazy" />
-                  {b.isPrimary && (
-                    <div className="primary-badge-overlay">
-                      <Star size={14} fill="currentColor" /> PRIMARY BIKE
-                    </div>
-                  )}
-                </div>
-                
-                <div className="bike-garage-card__body" style={{ color: '#0F172A', display: 'flex', flexDirection: 'column' }}>
-                  {/* Brand & Category Header */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.4rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <span
-                        className="bike-brand-badge"
-                        style={{
-                          fontSize: '0.75rem',
-                          fontWeight: 800,
-                          letterSpacing: '0.08em',
-                          textTransform: 'uppercase',
-                          color: '#475569',
-                          background: '#F1F5F9',
-                          padding: '0.2rem 0.55rem',
-                          borderRadius: '5px',
-                          border: '1px solid #CBD5E1',
-                        }}
-                      >
-                        {b.brand || 'Motorcycle'}
-                      </span>
-                      <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700 }}>
-                        Year {b.year}
-                      </span>
-                    </div>
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-5 sm:pt-7 space-y-6">
 
-                    {b.category && (
-                      <span
-                        style={{
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          color: '#0369A1',
-                          background: '#E0F2FE',
-                          padding: '0.2rem 0.6rem',
-                          borderRadius: '12px',
-                          border: '1px solid #BAE6FD',
-                        }}
-                      >
-                        {b.category}
-                      </span>
-                    )}
-                  </div>
+        {/* SUMMARY STATS TILES */}
+        {bikes.length > 0 && (
+          <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
+            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] border border-[#2E3844] flex flex-col items-center justify-center text-center shadow-md">
+              <strong className="text-xl sm:text-2xl font-display font-black text-white">
+                {bikes.length}
+              </strong>
+              <span className="text-[10px] sm:text-xs font-bold text-[#94A3B8] uppercase tracking-wider mt-0.5">
+                {bikes.length === 1 ? 'Motorcycle' : 'Motorcycles'}
+              </span>
+            </div>
 
-                  {/* Bike Title */}
-                  <h3
-                    className="bike-card-title"
-                    style={{
-                      fontSize: '1.4rem',
-                      fontWeight: 800,
-                      color: '#0F172A',
-                      lineHeight: 1.25,
-                      marginTop: '0.2rem',
-                      marginBottom: '0.55rem',
-                      letterSpacing: '-0.02em',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {getBikeDisplayName(b)}
-                  </h3>
+            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] border border-[#2E3844] flex flex-col items-center justify-center text-center shadow-md">
+              <strong className="text-xl sm:text-2xl font-display font-black text-[#FFF174]">
+                {bikes.filter((b) => b.isPrimary).length}
+              </strong>
+              <span className="text-[10px] sm:text-xs font-bold text-[#94A3B8] uppercase tracking-wider mt-0.5">
+                Primary Ride
+              </span>
+            </div>
 
-                  {/* Registration Number & Status */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-                    <div
-                      style={{
-                        fontFamily: 'monospace',
-                        fontSize: '0.9rem',
-                        fontWeight: 800,
-                        color: '#0F172A',
-                        background: '#F8FAFC',
-                        border: '1px solid #CBD5E1',
-                        borderRadius: '6px',
-                        padding: '0.25rem 0.65rem',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.35rem',
-                      }}
-                    >
-                      <span style={{ fontSize: '0.65rem', fontWeight: 900, color: '#2563EB', background: '#DBEAFE', padding: '0.1rem 0.3rem', borderRadius: '3px' }}>IND</span>
-                      <span>{b.registrationNumber}</span>
-                    </div>
+            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] border border-[#2E3844] flex flex-col items-center justify-center text-center shadow-md">
+              <strong className="text-xl sm:text-2xl font-display font-black text-[#10B981]">
+                {bikes.length}
+              </strong>
+              <span className="text-[10px] sm:text-xs font-bold text-[#94A3B8] uppercase tracking-wider mt-0.5">
+                Ready For Dispatch
+              </span>
+            </div>
+          </div>
+        )}
 
-                    <span
-                      style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        color: b.isPrimary ? '#854D0E' : '#475569',
-                        background: b.isPrimary ? '#FEF9C3' : '#F1F5F9',
-                        border: b.isPrimary ? '1px solid #FDE047' : '1px solid #E2E8F0',
-                        padding: '0.25rem 0.65rem',
-                        borderRadius: '20px',
-                      }}
-                    >
-                      {b.isPrimary ? '★ Primary Ride' : 'Active Bike'}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        color: '#059669',
-                        background: '#ECFDF5',
-                        border: '1px solid #A7F3D0',
-                        padding: '0.25rem 0.55rem',
-                        borderRadius: '20px',
-                      }}
-                    >
-                      {b.fuelType}
-                    </span>
-                  </div>
+        {/* ========================================================
+            COMPACT RESPONSIVE MOTORCYCLE GRID
+            - Mobile (<360px): 1 column
+            - Mobile (360px-767px): 2 columns with compact, readable height
+            - Tablet (768px-1199px): 2 or 3 columns
+            - Desktop (1200px+): 3 or 4 columns
+            ======================================================== */}
+        {bikes.length > 0 ? (
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+            {bikes.map((b) => {
+              const displayName = getBikeDisplayName(b);
+              const bikeImg = getBikeImage(b);
+              const isMasked = maskedRegs[b.id] ?? false;
+              const formattedReg = maskRegistrationNumber(b.registrationNumber, isMasked);
+              const activeSub = subscriptions.find((s) => s.linkedBike?.bikeId === b.id && s.status === 'ACTIVE');
 
-                  {/* Technical Specifications 4-Grid */}
-                  <div className="bike-specs-grid">
-                    <div className="bike-spec-cell">
-                      <span className="bike-spec-label">Engine / CC</span>
-                      <span className="bike-spec-value" title={b.engine || 'Standard'}>
-                        {b.engine ? b.engine.split(' ')[0] : `${b.year} Spec`}
-                      </span>
-                    </div>
-                    <div className="bike-spec-cell">
-                      <span className="bike-spec-label">Max Power</span>
-                      <span className="bike-spec-value">{b.power || 'Factory Spec'}</span>
-                    </div>
-                    <div className="bike-spec-cell">
-                      <span className="bike-spec-label">Kerb Weight</span>
-                      <span className="bike-spec-value">{b.weight || 'Standard'}</span>
-                    </div>
-                    <div className="bike-spec-cell">
-                      <span className="bike-spec-label">Fuel Tank</span>
-                      <span className="bike-spec-value">{b.tankCapacity || 'Standard'}</span>
-                    </div>
-                  </div>
+              return (
+                <div
+                  key={b.id}
+                  onClick={() => navigate(`/rider/bikes/${b.id}`)}
+                  className={`rounded-2xl bg-[#1E252D] border transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden shadow-lg group hover:scale-[1.01] ${
+                    b.isPrimary ? 'border-[#FFF174]/70 shadow-[#FFF174]/5' : 'border-[#2E3844] hover:border-[#FFF174]'
+                  }`}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') navigate(`/rider/bikes/${b.id}`);
+                  }}
+                  aria-label={`${displayName} - View Details`}
+                >
+                  {/* 1. MOTORCYCLE IMAGE WITH UNIFORM HEIGHT & BADGES */}
+                  <div className="relative w-full h-36 sm:h-40 bg-[#12161A] overflow-hidden shrink-0">
+                    <img
+                      src={bikeImg}
+                      alt={displayName}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
 
-                  {/* Key Features Chips */}
-                  {b.features && b.features.length > 0 && (
-                    <div className="bike-feature-chips">
-                      {b.features.slice(0, 3).map((feat, idx) => (
-                        <span key={idx} className="bike-feature-chip">
-                          <ShieldCheck size={12} className="text-emerald-600" />
-                          {feat}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Toggle Detailed Specs Button */}
-                  <button
-                    type="button"
-                    className="bike-specs-toggle-btn"
-                    onClick={() => toggleSpecs(b.id)}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    {isExpanded ? (
-                      <>
-                        <span>Hide Full Technical Specs</span>
-                        <ChevronUp size={16} />
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles size={14} className="text-amber-500" />
-                        <span>View Full Specs & Electronics</span>
-                        <ChevronDown size={16} />
-                      </>
-                    )}
-                  </button>
-
-                  {/* Expanded Full Specs Drawer */}
-                  {isExpanded && (
-                    <div className="bike-expanded-specs">
-                      {b.engine && (
-                        <div className="bike-detail-row">
-                          <span className="bike-detail-label">Engine Architecture:</span>
-                          <span className="bike-detail-val">{b.engine}</span>
-                        </div>
-                      )}
-                      {b.torque && (
-                        <div className="bike-detail-row">
-                          <span className="bike-detail-label">Max Torque:</span>
-                          <span className="bike-detail-val">{b.torque}</span>
-                        </div>
-                      )}
-                      {b.groundClearance && (
-                        <div className="bike-detail-row">
-                          <span className="bike-detail-label">Ground Clearance:</span>
-                          <span className="bike-detail-val">{b.groundClearance}</span>
-                        </div>
-                      )}
-                      {b.seatHeight && (
-                        <div className="bike-detail-row">
-                          <span className="bike-detail-label">Seat Height:</span>
-                          <span className="bike-detail-val">{b.seatHeight}</span>
-                        </div>
-                      )}
-                      {b.brakes && (
-                        <div className="bike-detail-row">
-                          <span className="bike-detail-label">Brakes & ABS:</span>
-                          <span className="bike-detail-val">{b.brakes}</span>
-                        </div>
-                      )}
-                      {b.features && b.features.length > 3 && (
-                        <div style={{ marginTop: '0.5rem' }}>
-                          <span className="bike-detail-label" style={{ display: 'block', marginBottom: '0.35rem' }}>Full Electronics & Equipment:</span>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-                            {b.features.map((f, i) => (
-                              <span key={i} className="bike-feature-chip" style={{ fontSize: '0.72rem' }}>
-                                ✓ {f}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {b.notes && (
-                    <p className="notes-text" style={{ marginTop: '0.75rem', fontSize: '0.85rem' }}>
-                      <strong style={{ color: '#0F172A' }}>Corridor Notes:</strong> {b.notes}
-                    </p>
-                  )}
-                  
-                  {/* Active Roadside Protection Plan Badge */}
-                  {(() => {
-                    const activeSub = subscriptions.find(s => s.linkedBike?.bikeId === b.id && s.status === 'ACTIVE');
-                    if (activeSub) {
-                      return (
-                        <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                            <ShieldCheck size={16} style={{ color: '#059669' }} />
-                            <div>
-                              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#065F46', display: 'block' }}>
-                                {activeSub.planName}
-                              </span>
-                              <span style={{ fontSize: '0.68rem', color: '#047857' }}>
-                                {activeSub.features.maxFreeBreakdowns - activeSub.features.usedBreakdowns} Free Breakdowns Left • Free Towing to {activeSub.features.towingDistanceLimitKm}km
-                              </span>
-                            </div>
-                          </div>
-                          <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#059669', background: '#D1FAE5', padding: '0.15rem 0.45rem', borderRadius: '5px' }}>
-                            ACTIVE
-                          </span>
-                        </div>
-                      );
-                    }
-                    return (
-                      <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: '#FEFCE8', border: '1px solid #FEF08A', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <AlertTriangle size={15} style={{ color: '#CA8A04' }} />
-                          <div>
-                            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#854D0E', display: 'block' }}>
-                              Standard Pay-Per-Incident RSA
-                            </span>
-                            <span style={{ fontSize: '0.68rem', color: '#A16207' }}>
-                              Towing & labor billed at standard callout rate
-                            </span>
-                          </div>
-                        </div>
-                        <a
-                          href="#/subscriptions"
-                          style={{ fontSize: '0.7rem', fontWeight: 800, color: '#854D0E', background: '#FEF08A', padding: '0.2rem 0.55rem', borderRadius: '6px', textDecoration: 'none' }}
-                        >
-                          Add Shield Plan →
-                        </a>
+                    {/* Primary Badge Overlay */}
+                    {b.isPrimary && (
+                      <div className="absolute top-2.5 left-2.5 bg-[#FFF174] text-[#12161A] font-black text-[10px] px-2 py-0.5 rounded-md flex items-center gap-1 shadow-md">
+                        <Star size={11} fill="currentColor" />
+                        <span>PRIMARY</span>
                       </div>
-                    );
-                  })()}
+                    )}
 
-                  {/* Vehicle Garage Maintenance Health Metrics (Phase 9) */}
-                  <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.75rem', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '10px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.5rem', fontSize: '0.72rem' }}>
-                    <div>
-                      <span style={{ color: '#64748B', display: 'block', fontWeight: 600 }}>Drive Chain Maintenance</span>
-                      <strong style={{ color: '#0F172A', fontWeight: 800 }}>Lube every 500 km</strong>
-                      <span style={{ color: '#059669', display: 'block', fontSize: '0.65rem' }}>✓ Cleaned & Tensioned</span>
-                    </div>
-                    <div>
-                      <span style={{ color: '#64748B', display: 'block', fontWeight: 600 }}>Engine Oil Service</span>
-                      <strong style={{ color: '#0F172A', fontWeight: 800 }}>Every 5,000 km</strong>
-                      <span style={{ color: '#2563EB', display: 'block', fontSize: '0.65rem' }}>Motul Synthetic 10W-50</span>
-                    </div>
-                    <div>
-                      <span style={{ color: '#64748B', display: 'block', fontWeight: 600 }}>Tyre Pressure (Cold)</span>
-                      <strong style={{ color: '#0F172A', fontWeight: 800 }}>32 PSI Front / 36 Rear</strong>
-                      <span style={{ color: '#059669', display: 'block', fontSize: '0.65rem' }}>Weekly Audit Due</span>
-                    </div>
-                    <div>
-                      <span style={{ color: '#64748B', display: 'block', fontWeight: 600 }}>Compliance & Reg</span>
-                      <strong style={{ color: '#0F172A', fontWeight: 800 }}>RC Active • Insurance 2026</strong>
-                      <span style={{ color: '#059669', display: 'block', fontSize: '0.65rem' }}>PUC Valid</span>
-                    </div>
+                    {/* Active Shield RSA Status Pill */}
+                    {activeSub && (
+                      <div className="absolute top-2.5 right-2.5 bg-emerald-900/80 backdrop-blur-md text-[#10B981] border border-emerald-500/40 text-[9px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+                        <ShieldCheck size={10} />
+                        <span>SHIELD</span>
+                      </div>
+                    )}
                   </div>
 
-                  {!b.isPrimary && (
-                    <div style={{ marginTop: '0.75rem' }}>
+                  {/* 2. CARD CONTENT AREA (COMPACT & BALANCED) */}
+                  <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-2.5">
+                    
+                    {/* Header: Brand Pill & Year */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-1 text-[11px]">
+                        <span className="font-mono font-bold uppercase text-[#94A3B8] bg-[#242D37] border border-[#2E3844] px-1.5 py-0.5 rounded text-[10px]">
+                          {b.brand}
+                        </span>
+                        <span className="text-[#94A3B8] font-bold text-[11px]">
+                          {b.year} {b.category ? `• ${b.category.split('/')[0].trim()}` : ''}
+                        </span>
+                      </div>
+
+                      {/* Motorcycle Model Title */}
+                      <h2 className="text-sm sm:text-base font-display font-bold text-white group-hover:text-[#FFF174] transition-colors line-clamp-1 leading-snug">
+                        {displayName}
+                      </h2>
+                    </div>
+
+                    {/* Registration Plate Box with Privacy Eye */}
+                    <div className="flex items-center justify-between gap-1.5 bg-[#12161A] border border-[#2E3844] px-2.5 py-1 rounded-lg">
+                      <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold text-white truncate">
+                        <span className="bg-blue-600 text-white text-[8px] font-black px-1 py-0.2 rounded leading-none">IND</span>
+                        <span className="tracking-wide">{formattedReg}</span>
+                      </div>
                       <button
                         type="button"
-                        className="make-primary-btn"
-                        onClick={() => handleSetPrimary(b)}
-                        style={{ textDecoration: 'none' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleMask(b.id);
+                        }}
+                        className="text-[#94A3B8] hover:text-white p-0.5"
+                        title={isMasked ? 'Reveal plate' : 'Mask plate'}
                       >
-                        Set as Primary Motorcycle
+                        {isMasked ? <Eye size={12} /> : <EyeOff size={12} />}
                       </button>
                     </div>
-                  )}
-                </div>
 
-                <div className="bike-garage-card__footer">
-                  <button
-                    type="button"
-                    className="icon-action-btn"
-                    onClick={() => handleOpenQrModal(b)}
-                    title="Vehicle QR Tag"
-                    style={{ textDecoration: 'none', color: '#4338CA', fontWeight: 800 }}
-                  >
-                    <QrCode size={16} /> Emergency QR Tag
-                  </button>
-                  <button
-                    type="button"
-                    className="icon-action-btn"
-                    onClick={() => handleOpenEditModal(b)}
-                    title="Edit bike"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <Edit3 size={16} /> Edit Details
-                  </button>
-                  <button
-                    type="button"
-                    className="icon-action-btn icon-action-btn--danger"
-                    onClick={() => handleDeleteBike(b.id)}
-                    title="Delete bike"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <Trash2 size={16} /> Remove
-                  </button>
+                    {/* 3 Essential Specifications Badges */}
+                    <div className="grid grid-cols-3 gap-1.5 text-center text-[10px]">
+                      <div className="bg-[#242D37] border border-[#2E3844] rounded-lg py-1 px-1">
+                        <span className="text-[#94A3B8] block text-[9px] uppercase font-mono">Engine</span>
+                        <strong className="text-white block font-bold truncate">
+                          {b.engine ? b.engine.split(' ')[0] : '450cc'}
+                        </strong>
+                      </div>
+                      <div className="bg-[#242D37] border border-[#2E3844] rounded-lg py-1 px-1">
+                        <span className="text-[#94A3B8] block text-[9px] uppercase font-mono">Fuel</span>
+                        <strong className="text-[#10B981] block font-bold truncate">
+                          {b.fuelType}
+                        </strong>
+                      </div>
+                      <div className="bg-[#242D37] border border-[#2E3844] rounded-lg py-1 px-1">
+                        <span className="text-[#94A3B8] block text-[9px] uppercase font-mono">Weight</span>
+                        <strong className="text-white block font-bold truncate">
+                          {b.weight ? b.weight.split(' ')[0] : '196kg'}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. CARD ACTION BAR: CLEAR "VIEW BIKE" & TOUCH-FRIENDLY "EDIT" */}
+                  <div className="p-3 pt-0 flex items-center gap-2">
+                    {/* Primary Action: View Bike */}
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/rider/bikes/${b.id}`)}
+                      className="flex-1 py-2 px-3 rounded-xl bg-[#242D37] hover:bg-[#FFF174] hover:text-[#12161A] text-white border border-[#2E3844] font-bold text-xs flex items-center justify-center gap-1 transition-all cursor-pointer min-h-[38px] group-hover:bg-[#2A3440]"
+                    >
+                      <span>View Bike</span>
+                      <ChevronRight size={14} />
+                    </button>
+
+                    {/* Secondary Action: Edit Bike */}
+                    <button
+                      type="button"
+                      onClick={(e) => handleOpenEditModal(b, e)}
+                      className="px-3 py-2 rounded-xl bg-[#12161A] hover:bg-[#242D37] text-[#FFF174] border border-[#2E3844] font-bold text-xs flex items-center justify-center gap-1 transition-colors cursor-pointer min-h-[38px]"
+                      title="Edit motorcycle information"
+                    >
+                      <Edit3 size={13} />
+                      <span className="text-[11px]">Edit</span>
+                    </button>
+
+                    {/* Set Primary Button (if not primary) */}
+                    {!b.isPrimary && (
+                      <button
+                        type="button"
+                        onClick={(e) => handleSetPrimary(b, e)}
+                        className="p-2 rounded-xl bg-[#12161A] hover:bg-[#242D37] text-[#94A3B8] hover:text-[#FFF174] border border-[#2E3844] flex items-center justify-center transition-colors min-h-[38px] min-w-[38px]"
+                        title="Set as primary motorcycle"
+                      >
+                        <Star size={14} />
+                      </button>
+                    )}
+
+                    {/* Emergency QR sticker */}
+                    <button
+                      type="button"
+                      onClick={(e) => handleOpenQrModal(b, e)}
+                      className="p-2 rounded-xl bg-[#12161A] hover:bg-[#242D37] text-indigo-400 border border-[#2E3844] flex items-center justify-center transition-colors min-h-[38px] min-w-[38px]"
+                      title="Emergency QR sticker"
+                    >
+                      <QrCode size={14} />
+                    </button>
+                  </div>
                 </div>
+              );
+            })}
+          </div>
+        ) : (
+          <EmptyState
+            icon={BikeIcon}
+            title="No motorcycles in your garage yet."
+            description="Add your first motorcycle to enable instant roadside triage and mechanic dispatch."
+            actionLabel="Add Motorcycle"
+            onAction={handleOpenAddWizard}
+          />
+        )}
+
+      </main>
+
+      {/* ========================================================
+          ADD MOTORCYCLE EXPERIENCE: 4-STEP GUIDED WIZARD
+          ======================================================== */}
+      {showAddWizard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="bg-[#1E252D] border border-[#2E3844] rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl text-white max-h-[90vh] overflow-y-auto">
+            
+            {/* Header & Steps Counter */}
+            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
+              <div>
+                <span className="text-[10px] font-mono font-bold uppercase text-[#FFF174] tracking-wider block">
+                  STEP {wizardStep} OF 4
+                </span>
+                <h3 className="text-lg font-bold text-white">
+                  {wizardStep === 1 && 'Select Motorcycle Make'}
+                  {wizardStep === 2 && `Select ${selectedBrand} Model`}
+                  {wizardStep === 3 && 'Enter Registration & Details'}
+                  {wizardStep === 4 && 'Review & Save to Garage'}
+                </h3>
               </div>
-            );
-          })}
-        </div>
-      ) : (
-        <EmptyState
-          icon={BikeIcon}
-          title="No motorcycles yet."
-          description="Add your first motorcycle to make roadside assistance faster."
-          actionLabel="Add Motorcycle"
-          onAction={handleOpenAddModal}
-        />
-      )}
-
-      {/* Add / Edit Bike Modal */}
-      {showModal && (
-        <div className="custom-bike-modal">
-          <div className="custom-bike-modal__content">
-            <div className="modal-header">
-              <h3>{editingBike ? 'Edit Motorcycle' : 'Add Motorcycle to Garage'}</h3>
-              <button type="button" onClick={() => setShowModal(false)}>
+              <button
+                type="button"
+                onClick={() => setShowAddWizard(false)}
+                className="p-1.5 rounded-xl text-[#94A3B8] hover:text-white hover:bg-[#242D37]"
+              >
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmitBike} className="modal-form">
-              <div className="form-group">
-                <label htmlFor="bikeBrandInput">Brand / Make *</label>
-                <input
-                  id="bikeBrandInput"
-                  required
-                  type="text"
-                  autoCapitalize="words"
-                  autoCorrect="off"
-                  enterKeyHint="next"
-                  placeholder="e.g. Royal Enfield, Honda, Triumph, KTM"
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="bikeModelInput">Model *</label>
-                <input
-                  id="bikeModelInput"
-                  required
-                  type="text"
-                  autoCapitalize="words"
-                  autoCorrect="off"
-                  enterKeyHint="next"
-                  placeholder="e.g. Himalayan 450, XL750 Transalp, Tiger 900"
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="bikeCategoryInput">Motorcycle Category / Type</label>
-                <input
-                  id="bikeCategoryInput"
-                  type="text"
-                  autoCapitalize="words"
-                  placeholder="e.g. Adventure Tourer, Dual-Sport, Streetfighter, Cruiser"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="bikeRegInput">Reg. Number *</label>
+            {/* Step 1: Select Brand */}
+            {wizardStep === 1 && (
+              <div className="space-y-3">
+                <div className="relative">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
                   <input
-                    id="bikeRegInput"
-                    required
                     type="text"
-                    autoCapitalize="characters"
-                    autoCorrect="off"
-                    spellCheck={false}
-                    enterKeyHint="next"
-                    placeholder="WB74AB1234"
-                    value={reg}
-                    onChange={(e) => setReg(e.target.value)}
+                    value={brandSearch}
+                    onChange={(e) => setBrandSearch(e.target.value)}
+                    placeholder="Search manufacturer (e.g. Royal Enfield, Honda)..."
+                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl pl-8 pr-3 py-2 text-xs text-white placeholder-[#94A3B8] focus:outline-none focus:border-[#FFF174]"
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="bikeYearInput">Model Year</label>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-64 overflow-y-auto pr-1 scrollbar-thin">
+                  {filteredBrands.map((m) => (
+                    <button
+                      key={m.name}
+                      type="button"
+                      onClick={() => {
+                        setSelectedBrand(m.name);
+                        setSelectedModel(m.popularModels[0] || '');
+                      }}
+                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                        selectedBrand === m.name
+                          ? 'bg-[#242D37] border-[#FFF174] text-white shadow-md'
+                          : 'bg-[#12161A] border-[#2E3844] text-[#94A3B8] hover:text-white hover:bg-[#1A2026]'
+                      }`}
+                    >
+                      <strong className="text-xs block text-white">{m.name}</strong>
+                      <span className="text-[10px] text-[#94A3B8] block">{m.country}</span>
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedBrand('Other');
+                      setSelectedModel('__OTHER__');
+                    }}
+                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                      selectedBrand === 'Other'
+                        ? 'bg-[#242D37] border-[#FFF174] text-white shadow-md'
+                        : 'bg-[#12161A] border-[#2E3844] text-[#94A3B8] hover:text-white hover:bg-[#1A2026]'
+                    }`}
+                  >
+                    <strong className="text-xs block text-white">Other Brand</strong>
+                    <span className="text-[10px] text-[#94A3B8] block">Custom Maker</span>
+                  </button>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setWizardStep(2)}
+                    className="px-5 py-2.5 rounded-xl bg-[#FFF174] text-[#12161A] font-black text-xs uppercase tracking-wider"
+                  >
+                    Next: Choose Model →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Select Model */}
+            {wizardStep === 2 && (
+              <div className="space-y-4">
+                <p className="text-xs text-[#94A3B8]">
+                  Choose from popular {selectedBrand} models, or enter your custom model below:
+                </p>
+
+                {currentBrandCatalog && (
+                  <div className="grid grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
+                    {currentBrandCatalog.popularModels.map((mod) => (
+                      <button
+                        key={mod}
+                        type="button"
+                        onClick={() => {
+                          setSelectedModel(mod);
+                          setCustomModel('');
+                        }}
+                        className={`p-2.5 rounded-xl border text-left text-xs transition-all ${
+                          selectedModel === mod
+                            ? 'bg-[#242D37] border-[#FFF174] text-white font-bold'
+                            : 'bg-[#12161A] border-[#2E3844] text-[#CBD5E1] hover:text-white'
+                        }`}
+                      >
+                        {mod}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-[#94A3B8] font-bold text-xs mb-1">Or Enter Exact Model / Variant:</label>
                   <input
-                    id="bikeYearInput"
-                    type="number"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    enterKeyHint="done"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
+                    type="text"
+                    value={customModel}
+                    onChange={(e) => {
+                      setCustomModel(e.target.value);
+                      setSelectedModel('__OTHER__');
+                    }}
+                    placeholder="e.g. Scram 411, Interceptor 650 Custom..."
+                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-xs text-white placeholder-[#94A3B8] focus:outline-none focus:border-[#FFF174]"
                   />
                 </div>
-              </div>
 
-              <div className="form-group">
-                <label htmlFor="bikeFuelSelect">Fuel Type</label>
-                <select
-                  id="bikeFuelSelect"
-                  value={fuelType}
-                  onChange={(e) => setFuelType(e.target.value as FuelType)}
-                  className="select-input"
-                >
-                  <option value="PETROL">Petrol</option>
-                  <option value="ELECTRIC">Electric (EV)</option>
-                  <option value="HYBRID">Hybrid</option>
-                </select>
+                <div className="flex justify-between pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setWizardStep(1)}
+                    className="px-4 py-2 rounded-xl bg-[#242D37] text-white text-xs font-bold"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setWizardStep(3)}
+                    disabled={!selectedModel && !customModel}
+                    className="px-5 py-2.5 rounded-xl bg-[#FFF174] text-[#12161A] font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                  >
+                    Next: Bike Details →
+                  </button>
+                </div>
               </div>
+            )}
 
-              <div className="form-group" style={{ margin: '1rem 0' }}>
-                <label className="check-label">
+            {/* Step 3: Registration & Details */}
+            {wizardStep === 3 && (
+              <div className="space-y-3.5 text-xs">
+                <div>
+                  <label className="block text-[#94A3B8] font-bold mb-1">Registration Plate *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newReg}
+                    onChange={(e) => setNewReg(e.target.value)}
+                    placeholder="e.g. WB 74 AB 1234"
+                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white font-mono uppercase focus:outline-none focus:border-[#FFF174]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[#94A3B8] font-bold mb-1">Model Year</label>
+                    <input
+                      type="number"
+                      value={newYear}
+                      onChange={(e) => setNewYear(e.target.value)}
+                      className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[#94A3B8] font-bold mb-1">Fuel Type</label>
+                    <select
+                      value={newFuelType}
+                      onChange={(e) => setNewFuelType(e.target.value as FuelType)}
+                      className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                    >
+                      <option value="PETROL">Petrol</option>
+                      <option value="ELECTRIC">Electric (EV)</option>
+                      <option value="HYBRID">Hybrid</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[#94A3B8] font-bold mb-1">Category / Purpose</label>
+                  <input
+                    type="text"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    placeholder="e.g. Adventure Tourer, Daily Commute, Cruiser"
+                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  />
+                </div>
+
+                <label className="flex items-center gap-2 pt-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={isPrimary}
-                    onChange={(e) => setIsPrimary(e.target.checked)}
+                    checked={newIsPrimary}
+                    onChange={(e) => setNewIsPrimary(e.target.checked)}
+                    className="w-4 h-4 rounded accent-[#FFF174]"
                   />
-                  <span>Set as primary motorcycle</span>
+                  <span className="text-white font-medium">Set as my primary motorcycle</span>
                 </label>
-              </div>
 
-              <div className="form-group">
-                <label htmlFor="bikeNotesInput">Notes / Modifications (Optional)</label>
+                <div className="flex justify-between pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setWizardStep(2)}
+                    className="px-4 py-2 rounded-xl bg-[#242D37] text-white text-xs font-bold"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setWizardStep(4)}
+                    disabled={!newReg}
+                    className="px-5 py-2.5 rounded-xl bg-[#FFF174] text-[#12161A] font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                  >
+                    Next: Review →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Review & Save */}
+            {wizardStep === 4 && (
+              <div className="space-y-4 text-xs">
+                <div className="p-4 rounded-2xl bg-[#12161A] border border-[#2E3844] space-y-2">
+                  <span className="text-[10px] font-mono text-[#FFF174] uppercase block">MOTORCYCLE SUMMARY</span>
+                  <strong className="text-base font-bold text-white block">
+                    {selectedBrand} {selectedModel === '__OTHER__' ? customModel : selectedModel}
+                  </strong>
+                  <div className="divide-y divide-[#2E3844] text-xs">
+                    <div className="py-1.5 flex justify-between">
+                      <span className="text-[#94A3B8]">Registration Plate:</span>
+                      <strong className="text-white font-mono uppercase">{newReg}</strong>
+                    </div>
+                    <div className="py-1.5 flex justify-between">
+                      <span className="text-[#94A3B8]">Model Year:</span>
+                      <strong className="text-white">{newYear}</strong>
+                    </div>
+                    <div className="py-1.5 flex justify-between">
+                      <span className="text-[#94A3B8]">Fuel Type:</span>
+                      <strong className="text-[#10B981]">{newFuelType}</strong>
+                    </div>
+                    <div className="py-1.5 flex justify-between">
+                      <span className="text-[#94A3B8]">Category:</span>
+                      <strong className="text-white">{newCategory}</strong>
+                    </div>
+                    <div className="py-1.5 flex justify-between">
+                      <span className="text-[#94A3B8]">Role:</span>
+                      <strong className={newIsPrimary ? 'text-[#FFF174]' : 'text-white'}>
+                        {newIsPrimary ? '★ Primary Motorcycle' : 'Secondary Motorcycle'}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setWizardStep(3)}
+                    className="px-4 py-2 rounded-xl bg-[#242D37] text-white text-xs font-bold"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSaveNewBike}
+                    className="px-6 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-[#FFF174]/20"
+                  >
+                    <Check size={16} />
+                    <span>Save Motorcycle to Garage</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          EDIT MOTORCYCLE MODAL (VISIBLE LABELS & TOUCH-ACCESSIBLE)
+          ======================================================== */}
+      {editingBike && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="bg-[#1E252D] border border-[#2E3844] rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl text-white max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Edit3 size={18} className="text-[#FFF174]" />
+                <span>Edit Motorcycle Details</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setEditingBike(null)}
+                className="p-1.5 rounded-xl text-[#94A3B8] hover:text-white hover:bg-[#242D37]"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-[#94A3B8] font-bold mb-1">Brand / Manufacturer *</label>
                 <input
-                  id="bikeNotesInput"
                   type="text"
-                  placeholder="e.g. Panniers, crash guards, tubeless conversion"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
+                  required
+                  value={editBrand}
+                  onChange={(e) => setEditBrand(e.target.value)}
+                  className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
                 />
               </div>
 
-              <div className="modal-actions">
-                <Button variant="secondary" type="button" onClick={() => setShowModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  <Check size={18} /> Save Motorcycle
-                </Button>
+              <div>
+                <label className="block text-[#94A3B8] font-bold mb-1">Model Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={editModel}
+                  onChange={(e) => setEditModel(e.target.value)}
+                  className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[#94A3B8] font-bold mb-1">Registration Plate *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editReg}
+                    onChange={(e) => setEditReg(e.target.value)}
+                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white font-mono uppercase focus:outline-none focus:border-[#FFF174]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#94A3B8] font-bold mb-1">Model Year</label>
+                  <input
+                    type="number"
+                    value={editYear}
+                    onChange={(e) => setEditYear(e.target.value)}
+                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[#94A3B8] font-bold mb-1">Category / Variant</label>
+                  <input
+                    type="text"
+                    value={editCategory}
+                    onChange={(e) => setEditCategory(e.target.value)}
+                    placeholder="Adventure Tourer, Street..."
+                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#94A3B8] font-bold mb-1">Fuel Type</label>
+                  <select
+                    value={editFuelType}
+                    onChange={(e) => setEditFuelType(e.target.value as FuelType)}
+                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  >
+                    <option value="PETROL">Petrol</option>
+                    <option value="ELECTRIC">Electric (EV)</option>
+                    <option value="HYBRID">Hybrid</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[#94A3B8] font-bold mb-1">Notes / Modifications</label>
+                <input
+                  type="text"
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                  placeholder="e.g. Panniers, crash guards, tubeless rims"
+                  className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                />
+              </div>
+
+              <label className="flex items-center gap-2 pt-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={editIsPrimary}
+                  onChange={(e) => setEditIsPrimary(e.target.checked)}
+                  className="w-4 h-4 rounded accent-[#FFF174]"
+                />
+                <span className="text-white font-medium">Set as primary motorcycle</span>
+              </label>
+
+              <div className="flex items-center justify-between pt-3 border-t border-[#2E3844]">
+                <button
+                  type="button"
+                  onClick={() => handleDeleteBike(editingBike)}
+                  className="px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 text-xs font-bold flex items-center gap-1"
+                >
+                  <Trash2 size={14} />
+                  <span>Remove Bike</span>
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingBike(null)}
+                    className="px-4 py-2.5 rounded-xl bg-[#242D37] text-white font-bold text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-black text-xs uppercase"
+                  >
+                    Save Changes
+                  </button>
+                </div>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* MOTOASSIST VEHICLE QR TAG MODAL */}
+      {/* ========================================================
+          EMERGENCY QR TAG MODAL
+          ======================================================== */}
       {activeQrModalBike && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="bg-[#1D1D1D] border border-white/15 rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-6 shadow-2xl relative text-white">
-            
-            <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30">
-                  <QrCode size={26} />
-                </div>
-                <div>
-                  <span className="text-[10px] font-black uppercase text-[#FFF174] tracking-widest block">VEHICLE EMERGENCY QR TAG</span>
-                  <h3 className="text-xl font-black text-white">{activeQrModalBike.brand} {activeQrModalBike.model}</h3>
-                  <span className="text-xs text-gray-400 font-mono">{activeQrModalBike.registrationNumber}</span>
-                </div>
+          <div className="bg-[#1E252D] border border-[#2E3844] rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl text-white">
+            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
+              <div className="flex items-center gap-2 text-indigo-400">
+                <QrCode size={20} />
+                <h3 className="text-base font-bold text-white">Emergency Vehicle QR Tag</h3>
               </div>
               <button
+                type="button"
                 onClick={() => {
                   setActiveQrModalBike(null);
                   setActiveQrTag(null);
                 }}
-                className="p-2 text-gray-400 hover:text-white rounded-xl bg-white/5 border border-white/10"
+                className="p-1.5 rounded-xl text-[#94A3B8] hover:text-white"
               >
                 <X size={18} />
               </button>
             </div>
 
             {qrLoading ? (
-              <div className="py-12 text-center space-y-3">
+              <div className="py-8 text-center space-y-2">
                 <div className="w-8 h-8 border-2 border-[#FFF174] border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-xs text-gray-400">Generating secure emergency QR tag...</p>
+                <p className="text-xs text-[#94A3B8]">Generating emergency QR tag...</p>
               </div>
             ) : activeQrTag ? (
-              <div className="space-y-4">
-                
-                {/* Visual QR Card Representation */}
-                <div className="p-6 bg-gradient-to-br from-indigo-950/40 via-[#1D1D1D] to-black border border-indigo-500/30 rounded-2xl text-center space-y-3 shadow-inner">
-                  <div className="w-40 h-40 bg-white p-2 rounded-2xl mx-auto flex items-center justify-center shadow-lg">
-                    {/* SVG Stylized QR graphic representing the token */}
-                    <div className="w-full h-full border-4 border-black p-2 flex flex-col justify-between items-center text-black">
-                      <div className="w-full flex justify-between">
-                        <div className="w-8 h-8 border-4 border-black bg-black" />
-                        <div className="w-8 h-8 border-4 border-black bg-black" />
-                      </div>
-                      <div className="text-[9px] font-black tracking-tighter text-center uppercase">
-                        MOTOASSIST RESCUE<br />
-                        <span className="font-mono text-[7px] text-gray-600 truncate block max-w-[120px]">{activeQrTag.token}</span>
-                      </div>
-                      <div className="w-full flex justify-between">
-                        <div className="w-8 h-8 border-4 border-black bg-black" />
-                        <div className="w-5 h-5 bg-black" />
-                      </div>
+              (() => {
+                const tagUrl = `${window.location.origin}${window.location.pathname.replace(/\/?$/, '/')}#/qr/${activeQrTag.token}`;
+                const qrCodeImg = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(tagUrl)}`;
+                return (
+                  <div className="space-y-4 text-center">
+                    <div className="w-44 h-44 bg-white p-2.5 rounded-2xl mx-auto flex items-center justify-center shadow-lg">
+                      <img src={qrCodeImg} alt="Vehicle Emergency QR" className="w-full h-full object-contain" />
+                    </div>
+                    <div className="text-xs space-y-1">
+                      <strong className="text-white block font-mono">{activeQrModalBike.registrationNumber}</strong>
+                      <p className="text-[11px] text-[#94A3B8]">
+                        First responders can scan this sticker on your bike to view vital ICE contacts without accessing private accounts.
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(tagUrl);
+                          setQrCopied(true);
+                          setTimeout(() => setQrCopied(false), 2000);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-[#242D37] hover:bg-[#2A3440] text-xs font-bold text-white flex items-center gap-1.5"
+                      >
+                        {qrCopied ? <Check size={14} className="text-[#10B981]" /> : <Copy size={14} />}
+                        <span>{qrCopied ? 'Link Copied!' : 'Copy Tag Link'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRevokeQrTag(activeQrModalBike.id)}
+                        className="px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-xs font-bold text-red-300 flex items-center gap-1"
+                      >
+                        <Trash2 size={14} />
+                        <span>Revoke</span>
+                      </button>
                     </div>
                   </div>
-
-                  <div>
-                    <span className="text-[11px] font-bold text-gray-300 block">
-                      Protected Public Scanner URL:
-                    </span>
-                    <span className="text-xs font-mono text-[#FFF174] break-all block mt-0.5">
-                      {window.location.origin}{window.location.pathname.replace(/\/?$/, '/')}#/qr/{activeQrTag.token}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Privacy & Instructions Notice */}
-                <div className="p-3.5 bg-white/5 border border-white/5 rounded-2xl space-y-1 text-xs">
-                  <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                    <ShieldCheck size={14} />
-                    <span>Zero Personal Contact Leakage</span>
-                  </div>
-                  <p className="text-gray-300 text-[11px] leading-relaxed">
-                    Print or engrave this QR code on your motorcycle's front windshield, number plate, or key fob. Anyone scanning it can notify you of parking obstruction, lights left on, or an accident without seeing your phone number or home address.
-                  </p>
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const url = `${window.location.origin}${window.location.pathname.replace(/\/?$/, '/')}#/qr/${activeQrTag.token}`;
-                      navigator.clipboard.writeText(url);
-                      setQrCopied(true);
-                      setTimeout(() => setQrCopied(false), 2500);
-                    }}
-                    className="w-full sm:flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-                  >
-                    {qrCopied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
-                    <span>{qrCopied ? 'URL Copied to Clipboard!' : 'Copy QR Scanner URL'}</span>
-                  </button>
-
-                  <a
-                    href={`#/qr/${activeQrTag.token}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full sm:flex-1 py-3 rounded-xl bg-[#FFF174] text-black font-black text-xs flex items-center justify-center gap-1.5 hover:bg-yellow-400 transition-colors shadow-md text-center"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <ExternalLink size={15} />
-                    <span>Test Scanner Page</span>
-                  </a>
-                </div>
-
-                <div className="pt-2 text-center">
-                  <button
-                    type="button"
-                    onClick={() => handleRevokeQrTag(activeQrModalBike.id)}
-                    className="text-[11px] text-red-400 hover:text-red-300 font-bold hover:underline"
-                  >
-                    Revoke & Regenerate New QR Token
-                  </button>
-                </div>
-
-              </div>
+                );
+              })()
             ) : null}
-
           </div>
         </div>
       )}
+
     </div>
   );
 }

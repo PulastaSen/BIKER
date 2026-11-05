@@ -76,6 +76,30 @@ export const INITIAL_BIKES: Bike[] = [
       'Integrated Tail-Lamp Blinkers',
     ],
     notes: 'Sherpa 450 liquid-cooled expedition adventure tourer equipped with cross-spoke tubeless rims.',
+    maintenanceRecords: [
+      {
+        id: 'rec-1',
+        bikeId: 'bike-re-450',
+        serviceType: 'OIL_CHANGE',
+        serviceName: '5,000 km Periodic Service & Synthetic Oil Change',
+        date: '2026-09-15',
+        odometerKm: 5120,
+        cost: 2850,
+        serviceCenter: 'Authorized RE Himalayan Service Hub, Siliguri',
+        notes: 'Filled Motul 7100 10W-50 fully synthetic (2.1L), replaced oil filter element, tightened chassis fasteners.',
+      },
+      {
+        id: 'rec-2',
+        bikeId: 'bike-re-450',
+        serviceType: 'CHAIN_LUBE',
+        serviceName: 'Drive Chain Deep Clean & Slack Calibration',
+        date: '2026-10-20',
+        odometerKm: 6450,
+        cost: 450,
+        serviceCenter: 'MotoAssist Mobile Roadside Pitstop',
+        notes: 'Cleaned with Motul chain cleaner, tensioned to 28mm slack, coated with off-road chain paste.',
+      },
+    ],
   },
   {
     id: 'bike-transalp',
@@ -444,6 +468,30 @@ export function deleteBike(bikeId: string): void {
     KEYS.BIKES,
     bikes.filter((b) => b.id !== bikeId)
   );
+}
+
+export function addMaintenanceRecord(bikeId: string, record: import('../types/app').MaintenanceRecord): void {
+  const bikes = getBikes();
+  const bike = bikes.find((b) => b.id === bikeId);
+  if (!bike) return;
+  const records = bike.maintenanceRecords || [];
+  const updatedBike: Bike = {
+    ...bike,
+    maintenanceRecords: [record, ...records],
+  };
+  saveBike(updatedBike);
+}
+
+export function deleteMaintenanceRecord(bikeId: string, recordId: string): void {
+  const bikes = getBikes();
+  const bike = bikes.find((b) => b.id === bikeId);
+  if (!bike) return;
+  const records = bike.maintenanceRecords || [];
+  const updatedBike: Bike = {
+    ...bike,
+    maintenanceRecords: records.filter((r) => r.id !== recordId),
+  };
+  saveBike(updatedBike);
 }
 
 // Request Storage

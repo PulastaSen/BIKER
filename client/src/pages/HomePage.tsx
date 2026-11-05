@@ -192,7 +192,7 @@ export function HomePage() {
               onClick={toggleVoice}
               className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 min-h-[34px] transition-colors ${
                 voiceEnabled
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                  ? 'bg-[#10B981]/20 border-[#10B981] text-[#10B981]'
                   : 'bg-[#1E252D] border-[#2E3844] text-[#94A3B8] hover:text-white shadow-sm'
               }`}
               title="Toggle voice instructions"
@@ -208,7 +208,7 @@ export function HomePage() {
               onClick={toggleSimpleMode}
               className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 min-h-[34px] transition-colors ${
                 isSimpleMode
-                  ? 'bg-red-50 text-red-600 border-red-300 font-extrabold'
+                  ? 'bg-red-500/20 text-red-400 border-red-500/40 font-extrabold'
                   : 'bg-[#1E252D] border-[#2E3844] text-[#94A3B8] hover:text-white shadow-sm'
               }`}
               title="Toggle simple mode for high readability"
@@ -511,9 +511,9 @@ export function HomePage() {
               <a
                 href="tel:112"
                 onClick={() => handleVoiceRead('Calling 112 National Emergency')}
-                className="flex-1 sm:flex-initial px-5 py-3.5 bg-black hover:bg-neutral-900 text-red-600 font-display font-black text-sm uppercase tracking-wider rounded-xl border border-red-300 flex items-center justify-center gap-2 transition-all min-h-[48px] shadow-lg active:scale-95"
+                className="flex-1 sm:flex-initial px-5 py-3.5 bg-black/60 hover:bg-black/80 text-white font-display font-black text-sm uppercase tracking-wider rounded-xl border border-white/20 flex items-center justify-center gap-2 transition-all min-h-[48px] shadow-lg active:scale-95"
               >
-                <PhoneCall size={18} className="text-red-600" />
+                <PhoneCall size={18} className="text-red-400" />
                 <span>Call 112</span>
               </a>
 
@@ -523,9 +523,9 @@ export function HomePage() {
                   handleVoiceRead('Opening Emergency SOS assistance screen');
                   navigate('/sos');
                 }}
-                className="flex-1 sm:flex-initial px-5 py-3.5 bg-white text-red-900 hover:bg-red-50 font-display font-black text-sm uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-all min-h-[48px] shadow-lg active:scale-95 cursor-pointer"
+                className="flex-1 sm:flex-initial px-5 py-3.5 bg-white hover:bg-neutral-100 text-[#12161A] font-display font-black text-sm uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-all min-h-[48px] shadow-xl active:scale-95 cursor-pointer"
               >
-                <ShieldAlert size={18} />
+                <ShieldAlert size={18} className="text-red-600" />
                 <span>Trigger SOS</span>
               </button>
             </div>

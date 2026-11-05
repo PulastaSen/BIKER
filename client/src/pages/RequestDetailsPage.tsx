@@ -404,7 +404,7 @@ export function RequestDetailsPage() {
                   request.locationProvenance === 'GPS_FRESH' ? 'bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30' :
                   request.locationProvenance === 'GPS_STALE' ? 'bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30' :
                   request.locationProvenance === 'MANUAL_LANDMARK' ? 'bg-[#B1D8E3]/15 text-[#B1D8E3] border-[#B1D8E3]/30' :
-                  'bg-[#343B42] text-[#94A3B8] border-gray-200'
+                  'bg-[#343B42] text-[#94A3B8] border-[#2E3844]'
                 }`}>
                   {request.locationProvenance === 'GPS_FRESH' ? 'GPS Fresh' :
                    request.locationProvenance === 'GPS_STALE' ? 'Stale GPS' :
@@ -429,7 +429,7 @@ export function RequestDetailsPage() {
 
         {/* MOTORCYCLE IDENTIFICATION & SCOPE CARD */}
         <div className="p-4 sm:p-5 rounded-2xl bg-[#1E252D] border border-[#2E3844] space-y-3 text-xs">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2E3844] pb-3">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#FFF174]" />
               <span className="font-display font-bold text-white uppercase text-xs tracking-wider">
@@ -570,22 +570,22 @@ export function RequestDetailsPage() {
                   <div key={flowStep.key} className="relative flex items-center gap-3.5 mb-5 last:mb-0 z-10">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-all ${
                       isCompleted ? 'bg-[#10B981] border-[#10B981] text-black shadow-sm' : 
-                      isActive ? 'bg-[#DFF127] border-[#DFF127] text-black ring-4 ring-[#DFF127]/20 animate-pulse font-black' : 
-                      'bg-gray-50 border-gray-200 text-[#545347]'
+                      isActive ? 'bg-[#FFF174] border-[#FFF174] text-black ring-4 ring-[#FFF174]/20 animate-pulse font-black' : 
+                      'bg-[#242D37] border-[#2E3844] text-[#94A3B8]'
                     }`}>
                       {isCompleted ? <CheckCircle size={15} className="text-black stroke-[2.5]" /> : 
                        isActive ? <Clock size={15} className="text-black stroke-[2.5]" /> : 
-                       <div className="w-1.5 h-1.5 rounded-full bg-[#545347]" />}
+                       <div className="w-1.5 h-1.5 rounded-full bg-[#94A3B8]" />}
                     </div>
                     <div>
                       <p className={`font-display text-xs font-bold leading-tight uppercase tracking-wider ${
-                        isActive ? 'text-[#DFF127]' : isFuture ? 'text-[#545347]' : 'text-white'
+                        isActive ? 'text-[#FFF174]' : isFuture ? 'text-[#94A3B8]' : 'text-white'
                       }`}>
                         {flowStep.label}
                       </p>
                       {isActive && (
                         <span className="text-[10px] font-mono text-[#FFF174] flex items-center gap-1 mt-0.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#DFF127] animate-ping" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#FFF174] animate-ping" />
                           Live active status
                         </span>
                       )}
@@ -655,7 +655,7 @@ export function RequestDetailsPage() {
                     <span className="w-2 h-2 rounded-full bg-[#FFF174] animate-pulse" />
                     SEARCHING FOR VERIFIED ROADSIDE RESPONDER
                   </span>
-                  <span className="text-[11px] font-mono text-[#94A3B8] bg-gray-50 px-2.5 py-0.5 rounded border border-gray-200">
+                  <span className="text-[11px] font-mono text-[#FFF174] bg-[#242D37] px-2.5 py-0.5 rounded border border-[#2E3844]">
                     Awaiting Acceptance
                   </span>
                 </div>
@@ -723,7 +723,7 @@ export function RequestDetailsPage() {
                 <button
                   type="button"
                   onClick={() => alert(`Starting secure masked chat with ${request.provider?.name || 'Assigned Responder'}`)}
-                  className="py-3 px-3 bg-gray-50 hover:bg-[#2A2C26] text-white border border-gray-200 font-display font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer min-h-[44px]"
+                  className="py-3 px-3 bg-[#242D37] hover:bg-[#2A3440] text-white border border-[#2E3844] font-display font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer min-h-[44px]"
                 >
                   <MessageSquare size={15} /> Chat
                 </button>
@@ -765,7 +765,7 @@ export function RequestDetailsPage() {
 
             {/* Section 3: Transparent Pricing Card */}
             <div className="p-5 sm:p-6 rounded-2xl bg-[#1E252D] border border-[#2E3844] space-y-4">
-              <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+              <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
                 <div className="flex items-center gap-2">
                   <DollarSign size={18} className="text-[#FFF174]" />
                   <h3 className="text-xs font-display font-bold uppercase tracking-widest text-white">Transparent Pricing Tariff</h3>
@@ -787,7 +787,7 @@ export function RequestDetailsPage() {
                     <span>BASE SERVICE / PUNCTURE</span>
                     <span className="font-mono text-white">₹{request.estimatedPrice?.serviceFee ?? 100}</span>
                   </div>
-                  <div className="border-t border-gray-200 pt-2.5 flex justify-between font-display font-bold text-sm text-white">
+                  <div className="border-t border-[#2E3844] pt-2.5 flex justify-between font-display font-bold text-sm text-white">
                     <span>ESTIMATED TOTAL</span>
                     <span className="text-[#FFF174] font-mono text-base font-bold">₹{request.estimatedPrice?.estimatedTotal ?? 350}</span>
                   </div>
@@ -807,7 +807,7 @@ export function RequestDetailsPage() {
                 <button
                   type="button"
                   onClick={() => setShowReceiptModal(true)}
-                  className="px-4 py-2.5 rounded-xl bg-gray-50 hover:bg-[#2A2C26] text-white font-display font-bold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer border border-gray-200 min-h-[44px]"
+                  className="px-4 py-2.5 rounded-xl bg-[#242D37] hover:bg-[#2A3440] text-white font-display font-bold text-xs uppercase tracking-wider flex items-center gap-2 cursor-pointer border border-[#2E3844] min-h-[44px]"
                 >
                   <Receipt size={16} className="text-[#FFF174]" /> View Digital Receipt
                 </button>
@@ -868,7 +868,7 @@ export function RequestDetailsPage() {
             {/* Incident Resolution & Safety Confirmation */}
             {(request.status === 'COMPLETED' || request.status === 'RESOLVED') && (
               <div className="p-6 rounded-2xl bg-[#1E252D] border border-[#2E3844] space-y-4">
-                <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
                   <h3 className="text-xs font-display font-bold uppercase tracking-widest text-white">
                     Incident Resolution & Safety Confirmation
                   </h3>
@@ -987,7 +987,7 @@ export function RequestDetailsPage() {
       {showReceiptModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
               <div className="flex items-center gap-2.5">
                 <FileText size={20} className="text-[#FFF174]" />
                 <h3 className="text-xs font-display font-bold uppercase tracking-widest text-white">DIGITAL SERVICE RECEIPT</h3>
@@ -1011,7 +1011,7 @@ export function RequestDetailsPage() {
                 <span className="text-white">{new Date().toLocaleDateString()}</span>
               </div>
 
-              <div className="border-t border-b border-gray-200 py-3 space-y-2">
+              <div className="border-t border-b border-[#2E3844] py-3 space-y-2">
                 <div className="flex justify-between text-[#94A3B8]">
                   <span>Labour Fee</span>
                   <span className="text-white">₹{receiptData?.laborFee || 200}</span>
@@ -1047,7 +1047,7 @@ export function RequestDetailsPage() {
               <button
                 type="button"
                 onClick={() => setShowReceiptModal(false)}
-                className="py-3 px-4 bg-gray-50 hover:bg-[#2A2C26] text-white font-display font-bold text-xs uppercase tracking-wider rounded-xl border border-gray-200 min-h-[44px]"
+                className="py-3 px-4 bg-[#242D37] hover:bg-[#2A3440] text-white font-display font-bold text-xs uppercase tracking-wider rounded-xl border border-[#2E3844] min-h-[44px]"
               >
                 Close
               </button>
@@ -1150,7 +1150,7 @@ export function RequestDetailsPage() {
                   setShowIssueModal(false);
                   setShowDisputeModal(false);
                 }}
-                className="py-2.5 px-4 bg-gray-50 hover:bg-[#2A2C26] text-xs font-display font-bold uppercase tracking-wider text-white rounded-xl border border-gray-200 min-h-[44px]"
+                className="py-2.5 px-4 bg-[#242D37] hover:bg-[#2A3440] text-xs font-display font-bold uppercase tracking-wider text-white rounded-xl border border-[#2E3844] min-h-[44px]"
               >
                 Cancel
               </button>
@@ -1213,7 +1213,7 @@ export function RequestDetailsPage() {
               <button
                 type="button"
                 onClick={() => setShowWhatsAppModal(false)}
-                className="py-3 px-4 bg-gray-50 hover:bg-[#2A2C26] text-white font-display font-bold text-xs uppercase tracking-wider rounded-xl border border-gray-200 min-h-[44px]"
+                className="py-3 px-4 bg-[#242D37] hover:bg-[#2A3440] text-white font-display font-bold text-xs uppercase tracking-wider rounded-xl border border-[#2E3844] min-h-[44px]"
               >
                 Close
               </button>

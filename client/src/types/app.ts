@@ -46,6 +46,19 @@ export interface Bike {
   };
   qrToken?: string;
   activeSubscriptionId?: string;
+  maintenanceRecords?: MaintenanceRecord[];
+}
+
+export interface MaintenanceRecord {
+  id: string;
+  bikeId: string;
+  serviceType: 'OIL_CHANGE' | 'CHAIN_LUBE' | 'BRAKE_PADS' | 'TYRE_REPLACEMENT' | 'PERIODIC_SERVICE' | 'OTHER';
+  serviceName?: string;
+  date: string;
+  odometerKm: number;
+  cost?: number;
+  serviceCenter?: string;
+  notes?: string;
 }
 
 export type RequestStatus =

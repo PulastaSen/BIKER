@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { HashRouter, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
@@ -18,6 +18,7 @@ import { NearbyServicesPage } from './pages/NearbyServicesPage';
 import { RiderDashboardPage } from './pages/rider/RiderDashboardPage';
 import { MyRequestsPage } from './pages/rider/MyRequestsPage';
 import { MyBikesPage } from './pages/rider/MyBikesPage';
+import { BikeDetailPage } from './pages/rider/BikeDetailPage';
 import { EmergencyContactsPage } from './pages/rider/EmergencyContactsPage';
 import { SettingsPage } from './pages/rider/SettingsPage';
 import { HelperDashboardPage } from './pages/helper/HelperDashboardPage';
@@ -141,6 +142,8 @@ function AppRoutes() {
           <Route path="/rider/subscriptions" element={<PageTransition><SubscriptionsPage /></PageTransition>} />
           <Route path="/rider/requests" element={<PageTransition><MyRequestsPage /></PageTransition>} />
           <Route path="/rider/bikes" element={<PageTransition><MyBikesPage /></PageTransition>} />
+          <Route path="/rider/bikes/:bikeId" element={<PageTransition><BikeDetailPage /></PageTransition>} />
+          <Route path="/garage" element={<Navigate to="/rider/bikes" replace />} />
           <Route path="/rider/emergency-contacts" element={<PageTransition><EmergencyContactsPage /></PageTransition>} />
           <Route path="/rider/medical-id" element={<PageTransition><MedicalIdPage /></PageTransition>} />
           <Route path="/rider/safety-circle" element={<PageTransition><SafetyCirclePage /></PageTransition>} />
