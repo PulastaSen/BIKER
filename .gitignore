@@ -30,3 +30,11 @@ server/prisma/*.db-journal
 Thumbs.db
 .vscode/
 .idea/
+
+# Cloudflare tunnel artifacts
+cloudflared.exe
+*.exe
+dist-cloudflare/
+client/dist-cloudflare/
+cloudflare_url.txt
+start_cloudflare_tunnel.cjs
