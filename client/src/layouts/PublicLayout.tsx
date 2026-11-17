@@ -44,6 +44,7 @@ export function PublicLayout() {
 
   const isEmergencyMode = location.pathname === '/sos';
   const isFullScreenMode = ['/entry'].includes(location.pathname);
+  const isHomePage = location.pathname === '/';
 
   // Informational pages where long scrolling, full footer, and marketing CTA are acceptable
   const isInformationalPage = [
@@ -98,7 +99,7 @@ export function PublicLayout() {
             </button>
           </div>
         </header>
-      ) : (
+      ) : !isHomePage ? (
         <header className="site-header sticky top-0 z-40 bg-[#1A2026]/95 border-b border-[#2E3844] shadow-md backdrop-blur-md">
           <nav className="nav page-container flex items-center justify-between max-w-7xl mx-auto px-4 py-3" aria-label="Primary navigation">
             <Link className="brand flex items-center gap-2" to="/" onClick={closeMenu} aria-label="MotoAssist Home">
@@ -267,7 +268,7 @@ export function PublicLayout() {
             <div className="nav-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm z-30 lg:hidden" onClick={closeMenu} aria-hidden="true" />
           )}
         </header>
-      )}
+      ) : null}
 
       {/* MAIN VIEW */}
       <main className="public-main flex-1 pb-28 md:pb-8" key={location.pathname}>
@@ -339,7 +340,7 @@ export function PublicLayout() {
             <span>© {new Date().getFullYear()} MotoAssist. Engineered for Himalayan motorcycle safety.</span>
           </div>
         </footer>
-      ) : !isEmergencyMode ? (
+      ) : !isEmergencyMode && !isHomePage ? (
         /* COMPACT 1-LINE FOOTER on Desktop for Task/Utility Pages; Hidden on Mobile per Section 16 */
         <footer className="hidden md:block py-4 border-t border-white/5 bg-[#090909] text-center text-[11px] text-gray-500">
           <div className="max-w-4xl mx-auto flex items-center justify-between px-4">

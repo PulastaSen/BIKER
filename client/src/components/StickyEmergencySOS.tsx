@@ -12,8 +12,10 @@ export function StickyEmergencySOS() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const HOLD_DURATION = 2500; // 2.5 seconds hold to prevent accidental activation
 
-  // Hide on dedicated emergency pages and initial entry screen to avoid redundancy
+  // Hide on home page (which has its own full-width hero SOS button per reference design),
+  // dedicated emergency pages, and initial entry screen
   const isEmergencyPage =
+    location.pathname === '/' ||
     location.pathname === '/sos' ||
     location.pathname === '/emergency' ||
     location.pathname === '/emergency-assist' ||
