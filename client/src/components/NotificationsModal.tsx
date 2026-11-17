@@ -37,7 +37,7 @@ export function NotificationsModal({ isOpen, onClose }: NotificationsModalProps)
 
         <div className="space-y-2.5 max-h-[60vh] overflow-y-auto pr-1">
           {/* Notification 1 */}
-          <div className="p-3 rounded-2xl bg-[#12161A] border border-emerald-500/30 flex items-start gap-3">
+          <div className="p-3 rounded-2xl bg-[#0A0D12] border border-emerald-500/30 flex items-start gap-3">
             <span className="w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0 animate-pulse" />
             <div className="leading-snug">
               <span className="text-xs font-bold text-white block">Rescue En Route</span>
@@ -49,7 +49,7 @@ export function NotificationsModal({ isOpen, onClose }: NotificationsModalProps)
           </div>
 
           {/* Notification 2 */}
-          <div className="p-3 rounded-2xl bg-[#12161A] border border-white/5 flex items-start gap-3">
+          <div className="p-3 rounded-2xl bg-[#0A0D12] border border-white/5 flex items-start gap-3">
             <CheckCircle2 size={16} className="text-[#F5B041] mt-0.5 shrink-0" />
             <div className="leading-snug">
               <span className="text-xs font-bold text-white block">GPS Telemetry Synchronized</span>
@@ -61,7 +61,7 @@ export function NotificationsModal({ isOpen, onClose }: NotificationsModalProps)
           </div>
 
           {/* Notification 3 */}
-          <div className="p-3 rounded-2xl bg-[#12161A] border border-white/5 flex items-start gap-3">
+          <div className="p-3 rounded-2xl bg-[#0A0D12] border border-white/5 flex items-start gap-3">
             <ShieldCheck size={16} className="text-sky-400 mt-0.5 shrink-0" />
             <div className="leading-snug">
               <span className="text-xs font-bold text-white block">Himalayan Highway Safety Shield</span>

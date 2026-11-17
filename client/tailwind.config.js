@@ -7,28 +7,28 @@ export default {
   theme: {
     extend: {
       colors: {
-        motoBg: '#12161A',
-        motoSurface: '#1A2026',
-        motoCard: '#1E252D',
-        motoElevated: '#242D37',
-        motoInteractive: '#2A3440',
-        motoBorder: '#2E3844',
-        motoBorderSubtle: '#222933',
-        motoAccent: '#FFF174', // Signature MotoAssist Yellow
-        motoYellow: '#FFF174',
-        motoGold: '#FACC15',
-        motoEmergency: '#EF4444',
-        motoRed: '#EF4444',
+        motoBg: '#0A0D12',
+        motoSurface: '#12161D',
+        motoCard: '#181D24',
+        motoElevated: '#1F242C',
+        motoInteractive: '#262D36',
+        motoBorder: 'rgba(255, 255, 255, 0.08)',
+        motoBorderSubtle: 'rgba(255, 255, 255, 0.05)',
+        motoAccent: '#F5B041', // Signature MotoAssist Amber-Yellow Accent
+        motoYellow: '#F5B041',
+        motoGold: '#F5B041',
+        motoEmergency: '#E53935',
+        motoRed: '#E53935',
         motoChartreuse: '#DFF127',
         motoBlue: '#60A5FA',
         motoLavender: '#A78BFA',
         motoOlive: '#545347',
-        motoMedical: '#EF4444',
+        motoMedical: '#E53935',
         motoSuccess: '#10B981',
         motoWarning: '#F59E0B',
-        motoText: '#FFFFFF', // Crisp white text as requested
-        motoTextSecondary: '#94A3B8',
-        motoMuted: '#94A3B8',
+        motoText: '#FFFFFF', // Crisp white text
+        motoTextSecondary: '#9CA3AF',
+        motoMuted: '#9CA3AF',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

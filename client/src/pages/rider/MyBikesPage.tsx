@@ -196,22 +196,22 @@ export function MyBikesPage() {
   const currentBrandCatalog = MOTORCYCLE_CATALOG.find((m) => m.name === selectedBrand);
 
   return (
-    <div className="min-h-screen bg-[#12161A] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-[#12161A] pb-24">
+    <div className="min-h-screen bg-[#0A0D12] text-white flex flex-col font-sans selection:bg-[#F5B041] selection:text-black pb-28 md:pb-16">
       
       {/* GARAGE HEADER */}
-      <div className="bg-[#1A2026] border-b border-[#2E3844] px-4 py-6 sm:px-6 shadow-md">
+      <div className="bg-[#12161D] border-b border-[#262D36] px-4 py-6 sm:px-6 shadow-md">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#FFF174] animate-pulse" />
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#FFF174]">
+              <span className="w-2 h-2 rounded-full bg-[#F5B041] animate-pulse" />
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#F5B041]">
                 YOUR MOTORCYCLE GARAGE
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight">
               My Motorcycles
             </h1>
-            <p className="text-xs sm:text-sm text-[#94A3B8] max-w-xl">
+            <p className="text-xs sm:text-sm text-[#9CA3AF] max-w-xl">
               Keep your motorcycles ready with real-time specs and maintenance history for faster roadside assistance.
             </p>
           </div>
@@ -219,7 +219,7 @@ export function MyBikesPage() {
           <button
             type="button"
             onClick={handleOpenAddWizard}
-            className="px-5 py-3 rounded-xl bg-[#FFF174] hover:bg-yellow-400 active:scale-95 text-[#12161A] font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#FFF174]/15 transition-all cursor-pointer shrink-0 min-h-[46px]"
+            className="px-5 py-3 rounded-xl bg-[#F5B041] hover:bg-[#E5A835] active:scale-95 text-black font-display font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#F5B041]/15 transition-all cursor-pointer shrink-0 min-h-[46px]"
           >
             <Plus size={16} />
             <span>Add Motorcycle</span>
@@ -232,29 +232,29 @@ export function MyBikesPage() {
         {/* SUMMARY STATS TILES */}
         {bikes.length > 0 && (
           <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
-            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] border border-[#2E3844] flex flex-col items-center justify-center text-center shadow-md">
+            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#181D24] border border-[#262D36] flex flex-col items-center justify-center text-center shadow-md">
               <strong className="text-xl sm:text-2xl font-display font-black text-white">
                 {bikes.length}
               </strong>
-              <span className="text-[10px] sm:text-xs font-bold text-[#94A3B8] uppercase tracking-wider mt-0.5">
+              <span className="text-[10px] sm:text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mt-0.5">
                 {bikes.length === 1 ? 'Motorcycle' : 'Motorcycles'}
               </span>
             </div>
 
-            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] border border-[#2E3844] flex flex-col items-center justify-center text-center shadow-md">
-              <strong className="text-xl sm:text-2xl font-display font-black text-[#FFF174]">
+            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#181D24] border border-[#262D36] flex flex-col items-center justify-center text-center shadow-md">
+              <strong className="text-xl sm:text-2xl font-display font-black text-[#F5B041]">
                 {bikes.filter((b) => b.isPrimary).length}
               </strong>
-              <span className="text-[10px] sm:text-xs font-bold text-[#94A3B8] uppercase tracking-wider mt-0.5">
+              <span className="text-[10px] sm:text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mt-0.5">
                 Primary Ride
               </span>
             </div>
 
-            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#1E252D] border border-[#2E3844] flex flex-col items-center justify-center text-center shadow-md">
+            <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#181D24] border border-[#262D36] flex flex-col items-center justify-center text-center shadow-md">
               <strong className="text-xl sm:text-2xl font-display font-black text-[#10B981]">
                 {bikes.length}
               </strong>
-              <span className="text-[10px] sm:text-xs font-bold text-[#94A3B8] uppercase tracking-wider mt-0.5">
+              <span className="text-[10px] sm:text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mt-0.5">
                 Ready For Dispatch
               </span>
             </div>
@@ -281,8 +281,8 @@ export function MyBikesPage() {
                 <div
                   key={b.id}
                   onClick={() => navigate(`/rider/bikes/${b.id}`)}
-                  className={`rounded-2xl bg-[#1E252D] border transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden shadow-lg group hover:scale-[1.01] ${
-                    b.isPrimary ? 'border-[#FFF174]/70 shadow-[#FFF174]/5' : 'border-[#2E3844] hover:border-[#FFF174]'
+                  className={`rounded-2xl bg-[#181D24] border transition-all duration-200 cursor-pointer flex flex-col justify-between overflow-hidden shadow-lg group hover:scale-[1.01] ${
+                    b.isPrimary ? 'border-[#F5B041]/70 shadow-[#F5B041]/5' : 'border-[#262D36] hover:border-[#F5B041]'
                   }`}
                   role="button"
                   tabIndex={0}
@@ -292,7 +292,7 @@ export function MyBikesPage() {
                   aria-label={`${displayName} - View Details`}
                 >
                   {/* 1. MOTORCYCLE IMAGE WITH UNIFORM HEIGHT & BADGES */}
-                  <div className="relative w-full h-36 sm:h-40 bg-[#12161A] overflow-hidden shrink-0">
+                  <div className="relative w-full h-36 sm:h-40 bg-[#0A0D12] overflow-hidden shrink-0">
                     <img
                       src={bikeImg}
                       alt={displayName}
@@ -302,7 +302,7 @@ export function MyBikesPage() {
 
                     {/* Primary Badge Overlay */}
                     {b.isPrimary && (
-                      <div className="absolute top-2.5 left-2.5 bg-[#FFF174] text-[#12161A] font-black text-[10px] px-2 py-0.5 rounded-md flex items-center gap-1 shadow-md">
+                      <div className="absolute top-2.5 left-2.5 bg-[#F5B041] text-[#0A0D12] font-black text-[10px] px-2 py-0.5 rounded-md flex items-center gap-1 shadow-md">
                         <Star size={11} fill="currentColor" />
                         <span>PRIMARY</span>
                       </div>
@@ -323,22 +323,22 @@ export function MyBikesPage() {
                     {/* Header: Brand Pill & Year */}
                     <div className="space-y-1">
                       <div className="flex items-center justify-between gap-1 text-[11px]">
-                        <span className="font-mono font-bold uppercase text-[#94A3B8] bg-[#242D37] border border-[#2E3844] px-1.5 py-0.5 rounded text-[10px]">
+                        <span className="font-mono font-bold uppercase text-[#9CA3AF] bg-[#1F242C] border border-[#262D36] px-1.5 py-0.5 rounded text-[10px]">
                           {b.brand}
                         </span>
-                        <span className="text-[#94A3B8] font-bold text-[11px]">
+                        <span className="text-[#9CA3AF] font-bold text-[11px]">
                           {b.year} {b.category ? `• ${b.category.split('/')[0].trim()}` : ''}
                         </span>
                       </div>
 
                       {/* Motorcycle Model Title */}
-                      <h2 className="text-sm sm:text-base font-display font-bold text-white group-hover:text-[#FFF174] transition-colors line-clamp-1 leading-snug">
+                      <h2 className="text-sm sm:text-base font-display font-bold text-white group-hover:text-[#F5B041] transition-colors line-clamp-1 leading-snug">
                         {displayName}
                       </h2>
                     </div>
 
                     {/* Registration Plate Box with Privacy Eye */}
-                    <div className="flex items-center justify-between gap-1.5 bg-[#12161A] border border-[#2E3844] px-2.5 py-1 rounded-lg">
+                    <div className="flex items-center justify-between gap-1.5 bg-[#0A0D12] border border-[#262D36] px-2.5 py-1 rounded-lg">
                       <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold text-white truncate">
                         <span className="bg-blue-600 text-white text-[8px] font-black px-1 py-0.2 rounded leading-none">IND</span>
                         <span className="tracking-wide">{formattedReg}</span>
@@ -349,7 +349,7 @@ export function MyBikesPage() {
                           e.stopPropagation();
                           toggleMask(b.id);
                         }}
-                        className="text-[#94A3B8] hover:text-white p-0.5"
+                        className="text-[#9CA3AF] hover:text-white p-0.5"
                         title={isMasked ? 'Reveal plate' : 'Mask plate'}
                       >
                         {isMasked ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -358,20 +358,20 @@ export function MyBikesPage() {
 
                     {/* 3 Essential Specifications Badges */}
                     <div className="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-                      <div className="bg-[#242D37] border border-[#2E3844] rounded-lg py-1 px-1">
-                        <span className="text-[#94A3B8] block text-[9px] uppercase font-mono">Engine</span>
+                      <div className="bg-[#1F242C] border border-[#262D36] rounded-lg py-1 px-1">
+                        <span className="text-[#9CA3AF] block text-[9px] uppercase font-mono">Engine</span>
                         <strong className="text-white block font-bold truncate">
                           {b.engine ? b.engine.split(' ')[0] : '450cc'}
                         </strong>
                       </div>
-                      <div className="bg-[#242D37] border border-[#2E3844] rounded-lg py-1 px-1">
-                        <span className="text-[#94A3B8] block text-[9px] uppercase font-mono">Fuel</span>
+                      <div className="bg-[#1F242C] border border-[#262D36] rounded-lg py-1 px-1">
+                        <span className="text-[#9CA3AF] block text-[9px] uppercase font-mono">Fuel</span>
                         <strong className="text-[#10B981] block font-bold truncate">
                           {b.fuelType}
                         </strong>
                       </div>
-                      <div className="bg-[#242D37] border border-[#2E3844] rounded-lg py-1 px-1">
-                        <span className="text-[#94A3B8] block text-[9px] uppercase font-mono">Weight</span>
+                      <div className="bg-[#1F242C] border border-[#262D36] rounded-lg py-1 px-1">
+                        <span className="text-[#9CA3AF] block text-[9px] uppercase font-mono">Weight</span>
                         <strong className="text-white block font-bold truncate">
                           {b.weight ? b.weight.split(' ')[0] : '196kg'}
                         </strong>
@@ -385,7 +385,7 @@ export function MyBikesPage() {
                     <button
                       type="button"
                       onClick={() => navigate(`/rider/bikes/${b.id}`)}
-                      className="flex-1 py-2 px-3 rounded-xl bg-[#242D37] hover:bg-[#FFF174] hover:text-[#12161A] text-white border border-[#2E3844] font-bold text-xs flex items-center justify-center gap-1 transition-all cursor-pointer min-h-[38px] group-hover:bg-[#2A3440]"
+                      className="flex-1 py-2 px-3 rounded-xl bg-[#1F242C] hover:bg-[#F5B041] hover:text-[#0A0D12] text-white border border-[#262D36] font-bold text-xs flex items-center justify-center gap-1 transition-all cursor-pointer min-h-[38px] group-hover:bg-[#2A3440]"
                     >
                       <span>View Bike</span>
                       <ChevronRight size={14} />
@@ -395,7 +395,7 @@ export function MyBikesPage() {
                     <button
                       type="button"
                       onClick={(e) => handleOpenEditModal(b, e)}
-                      className="px-3 py-2 rounded-xl bg-[#12161A] hover:bg-[#242D37] text-[#FFF174] border border-[#2E3844] font-bold text-xs flex items-center justify-center gap-1 transition-colors cursor-pointer min-h-[38px]"
+                      className="px-3 py-2 rounded-xl bg-[#0A0D12] hover:bg-[#1F242C] text-[#F5B041] border border-[#262D36] font-bold text-xs flex items-center justify-center gap-1 transition-colors cursor-pointer min-h-[38px]"
                       title="Edit motorcycle information"
                     >
                       <Edit3 size={13} />
@@ -407,7 +407,7 @@ export function MyBikesPage() {
                       <button
                         type="button"
                         onClick={(e) => handleSetPrimary(b, e)}
-                        className="p-2 rounded-xl bg-[#12161A] hover:bg-[#242D37] text-[#94A3B8] hover:text-[#FFF174] border border-[#2E3844] flex items-center justify-center transition-colors min-h-[38px] min-w-[38px]"
+                        className="p-2 rounded-xl bg-[#0A0D12] hover:bg-[#1F242C] text-[#9CA3AF] hover:text-[#F5B041] border border-[#262D36] flex items-center justify-center transition-colors min-h-[38px] min-w-[38px]"
                         title="Set as primary motorcycle"
                       >
                         <Star size={14} />
@@ -418,7 +418,7 @@ export function MyBikesPage() {
                     <button
                       type="button"
                       onClick={(e) => handleOpenQrModal(b, e)}
-                      className="p-2 rounded-xl bg-[#12161A] hover:bg-[#242D37] text-indigo-400 border border-[#2E3844] flex items-center justify-center transition-colors min-h-[38px] min-w-[38px]"
+                      className="p-2 rounded-xl bg-[#0A0D12] hover:bg-[#1F242C] text-indigo-400 border border-[#262D36] flex items-center justify-center transition-colors min-h-[38px] min-w-[38px]"
                       title="Emergency QR sticker"
                     >
                       <QrCode size={14} />
@@ -445,12 +445,12 @@ export function MyBikesPage() {
           ======================================================== */}
       {showAddWizard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="bg-[#1E252D] border border-[#2E3844] rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl text-white max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#181D24] border border-[#262D36] rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl text-white max-h-[90vh] overflow-y-auto">
             
             {/* Header & Steps Counter */}
-            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
+            <div className="flex items-center justify-between border-b border-[#262D36] pb-3">
               <div>
-                <span className="text-[10px] font-mono font-bold uppercase text-[#FFF174] tracking-wider block">
+                <span className="text-[10px] font-mono font-bold uppercase text-[#F5B041] tracking-wider block">
                   STEP {wizardStep} OF 4
                 </span>
                 <h3 className="text-lg font-bold text-white">
@@ -463,7 +463,7 @@ export function MyBikesPage() {
               <button
                 type="button"
                 onClick={() => setShowAddWizard(false)}
-                className="p-1.5 rounded-xl text-[#94A3B8] hover:text-white hover:bg-[#242D37]"
+                className="p-1.5 rounded-xl text-[#9CA3AF] hover:text-white hover:bg-[#1F242C]"
               >
                 <X size={18} />
               </button>
@@ -473,13 +473,13 @@ export function MyBikesPage() {
             {wizardStep === 1 && (
               <div className="space-y-3">
                 <div className="relative">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
                   <input
                     type="text"
                     value={brandSearch}
                     onChange={(e) => setBrandSearch(e.target.value)}
                     placeholder="Search manufacturer (e.g. Royal Enfield, Honda)..."
-                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl pl-8 pr-3 py-2 text-xs text-white placeholder-[#94A3B8] focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl pl-8 pr-3 py-2 text-xs text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
 
@@ -494,12 +494,12 @@ export function MyBikesPage() {
                       }}
                       className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                         selectedBrand === m.name
-                          ? 'bg-[#242D37] border-[#FFF174] text-white shadow-md'
-                          : 'bg-[#12161A] border-[#2E3844] text-[#94A3B8] hover:text-white hover:bg-[#1A2026]'
+                          ? 'bg-[#1F242C] border-[#F5B041] text-white shadow-md'
+                          : 'bg-[#0A0D12] border-[#262D36] text-[#9CA3AF] hover:text-white hover:bg-[#12161D]'
                       }`}
                     >
                       <strong className="text-xs block text-white">{m.name}</strong>
-                      <span className="text-[10px] text-[#94A3B8] block">{m.country}</span>
+                      <span className="text-[10px] text-[#9CA3AF] block">{m.country}</span>
                     </button>
                   ))}
                   <button
@@ -510,12 +510,12 @@ export function MyBikesPage() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                       selectedBrand === 'Other'
-                        ? 'bg-[#242D37] border-[#FFF174] text-white shadow-md'
-                        : 'bg-[#12161A] border-[#2E3844] text-[#94A3B8] hover:text-white hover:bg-[#1A2026]'
+                        ? 'bg-[#1F242C] border-[#F5B041] text-white shadow-md'
+                        : 'bg-[#0A0D12] border-[#262D36] text-[#9CA3AF] hover:text-white hover:bg-[#12161D]'
                     }`}
                   >
                     <strong className="text-xs block text-white">Other Brand</strong>
-                    <span className="text-[10px] text-[#94A3B8] block">Custom Maker</span>
+                    <span className="text-[10px] text-[#9CA3AF] block">Custom Maker</span>
                   </button>
                 </div>
 
@@ -523,7 +523,7 @@ export function MyBikesPage() {
                   <button
                     type="button"
                     onClick={() => setWizardStep(2)}
-                    className="px-5 py-2.5 rounded-xl bg-[#FFF174] text-[#12161A] font-black text-xs uppercase tracking-wider"
+                    className="px-5 py-2.5 rounded-xl bg-[#F5B041] text-[#0A0D12] font-black text-xs uppercase tracking-wider"
                   >
                     Next: Choose Model →
                   </button>
@@ -534,7 +534,7 @@ export function MyBikesPage() {
             {/* Step 2: Select Model */}
             {wizardStep === 2 && (
               <div className="space-y-4">
-                <p className="text-xs text-[#94A3B8]">
+                <p className="text-xs text-[#9CA3AF]">
                   Choose from popular {selectedBrand} models, or enter your custom model below:
                 </p>
 
@@ -550,8 +550,8 @@ export function MyBikesPage() {
                         }}
                         className={`p-2.5 rounded-xl border text-left text-xs transition-all ${
                           selectedModel === mod
-                            ? 'bg-[#242D37] border-[#FFF174] text-white font-bold'
-                            : 'bg-[#12161A] border-[#2E3844] text-[#CBD5E1] hover:text-white'
+                            ? 'bg-[#1F242C] border-[#F5B041] text-white font-bold'
+                            : 'bg-[#0A0D12] border-[#262D36] text-[#CBD5E1] hover:text-white'
                         }`}
                       >
                         {mod}
@@ -561,7 +561,7 @@ export function MyBikesPage() {
                 )}
 
                 <div>
-                  <label className="block text-[#94A3B8] font-bold text-xs mb-1">Or Enter Exact Model / Variant:</label>
+                  <label className="block text-[#9CA3AF] font-bold text-xs mb-1">Or Enter Exact Model / Variant:</label>
                   <input
                     type="text"
                     value={customModel}
@@ -570,7 +570,7 @@ export function MyBikesPage() {
                       setSelectedModel('__OTHER__');
                     }}
                     placeholder="e.g. Scram 411, Interceptor 650 Custom..."
-                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-xs text-white placeholder-[#94A3B8] focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-xs text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
 
@@ -578,7 +578,7 @@ export function MyBikesPage() {
                   <button
                     type="button"
                     onClick={() => setWizardStep(1)}
-                    className="px-4 py-2 rounded-xl bg-[#242D37] text-white text-xs font-bold"
+                    className="px-4 py-2 rounded-xl bg-[#1F242C] text-white text-xs font-bold"
                   >
                     ← Back
                   </button>
@@ -586,7 +586,7 @@ export function MyBikesPage() {
                     type="button"
                     onClick={() => setWizardStep(3)}
                     disabled={!selectedModel && !customModel}
-                    className="px-5 py-2.5 rounded-xl bg-[#FFF174] text-[#12161A] font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-[#F5B041] text-[#0A0D12] font-black text-xs uppercase tracking-wider disabled:opacity-50"
                   >
                     Next: Bike Details →
                   </button>
@@ -598,34 +598,34 @@ export function MyBikesPage() {
             {wizardStep === 3 && (
               <div className="space-y-3.5 text-xs">
                 <div>
-                  <label className="block text-[#94A3B8] font-bold mb-1">Registration Plate *</label>
+                  <label className="block text-[#9CA3AF] font-bold mb-1">Registration Plate *</label>
                   <input
                     type="text"
                     required
                     value={newReg}
                     onChange={(e) => setNewReg(e.target.value)}
                     placeholder="e.g. WB 74 AB 1234"
-                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white font-mono uppercase focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white font-mono uppercase focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[#94A3B8] font-bold mb-1">Model Year</label>
+                    <label className="block text-[#9CA3AF] font-bold mb-1">Model Year</label>
                     <input
                       type="number"
                       value={newYear}
                       onChange={(e) => setNewYear(e.target.value)}
-                      className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[#94A3B8] font-bold mb-1">Fuel Type</label>
+                    <label className="block text-[#9CA3AF] font-bold mb-1">Fuel Type</label>
                     <select
                       value={newFuelType}
                       onChange={(e) => setNewFuelType(e.target.value as FuelType)}
-                      className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                     >
                       <option value="PETROL">Petrol</option>
                       <option value="ELECTRIC">Electric (EV)</option>
@@ -635,13 +635,13 @@ export function MyBikesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[#94A3B8] font-bold mb-1">Category / Purpose</label>
+                  <label className="block text-[#9CA3AF] font-bold mb-1">Category / Purpose</label>
                   <input
                     type="text"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                     placeholder="e.g. Adventure Tourer, Daily Commute, Cruiser"
-                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
 
@@ -650,7 +650,7 @@ export function MyBikesPage() {
                     type="checkbox"
                     checked={newIsPrimary}
                     onChange={(e) => setNewIsPrimary(e.target.checked)}
-                    className="w-4 h-4 rounded accent-[#FFF174]"
+                    className="w-4 h-4 rounded accent-[#F5B041]"
                   />
                   <span className="text-white font-medium">Set as my primary motorcycle</span>
                 </label>
@@ -659,7 +659,7 @@ export function MyBikesPage() {
                   <button
                     type="button"
                     onClick={() => setWizardStep(2)}
-                    className="px-4 py-2 rounded-xl bg-[#242D37] text-white text-xs font-bold"
+                    className="px-4 py-2 rounded-xl bg-[#1F242C] text-white text-xs font-bold"
                   >
                     ← Back
                   </button>
@@ -667,7 +667,7 @@ export function MyBikesPage() {
                     type="button"
                     onClick={() => setWizardStep(4)}
                     disabled={!newReg}
-                    className="px-5 py-2.5 rounded-xl bg-[#FFF174] text-[#12161A] font-black text-xs uppercase tracking-wider disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-[#F5B041] text-[#0A0D12] font-black text-xs uppercase tracking-wider disabled:opacity-50"
                   >
                     Next: Review →
                   </button>
@@ -678,31 +678,31 @@ export function MyBikesPage() {
             {/* Step 4: Review & Save */}
             {wizardStep === 4 && (
               <div className="space-y-4 text-xs">
-                <div className="p-4 rounded-2xl bg-[#12161A] border border-[#2E3844] space-y-2">
-                  <span className="text-[10px] font-mono text-[#FFF174] uppercase block">MOTORCYCLE SUMMARY</span>
+                <div className="p-4 rounded-2xl bg-[#0A0D12] border border-[#262D36] space-y-2">
+                  <span className="text-[10px] font-mono text-[#F5B041] uppercase block">MOTORCYCLE SUMMARY</span>
                   <strong className="text-base font-bold text-white block">
                     {selectedBrand} {selectedModel === '__OTHER__' ? customModel : selectedModel}
                   </strong>
-                  <div className="divide-y divide-[#2E3844] text-xs">
+                  <div className="divide-y divide-[#262D36] text-xs">
                     <div className="py-1.5 flex justify-between">
-                      <span className="text-[#94A3B8]">Registration Plate:</span>
+                      <span className="text-[#9CA3AF]">Registration Plate:</span>
                       <strong className="text-white font-mono uppercase">{newReg}</strong>
                     </div>
                     <div className="py-1.5 flex justify-between">
-                      <span className="text-[#94A3B8]">Model Year:</span>
+                      <span className="text-[#9CA3AF]">Model Year:</span>
                       <strong className="text-white">{newYear}</strong>
                     </div>
                     <div className="py-1.5 flex justify-between">
-                      <span className="text-[#94A3B8]">Fuel Type:</span>
+                      <span className="text-[#9CA3AF]">Fuel Type:</span>
                       <strong className="text-[#10B981]">{newFuelType}</strong>
                     </div>
                     <div className="py-1.5 flex justify-between">
-                      <span className="text-[#94A3B8]">Category:</span>
+                      <span className="text-[#9CA3AF]">Category:</span>
                       <strong className="text-white">{newCategory}</strong>
                     </div>
                     <div className="py-1.5 flex justify-between">
-                      <span className="text-[#94A3B8]">Role:</span>
-                      <strong className={newIsPrimary ? 'text-[#FFF174]' : 'text-white'}>
+                      <span className="text-[#9CA3AF]">Role:</span>
+                      <strong className={newIsPrimary ? 'text-[#F5B041]' : 'text-white'}>
                         {newIsPrimary ? '★ Primary Motorcycle' : 'Secondary Motorcycle'}
                       </strong>
                     </div>
@@ -713,14 +713,14 @@ export function MyBikesPage() {
                   <button
                     type="button"
                     onClick={() => setWizardStep(3)}
-                    className="px-4 py-2 rounded-xl bg-[#242D37] text-white text-xs font-bold"
+                    className="px-4 py-2 rounded-xl bg-[#1F242C] text-white text-xs font-bold"
                   >
                     ← Back
                   </button>
                   <button
                     type="button"
                     onClick={handleSaveNewBike}
-                    className="px-6 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-[#FFF174]/20"
+                    className="px-6 py-2.5 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-[#0A0D12] font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-[#F5B041]/20"
                   >
                     <Check size={16} />
                     <span>Save Motorcycle to Garage</span>
@@ -738,16 +738,16 @@ export function MyBikesPage() {
           ======================================================== */}
       {editingBike && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="bg-[#1E252D] border border-[#2E3844] rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl text-white max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
+          <div className="bg-[#181D24] border border-[#262D36] rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl text-white max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#262D36] pb-3">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Edit3 size={18} className="text-[#FFF174]" />
+                <Edit3 size={18} className="text-[#F5B041]" />
                 <span>Edit Motorcycle Details</span>
               </h3>
               <button
                 type="button"
                 onClick={() => setEditingBike(null)}
-                className="p-1.5 rounded-xl text-[#94A3B8] hover:text-white hover:bg-[#242D37]"
+                className="p-1.5 rounded-xl text-[#9CA3AF] hover:text-white hover:bg-[#1F242C]"
               >
                 <X size={18} />
               </button>
@@ -755,66 +755,66 @@ export function MyBikesPage() {
 
             <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-[#94A3B8] font-bold mb-1">Brand / Manufacturer *</label>
+                <label className="block text-[#9CA3AF] font-bold mb-1">Brand / Manufacturer *</label>
                 <input
                   type="text"
                   required
                   value={editBrand}
                   onChange={(e) => setEditBrand(e.target.value)}
-                  className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
 
               <div>
-                <label className="block text-[#94A3B8] font-bold mb-1">Model Name *</label>
+                <label className="block text-[#9CA3AF] font-bold mb-1">Model Name *</label>
                 <input
                   type="text"
                   required
                   value={editModel}
                   onChange={(e) => setEditModel(e.target.value)}
-                  className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[#94A3B8] font-bold mb-1">Registration Plate *</label>
+                  <label className="block text-[#9CA3AF] font-bold mb-1">Registration Plate *</label>
                   <input
                     type="text"
                     required
                     value={editReg}
                     onChange={(e) => setEditReg(e.target.value)}
-                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white font-mono uppercase focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white font-mono uppercase focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[#94A3B8] font-bold mb-1">Model Year</label>
+                  <label className="block text-[#9CA3AF] font-bold mb-1">Model Year</label>
                   <input
                     type="number"
                     value={editYear}
                     onChange={(e) => setEditYear(e.target.value)}
-                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[#94A3B8] font-bold mb-1">Category / Variant</label>
+                  <label className="block text-[#9CA3AF] font-bold mb-1">Category / Variant</label>
                   <input
                     type="text"
                     value={editCategory}
                     onChange={(e) => setEditCategory(e.target.value)}
                     placeholder="Adventure Tourer, Street..."
-                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[#94A3B8] font-bold mb-1">Fuel Type</label>
+                  <label className="block text-[#9CA3AF] font-bold mb-1">Fuel Type</label>
                   <select
                     value={editFuelType}
                     onChange={(e) => setEditFuelType(e.target.value as FuelType)}
-                    className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                   >
                     <option value="PETROL">Petrol</option>
                     <option value="ELECTRIC">Electric (EV)</option>
@@ -824,13 +824,13 @@ export function MyBikesPage() {
               </div>
 
               <div>
-                <label className="block text-[#94A3B8] font-bold mb-1">Notes / Modifications</label>
+                <label className="block text-[#9CA3AF] font-bold mb-1">Notes / Modifications</label>
                 <input
                   type="text"
                   value={editNotes}
                   onChange={(e) => setEditNotes(e.target.value)}
                   placeholder="e.g. Panniers, crash guards, tubeless rims"
-                  className="w-full bg-[#12161A] border border-[#2E3844] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#0A0D12] border border-[#262D36] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
 
@@ -839,12 +839,12 @@ export function MyBikesPage() {
                   type="checkbox"
                   checked={editIsPrimary}
                   onChange={(e) => setEditIsPrimary(e.target.checked)}
-                  className="w-4 h-4 rounded accent-[#FFF174]"
+                  className="w-4 h-4 rounded accent-[#F5B041]"
                 />
                 <span className="text-white font-medium">Set as primary motorcycle</span>
               </label>
 
-              <div className="flex items-center justify-between pt-3 border-t border-[#2E3844]">
+              <div className="flex items-center justify-between pt-3 border-t border-[#262D36]">
                 <button
                   type="button"
                   onClick={() => handleDeleteBike(editingBike)}
@@ -858,13 +858,13 @@ export function MyBikesPage() {
                   <button
                     type="button"
                     onClick={() => setEditingBike(null)}
-                    className="px-4 py-2.5 rounded-xl bg-[#242D37] text-white font-bold text-xs"
+                    className="px-4 py-2.5 rounded-xl bg-[#1F242C] text-white font-bold text-xs"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-[#12161A] font-black text-xs uppercase"
+                    className="px-5 py-2.5 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-[#0A0D12] font-black text-xs uppercase"
                   >
                     Save Changes
                   </button>
@@ -880,8 +880,8 @@ export function MyBikesPage() {
           ======================================================== */}
       {activeQrModalBike && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="bg-[#1E252D] border border-[#2E3844] rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl text-white">
-            <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
+          <div className="bg-[#181D24] border border-[#262D36] rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl text-white">
+            <div className="flex items-center justify-between border-b border-[#262D36] pb-3">
               <div className="flex items-center gap-2 text-indigo-400">
                 <QrCode size={20} />
                 <h3 className="text-base font-bold text-white">Emergency Vehicle QR Tag</h3>
@@ -892,7 +892,7 @@ export function MyBikesPage() {
                   setActiveQrModalBike(null);
                   setActiveQrTag(null);
                 }}
-                className="p-1.5 rounded-xl text-[#94A3B8] hover:text-white"
+                className="p-1.5 rounded-xl text-[#9CA3AF] hover:text-white"
               >
                 <X size={18} />
               </button>
@@ -900,8 +900,8 @@ export function MyBikesPage() {
 
             {qrLoading ? (
               <div className="py-8 text-center space-y-2">
-                <div className="w-8 h-8 border-2 border-[#FFF174] border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-xs text-[#94A3B8]">Generating emergency QR tag...</p>
+                <div className="w-8 h-8 border-2 border-[#F5B041] border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-xs text-[#9CA3AF]">Generating emergency QR tag...</p>
               </div>
             ) : activeQrTag ? (
               (() => {
@@ -914,7 +914,7 @@ export function MyBikesPage() {
                     </div>
                     <div className="text-xs space-y-1">
                       <strong className="text-white block font-mono">{activeQrModalBike.registrationNumber}</strong>
-                      <p className="text-[11px] text-[#94A3B8]">
+                      <p className="text-[11px] text-[#9CA3AF]">
                         First responders can scan this sticker on your bike to view vital ICE contacts without accessing private accounts.
                       </p>
                     </div>
@@ -926,7 +926,7 @@ export function MyBikesPage() {
                           setQrCopied(true);
                           setTimeout(() => setQrCopied(false), 2000);
                         }}
-                        className="px-4 py-2 rounded-xl bg-[#242D37] hover:bg-[#2A3440] text-xs font-bold text-white flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl bg-[#1F242C] hover:bg-[#2A3440] text-xs font-bold text-white flex items-center gap-1.5"
                       >
                         {qrCopied ? <Check size={14} className="text-[#10B981]" /> : <Copy size={14} />}
                         <span>{qrCopied ? 'Link Copied!' : 'Copy Tag Link'}</span>

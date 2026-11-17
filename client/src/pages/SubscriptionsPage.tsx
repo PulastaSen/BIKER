@@ -218,12 +218,12 @@ export function SubscriptionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-20 pb-24 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 sm:pt-6 pb-28 md:pb-16 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto space-y-10">
 
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFF174]/15 border border-[#FFF174]/30 text-[#FFF174] text-xs font-black uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F5B041]/15 border border-[#F5B041]/30 text-[#F5B041] text-xs font-black uppercase tracking-widest">
             <Sparkles size={14} />
             <span>MOTOASSIST ANNUAL ROADSIDE COVERAGE</span>
           </div>
@@ -254,7 +254,7 @@ export function SubscriptionsPage() {
 
               <div className="text-right">
                 <span className="text-xs text-gray-400 block">Covered Motorcycle</span>
-                <span className="text-sm font-black text-[#FFF174]">
+                <span className="text-sm font-black text-[#F5B041]">
                   {activeSubscriptions[0].linkedBike.brand} {activeSubscriptions[0].linkedBike.model} ({activeSubscriptions[0].linkedBike.registrationNumber})
                 </span>
               </div>
@@ -279,7 +279,7 @@ export function SubscriptionsPage() {
               </div>
               <div className="p-3 bg-white/5 rounded-xl border border-white/5">
                 <span className="text-gray-400 block text-[11px]">Valid Until</span>
-                <strong className="text-lg text-[#FFF174] font-black">
+                <strong className="text-lg text-[#F5B041] font-black">
                   {new Date(activeSubscriptions[0].endDate).toLocaleDateString()}
                 </strong>
               </div>
@@ -296,14 +296,14 @@ export function SubscriptionsPage() {
                 key={plan.tier}
                 className={`rounded-3xl p-6 flex flex-col justify-between transition-all relative ${
                   isHighlight 
-                    ? 'bg-gradient-to-b from-[#222222] to-[#1a1a1a] border-2 border-[#FFF174] shadow-2xl shadow-yellow-500/10' 
+                    ? 'bg-gradient-to-b from-[#222222] to-[#1a1a1a] border-2 border-[#F5B041] shadow-2xl shadow-yellow-500/10' 
                     : 'bg-[#1D1D1D] border border-white/10 hover:border-white/20'
                 }`}
               >
                 {plan.badge && (
                   <span className={`absolute -top-3.5 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border shadow-md ${
                     isHighlight 
-                      ? 'bg-[#FFF174] text-black border-[#FFF174]' 
+                      ? 'bg-[#F5B041] text-black border-[#F5B041]' 
                       : 'bg-white/10 text-white border-white/20 backdrop-blur-md'
                   }`}>
                     {plan.badge}
@@ -318,7 +318,7 @@ export function SubscriptionsPage() {
 
                   <div className="border-t border-b border-white/10 py-4">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-black text-[#FFF174]">
+                      <span className="text-3xl font-black text-[#F5B041]">
                         {plan.priceInr === 0 ? '₹0' : `₹${plan.priceInr}`}
                       </span>
                       <span className="text-xs text-gray-400">/ {plan.durationMonths} months</span>
@@ -358,7 +358,7 @@ export function SubscriptionsPage() {
                     onClick={() => setSelectedPlan(plan)}
                     className={`w-full py-3 rounded-xl font-black text-xs transition-all active:scale-95 flex items-center justify-center gap-1.5 ${
                       isHighlight
-                        ? 'bg-[#FFF174] text-black hover:bg-yellow-400 shadow-lg shadow-yellow-500/20'
+                        ? 'bg-[#F5B041] text-black hover:bg-yellow-400 shadow-lg shadow-yellow-500/20'
                         : 'bg-white/10 text-white hover:bg-white/20'
                     }`}
                   >
@@ -374,7 +374,7 @@ export function SubscriptionsPage() {
         {/* Feature Comparison Table */}
         <div className="bg-[#1D1D1D] border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6">
           <div className="space-y-1">
-            <span className="text-xs font-black uppercase tracking-widest text-[#FFF174]">TRANSPARENT DIRECT COMPARISON</span>
+            <span className="text-xs font-black uppercase tracking-widest text-[#F5B041]">TRANSPARENT DIRECT COMPARISON</span>
             <h2 className="text-2xl font-black text-white">Full Feature Breakdown</h2>
           </div>
 
@@ -385,7 +385,7 @@ export function SubscriptionsPage() {
                   <th className="py-3 px-3">Capability / Service</th>
                   <th className="py-3 px-3">Freedom</th>
                   <th className="py-3 px-3">Commuter</th>
-                  <th className="py-3 px-3 text-[#FFF174]">Touring Pro</th>
+                  <th className="py-3 px-3 text-[#F5B041]">Touring Pro</th>
                   <th className="py-3 px-3">Hill Explorer</th>
                 </tr>
               </thead>
@@ -394,14 +394,14 @@ export function SubscriptionsPage() {
                   <td className="py-3 px-3 font-bold text-white">Free Breakdown Callouts</td>
                   <td className="py-3 px-3 text-gray-400">Pay as you go</td>
                   <td className="py-3 px-3 font-bold text-white">2 / year</td>
-                  <td className="py-3 px-3 font-bold text-[#FFF174]">4 / year</td>
+                  <td className="py-3 px-3 font-bold text-[#F5B041]">4 / year</td>
                   <td className="py-3 px-3 font-bold text-white">6 / year</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-3 font-bold text-white">Free Towing Distance</td>
                   <td className="py-3 px-3 text-gray-400">Standard rate</td>
                   <td className="py-3 px-3 font-bold text-white">25 km</td>
-                  <td className="py-3 px-3 font-bold text-[#FFF174]">50 km</td>
+                  <td className="py-3 px-3 font-bold text-[#F5B041]">50 km</td>
                   <td className="py-3 px-3 font-bold text-white">100 km</td>
                 </tr>
                 <tr>
@@ -436,8 +436,8 @@ export function SubscriptionsPage() {
                   <td className="py-3 px-3 font-bold text-white">Highway Priority Dispatch</td>
                   <td className="py-3 px-3 text-gray-400">Standard</td>
                   <td className="py-3 px-3 text-gray-400">Standard</td>
-                  <td className="py-3 px-3 text-[#FFF174] font-bold">High Priority</td>
-                  <td className="py-3 px-3 text-[#FFF174] font-bold">Top Priority</td>
+                  <td className="py-3 px-3 text-[#F5B041] font-bold">High Priority</td>
+                  <td className="py-3 px-3 text-[#F5B041] font-bold">Top Priority</td>
                 </tr>
               </tbody>
             </table>
@@ -453,9 +453,9 @@ export function SubscriptionsPage() {
             
             <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
               <div>
-                <span className="text-[10px] font-black uppercase text-[#FFF174] tracking-widest block">SUBSCRIBE TO PLAN</span>
+                <span className="text-[10px] font-black uppercase text-[#F5B041] tracking-widest block">SUBSCRIBE TO PLAN</span>
                 <h2 className="text-2xl font-black text-white">{selectedPlan.name}</h2>
-                <span className="text-sm font-black text-[#FFF174]">₹{selectedPlan.priceInr} / year</span>
+                <span className="text-sm font-black text-[#F5B041]">₹{selectedPlan.priceInr} / year</span>
               </div>
               <button
                 onClick={() => setSelectedPlan(null)}
@@ -470,7 +470,7 @@ export function SubscriptionsPage() {
               {/* Vehicle Selection */}
               <div className="space-y-2">
                 <label className="text-xs font-black uppercase tracking-wider text-gray-300 flex items-center gap-1.5">
-                  <BikeIcon size={14} className="text-[#FFF174]" />
+                  <BikeIcon size={14} className="text-[#F5B041]" />
                   <span>Select Motorcycle to Protect</span>
                 </label>
 
@@ -478,7 +478,7 @@ export function SubscriptionsPage() {
                   <select
                     value={selectedBikeId}
                     onChange={(e) => setSelectedBikeId(e.target.value)}
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:border-[#FFF174] focus:outline-none"
+                    className="w-full bg-[#252525] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:border-[#F5B041] focus:outline-none"
                   >
                     {userBikes.map(b => (
                       <option key={b.id} value={b.id}>
@@ -544,7 +544,7 @@ export function SubscriptionsPage() {
                 </div>
                 <div className="flex justify-between border-t border-white/10 pt-1.5">
                   <span className="font-bold text-white">Total Amount Due:</span>
-                  <span className="font-black text-[#FFF174] text-sm">₹{selectedPlan.priceInr}</span>
+                  <span className="font-black text-[#F5B041] text-sm">₹{selectedPlan.priceInr}</span>
                 </div>
               </div>
 
@@ -561,7 +561,7 @@ export function SubscriptionsPage() {
                   type="button"
                   onClick={handleSubscribe}
                   disabled={isProcessing}
-                  className="flex-2 py-3 rounded-xl bg-[#FFF174] text-black font-black hover:bg-yellow-400 transition-all shadow-lg shadow-yellow-500/20 disabled:opacity-50"
+                  className="flex-2 py-3 rounded-xl bg-[#F5B041] text-black font-black hover:bg-yellow-400 transition-all shadow-lg shadow-yellow-500/20 disabled:opacity-50"
                 >
                   {isProcessing ? 'Activating Coverage...' : `Confirm & Activate Coverage (₹${selectedPlan.priceInr})`}
                 </button>
@@ -584,7 +584,7 @@ export function SubscriptionsPage() {
               <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">COVERAGE ACTIVATED</span>
               <h2 className="text-2xl font-black text-white">Roadside Shield Live</h2>
               <p className="text-xs text-[#C5C5C5]">
-                Subscription <strong className="text-[#FFF174] font-mono">{checkoutSuccess.subscriptionId}</strong> has been linked to your motorcycle.
+                Subscription <strong className="text-[#F5B041] font-mono">{checkoutSuccess.subscriptionId}</strong> has been linked to your motorcycle.
               </p>
             </div>
 
@@ -595,7 +595,7 @@ export function SubscriptionsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Motorcycle:</span>
-                <span className="font-bold text-[#FFF174]">{checkoutSuccess.linkedBike.brand} {checkoutSuccess.linkedBike.model} ({checkoutSuccess.linkedBike.registrationNumber})</span>
+                <span className="font-bold text-[#F5B041]">{checkoutSuccess.linkedBike.brand} {checkoutSuccess.linkedBike.model} ({checkoutSuccess.linkedBike.registrationNumber})</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Free Breakdown Limit:</span>
@@ -612,7 +612,7 @@ export function SubscriptionsPage() {
                 setCheckoutSuccess(null);
                 setSelectedPlan(null);
               }}
-              className="w-full py-3 rounded-xl bg-[#FFF174] text-black font-black text-xs hover:bg-yellow-400 transition-colors shadow-md shadow-yellow-500/20"
+              className="w-full py-3 rounded-xl bg-[#F5B041] text-black font-black text-xs hover:bg-yellow-400 transition-colors shadow-md shadow-yellow-500/20"
             >
               Done & View Active Coverage
             </button>

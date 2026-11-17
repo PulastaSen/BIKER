@@ -90,15 +90,15 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="auth-page bg-[#151515] min-h-screen flex items-center justify-center p-4 md:p-8 text-white font-sans pt-24 pb-28">
-      <div className="auth-card bg-[#1D1D1D] border border-white/15 rounded-3xl p-6 sm:p-10 md:p-12 w-full max-w-xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative overflow-hidden">
+    <div className="auth-page bg-[#0A0D12] min-h-screen flex items-center justify-center p-4 md:p-8 text-white font-sans pt-8 pb-28 md:pb-16">
+      <div className="auth-card bg-[#181D24] border border-white/10 rounded-3xl p-6 sm:p-10 md:p-12 w-full max-w-xl shadow-2xl relative overflow-hidden">
         
         {/* Subtle decorative glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-40 bg-[#FFF174]/10 blur-[90px] pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-40 bg-[#F5B041]/10 blur-[90px] pointer-events-none" />
 
         <div className="auth-header text-center mb-8 relative z-10">
-          <div className="auth-icon w-16 h-16 bg-[#FFF174]/10 border border-[#FFF174]/30 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
-            <UserPlus size={28} className="text-[#FFF174]" />
+          <div className="auth-icon w-16 h-16 bg-[#F5B041]/10 border border-[#F5B041]/30 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
+            <UserPlus size={28} className="text-[#F5B041]" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-black mb-2 text-white tracking-tight">CREATE ACCOUNT</h1>
           <p className="text-gray-300 text-sm md:text-base font-medium">Join MotoAssist and stay safer on the road.</p>
@@ -123,13 +123,13 @@ export function RegisterPage() {
                 onClick={() => setRole('RIDER')}
                 className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 cursor-pointer text-center min-h-[72px] justify-center ${
                   role === 'RIDER' 
-                    ? 'border-[#FFF174] text-[#FFF174] bg-[#FFF174]/15 shadow-[0_0_15px_rgba(255,241,116,0.2)]' 
+                    ? 'border-[#F5B041] text-[#F5B041] bg-[#F5B041]/15 shadow-[0_0_15px_rgba(255,241,116,0.2)]' 
                     : 'border-white/10 text-gray-400 bg-white/5 hover:border-white/25 hover:text-white'
                 }`}
                 aria-pressed={role === 'RIDER'}
               >
                 <div className="flex items-center gap-2">
-                  <Shield size={20} className={role === 'RIDER' ? 'text-[#FFF174]' : 'text-gray-400'} />
+                  <Shield size={20} className={role === 'RIDER' ? 'text-[#F5B041]' : 'text-gray-400'} />
                   <span className="font-extrabold text-base tracking-wide">RIDER</span>
                 </div>
                 <span className="text-xs text-gray-400">Request roadside help</span>
@@ -140,13 +140,13 @@ export function RegisterPage() {
                 onClick={() => setRole('HELPER')}
                 className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 cursor-pointer text-center min-h-[72px] justify-center ${
                   role === 'HELPER' 
-                    ? 'border-[#FFF174] text-[#FFF174] bg-[#FFF174]/15 shadow-[0_0_15px_rgba(255,241,116,0.2)]' 
+                    ? 'border-[#F5B041] text-[#F5B041] bg-[#F5B041]/15 shadow-[0_0_15px_rgba(255,241,116,0.2)]' 
                     : 'border-white/10 text-gray-400 bg-white/5 hover:border-white/25 hover:text-white'
                 }`}
                 aria-pressed={role === 'HELPER'}
               >
                 <div className="flex items-center gap-2">
-                  <Shield size={20} className={role === 'HELPER' ? 'text-[#FFF174]' : 'text-gray-400'} />
+                  <Shield size={20} className={role === 'HELPER' ? 'text-[#F5B041]' : 'text-gray-400'} />
                   <span className="font-extrabold text-base tracking-wide">PROVIDER</span>
                 </div>
                 <span className="text-xs text-gray-400">Assist stranded riders</span>
@@ -174,7 +174,7 @@ export function RegisterPage() {
               className={`w-full bg-[#181818] border-2 rounded-xl p-3.5 text-white placeholder-gray-500 font-medium text-base focus:outline-none transition-all ${
                 errors.name 
                   ? 'border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20' 
-                  : 'border-white/15 focus:border-[#FFF174] focus:ring-2 focus:ring-[#FFF174]/20'
+                  : 'border-white/15 focus:border-[#F5B041] focus:ring-2 focus:ring-[#F5B041]/20'
               }`}
             />
             {errors.name && (
@@ -207,7 +207,7 @@ export function RegisterPage() {
                 className={`w-full bg-[#181818] border-2 rounded-xl p-3.5 text-white placeholder-gray-500 font-medium text-base focus:outline-none transition-all ${
                   errors.email 
                     ? 'border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20' 
-                    : 'border-white/15 focus:border-[#FFF174] focus:ring-2 focus:ring-[#FFF174]/20'
+                    : 'border-white/15 focus:border-[#F5B041] focus:ring-2 focus:ring-[#F5B041]/20'
                 }`}
               />
               {errors.email && (
@@ -238,7 +238,7 @@ export function RegisterPage() {
                 className={`w-full bg-[#181818] border-2 rounded-xl p-3.5 text-white placeholder-gray-500 font-medium text-base focus:outline-none transition-all ${
                   errors.phone 
                     ? 'border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20' 
-                    : 'border-white/15 focus:border-[#FFF174] focus:ring-2 focus:ring-[#FFF174]/20'
+                    : 'border-white/15 focus:border-[#F5B041] focus:ring-2 focus:ring-[#F5B041]/20'
                 }`}
               />
               {errors.phone && (
@@ -270,7 +270,7 @@ export function RegisterPage() {
                 className={`w-full bg-[#181818] border-2 rounded-xl p-3.5 pr-12 text-white placeholder-gray-500 font-medium text-base focus:outline-none transition-all ${
                   errors.password 
                     ? 'border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20' 
-                    : 'border-white/15 focus:border-[#FFF174] focus:ring-2 focus:ring-[#FFF174]/20'
+                    : 'border-white/15 focus:border-[#F5B041] focus:ring-2 focus:ring-[#F5B041]/20'
                 }`}
               />
               <button
@@ -310,7 +310,7 @@ export function RegisterPage() {
                 className={`w-full bg-[#181818] border-2 rounded-xl p-3.5 pr-12 text-white placeholder-gray-500 font-medium text-base focus:outline-none transition-all ${
                   errors.confirmPassword 
                     ? 'border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20' 
-                    : 'border-white/15 focus:border-[#FFF174] focus:ring-2 focus:ring-[#FFF174]/20'
+                    : 'border-white/15 focus:border-[#F5B041] focus:ring-2 focus:ring-[#F5B041]/20'
                 }`}
               />
               <button
@@ -333,7 +333,7 @@ export function RegisterPage() {
           <button 
             type="submit" 
             disabled={isLoading}
-            className="w-full flex items-center justify-center py-4 mt-6 bg-[#FFF174] text-black font-black text-lg rounded-xl hover:bg-yellow-400 transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/50 shadow-[0_0_24px_rgba(255,241,116,0.3)] disabled:opacity-70 min-h-[52px] active:scale-[0.99] cursor-pointer"
+            className="w-full flex items-center justify-center py-4 mt-6 bg-[#F5B041] text-black font-black text-lg rounded-xl hover:bg-yellow-400 transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/50 shadow-[0_0_24px_rgba(255,241,116,0.3)] disabled:opacity-70 min-h-[52px] active:scale-[0.99] cursor-pointer"
           >
             {isLoading ? (
                <><Loader2 className="animate-spin mr-2" size={20} /> CREATING ACCOUNT...</>
@@ -345,7 +345,7 @@ export function RegisterPage() {
 
         <p className="text-center text-sm text-gray-400 mt-8 relative z-10 font-medium">
           Already have an account?{' '}
-          <Link to="/login" className="text-[#FFF174] hover:underline font-bold transition-all underline-offset-4 ml-1">
+          <Link to="/login" className="text-[#F5B041] hover:underline font-bold transition-all underline-offset-4 ml-1">
             Log in here
           </Link>
         </p>

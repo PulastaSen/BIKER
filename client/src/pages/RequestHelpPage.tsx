@@ -199,7 +199,7 @@ export function RequestHelpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-4 pb-28 md:pb-16 font-sans">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 pb-28 md:pb-16 font-sans">
       <div className="container mx-auto px-4 max-w-2xl space-y-5">
         
         {/* Step Navigation Header */}
@@ -237,10 +237,10 @@ export function RequestHelpPage() {
                         role="radio"
                         aria-checked={isSelected}
                         onClick={() => { setCategory(cat.id); handleNext(); }}
-                        className={`p-4 rounded-2xl border text-left transition-all group cursor-pointer ${isSelected ? 'border-[#FFF174] bg-[#FFF174]/15' : 'border-white/10 bg-[#121212] hover:border-white/20'}`}
+                        className={`p-4 rounded-2xl border text-left transition-all group cursor-pointer ${isSelected ? 'border-[#F5B041] bg-[#F5B041]/15' : 'border-white/10 bg-[#121212] hover:border-white/20'}`}
                       >
                         <div className="flex items-center mb-2">
-                          <div className={`p-2.5 rounded-xl ${isSelected ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-white group-hover:bg-white/20'}`}>
+                          <div className={`p-2.5 rounded-xl ${isSelected ? 'bg-[#F5B041] text-black' : 'bg-white/10 text-white group-hover:bg-white/20'}`}>
                             {cat.icon}
                           </div>
                           <h2 className="ml-3 font-bold text-base text-white">{cat.label}</h2>
@@ -281,7 +281,7 @@ export function RequestHelpPage() {
                       <button
                         type="button"
                         onClick={handleNext}
-                        className="px-4 py-2 bg-[#FFF174] text-black font-black text-xs rounded-xl hover:bg-yellow-400 cursor-pointer"
+                        className="px-4 py-2 bg-[#F5B041] text-black font-black text-xs rounded-xl hover:bg-yellow-400 cursor-pointer"
                       >
                         Use Location →
                       </button>
@@ -306,7 +306,7 @@ export function RequestHelpPage() {
                       onClick={() => {
                         requestLocation('Location access is needed to find nearby help.');
                       }}
-                      className="w-full py-4 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_0_20px_rgba(255,241,116,0.25)]"
+                      className="w-full py-4 rounded-2xl bg-[#F5B041] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_0_20px_rgba(255,241,116,0.25)]"
                     >
                       {locStatus === 'requesting' ? (
                         <>
@@ -337,13 +337,13 @@ export function RequestHelpPage() {
                         value={searchPlace}
                         onChange={(e) => setSearchPlace(e.target.value)}
                         placeholder="Search town, road or landmark..."
-                        className="w-full bg-[#181818] border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#FFF174]"
+                        className="w-full bg-[#181818] border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#F5B041]"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={searchPlace.trim().length < 3}
-                      className="px-4 py-2.5 rounded-xl bg-[#FFF174] disabled:opacity-50 text-black font-bold text-xs transition-colors cursor-pointer"
+                      className="px-4 py-2.5 rounded-xl bg-[#F5B041] disabled:opacity-50 text-black font-bold text-xs transition-colors cursor-pointer"
                     >
                       Continue
                     </button>
@@ -375,7 +375,7 @@ export function RequestHelpPage() {
                 
                 {providers.length === 0 ? (
                   <div className="text-center py-12">
-                    <Loader2 className="animate-spin text-[#FFF174] mx-auto mb-3" size={32} />
+                    <Loader2 className="animate-spin text-[#F5B041] mx-auto mb-3" size={32} />
                     <p className="text-gray-400 text-xs">Finding available responders...</p>
                   </div>
                 ) : (
@@ -388,7 +388,7 @@ export function RequestHelpPage() {
                           role="radio"
                           aria-checked={isSelected}
                           onClick={() => setSelectedProvider(p)}
-                          className={`w-full text-left p-4 rounded-2xl border transition-all cursor-pointer ${isSelected ? 'border-[#FFF174] bg-[#FFF174]/10 shadow-[0_0_20px_rgba(255,241,116,0.15)]' : 'border-white/10 bg-[#121212] hover:border-white/20'}`}
+                          className={`w-full text-left p-4 rounded-2xl border transition-all cursor-pointer ${isSelected ? 'border-[#F5B041] bg-[#F5B041]/10 shadow-[0_0_20px_rgba(255,241,116,0.15)]' : 'border-white/10 bg-[#121212] hover:border-white/20'}`}
                         >
                           <div className="flex justify-between items-start mb-2">
                             <div>
@@ -403,14 +403,14 @@ export function RequestHelpPage() {
                                 )}
                               </h3>
                               <div className="flex items-center gap-2 text-xs text-gray-400 mt-1">
-                                <span className="flex items-center text-[#FFF174] font-bold"><Star size={12} fill="#FFF174" className="mr-0.5" /> {p.rating}</span>
+                                <span className="flex items-center text-[#F5B041] font-bold"><Star size={12} fill="#F5B041" className="mr-0.5" /> {p.rating}</span>
                                 <span>•</span>
                                 <span className="text-white font-medium">{p.distance || 'Nearby'}</span>
                               </div>
                             </div>
                             <div className="text-right">
                               <span className="text-[10px] text-gray-400 uppercase tracking-wider block">ETA</span>
-                              <strong className="text-sm font-bold text-[#FFF174]">{p.estimatedArrival || '15 min'}</strong>
+                              <strong className="text-sm font-bold text-[#F5B041]">{p.estimatedArrival || '15 min'}</strong>
                             </div>
                           </div>
 
@@ -438,7 +438,7 @@ export function RequestHelpPage() {
                     <button 
                       onClick={submitRequest}
                       disabled={loading}
-                      className="w-full flex items-center justify-center py-4 bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-base uppercase tracking-wider rounded-2xl transition-all shadow-[0_0_25px_rgba(255,241,116,0.3)] active:scale-98 cursor-pointer disabled:opacity-50"
+                      className="w-full flex items-center justify-center py-4 bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-base uppercase tracking-wider rounded-2xl transition-all shadow-[0_0_25px_rgba(255,241,116,0.3)] active:scale-98 cursor-pointer disabled:opacity-50"
                     >
                       {loading ? (
                         <><Loader2 className="animate-spin mr-2" size={20} /> DISPATCHING...</>

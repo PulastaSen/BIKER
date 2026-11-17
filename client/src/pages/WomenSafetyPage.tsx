@@ -71,7 +71,7 @@ export function WomenSafetyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-4 pb-28 md:pb-16 font-sans selection:bg-purple-500 selection:text-white">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 pb-28 md:pb-16 font-sans selection:bg-purple-500 selection:text-white">
       <div className="container mx-auto px-4 max-w-xl space-y-5">
         
         {/* Navigation & Header */}
@@ -121,7 +121,7 @@ export function WomenSafetyPage() {
                 onClick={() => setSelectedSituation(sit)}
                 className={`p-3 rounded-xl text-left text-xs font-bold transition-all border cursor-pointer ${
                   selectedSituation === sit
-                    ? 'bg-amber-400/20 border-amber-400 text-[#FFF174]'
+                    ? 'bg-amber-400/20 border-amber-400 text-[#F5B041]'
                     : 'bg-[#121212] border-white/10 text-gray-300 hover:bg-[#181818]'
                 }`}
               >
@@ -208,7 +208,7 @@ export function WomenSafetyPage() {
               className="p-3.5 rounded-2xl bg-[#121212] hover:bg-white/10 border border-white/15 text-left transition-all active:scale-95 flex items-center justify-between group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/10 text-[#FFF174] flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-white/10 text-[#F5B041] flex items-center justify-center shrink-0">
                   <MapPin size={20} />
                 </div>
                 <div>
@@ -216,7 +216,7 @@ export function WomenSafetyPage() {
                   <span className="text-[10px] text-gray-400 block">Police station / 24/7 pump</span>
                 </div>
               </div>
-              <ArrowRight size={14} className="text-[#FFF174] group-hover:translate-x-1 transition-transform" />
+              <ArrowRight size={14} className="text-[#F5B041] group-hover:translate-x-1 transition-transform" />
             </a>
           </div>
         </div>

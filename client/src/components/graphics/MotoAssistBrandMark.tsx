@@ -12,7 +12,7 @@ interface MotoAssistBrandMarkProps {
  * Inspired by the Nexus Roadside Assistance & Recovery aesthetic:
  * - Connected-road / highway pass geometry forming an "MA" monogram
  * - High-visibility chartreuse waypoint beacon (#DFF127)
- * - Established MotoAssist brand yellow (#FFF174) primary curves
+ * - Established MotoAssist brand yellow (#F5B041) primary curves
  * - Deep mineral charcoal (#151613) and precision border (#383A32)
  */
 export function MotoAssistBrandMark({
@@ -59,7 +59,7 @@ export function MotoAssistBrandMark({
           {/* Main MotoAssist Yellow Road Ribbon */}
           <path
             d="M7 27L11 11L18 20L25 11L29 27"
-            stroke="#FFF174"
+            stroke="#F5B041"
             strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -84,7 +84,7 @@ export function MotoAssistBrandMark({
         <div className={`flex flex-col leading-none ${textClassName}`}>
           <div className="flex items-center text-base sm:text-lg font-black tracking-tight uppercase">
             <span className="text-[#EFF2F7]">MOTO</span>
-            <span className="text-[#FFF174]">ASSIST</span>
+            <span className="text-[#F5B041]">ASSIST</span>
           </div>
           {subtext ? (
             <span className="text-[9px] font-mono font-bold tracking-wider text-[#A8A6A3] uppercase mt-0.5">
@@ -106,7 +106,7 @@ export function MotoAssistBrandMark({
  */
 export function RouteArcMotif({
   className = '',
-  color = '#FFF174',
+  color = '#F5B041',
   accentColor = '#DFF127'
 }: {
   className?: string;

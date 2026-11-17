@@ -22,7 +22,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { MobileBottomNav } from '../components/MobileBottomNav';
 import { StickyEmergencySOS } from '../components/StickyEmergencySOS';
-import { MotoAssistBrandMark } from '../components/graphics';
+import { MotoAssistLogoMark } from '../components/MotoAssistLogoMark';
 
 export function DashboardLayout() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -72,13 +72,13 @@ export function DashboardLayout() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#12161A] text-white flex items-center justify-center p-6">
-        <div className="bg-[#1E252D] p-8 rounded-3xl border border-[#2E3844] text-center max-w-md w-full shadow-2xl">
-          <h1 className="text-2xl font-black mb-4 text-[#FFF174] font-display">Access Restricted</h1>
-          <p className="text-[#94A3B8] mb-8">Please log in to access the dashboard portal.</p>
+      <div className="min-h-screen bg-[#0A0D12] text-white flex items-center justify-center p-6">
+        <div className="bg-[#181D24] p-8 rounded-3xl border border-white/10 text-center max-w-md w-full shadow-2xl">
+          <h1 className="text-2xl font-black mb-4 text-[#F5B041]">Access Restricted</h1>
+          <p className="text-[#9CA3AF] mb-8">Please log in to access the dashboard portal.</p>
           <Link
             to="/login"
-            className="inline-block px-8 py-3 bg-[#FFF174] text-[#12161A] font-bold rounded-xl hover:bg-yellow-400 active:scale-95 transition-transform"
+            className="inline-block px-8 py-3 bg-[#F5B041] text-black font-bold rounded-xl hover:bg-[#E5A835] active:scale-95 transition-transform"
           >
             Go to Login
           </Link>
@@ -126,12 +126,21 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#12161A] text-white flex flex-col md:flex-row selection:bg-[#FFF174] selection:text-[#12161A]">
+    <div className="min-h-screen bg-[#0A0D12] text-white flex flex-col md:flex-row selection:bg-[#F5B041] selection:text-black">
       
       {/* Mobile & Tablet Top Bar */}
-      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#1A2026]/95 backdrop-blur-md border-b border-[#2E3844] sticky top-0 z-40 shadow-md">
-        <Link to="/" onClick={closeDrawer} aria-label="MotoAssist Home">
-          <MotoAssistBrandMark size={30} withText subtext="PORTAL" />
+      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#0A0D12]/95 backdrop-blur-md border-b border-white/5 sticky top-0 z-40 shadow-md">
+        <Link to="/" onClick={closeDrawer} className="flex items-center gap-2" aria-label="MotoAssist Home">
+          <MotoAssistLogoMark size={28} />
+          <div className="flex flex-col leading-none">
+            <div className="text-sm font-black tracking-tight uppercase">
+              <span className="text-white">MOTO</span>
+              <span className="text-[#F5B041]">ASSIST</span>
+            </div>
+            <span className="text-[8px] font-bold tracking-wider text-[#8A96A3] uppercase mt-0.5">
+              {role} PORTAL
+            </span>
+          </div>
         </Link>
 
         <div className="flex items-center gap-2">
@@ -139,11 +148,11 @@ export function DashboardLayout() {
           <Link
             to={getProfilePath()}
             onClick={closeDrawer}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#242D37] border border-[#2E3844] hover:border-[#FFF174] transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#181D24] border border-white/10 hover:border-[#F5B041]/40 transition-colors"
             title="View Profile"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#94A3B8]">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#9CA3AF]">
               {role}
             </span>
           </Link>
@@ -153,7 +162,7 @@ export function DashboardLayout() {
             type="button"
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 border border-red-500/30 transition-all flex items-center justify-center min-w-[44px] min-h-[44px] cursor-pointer"
+            className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 active:scale-95 text-red-400 border border-red-500/20 transition-all flex items-center justify-center min-w-[44px] min-h-[44px] cursor-pointer"
             title="Log Out"
             aria-label="Log Out of MotoAssist"
           >
@@ -164,7 +173,7 @@ export function DashboardLayout() {
           <button
             type="button"
             onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-            className="p-2.5 rounded-xl bg-[#242D37] border border-[#2E3844] text-white hover:bg-[#2A3440] transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
+            className="p-2.5 rounded-xl bg-[#181D24] border border-white/10 text-white hover:bg-white/10 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
             aria-label="Toggle navigation drawer"
             aria-expanded={mobileDrawerOpen}
           >
@@ -176,16 +185,27 @@ export function DashboardLayout() {
       {/* Mobile & Tablet Drawer Modal */}
       {mobileDrawerOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex animate-in fade-in duration-150">
-          <div className="fixed inset-0 bg-black/75 backdrop-blur-sm cursor-pointer" onClick={closeDrawer} aria-hidden="true" />
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm cursor-pointer" onClick={closeDrawer} aria-hidden="true" />
           
-          <div className="relative w-4/5 max-w-xs bg-[#1E252D] border-r border-[#2E3844] h-[100dvh] max-h-[100dvh] flex flex-col z-10 shadow-2xl">
+          <div className="relative w-4/5 max-w-xs bg-[#12161D] border-r border-white/10 h-[100dvh] max-h-[100dvh] flex flex-col z-10 shadow-2xl">
             {/* Drawer Header */}
-            <div className="p-4 border-b border-[#2E3844] flex items-center justify-between shrink-0 bg-[#1A2026]">
-              <MotoAssistBrandMark size={28} withText subtext={`${role} PORTAL`} />
+            <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0 bg-[#0A0D12]">
+              <div className="flex items-center gap-2">
+                <MotoAssistLogoMark size={26} />
+                <div className="flex flex-col leading-none">
+                  <div className="text-sm font-black tracking-tight uppercase">
+                    <span className="text-white">MOTO</span>
+                    <span className="text-[#F5B041]">ASSIST</span>
+                  </div>
+                  <span className="text-[8px] font-bold tracking-wider text-[#8A96A3] uppercase mt-0.5">
+                    {role} PORTAL
+                  </span>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={closeDrawer}
-                className="p-2 text-[#94A3B8] hover:text-white rounded-xl bg-[#242D37] border border-[#2E3844] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 text-[#9CA3AF] hover:text-white rounded-xl bg-[#181D24] border border-white/10 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Close navigation drawer"
               >
                 <X size={18} />
@@ -206,30 +226,32 @@ export function DashboardLayout() {
                       window.scrollTo({ top: 0, behavior: 'instant' });
                     }}
                     className={`flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all min-h-[44px] ${
-                      isActive ? 'bg-[#FFF174] text-[#12161A] font-black shadow-md' : 'text-[#94A3B8] hover:bg-[#242D37] hover:text-white font-medium'
+                      isActive
+                        ? 'bg-[#181D24] text-[#F5B041] border border-[#F5B041]/40 font-bold shadow-[0_0_8px_rgba(245,176,65,0.2)]'
+                        : 'text-[#9CA3AF] hover:bg-white/5 hover:text-white font-medium'
                     }`}
                   >
                     <Icon size={18} />
                     <span className="text-sm">{link.label}</span>
-                    {isActive && <ChevronRight size={16} className="ml-auto" />}
+                    {isActive && <ChevronRight size={16} className="ml-auto text-[#F5B041]" />}
                   </NavLink>
                 );
               })}
             </nav>
 
             {/* Drawer Footer with User identity & prominent Logout */}
-            <div className="p-4 border-t border-[#2E3844] shrink-0 bg-[#1A2026] space-y-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            <div className="p-4 border-t border-white/10 shrink-0 bg-[#0A0D12] space-y-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
               <Link
                 to={getProfilePath()}
                 onClick={closeDrawer}
-                className="flex items-center gap-3 p-2 rounded-xl bg-[#242D37] hover:bg-[#2A3440] transition-colors border border-[#2E3844]"
+                className="flex items-center gap-3 p-2.5 rounded-xl bg-[#181D24] hover:bg-white/10 transition-colors border border-white/10"
               >
-                <div className="w-10 h-10 rounded-full bg-[#FFF174]/20 border border-[#FFF174]/40 text-[#FFF174] flex items-center justify-center shrink-0 font-bold">
+                <div className="w-10 h-10 rounded-full bg-[#F5B041]/15 border border-[#F5B041]/30 text-[#F5B041] flex items-center justify-center shrink-0 font-bold">
                   <UserIcon size={18} />
                 </div>
                 <div className="overflow-hidden min-w-0">
                   <p className="font-bold text-sm text-white truncate">{user.name}</p>
-                  <p className="text-xs text-[#94A3B8] truncate">{user.email}</p>
+                  <p className="text-xs text-[#9CA3AF] truncate">{user.email}</p>
                 </div>
               </Link>
 
@@ -237,7 +259,7 @@ export function DashboardLayout() {
                 type="button"
                 onClick={handleLogout}
                 disabled={isLoggingOut}
-                className="w-full flex items-center justify-center gap-2 py-3 bg-red-500/15 text-red-300 border border-red-500/30 hover:bg-red-500/25 active:scale-98 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer min-h-[44px]"
+                className="w-full flex items-center justify-center gap-2 py-3 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 active:scale-98 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer min-h-[44px]"
               >
                 {isLoggingOut ? (
                   <>
@@ -257,14 +279,23 @@ export function DashboardLayout() {
       )}
 
       {/* Desktop Sidebar (Visible on md+) */}
-      <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 bg-[#1A2026] border-r border-[#2E3844] z-40">
-        <div className="p-5 border-b border-[#2E3844]">
-          <Link to="/" aria-label="MotoAssist Home">
-            <MotoAssistBrandMark size={34} withText subtext={`${role} PORTAL`} />
+      <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 bg-[#0A0D12] border-r border-white/5 z-40">
+        <div className="p-5 border-b border-white/5">
+          <Link to="/" className="flex items-center gap-2.5" aria-label="MotoAssist Home">
+            <MotoAssistLogoMark size={32} />
+            <div className="flex flex-col leading-none">
+              <div className="text-lg font-black tracking-tight uppercase">
+                <span className="text-white">MOTO</span>
+                <span className="text-[#F5B041]">ASSIST</span>
+              </div>
+              <span className="text-[9px] font-bold tracking-wider text-[#8A96A3] uppercase mt-0.5">
+                {role} PORTAL
+              </span>
+            </div>
           </Link>
         </div>
         
-        <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5">
+        <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5" aria-label="Desktop Role Navigation">
           {links.map((link) => {
             const Icon = link.icon;
             const isActive = location.pathname === link.to;
@@ -273,25 +304,27 @@ export function DashboardLayout() {
                 key={link.to}
                 to={link.to}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive ? 'bg-[#FFF174] text-[#12161A] font-black shadow-md' : 'text-[#94A3B8] hover:bg-[#242D37] hover:text-white'
+                  isActive
+                    ? 'bg-[#181D24] text-[#F5B041] border border-[#F5B041]/40 font-bold shadow-[0_0_8px_rgba(245,176,65,0.2)]'
+                    : 'text-[#9CA3AF] hover:bg-white/5 hover:text-white'
                 }`}
               >
                 <Icon size={18} />
                 <span className="text-sm font-semibold">{link.label}</span>
-                {isActive && <ChevronRight size={16} className="ml-auto" />}
+                {isActive && <ChevronRight size={16} className="ml-auto text-[#F5B041]" />}
               </NavLink>
             );
           })}
         </nav>
 
-        <div className="p-5 border-t border-[#2E3844] bg-[#1A2026] space-y-3">
+        <div className="p-5 border-t border-white/5 bg-[#0A0D12] space-y-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#FFF174]/20 border border-[#FFF174]/40 text-[#FFF174] flex items-center justify-center shrink-0 font-bold">
+            <div className="w-10 h-10 rounded-full bg-[#F5B041]/15 border border-[#F5B041]/30 text-[#F5B041] flex items-center justify-center shrink-0 font-bold">
               <UserIcon size={18} />
             </div>
             <div className="overflow-hidden min-w-0">
               <p className="font-bold text-sm text-white truncate">{user.name}</p>
-              <p className="text-xs text-[#94A3B8] truncate">{user.email}</p>
+              <p className="text-xs text-[#9CA3AF] truncate">{user.email}</p>
             </div>
           </div>
 
@@ -299,7 +332,7 @@ export function DashboardLayout() {
             type="button"
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="w-full flex items-center justify-center gap-2 py-2.5 bg-red-500/15 text-red-300 border border-red-500/30 hover:bg-red-500/25 active:scale-98 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer min-h-[44px]"
+            className="w-full flex items-center justify-center gap-2 py-2.5 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 active:scale-98 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer min-h-[44px]"
           >
             {isLoggingOut ? (
               <>
@@ -317,7 +350,7 @@ export function DashboardLayout() {
       </aside>
 
       {/* Main Content Area - with pb-28 on mobile so bottom bar NEVER covers content or buttons */}
-      <main className="flex-1 flex flex-col min-w-0 dashboard-content pb-28 md:pb-8" key={location.pathname}>
+      <main className="flex-1 flex flex-col min-w-0 dashboard-content pb-28 md:pb-16" key={location.pathname}>
         <Outlet />
       </main>
 
@@ -329,4 +362,3 @@ export function DashboardLayout() {
     </div>
   );
 }
-

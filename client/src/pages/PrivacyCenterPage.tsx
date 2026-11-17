@@ -89,7 +89,7 @@ export function PrivacyCenterPage() {
       </div>
 
       {/* Core Privacy Promise */}
-      <div className="p-5 rounded-3xl bg-neutral-900 border border-white/10 mb-6 flex items-start gap-4">
+      <div className="p-5 rounded-3xl bg-[#181D24] border border-white/10 mb-6 flex items-start gap-4">
         <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
           <ShieldCheck size={22} />
         </div>

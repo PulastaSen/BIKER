@@ -51,7 +51,7 @@ export function MobileAppHeader({
 
       {/* Center: Desktop Navigation Links (Visible on desktop only) */}
       <nav
-        className="hidden md:flex items-center gap-1 lg:gap-2 bg-[#12161A]/80 border border-white/5 rounded-2xl px-3 py-1.5 shadow-sm"
+        className="hidden md:flex items-center gap-1 lg:gap-2 bg-[#12161D]/90 border border-white/5 rounded-2xl px-3 py-1.5 shadow-sm"
         aria-label="Desktop Primary Navigation"
       >
         <NavLink

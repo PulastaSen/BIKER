@@ -618,7 +618,7 @@ export function EmergencyActionSheet({
           title: 'Motorcycle breakdown',
           subtitle: 'Punctures, battery, chain, engine & roadside mechanics',
           badgeColor: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
-          borderColor: 'border-[#FFF174]/40',
+          borderColor: 'border-[#F5B041]/40',
           Graphic: BikeBreakdownGraphic
         };
       case 'UNSAFE':
@@ -710,7 +710,7 @@ export function EmergencyActionSheet({
                 onClose();
               }
             }}
-            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#1E252D] border-t sm:border border-[#2E3844] ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.95)] z-10 flex flex-col overflow-hidden text-[#FFFFFF]`}
+            className={`relative w-full sm:max-w-xl max-h-[85vh] sm:max-h-[85vh] bg-[#181D24] border-t sm:border border-[#262D36] ${meta.borderColor} rounded-t-[32px] sm:rounded-3xl shadow-[0_-10px_50px_rgba(0,0,0,0.95)] z-10 flex flex-col overflow-hidden text-[#FFFFFF]`}
           >
             {/* Visual Touch Drag Handle */}
             <div className="pt-2.5 pb-1 flex justify-center sm:hidden cursor-grab active:cursor-grabbing shrink-0">
@@ -718,7 +718,7 @@ export function EmergencyActionSheet({
             </div>
 
             {/* Header: Title, Short Explanation & Close Button */}
-            <div className="px-4 sm:px-6 py-3 border-b border-[#2E3844] flex items-start justify-between gap-3 shrink-0 bg-[#1A2026]">
+            <div className="px-4 sm:px-6 py-3 border-b border-[#262D36] flex items-start justify-between gap-3 shrink-0 bg-[#12161D]">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="shrink-0 select-none">
                   <CategoryGraphic size={36} />
@@ -743,7 +743,7 @@ export function EmergencyActionSheet({
                   className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-xs text-gray-300 font-bold flex items-center gap-1 transition-all cursor-pointer min-h-[38px]"
                   aria-label="Back to categories"
                 >
-                  <ArrowLeft size={14} className="text-[#FFF174]" />
+                  <ArrowLeft size={14} className="text-[#F5B041]" />
                   <span className="hidden sm:inline">Categories</span>
                 </button>
 
@@ -892,7 +892,7 @@ export function EmergencyActionSheet({
                       <span className="flex items-center gap-1.5">
                         <Activity size={14} className="text-red-400" /> Nearby Hospital Trauma Facilities
                       </span>
-                      <span className="text-[10px] text-[#94A3B8]">Verified 24/7 centers</span>
+                      <span className="text-[10px] text-[#9CA3AF]">Verified 24/7 centers</span>
                     </div>
 
                     <div className="space-y-2">
@@ -956,7 +956,7 @@ export function EmergencyActionSheet({
                           onClick={() => setBikeIssueFilter(key)}
                           className={`p-2 rounded-xl font-bold flex items-center gap-1.5 transition-all cursor-pointer min-h-[42px] text-left text-xs ${
                             bikeIssueFilter === key
-                              ? 'bg-[#FFF174] text-black shadow-md'
+                              ? 'bg-[#F5B041] text-black shadow-md'
                               : 'bg-[#181818] text-gray-300 hover:bg-[#222222] border border-white/10'
                           }`}
                         >
@@ -971,13 +971,13 @@ export function EmergencyActionSheet({
                   <div className="p-3.5 rounded-2xl bg-[#181818] border border-white/10 space-y-2.5 text-xs">
                     <div className="flex items-center justify-between border-b border-white/10 pb-2">
                       <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-[#FFF174]" />
+                        <span className="w-2 h-2 rounded-full bg-[#F5B041]" />
                         <span className="font-bold text-white text-xs">Motorcycle Identification</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setShowBikeSelector(!showBikeSelector)}
-                        className="text-[11px] text-[#FFF174] hover:underline font-bold"
+                        className="text-[11px] text-[#F5B041] hover:underline font-bold"
                       >
                         {showBikeSelector ? 'Done' : 'Change / Add Vehicle'}
                       </button>
@@ -1011,7 +1011,7 @@ export function EmergencyActionSheet({
                             type="button"
                             onClick={() => setIsCustomBike(false)}
                             className={`flex-1 py-1.5 px-2 rounded-lg font-bold text-xs ${
-                              !isCustomBike ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-gray-300'
+                              !isCustomBike ? 'bg-[#F5B041] text-black' : 'bg-white/10 text-gray-300'
                             }`}
                           >
                             Saved Garage ({bikesList.length})
@@ -1020,7 +1020,7 @@ export function EmergencyActionSheet({
                             type="button"
                             onClick={() => setIsCustomBike(true)}
                             className={`flex-1 py-1.5 px-2 rounded-lg font-bold text-xs ${
-                              isCustomBike ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-gray-300'
+                              isCustomBike ? 'bg-[#F5B041] text-black' : 'bg-white/10 text-gray-300'
                             }`}
                           >
                             Enter Other / Friend's Bike
@@ -1036,7 +1036,7 @@ export function EmergencyActionSheet({
                                 onClick={() => setSelectedBikeId(b.id)}
                                 className={`w-full p-2 rounded-xl text-left border flex items-center justify-between ${
                                   selectedBikeId === b.id
-                                    ? 'border-[#FFF174] bg-[#FFF174]/10 text-white'
+                                    ? 'border-[#F5B041] bg-[#F5B041]/10 text-white'
                                     : 'border-white/10 bg-black/30 text-gray-400 hover:text-white'
                                 }`}
                               >
@@ -1046,7 +1046,7 @@ export function EmergencyActionSheet({
                                   </div>
                                   <div className="text-[10px] font-mono text-gray-400">{b.registrationNumber}</div>
                                 </div>
-                                {selectedBikeId === b.id && <Check size={14} className="text-[#FFF174]" />}
+                                {selectedBikeId === b.id && <Check size={14} className="text-[#F5B041]" />}
                               </button>
                             ))}
                           </div>
@@ -1113,14 +1113,14 @@ export function EmergencyActionSheet({
                       value={troubleNotes}
                       onChange={(e) => setTroubleNotes(e.target.value)}
                       placeholder="e.g. Clutch cable snapped at lever, strange grinding noise from primary chain, sudden stalling on climb..."
-                      className="w-full bg-black/40 border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174] placeholder:text-[#94A3B8] resize-none"
+                      className="w-full bg-black/40 border border-white/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041] placeholder:text-[#9CA3AF] resize-none"
                     />
                   </div>
 
                   {/* RSA COVERAGE & PRICING TRANSPARENCY BAR */}
                   <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-950/30 to-black/40 border border-yellow-500/30 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <Shield size={16} className="text-[#FFF174] shrink-0" />
+                      <Shield size={16} className="text-[#F5B041] shrink-0" />
                       <div>
                         <span className="font-bold text-white block">Manufacturer RSA Scope</span>
                         <span className="text-[10px] text-gray-400 block">
@@ -1131,7 +1131,7 @@ export function EmergencyActionSheet({
                     <button
                       type="button"
                       onClick={() => setShowTermsModal(true)}
-                      className="text-[11px] text-[#FFF174] underline font-bold shrink-0 ml-2"
+                      className="text-[11px] text-[#F5B041] underline font-bold shrink-0 ml-2"
                     >
                       View Policy
                     </button>
@@ -1174,11 +1174,11 @@ export function EmergencyActionSheet({
 
                   {/* DYNAMIC DISPATCH STATE MACHINE UI */}
                   {dispatchStatus === 'SEARCHING' && (
-                    <div className="p-4 rounded-2xl bg-gradient-to-br from-yellow-950/50 to-black/70 border-2 border-[#FFF174] text-white space-y-3 shadow-lg">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-yellow-950/50 to-black/70 border-2 border-[#F5B041] text-white space-y-3 shadow-lg">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="w-3 h-3 rounded-full bg-[#FFF174] animate-ping" />
-                          <span className="font-black text-sm text-[#FFF174] tracking-wide">
+                          <span className="w-3 h-3 rounded-full bg-[#F5B041] animate-ping" />
+                          <span className="font-black text-sm text-[#F5B041] tracking-wide">
                             MATCHING NEAREST TECHNICIAN...
                           </span>
                         </div>
@@ -1241,7 +1241,7 @@ export function EmergencyActionSheet({
                         </div>
                         <div className="text-right">
                           <div className="text-[10px] text-gray-400 uppercase font-bold">Estimated Arrival</div>
-                          <div className="text-base font-black text-[#FFF174]">{assignedProviderInfo.eta}</div>
+                          <div className="text-base font-black text-[#F5B041]">{assignedProviderInfo.eta}</div>
                         </div>
                       </div>
 
@@ -1260,7 +1260,7 @@ export function EmergencyActionSheet({
                             onClose();
                             if (createdRequestId) navigate(`/requests/${createdRequestId}`);
                           }}
-                          className="py-2.5 px-3 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs flex items-center justify-center gap-1"
+                          className="py-2.5 px-3 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs flex items-center justify-center gap-1"
                         >
                           <span>Live Tracker</span>
                           <ChevronRight size={14} />
@@ -1346,7 +1346,7 @@ export function EmergencyActionSheet({
                           setDispatchStatus('IDLE');
                           setCreatedRequestId(null);
                         }}
-                        className="text-[11px] text-[#FFF174] font-bold underline"
+                        className="text-[11px] text-[#F5B041] font-bold underline"
                       >
                         Start New Assistance Request
                       </button>
@@ -1358,7 +1358,7 @@ export function EmergencyActionSheet({
                     <div className="space-y-2 pt-1">
                       <div className="flex items-center justify-between text-xs font-bold text-gray-300">
                         <span className="flex items-center gap-1.5">
-                          <Wrench size={14} className="text-[#FFF174]" /> Nearby Motorcycle Mechanics & Workshops
+                          <Wrench size={14} className="text-[#F5B041]" /> Nearby Motorcycle Mechanics & Workshops
                         </span>
                         <span className="text-[10px] text-gray-400">{filteredMechanical.length} available</span>
                       </div>
@@ -1367,7 +1367,7 @@ export function EmergencyActionSheet({
                         {filteredMechanical.map((prov) => (
                           <div
                             key={prov.id}
-                            className="p-3 rounded-xl bg-[#181818] border border-white/10 hover:border-[#FFF174]/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs"
+                            className="p-3 rounded-xl bg-[#181818] border border-white/10 hover:border-[#F5B041]/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs"
                           >
                             <div>
                               <div className="flex items-center gap-1.5">
@@ -1402,7 +1402,7 @@ export function EmergencyActionSheet({
                                 type="button"
                                 disabled={dispatchPending}
                                 onClick={() => handleDispatchAssistance(prov)}
-                                className="px-3 py-2 rounded-lg bg-[#FFF174] hover:bg-yellow-400 disabled:opacity-50 text-black font-black text-xs uppercase cursor-pointer min-h-[38px]"
+                                className="px-3 py-2 rounded-lg bg-[#F5B041] hover:bg-yellow-400 disabled:opacity-50 text-black font-black text-xs uppercase cursor-pointer min-h-[38px]"
                               >
                                 {dispatchPending ? '...' : 'Request'}
                               </button>
@@ -1558,13 +1558,13 @@ export function EmergencyActionSheet({
                   <div className="p-3.5 rounded-xl bg-[#181818] border border-white/10 space-y-2.5 text-xs">
                     <div className="flex items-center justify-between border-b border-white/10 pb-2">
                       <span className="font-bold text-gray-300 flex items-center gap-1.5">
-                        <MapPin size={14} className="text-[#FFF174]" /> Pickup Location:
+                        <MapPin size={14} className="text-[#F5B041]" /> Pickup Location:
                       </span>
                       {onOpenLandmarkSearch && (
                         <button
                           type="button"
                           onClick={onOpenLandmarkSearch}
-                          className="text-[#FFF174] font-bold underline cursor-pointer"
+                          className="text-[#F5B041] font-bold underline cursor-pointer"
                         >
                           Change Landmark
                         </button>
@@ -1683,7 +1683,7 @@ export function EmergencyActionSheet({
                         </div>
                         <div className="text-right">
                           <div className="text-[10px] text-gray-400 uppercase">ETA</div>
-                          <div className="text-sm font-black text-[#FFF174]">{assignedProviderInfo.eta}</div>
+                          <div className="text-sm font-black text-[#F5B041]">{assignedProviderInfo.eta}</div>
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -1700,7 +1700,7 @@ export function EmergencyActionSheet({
                             onClose();
                             if (createdRequestId) navigate(`/requests/${createdRequestId}`);
                           }}
-                          className="py-2.5 px-3 rounded-xl bg-[#FFF174] text-black font-black text-xs flex items-center justify-center gap-1"
+                          className="py-2.5 px-3 rounded-xl bg-[#F5B041] text-black font-black text-xs flex items-center justify-center gap-1"
                         >
                           <span>Live Map</span>
                           <ChevronRight size={14} />
@@ -1748,7 +1748,7 @@ export function EmergencyActionSheet({
                   <div className="p-4 rounded-2xl bg-gradient-to-r from-[#182015] to-[#22272B] border border-[#10B981]/40 flex items-center justify-between gap-3 shadow-md">
                     <div>
                       <strong className="text-sm font-black text-white block">Interactive Live Map & Radar</strong>
-                      <p className="text-xs text-[#94A3B8] mt-0.5">Explore full corridor coverage with live GPS pins.</p>
+                      <p className="text-xs text-[#9CA3AF] mt-0.5">Explore full corridor coverage with live GPS pins.</p>
                     </div>
                     <button
                       type="button"
@@ -1756,7 +1756,7 @@ export function EmergencyActionSheet({
                         onClose();
                         navigate('/nearby-services');
                       }}
-                      className="px-4 py-2 bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl shrink-0 cursor-pointer min-h-[44px]"
+                      className="px-4 py-2 bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl shrink-0 cursor-pointer min-h-[44px]"
                     >
                       Open Map
                     </button>
@@ -1782,9 +1782,9 @@ export function EmergencyActionSheet({
                                   {p.badge}
                                 </span>
                               </div>
-                              <p className="text-[#94A3B8] text-[11px] mt-0.5">{p.address} • {p.distance}</p>
+                              <p className="text-[#9CA3AF] text-[11px] mt-0.5">{p.address} • {p.distance}</p>
                             </div>
-                            <span className="text-xs font-mono font-bold text-[#FFF174] shrink-0">
+                            <span className="text-xs font-mono font-bold text-[#F5B041] shrink-0">
                               ETA {p.eta}
                             </span>
                           </div>
@@ -1910,7 +1910,7 @@ export function EmergencyActionSheet({
                             className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left font-medium text-gray-200 cursor-pointer min-h-[44px] flex items-center justify-between"
                           >
                             <span>Engine cranks, but won't start (Fuel / Spark)</span>
-                            <ChevronRight size={15} className="text-[#FFF174]" />
+                            <ChevronRight size={15} className="text-[#F5B041]" />
                           </button>
                           <button
                             type="button"
@@ -1921,7 +1921,7 @@ export function EmergencyActionSheet({
                             className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left font-medium text-gray-200 cursor-pointer min-h-[44px] flex items-center justify-between"
                           >
                             <span>Complete electrical silence or clicking (Battery / Fuse)</span>
-                            <ChevronRight size={15} className="text-[#FFF174]" />
+                            <ChevronRight size={15} className="text-[#F5B041]" />
                           </button>
                           <button
                             type="button"
@@ -1932,7 +1932,7 @@ export function EmergencyActionSheet({
                             className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left font-medium text-gray-200 cursor-pointer min-h-[44px] flex items-center justify-between"
                           >
                             <span>Flat tyre / Puncture</span>
-                            <ChevronRight size={15} className="text-[#FFF174]" />
+                            <ChevronRight size={15} className="text-[#F5B041]" />
                           </button>
                           <button
                             type="button"
@@ -1943,7 +1943,7 @@ export function EmergencyActionSheet({
                             className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left font-medium text-gray-200 cursor-pointer min-h-[44px] flex items-center justify-between"
                           >
                             <span>Chain came off or strange mechanical noise</span>
-                            <ChevronRight size={15} className="text-[#FFF174]" />
+                            <ChevronRight size={15} className="text-[#F5B041]" />
                           </button>
                         </div>
                         <button
@@ -2041,7 +2041,7 @@ export function EmergencyActionSheet({
               <div className="w-full max-w-lg bg-[#181818] border border-white/20 rounded-2xl p-5 text-white space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl">
                 <div className="flex items-center justify-between border-b border-white/10 pb-3">
                   <div className="flex items-center gap-2">
-                    <Shield size={18} className="text-[#FFF174]" />
+                    <Shield size={18} className="text-[#F5B041]" />
                     <h3 className="font-black text-sm uppercase tracking-wide">
                       RSA Scope, Policy & Exclusions
                     </h3>
@@ -2108,7 +2108,7 @@ export function EmergencyActionSheet({
                   <button
                     type="button"
                     onClick={() => setShowTermsModal(false)}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase"
                   >
                     I Understand & Accept
                   </button>

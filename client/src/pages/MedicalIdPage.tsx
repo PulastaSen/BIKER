@@ -119,13 +119,13 @@ export function MedicalIdPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#07090E] flex items-center justify-center text-white">
-        <Loader2 size={32} className="animate-spin text-[#FFF174]" />
+        <Loader2 size={32} className="animate-spin text-[#F5B041]" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-28 font-sans selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 sm:pt-6 pb-28 md:pb-16 font-sans selection:bg-red-500 selection:text-white">
       <div className="container mx-auto px-4 max-w-xl">
         
         {/* Navigation & Header */}
@@ -258,7 +258,7 @@ export function MedicalIdPage() {
             {/* Identity & Blood Group */}
             <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 space-y-4">
               <h3 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-                <User size={14} className="text-[#FFF174]" /> Rider Identity & Blood Group
+                <User size={14} className="text-[#F5B041]" /> Rider Identity & Blood Group
               </h3>
 
               <div>
@@ -311,7 +311,7 @@ export function MedicalIdPage() {
             {/* Medical Details */}
             <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 space-y-4">
               <h3 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-                <Pill size={14} className="text-[#FFF174]" /> Allergies & Clinical History
+                <Pill size={14} className="text-[#F5B041]" /> Allergies & Clinical History
               </h3>
 
               <div>
@@ -351,7 +351,7 @@ export function MedicalIdPage() {
             {/* Hospital & Doctor Contact */}
             <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 space-y-4">
               <h3 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-                <Hospital size={14} className="text-[#FFF174]" /> Preferred Hospital & Doctor
+                <Hospital size={14} className="text-[#F5B041]" /> Preferred Hospital & Doctor
               </h3>
 
               <div>
@@ -392,7 +392,7 @@ export function MedicalIdPage() {
             {/* Sharing Preference */}
             <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 space-y-4">
               <h3 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-                <Shield size={14} className="text-[#FFF174]" /> Medical ID Sharing Policy
+                <Shield size={14} className="text-[#F5B041]" /> Medical ID Sharing Policy
               </h3>
               <div className="space-y-2">
                 {[

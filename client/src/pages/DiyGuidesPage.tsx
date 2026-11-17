@@ -133,7 +133,7 @@ export function DiyGuidesPage() {
   const isToolkitIncomplete = completedCount < TOOLKIT_ITEMS.length;
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-3xl">
         
         {/* Header */}
@@ -148,7 +148,7 @@ export function DiyGuidesPage() {
             <button
               onClick={() => setActiveTab('GUIDES')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'GUIDES' ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-gray-300'
+                activeTab === 'GUIDES' ? 'bg-[#F5B041] text-black' : 'bg-white/10 text-gray-300'
               }`}
             >
               DIY Guides
@@ -156,7 +156,7 @@ export function DiyGuidesPage() {
             <button
               onClick={() => setActiveTab('TOOLKIT')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'TOOLKIT' ? 'bg-[#FFF174] text-black' : 'bg-white/10 text-gray-300'
+                activeTab === 'TOOLKIT' ? 'bg-[#F5B041] text-black' : 'bg-white/10 text-gray-300'
               }`}
             >
               Rider Toolkit ({completedCount}/{TOOLKIT_ITEMS.length})
@@ -182,7 +182,7 @@ export function DiyGuidesPage() {
                   onClick={() => setSelectedGuide(guide)}
                   className={`p-3 rounded-2xl border text-left transition-all ${
                     selectedGuide.id === guide.id
-                      ? 'bg-[#FFF174]/15 border-[#FFF174] text-white shadow-sm'
+                      ? 'bg-[#F5B041]/15 border-[#F5B041] text-white shadow-sm'
                       : 'bg-[#111622] border-white/10 text-gray-400 hover:text-gray-200'
                   }`}
                 >
@@ -197,7 +197,7 @@ export function DiyGuidesPage() {
             {/* Active Guide Card */}
             <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 space-y-5">
               <div className="border-b border-white/10 pb-3">
-                <span className="text-[10px] font-black uppercase tracking-wider text-[#FFF174]">
+                <span className="text-[10px] font-black uppercase tracking-wider text-[#F5B041]">
                   {selectedGuide.category} PROCEDURE
                 </span>
                 <h2 className="text-xl font-black text-white mt-0.5">{selectedGuide.title}</h2>
@@ -219,7 +219,7 @@ export function DiyGuidesPage() {
 
               {/* Steps */}
               <div>
-                <h3 className="text-xs font-black uppercase tracking-wider text-[#FFF174] mb-2.5">
+                <h3 className="text-xs font-black uppercase tracking-wider text-[#F5B041] mb-2.5">
                   ACTION STEPS
                 </h3>
                 <ol className="space-y-2 text-xs text-gray-300 list-decimal pl-4">
@@ -250,7 +250,7 @@ export function DiyGuidesPage() {
                 <button
                   type="button"
                   onClick={() => navigate('/stranded')}
-                  className="mt-3 px-4 py-2 bg-[#FFF174] text-black font-bold text-xs rounded-xl"
+                  className="mt-3 px-4 py-2 bg-[#F5B041] text-black font-bold text-xs rounded-xl"
                 >
                   Request Professional Mechanic
                 </button>

@@ -90,7 +90,7 @@ export function EmergencyAssistPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#12161A] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-[#12161A] pb-16 relative">
+    <div className="min-h-screen bg-[#0A0D12] text-white flex flex-col font-sans selection:bg-[#F5B041] selection:text-[#0A0D12] pb-16 relative">
       <AnimatedRoadLines opacity={0.08} />
       <MountainContourPattern height={140} opacity={0.15} />
 
@@ -106,7 +106,7 @@ export function EmergencyAssistPage() {
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="flex items-center gap-1.5 text-xs text-[#94A3B8] hover:text-white transition-colors cursor-pointer min-h-[44px] min-w-[44px] px-2.5"
+            className="flex items-center gap-1.5 text-xs text-[#9CA3AF] hover:text-white transition-colors cursor-pointer min-h-[44px] min-w-[44px] px-2.5"
             aria-label="Return to home screen"
           >
             <ArrowLeft size={16} />
@@ -154,7 +154,7 @@ export function EmergencyAssistPage() {
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">
             What emergency are you facing?
           </h1>
-          <p className="text-xs sm:text-sm text-[#94A3B8] font-medium">
+          <p className="text-xs sm:text-sm text-[#9CA3AF] font-medium">
             Tap your issue below. Immediate actions appear directly in a focused overlay without scrolling.
           </p>
         </div>
@@ -189,7 +189,7 @@ export function EmergencyAssistPage() {
         <section className="p-3 rounded-2xl bg-[#141414] border border-white/10 text-xs space-y-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
-              <MapPin size={16} className="text-[#FFF174] shrink-0" />
+              <MapPin size={16} className="text-[#F5B041] shrink-0" />
               <div className="truncate">
                 {locStatus === 'active' && (
                   <span className="text-emerald-400 font-semibold truncate block">
@@ -227,7 +227,7 @@ export function EmergencyAssistPage() {
                 <button
                   type="button"
                   onClick={handleLocationRequest}
-                  className="px-2.5 py-1 rounded-lg bg-[#FFF174] text-black font-bold text-[11px] hover:bg-yellow-400 active:scale-95 transition-all cursor-pointer min-h-[36px]"
+                  className="px-2.5 py-1 rounded-lg bg-[#F5B041] text-black font-bold text-[11px] hover:bg-yellow-400 active:scale-95 transition-all cursor-pointer min-h-[36px]"
                 >
                   {locStatus === 'denied' ? 'Retry GPS' : 'Find GPS'}
                 </button>
@@ -251,18 +251,18 @@ export function EmergencyAssistPage() {
                   value={searchPlace}
                   onChange={(e) => setSearchPlace(e.target.value)}
                   placeholder="Search milestone, town, or highway junction..."
-                  className="flex-1 bg-[#1A2026] border border-[#2E3844] rounded-xl px-3 py-2 text-xs text-white placeholder-[#94A3B8] focus:outline-none focus:border-[#FFF174]"
+                  className="flex-1 bg-[#12161D] border border-[#262D36] rounded-xl px-3 py-2 text-xs text-white placeholder-[#9CA3AF] focus:outline-none focus:border-[#F5B041]"
                 />
                 <button
                   type="submit"
-                  className="px-3.5 py-2 bg-[#FFF174] text-[#12161A] font-bold text-xs rounded-xl cursor-pointer"
+                  className="px-3.5 py-2 bg-[#F5B041] text-[#0A0D12] font-bold text-xs rounded-xl cursor-pointer"
                 >
                   Set
                 </button>
               </form>
 
               <div className="flex flex-wrap gap-1.5 pt-0.5">
-                <span className="text-[10px] text-[#94A3B8] w-full">Quick mountain corridor landmarks:</span>
+                <span className="text-[10px] text-[#9CA3AF] w-full">Quick mountain corridor landmarks:</span>
                 {HIGHWAY_LANDMARKS.slice(0, 6).map((lm) => (
                   <button
                     key={lm}
@@ -272,7 +272,7 @@ export function EmergencyAssistPage() {
                       setSearchPlace(lm);
                       setShowLandmarkSearch(false);
                     }}
-                    className="text-[11px] px-2.5 py-1 rounded-lg bg-[#242D37] hover:bg-[#2A3440] border border-[#2E3844] text-[#CBD5E1] font-medium cursor-pointer"
+                    className="text-[11px] px-2.5 py-1 rounded-lg bg-[#1F242C] hover:bg-[#2A3440] border border-[#262D36] text-[#CBD5E1] font-medium cursor-pointer"
                   >
                     {lm}
                   </button>
@@ -284,9 +284,9 @@ export function EmergencyAssistPage() {
 
         {/* 6 TOUCH-FRIENDLY CATEGORY SELECTION CARDS */}
         <section className="space-y-2.5" aria-label="Select Emergency Category">
-          <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-[#94A3B8] px-1">
+          <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-[#9CA3AF] px-1">
             <span>SELECT EMERGENCY CATEGORY</span>
-            <span className="text-[11px] text-[#FFF174]">Tap to open overlay</span>
+            <span className="text-[11px] text-[#F5B041]">Tap to open overlay</span>
           </div>
 
           <div className="grid grid-cols-1 min-[340px]:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
@@ -294,7 +294,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('MEDICAL')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border-2 border-[#2E3844] hover:border-red-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#181D24] hover:bg-[#1F242C] active:scale-[0.98] border-2 border-[#262D36] hover:border-red-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Medical Assistance - Accidents, injuries, trauma care"
             >
               <div>
@@ -309,12 +309,12 @@ export function EmergencyAssistPage() {
                 <strong className="text-sm sm:text-base font-black text-white group-hover:text-red-300 transition-colors block font-display leading-tight">
                   Medical Assistance
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#94A3B8] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#9CA3AF] line-clamp-2 mt-1 leading-snug">
                   Accidents, injuries, 112 ambulance & emergency hospital finder.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#2E3844] flex items-center justify-between text-[11px] font-bold text-red-400">
+              <div className="pt-2 border-t border-[#262D36] flex items-center justify-between text-[11px] font-bold text-red-400">
                 <span>Call 112 & Care</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -324,27 +324,27 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('BIKE_PROBLEM')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border-2 border-[#2E3844] hover:border-[#FFF174]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#181D24] hover:bg-[#1F242C] active:scale-[0.98] border-2 border-[#262D36] hover:border-[#F5B041]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Bike Breakdown - Punctures, battery failure, engine problems, fuel and repairs"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-[#FFF174]/15 border border-[#FFF174]/30 flex items-center justify-center text-[#FFF174] shrink-0 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-[#F5B041]/15 border border-[#F5B041]/30 flex items-center justify-center text-[#F5B041] shrink-0 group-hover:scale-105 transition-transform">
                     <Wrench size={20} />
                   </div>
                   <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 shrink-0">
                     RESCUE
                   </span>
                 </div>
-                <strong className="text-sm sm:text-base font-black text-white group-hover:text-[#FFF174] transition-colors block font-display leading-tight">
+                <strong className="text-sm sm:text-base font-black text-white group-hover:text-[#F5B041] transition-colors block font-display leading-tight">
                   Bike Breakdown
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#94A3B8] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#9CA3AF] line-clamp-2 mt-1 leading-snug">
                   Punctures, battery jumpstart, chain snaps & roadside mechanics.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#2E3844] flex items-center justify-between text-[11px] font-bold text-[#FFF174]">
+              <div className="pt-2 border-t border-[#262D36] flex items-center justify-between text-[11px] font-bold text-[#F5B041]">
                 <span>Dispatch Help</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -354,7 +354,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('UNSAFE')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border-2 border-[#2E3844] hover:border-amber-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#181D24] hover:bg-[#1F242C] active:scale-[0.98] border-2 border-[#262D36] hover:border-amber-500/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Personal Safety - Threats, harassment, being followed or feeling unsafe"
             >
               <div>
@@ -369,12 +369,12 @@ export function EmergencyAssistPage() {
                 <strong className="text-sm sm:text-base font-black text-white group-hover:text-amber-300 transition-colors block font-display leading-tight">
                   Personal Safety
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#94A3B8] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#9CA3AF] line-clamp-2 mt-1 leading-snug">
                   Police 112, emergency circle alert & safe haven checkpoints.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#2E3844] flex items-center justify-between text-[11px] font-bold text-amber-400">
+              <div className="pt-2 border-t border-[#262D36] flex items-center justify-between text-[11px] font-bold text-amber-400">
                 <span>Trigger Net</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -384,7 +384,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('TOWING')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border-2 border-[#2E3844] hover:border-[#B1D8E3]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#181D24] hover:bg-[#1F242C] active:scale-[0.98] border-2 border-[#262D36] hover:border-[#B1D8E3]/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Towing and Recovery - Dedicated 2-wheeler flatbeds"
             >
               <div>
@@ -399,12 +399,12 @@ export function EmergencyAssistPage() {
                 <strong className="text-sm sm:text-base font-black text-white group-hover:text-[#B1D8E3] transition-colors block font-display leading-tight">
                   Towing & Recovery
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#94A3B8] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#9CA3AF] line-clamp-2 mt-1 leading-snug">
                   Dedicated motorcycle flatbed recovery with winch & wheel chocks.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#2E3844] flex items-center justify-between text-[11px] font-bold text-[#B1D8E3]">
+              <div className="pt-2 border-t border-[#262D36] flex items-center justify-between text-[11px] font-bold text-[#B1D8E3]">
                 <span>Book Flatbed</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -414,7 +414,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('NEARBY_SUPPORT')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border-2 border-[#2E3844] hover:border-emerald-400/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#181D24] hover:bg-[#1F242C] active:scale-[0.98] border-2 border-[#262D36] hover:border-emerald-400/80 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Nearby Support - Verified repair points, mechanics and fuel"
             >
               <div>
@@ -429,12 +429,12 @@ export function EmergencyAssistPage() {
                 <strong className="text-sm sm:text-base font-black text-white group-hover:text-emerald-300 transition-colors block font-display leading-tight">
                   Nearby Support
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#94A3B8] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#9CA3AF] line-clamp-2 mt-1 leading-snug">
                   Find verified 2-wheeler mechanics, OEM service hubs & 24/7 fuel.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#2E3844] flex items-center justify-between text-[11px] font-bold text-emerald-400">
+              <div className="pt-2 border-t border-[#262D36] flex items-center justify-between text-[11px] font-bold text-emerald-400">
                 <span>Find Services</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -444,7 +444,7 @@ export function EmergencyAssistPage() {
             <button
               type="button"
               onClick={() => selectCategory('BOTH')}
-              className="p-3.5 sm:p-4 rounded-2xl bg-[#1E252D] hover:bg-[#242D37] active:scale-[0.98] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
+              className="p-3.5 sm:p-4 rounded-2xl bg-[#181D24] hover:bg-[#1F242C] active:scale-[0.98] border-2 border-red-500/40 hover:border-red-500 transition-all cursor-pointer group flex flex-col justify-between min-h-[155px] sm:min-h-[168px] text-left shadow-lg shadow-black/25 relative overflow-hidden"
               aria-label="Unsure / Need Multiple Types of Help - Combined medical and bike assistance or guided triage"
             >
               <div>
@@ -459,12 +459,12 @@ export function EmergencyAssistPage() {
                 <strong className="text-sm sm:text-base font-black text-white group-hover:text-purple-300 transition-colors block font-display leading-tight">
                   Unsure / Both
                 </strong>
-                <p className="text-[11px] sm:text-xs text-[#94A3B8] line-clamp-2 mt-1 leading-snug">
+                <p className="text-[11px] sm:text-xs text-[#9CA3AF] line-clamp-2 mt-1 leading-snug">
                   Combined trauma & motorcycle rescue or guided triage diagnosis.
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#2E3844] flex items-center justify-between text-[11px] font-bold text-purple-300">
+              <div className="pt-2 border-t border-[#262D36] flex items-center justify-between text-[11px] font-bold text-purple-300">
                 <span>Get Guidance</span>
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
@@ -473,7 +473,7 @@ export function EmergencyAssistPage() {
         </section>
 
         {/* Discreet Help Tip */}
-        <div className="text-center text-[11px] text-[#94A3B8] pt-2">
+        <div className="text-center text-[11px] text-[#9CA3AF] pt-2">
           <span>All emergency actions operate instantly without login or registration.</span>
         </div>
       </main>

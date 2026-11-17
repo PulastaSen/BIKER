@@ -229,7 +229,7 @@ export function ImStrandedPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-4 pb-28 md:pb-16 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 pb-28 md:pb-16 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-xl space-y-4">
         
         {/* Navigation & Step Indicator */}
@@ -248,11 +248,11 @@ export function ImStrandedPage() {
           </button>
           
           <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-gray-400">
-            <span className={step >= 1 ? 'text-[#FFF174]' : ''}>1. Help Type</span>
+            <span className={step >= 1 ? 'text-[#F5B041]' : ''}>1. Help Type</span>
             <span>•</span>
-            <span className={step >= 2 ? 'text-[#FFF174]' : ''}>2. Location & Map</span>
+            <span className={step >= 2 ? 'text-[#F5B041]' : ''}>2. Location & Map</span>
             <span>•</span>
-            <span className={step === 3 ? 'text-[#FFF174]' : ''}>3. Dispatch</span>
+            <span className={step === 3 ? 'text-[#F5B041]' : ''}>3. Dispatch</span>
           </div>
         </div>
 
@@ -272,7 +272,7 @@ export function ImStrandedPage() {
         {step === 1 && showGuidedQuestions && (
           <section className="p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-4 animate-in fade-in duration-150">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#FFF174] block">
+              <span className="text-[10px] font-black uppercase tracking-wider text-[#F5B041] block">
                 GUIDED SAFETY TRIAGE
               </span>
               <h2 className="text-xl font-black text-white mt-0.5">
@@ -358,7 +358,7 @@ export function ImStrandedPage() {
 
             {/* Suggested resolution banner */}
             {bikeStarts !== null && warningLight !== null && (
-              <div className="p-3.5 rounded-2xl bg-[#1A1A1A] border border-[#FFF174]/30 space-y-2 text-xs">
+              <div className="p-3.5 rounded-2xl bg-[#1A1A1A] border border-[#F5B041]/30 space-y-2 text-xs">
                 <strong className="text-white block font-bold">
                   Recommended: {bikeStarts === 'NO' ? 'Battery & Electrical Rescue' : 'Roadside Mechanic'}
                 </strong>
@@ -370,7 +370,7 @@ export function ImStrandedPage() {
                 <button
                   type="button"
                   onClick={handleFinishGuidedDiagnosis}
-                  className="w-full py-3 bg-[#FFF174] text-black font-black text-xs uppercase tracking-wider rounded-xl mt-1 cursor-pointer hover:bg-yellow-400"
+                  className="w-full py-3 bg-[#F5B041] text-black font-black text-xs uppercase tracking-wider rounded-xl mt-1 cursor-pointer hover:bg-yellow-400"
                 >
                   Proceed with this recommendation
                 </button>
@@ -449,13 +449,13 @@ export function ImStrandedPage() {
                     value={searchPlace}
                     onChange={(e) => setSearchPlace(e.target.value)}
                     placeholder="Search town, road, petrol pump or landmark..."
-                    className="w-full bg-[#181818] border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#181818] border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={searchPlace.trim().length < 3}
-                  className="px-4 py-2.5 rounded-xl bg-[#FFF174] disabled:opacity-50 text-black font-black text-xs transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#F5B041] disabled:opacity-50 text-black font-black text-xs transition-colors cursor-pointer"
                 >
                   Set
                 </button>
@@ -470,7 +470,7 @@ export function ImStrandedPage() {
                     onClick={() => handleSelectLandmark(lm)}
                     className={`text-[11px] px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
                       searchPlace === lm
-                        ? 'bg-[#FFF174] text-black border-[#FFF174] font-bold'
+                        ? 'bg-[#F5B041] text-black border-[#F5B041] font-bold'
                         : 'bg-white/5 border-white/10 text-gray-300 hover:text-white'
                     }`}
                   >
@@ -502,7 +502,7 @@ export function ImStrandedPage() {
             <button
               type="button"
               onClick={handleProceedToSubcategory}
-              className="w-full py-4 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#FFF174]/15"
+              className="w-full py-4 rounded-2xl bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#F5B041]/15"
             >
               <span>Next: Confirm Specific Service</span>
               <ArrowRight size={16} />
@@ -546,11 +546,11 @@ export function ImStrandedPage() {
                     onClick={() => setSelectedSubcategory(item.label)}
                     className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                       selectedSubcategory === item.label
-                        ? 'bg-[#FFF174]/20 border-[#FFF174] text-white shadow-md'
+                        ? 'bg-[#F5B041]/20 border-[#F5B041] text-white shadow-md'
                         : 'bg-[#121212] border-white/10 text-gray-300 hover:border-white/30'
                     }`}
                   >
-                    <div className={selectedSubcategory === item.label ? 'text-[#FFF174]' : 'text-gray-400'}>
+                    <div className={selectedSubcategory === item.label ? 'text-[#F5B041]' : 'text-gray-400'}>
                       {item.icon}
                     </div>
                     <div className="mt-2">
@@ -721,7 +721,7 @@ export function ImStrandedPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Service:</span>
-                <span className="font-bold text-[#FFF174]">{selectedSubcategory}</span>
+                <span className="font-bold text-[#F5B041]">{selectedSubcategory}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Location:</span>
@@ -736,7 +736,7 @@ export function ImStrandedPage() {
               type="button"
               disabled={isSubmitting}
               onClick={handleConfirmAndDispatch}
-              className="w-full py-4 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 active:scale-98 disabled:opacity-50 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#FFF174]/20"
+              className="w-full py-4 rounded-2xl bg-[#F5B041] hover:bg-yellow-400 active:scale-98 disabled:opacity-50 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#F5B041]/20"
             >
               {isSubmitting ? (
                 <>

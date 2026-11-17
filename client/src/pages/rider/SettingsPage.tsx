@@ -29,7 +29,7 @@ export function SettingsPage() {
     <div className="dashboard-page max-w-4xl mx-auto px-4 py-8 space-y-6">
       <header className="dashboard-header">
         <div>
-          <p className="eyebrow text-xs font-black uppercase text-[#FFF174] tracking-wider">PREFERENCES & SYSTEM</p>
+          <p className="eyebrow text-xs font-black uppercase text-[#F5B041] tracking-wider">PREFERENCES & SYSTEM</p>
           <h1 className="text-2xl sm:text-3xl font-black text-white">App Settings</h1>
           <p className="text-xs text-[#C5C5C5] mt-1">Configure location sharing privacy, local storage, and account session.</p>
         </div>
@@ -41,7 +41,7 @@ export function SettingsPage() {
           <div className="dash-card p-6 rounded-3xl bg-[#1D1D1D] border border-white/10 space-y-4 shadow-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#FFF174]/20 border border-[#FFF174]/40 text-[#FFF174] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-full bg-[#F5B041]/20 border border-[#F5B041]/40 text-[#F5B041] flex items-center justify-center font-bold">
                   <User size={18} />
                 </div>
                 <div>
@@ -77,7 +77,7 @@ export function SettingsPage() {
 
         <div className="dash-card p-6 rounded-3xl bg-[#1D1D1D] border border-white/10 space-y-3 shadow-xl">
           <h3 className="text-base font-black text-white flex items-center gap-2">
-            <Settings size={18} className="text-[#FFF174]" /> Location & Privacy Settings
+            <Settings size={18} className="text-[#F5B041]" /> Location & Privacy Settings
           </h3>
           <div className="form-group pt-2">
             <label className="check-label flex items-center gap-2 cursor-pointer text-sm text-gray-200">
@@ -85,7 +85,7 @@ export function SettingsPage() {
                 type="checkbox"
                 checked={locationPref}
                 onChange={(e) => setLocationPref(e.target.checked)}
-                className="w-4 h-4 accent-[#FFF174]"
+                className="w-4 h-4 accent-[#F5B041]"
               />
               <span>Require explicit consent before retrieving browser Geolocation API</span>
             </label>
@@ -97,7 +97,7 @@ export function SettingsPage() {
 
         <div className="dash-card p-6 rounded-3xl bg-[#1D1D1D] border border-white/10 space-y-3 shadow-xl">
           <h3 className="text-base font-black text-white flex items-center gap-2">
-            <RefreshCw size={18} className="text-[#FFF174]" /> Clear Cache & Reset State
+            <RefreshCw size={18} className="text-[#F5B041]" /> Clear Cache & Reset State
           </h3>
           <p className="text-xs text-[#C5C5C5]">
             Restores local requests, garage bikes, and helper network profiles back to the default verified state.

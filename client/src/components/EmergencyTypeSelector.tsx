@@ -31,19 +31,19 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
     id: 'MECHANICAL',
     title: '🔧 MECHANICAL',
     subtitle: 'Mechanic, OEM, puncture, battery, fuel, roadside fix',
-    icon: <Wrench size={26} className="text-[#FFF174]" />,
-    borderClass: 'hover:border-[#FFF174]/70',
-    bgClass: 'bg-[#151515]',
-    activeBgClass: 'bg-[#FFF174]/15 border-[#FFF174] ring-2 ring-[#FFF174]/40',
+    icon: <Wrench size={26} className="text-[#F5B041]" />,
+    borderClass: 'hover:border-[#F5B041]/70',
+    bgClass: 'bg-[#181D24]',
+    activeBgClass: 'bg-[#F5B041]/15 border-[#F5B041] ring-2 ring-[#F5B041]/40',
     badgeText: 'Puncture • Battery • Engine'
   },
   {
     id: 'MEDICAL',
     title: '🚑 MEDICAL',
     subtitle: 'Ambulance (108), hospital, doctor, pharmacy, first aid',
-    icon: <HeartPulse size={26} className="text-red-400" />,
+    icon: <HeartPulse size={26} className="text-[#E53935]" />,
     borderClass: 'hover:border-red-500/70',
-    bgClass: 'bg-[#181111]',
+    bgClass: 'bg-[#181D24]',
     activeBgClass: 'bg-red-950/40 border-red-500 ring-2 ring-red-500/40',
     badgeText: 'Trauma • Ambulance • ICU'
   },
@@ -51,30 +51,30 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
     id: 'SAFETY',
     title: '🛡️ SAFETY / EMERGENCY',
     subtitle: 'Call 112, police, followed, feeling unsafe, safe haven',
-    icon: <ShieldAlert size={26} className="text-amber-400" />,
-    borderClass: 'hover:border-amber-500/70',
-    bgClass: 'bg-[#181510]',
-    activeBgClass: 'bg-amber-950/40 border-amber-500 ring-2 ring-amber-500/40',
+    icon: <ShieldAlert size={26} className="text-[#60A5FA]" />,
+    borderClass: 'hover:border-blue-500/70',
+    bgClass: 'bg-[#181D24]',
+    activeBgClass: 'bg-blue-950/40 border-blue-500 ring-2 ring-blue-500/40',
     badgeText: 'Police 112 • Safe Haven'
   },
   {
     id: 'RECOVERY',
     title: '🛠️ BIKE RECOVERY',
     subtitle: 'Towing truck, flatbed carrier, stranded bike transport',
-    icon: <Truck size={26} className="text-blue-400" />,
-    borderClass: 'hover:border-blue-500/70',
-    bgClass: 'bg-[#10141A]',
-    activeBgClass: 'bg-blue-950/40 border-blue-500 ring-2 ring-blue-500/40',
+    icon: <Truck size={26} className="text-[#A78BFA]" />,
+    borderClass: 'hover:border-purple-500/70',
+    bgClass: 'bg-[#181D24]',
+    activeBgClass: 'bg-purple-950/40 border-purple-500 ring-2 ring-purple-500/40',
     badgeText: 'Flatbed • Towing Truck'
   },
   {
     id: 'BOTH',
     title: '🔀 BOTH (MEDICAL + BIKE)',
     subtitle: 'Crash coordination: medical rescue + bike towing in 1 flow',
-    icon: <Shuffle size={26} className="text-purple-400" />,
-    borderClass: 'hover:border-purple-500/70',
-    bgClass: 'bg-[#16111C]',
-    activeBgClass: 'bg-purple-950/40 border-purple-500 ring-2 ring-purple-500/40',
+    icon: <Shuffle size={26} className="text-[#F5B041]" />,
+    borderClass: 'hover:border-[#F5B041]/70',
+    bgClass: 'bg-[#181D24]',
+    activeBgClass: 'bg-[#F5B041]/15 border-[#F5B041] ring-2 ring-[#F5B041]/40',
     badgeText: 'Coordinated Crash Response'
   },
   {
@@ -83,7 +83,7 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
     subtitle: 'Guided diagnosis with simple questions to determine help',
     icon: <HelpCircle size={26} className="text-gray-300" />,
     borderClass: 'hover:border-white/50',
-    bgClass: 'bg-[#141414]',
+    bgClass: 'bg-[#181D24]',
     activeBgClass: 'bg-white/10 border-white/60 ring-2 ring-white/20',
     badgeText: 'Guided Safety Triage'
   }
@@ -122,7 +122,7 @@ export function EmergencyTypeSelector({ selectedCategory, onSelect }: EmergencyT
                   </div>
                   {isSelected && (
                     <div className="text-white animate-in zoom-in-75">
-                      <CheckCircle2 size={18} className="text-[#FFF174]" />
+                      <CheckCircle2 size={18} className="text-[#F5B041]" />
                     </div>
                   )}
                 </div>

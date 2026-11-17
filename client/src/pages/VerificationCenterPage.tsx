@@ -238,7 +238,7 @@ export function VerificationCenterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-black pb-28 md:pb-16">
+    <div className="min-h-screen bg-[#0A0D12] text-white flex flex-col font-sans selection:bg-[#F5B041] selection:text-black pb-28 md:pb-16">
       
       {/* Face Verification Modal */}
       <FaceVerificationModal
@@ -267,7 +267,7 @@ export function VerificationCenterPage() {
           </button>
 
           <div className="flex items-center gap-2">
-            <ShieldCheck size={18} className="text-[#FFF174]" />
+            <ShieldCheck size={18} className="text-[#F5B041]" />
             <h1 className="text-sm font-black uppercase tracking-wider text-white">
               Identity Verification & Documents
             </h1>
@@ -294,7 +294,7 @@ export function VerificationCenterPage() {
             type="button"
             onClick={() => setActiveTab('RIDER')}
             className={`flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer ${
-              activeTab === 'RIDER' ? 'bg-[#FFF174] text-black shadow-md' : 'text-gray-400 hover:text-white'
+              activeTab === 'RIDER' ? 'bg-[#F5B041] text-black shadow-md' : 'text-gray-400 hover:text-white'
             }`}
           >
             Rider Identity Verification
@@ -303,7 +303,7 @@ export function VerificationCenterPage() {
             type="button"
             onClick={() => setActiveTab('HELPER')}
             className={`flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer ${
-              activeTab === 'HELPER' ? 'bg-[#FFF174] text-black shadow-md' : 'text-gray-400 hover:text-white'
+              activeTab === 'HELPER' ? 'bg-[#F5B041] text-black shadow-md' : 'text-gray-400 hover:text-white'
             }`}
           >
             Helper / Provider Verification
@@ -312,7 +312,7 @@ export function VerificationCenterPage() {
             type="button"
             onClick={() => setActiveTab('ADMIN')}
             className={`flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer ${
-              activeTab === 'ADMIN' ? 'bg-[#FFF174] text-black shadow-md' : 'text-gray-400 hover:text-white'
+              activeTab === 'ADMIN' ? 'bg-[#F5B041] text-black shadow-md' : 'text-gray-400 hover:text-white'
             }`}
           >
             Admin Review
@@ -354,7 +354,7 @@ export function VerificationCenterPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2.5">
                     <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Verification ID:</span>
-                    <span className="text-xs font-mono text-[#FFF174]">
+                    <span className="text-xs font-mono text-[#F5B041]">
                       {verification?.verificationId || 'VERIF-R-1001'}
                     </span>
                   </div>
@@ -401,7 +401,7 @@ export function VerificationCenterPage() {
                 <button
                   type="button"
                   onClick={() => setShowFaceModal(true)}
-                  className="px-4 py-3 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                  className="px-4 py-3 rounded-2xl bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
                 >
                   <Camera size={16} />
                   <span>Launch Face Selfie Verification</span>
@@ -445,7 +445,7 @@ export function VerificationCenterPage() {
             {/* SUBMIT OR REPLACE IDENTITY DOCUMENT FORM */}
             <div className="p-5 sm:p-6 rounded-3xl bg-[#121212] border border-white/10 space-y-4">
               <h3 className="text-base font-black text-white flex items-center gap-2">
-                <Upload size={18} className="text-[#FFF174]" />
+                <Upload size={18} className="text-[#F5B041]" />
                 <span>Upload Identity Document Proof</span>
               </h3>
               <p className="text-xs text-gray-400">
@@ -462,7 +462,7 @@ export function VerificationCenterPage() {
                       id="riderDocType"
                       value={riderDocType}
                       onChange={(e) => setRiderDocType(e.target.value)}
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     >
                       <option value="DRIVING_LICENSE">Driving Licence (Motorcycle / Transport)</option>
                       <option value="AADHAAR">Aadhaar National Identity</option>
@@ -481,7 +481,7 @@ export function VerificationCenterPage() {
                       value={riderDocNumber}
                       onChange={(e) => setRiderDocNumber(e.target.value)}
                       placeholder="e.g. DL-74-2024-9988123"
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                       required
                     />
                   </div>
@@ -497,7 +497,7 @@ export function VerificationCenterPage() {
                       type="date"
                       value={riderDocExpiry}
                       onChange={(e) => setRiderDocExpiry(e.target.value)}
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     />
                   </div>
 
@@ -510,7 +510,7 @@ export function VerificationCenterPage() {
                       type="file"
                       accept="image/jpeg,image/png,image/webp,application/pdf"
                       onChange={handleFileChange}
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#FFF174] file:text-black cursor-pointer"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#F5B041] file:text-black cursor-pointer"
                     />
                     {fileError && <span className="text-[11px] text-red-400 block">{fileError}</span>}
                   </div>
@@ -520,7 +520,7 @@ export function VerificationCenterPage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full sm:w-auto px-6 py-3 bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
+                    className="w-full sm:w-auto px-6 py-3 bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
                   >
                     {submitting ? 'Submitting & Encrypting...' : 'Upload & Submit for Verification'}
                   </button>
@@ -565,7 +565,7 @@ export function VerificationCenterPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2.5">
                     <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Provider Credential ID:</span>
-                    <span className="text-xs font-mono text-[#FFF174]">
+                    <span className="text-xs font-mono text-[#F5B041]">
                       {verification?.verificationId || 'VERIF-H-2001'}
                     </span>
                   </div>
@@ -588,7 +588,7 @@ export function VerificationCenterPage() {
                       id="helperCategory"
                       value={helperCategory}
                       onChange={(e: any) => setHelperCategory(e.target.value)}
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     >
                       <option value="MECHANIC">Motorcycle Repair / Mechanic Workshop</option>
                       <option value="TOWING">Flatbed Towing & Recovery Specialist</option>
@@ -608,7 +608,7 @@ export function VerificationCenterPage() {
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       placeholder="e.g. Raj Motors 2-Wheeler Rescue"
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                       required
                     />
                   </div>
@@ -625,7 +625,7 @@ export function VerificationCenterPage() {
                       value={serviceAddress}
                       onChange={(e) => setServiceAddress(e.target.value)}
                       placeholder="e.g. Sevoke Road 2nd Mile, Siliguri, WB 734001"
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     />
                   </div>
 
@@ -640,7 +640,7 @@ export function VerificationCenterPage() {
                       onChange={(e) => setYearsExperience(e.target.value)}
                       min="1"
                       max="40"
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     />
                   </div>
                 </div>
@@ -654,7 +654,7 @@ export function VerificationCenterPage() {
                       id="helperDocType"
                       value={helperDocType}
                       onChange={(e) => setHelperDocType(e.target.value)}
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     >
                       <option value="TRADE_LICENSE">Municipal Trade License</option>
                       <option value="BUSINESS_PROOF">Udyam MSME Certificate</option>
@@ -673,7 +673,7 @@ export function VerificationCenterPage() {
                       value={helperDocNumber}
                       onChange={(e) => setHelperDocNumber(e.target.value)}
                       placeholder="e.g. UDYAM-WB-10-0042918"
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                       required
                     />
                   </div>
@@ -688,7 +688,7 @@ export function VerificationCenterPage() {
                     type="file"
                     accept="image/jpeg,image/png,image/webp,application/pdf"
                     onChange={handleFileChange}
-                    className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#FFF174] file:text-black cursor-pointer"
+                    className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#F5B041] file:text-black cursor-pointer"
                   />
                 </div>
 
@@ -696,7 +696,7 @@ export function VerificationCenterPage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full sm:w-auto px-6 py-3 bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
+                    className="w-full sm:w-auto px-6 py-3 bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
                   >
                     {submitting ? 'Submitting Provider Data...' : 'Submit Provider Credentials'}
                   </button>
@@ -714,7 +714,7 @@ export function VerificationCenterPage() {
             <div className="p-5 sm:p-6 rounded-3xl bg-[#121212] border border-white/10 space-y-4">
               <div className="border-b border-white/10 pb-4">
                 <h3 className="text-base font-black text-white flex items-center gap-2">
-                  <Lock size={18} className="text-[#FFF174]" />
+                  <Lock size={18} className="text-[#F5B041]" />
                   <span>Operations Admin Verification Decision Panel</span>
                 </h3>
                 <p className="text-xs text-gray-400">
@@ -732,7 +732,7 @@ export function VerificationCenterPage() {
                       id="adminUserId"
                       value={adminTargetUserId}
                       onChange={(e) => setAdminTargetUserId(e.target.value)}
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     >
                       <option value="user-rider-1">user-rider-1 (Pulasta Sen - Rider)</option>
                       <option value="user-helper-1">user-helper-1 (Suman Gurung - Helper)</option>
@@ -747,7 +747,7 @@ export function VerificationCenterPage() {
                       id="adminDecision"
                       value={adminDecision}
                       onChange={(e: any) => setAdminDecision(e.target.value)}
-                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                      className="w-full bg-[#181818] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     >
                       <option value="VERIFIED">VERIFIED (Approve & Grant Verified Badge)</option>
                       <option value="ACTION_REQUIRED">ACTION_REQUIRED (Request Clearer Scan)</option>
@@ -765,7 +765,7 @@ export function VerificationCenterPage() {
                     rows={2}
                     value={adminNotes}
                     onChange={(e) => setAdminNotes(e.target.value)}
-                    className="w-full bg-[#181818] border border-white/20 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#181818] border border-white/20 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                     required
                   />
                 </div>
@@ -773,7 +773,7 @@ export function VerificationCenterPage() {
                 <button
                   type="submit"
                   disabled={adminUpdating}
-                  className="px-6 py-3 bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
+                  className="px-6 py-3 bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
                 >
                   {adminUpdating ? 'Updating Verification...' : 'Commit Admin Decision'}
                 </button>

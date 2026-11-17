@@ -140,7 +140,7 @@ export function AiBikeAssistantPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-2xl">
         
         {/* Header */}
@@ -151,7 +151,7 @@ export function AiBikeAssistantPage() {
           >
             <ArrowLeft size={16} /> Back
           </button>
-          <div className="flex items-center gap-1.5 text-xs font-bold text-[#FFF174] bg-[#FFF174]/10 px-3 py-1 rounded-full border border-[#FFF174]/20">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-[#F5B041] bg-[#F5B041]/10 px-3 py-1 rounded-full border border-[#F5B041]/20">
             <Sparkles size={14} /> AI Diagnostic Engine
           </div>
         </div>
@@ -199,7 +199,7 @@ export function AiBikeAssistantPage() {
                   onClick={() => setSelectedSymptom(sym.id)}
                   className={`p-3 rounded-xl border text-left transition-all ${
                     selectedSymptom === sym.id
-                      ? 'bg-[#FFF174]/15 border-[#FFF174] text-white shadow-sm'
+                      ? 'bg-[#F5B041]/15 border-[#F5B041] text-white shadow-sm'
                       : 'bg-[#182030] border-white/10 text-gray-400 hover:text-gray-200'
                   }`}
                 >
@@ -257,7 +257,7 @@ export function AiBikeAssistantPage() {
 
         {/* Diagnostic Results (Section 17) */}
         {result && (
-          <div className="p-6 rounded-3xl bg-[#111622] border border-[#FFF174]/40 space-y-5 animate-fade-in">
+          <div className="p-6 rounded-3xl bg-[#111622] border border-[#F5B041]/40 space-y-5 animate-fade-in">
             
             {/* Risk Assessment Banner */}
             <div className={`p-4 rounded-2xl border flex items-center justify-between ${
@@ -278,13 +278,13 @@ export function AiBikeAssistantPage() {
 
             {/* Possible Causes */}
             <div>
-              <h3 className="text-xs font-black uppercase tracking-wider text-[#FFF174] mb-2">
+              <h3 className="text-xs font-black uppercase tracking-wider text-[#F5B041] mb-2">
                 1. Possible Causes (Based on {selectedBike})
               </h3>
               <ul className="space-y-1.5 text-xs text-gray-300">
                 {result.possibleCauses.map((cause, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span className="text-[#FFF174]">•</span>
+                    <span className="text-[#F5B041]">•</span>
                     <span>{cause}</span>
                   </li>
                 ))}
@@ -334,7 +334,7 @@ export function AiBikeAssistantPage() {
                 <button
                   type="button"
                   onClick={() => navigate('/stranded')}
-                  className="flex-1 py-3 rounded-xl bg-[#FFF174] text-black font-black text-xs uppercase flex items-center justify-center gap-1.5"
+                  className="flex-1 py-3 rounded-xl bg-[#F5B041] text-black font-black text-xs uppercase flex items-center justify-center gap-1.5"
                 >
                   <Wrench size={16} /> Request Professional Help
                 </button>

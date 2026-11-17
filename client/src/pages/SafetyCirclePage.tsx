@@ -75,7 +75,7 @@ export function SafetyCirclePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 sm:pt-6 pb-28 md:pb-16 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-2xl">
         
         {/* Header */}
@@ -89,7 +89,7 @@ export function SafetyCirclePage() {
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 bg-[#FFF174] text-black font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
+            className="px-4 py-2 bg-[#F5B041] text-black font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
           >
             <UserPlus size={16} /> Add Trusted Member
           </button>
@@ -108,7 +108,7 @@ export function SafetyCirclePage() {
         </div>
 
         {/* Live Ride Sharing Toggle Card */}
-        <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 mb-6 space-y-4">
+        <div className="p-6 rounded-3xl bg-[#181D24] border border-white/10 mb-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               {isSharingLiveRide ? <Eye size={18} className="text-emerald-400" /> : <EyeOff size={18} className="text-gray-400" />}
@@ -154,7 +154,7 @@ export function SafetyCirclePage() {
 
           {loading ? (
             <div className="py-12 text-center">
-              <Loader2 size={28} className="animate-spin text-[#FFF174] mx-auto" />
+              <Loader2 size={28} className="animate-spin text-[#F5B041] mx-auto" />
             </div>
           ) : members.length === 0 ? (
             <div className="p-8 rounded-3xl bg-[#111622] border border-white/10 text-center space-y-3">
@@ -166,7 +166,7 @@ export function SafetyCirclePage() {
               <button
                 type="button"
                 onClick={() => setShowAddModal(true)}
-                className="px-5 py-2.5 bg-[#FFF174] text-black font-bold text-xs rounded-xl"
+                className="px-5 py-2.5 bg-[#F5B041] text-black font-bold text-xs rounded-xl"
               >
                 Add First Contact
               </button>
@@ -245,7 +245,7 @@ export function SafetyCirclePage() {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g. Anjali Sen"
-              className="w-full bg-[#182030] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#FFF174]"
+              className="w-full bg-[#182030] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#F5B041]"
             />
           </div>
 
@@ -270,7 +270,7 @@ export function SafetyCirclePage() {
               value={phone}
               onChange={e => setPhone(e.target.value)}
               placeholder="+91 98765 43210"
-              className="w-full bg-[#182030] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#FFF174]"
+              className="w-full bg-[#182030] border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#F5B041]"
             />
           </div>
 
@@ -309,7 +309,7 @@ export function SafetyCirclePage() {
           <div className="pt-2 flex gap-2">
             <button
               type="submit"
-              className="flex-1 py-3.5 bg-[#FFF174] hover:bg-[#FCEB50] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+              className="flex-1 py-3.5 bg-[#F5B041] hover:bg-[#FCEB50] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
             >
               Add Member
             </button>

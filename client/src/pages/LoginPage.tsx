@@ -74,7 +74,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="auth-page bg-[#151515] min-h-screen text-white font-sans pt-12 pb-28 px-4 sm:px-6 relative overflow-hidden selection:bg-[#FFF174] selection:text-black">
+    <div className="auth-page bg-[#0A0D12] min-h-screen text-white font-sans pt-6 pb-28 md:pb-16 px-4 sm:px-6 relative overflow-hidden selection:bg-[#F5B041] selection:text-black">
       {/* Background graphics */}
       <AnimatedRoadLines opacity={0.1} />
       <MountainContourPattern height={140} opacity={0.18} />
@@ -109,10 +109,10 @@ export function LoginPage() {
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
         
         {/* COLUMN 1: LOGIN & AUTH CARD (lg:col-span-6) */}
-        <div className="lg:col-span-6 bg-[#111111] border border-white/15 rounded-3xl p-6 sm:p-8 md:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative">
+        <div className="lg:col-span-6 bg-[#181D24] border border-white/10 rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl relative">
           
           <div className="text-center mb-6">
-            <div className="w-14 h-14 bg-[#FFF174]/10 border border-[#FFF174]/30 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-[#FFF174]">
+            <div className="w-14 h-14 bg-[#F5B041]/10 border border-[#F5B041]/30 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-[#F5B041]">
               <Lock size={26} />
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
@@ -171,7 +171,7 @@ export function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="rider@motoassist.in"
-                className="w-full bg-[#161616] border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#FFF174]"
+                className="w-full bg-[#161616] border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#F5B041]"
                 required
               />
             </div>
@@ -184,7 +184,7 @@ export function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
-                  className="text-xs text-[#FFF174] hover:underline cursor-pointer"
+                  className="text-xs text-[#F5B041] hover:underline cursor-pointer"
                 >
                   Forgot password?
                 </button>
@@ -196,7 +196,7 @@ export function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-[#161616] border border-white/20 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#161616] border border-white/20 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#F5B041]"
                   required
                 />
                 <button
@@ -212,7 +212,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 bg-[#FFF174] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(255,241,116,0.3)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 mt-2"
+              className="w-full py-3.5 bg-[#F5B041] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(255,241,116,0.3)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 mt-2"
             >
               {isLoading ? (
                 <>
@@ -242,14 +242,14 @@ export function LoginPage() {
           {/* RIDER REGISTRATION CARD */}
           <Link
             to="/register"
-            className="p-5 sm:p-6 rounded-3xl bg-[#141414] border border-white/15 hover:border-[#FFF174]/50 flex items-center justify-between gap-4 transition-all group block shadow-md"
+            className="p-5 sm:p-6 rounded-3xl bg-[#141414] border border-white/15 hover:border-[#F5B041]/50 flex items-center justify-between gap-4 transition-all group block shadow-md"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#FFF174]/15 border border-[#FFF174]/30 text-[#FFF174] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-[#F5B041]/15 border border-[#F5B041]/30 text-[#F5B041] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                 <User size={22} />
               </div>
               <div>
-                <strong className="text-base sm:text-lg font-black text-white group-hover:text-[#FFF174] transition-colors block">
+                <strong className="text-base sm:text-lg font-black text-white group-hover:text-[#F5B041] transition-colors block">
                   Create Rider Account
                 </strong>
                 <span className="text-xs text-gray-400 block mt-0.5">
@@ -293,10 +293,10 @@ export function LoginPage() {
             className="p-4 rounded-2xl bg-[#161616] border border-white/10 hover:border-white/25 flex items-center justify-between text-xs text-gray-300 transition-colors group block"
           >
             <div className="flex items-center gap-3">
-              <HelpCircle size={18} className="text-[#FFF174]" />
+              <HelpCircle size={18} className="text-[#F5B041]" />
               <span>Want to explore features first? Learn how MotoAssist works</span>
             </div>
-            <span className="text-[#FFF174] font-bold group-hover:underline">Explore</span>
+            <span className="text-[#F5B041] font-bold group-hover:underline">Explore</span>
           </Link>
 
         </div>
@@ -319,7 +319,7 @@ export function LoginPage() {
             </button>
 
             <div className="text-center space-y-1">
-              <div className="w-12 h-12 rounded-2xl bg-[#FFF174]/10 text-[#FFF174] border border-[#FFF174]/30 flex items-center justify-center mx-auto mb-2">
+              <div className="w-12 h-12 rounded-2xl bg-[#F5B041]/10 text-[#F5B041] border border-[#F5B041]/30 flex items-center justify-center mx-auto mb-2">
                 <KeyRound size={22} />
               </div>
               <h3 className="text-lg font-black text-white">Reset Account Password</h3>
@@ -353,12 +353,12 @@ export function LoginPage() {
                   value={forgotEmail}
                   onChange={(e) => setForgotEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full bg-[#181818] border border-white/20 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/20 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                   required
                 />
                 <button
                   type="submit"
-                  className="w-full py-3 bg-[#FFF174] text-black font-black text-xs uppercase rounded-xl hover:bg-yellow-400 cursor-pointer"
+                  className="w-full py-3 bg-[#F5B041] text-black font-black text-xs uppercase rounded-xl hover:bg-yellow-400 cursor-pointer"
                 >
                   Send Recovery Link
                 </button>

@@ -1,52 +1,30 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight, LogOut, ShieldAlert } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { ArrowRight, ShieldAlert } from 'lucide-react';
 import { MobileBottomNav } from '../components/MobileBottomNav';
 import { StickyEmergencySOS } from '../components/StickyEmergencySOS';
-import { MotoAssistBrandMark } from '../components/graphics';
+import { MobileAppHeader } from '../components/MobileAppHeader';
+import { MobileMenuDrawer } from '../components/MobileMenuDrawer';
+import { NotificationsModal } from '../components/NotificationsModal';
+import { MotoAssistLogoMark } from '../components/MotoAssistLogoMark';
 
 export function PublicLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const closeMenu = () => setMenuOpen(false);
-
-  // Prevent background scrolling when mobile menu is open
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [menuOpen]);
-
-  // Handle Escape key to close mobile menu
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && menuOpen) {
-        closeMenu();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [menuOpen]);
-
-  // Auto-close menu on route navigation
+  // Auto-close menu and modal on route change
   useEffect(() => {
     setMenuOpen(false);
+    setNotificationsOpen(false);
   }, [location.pathname]);
 
   const isEmergencyMode = location.pathname === '/sos';
   const isFullScreenMode = ['/entry'].includes(location.pathname);
   const isHomePage = location.pathname === '/';
 
-  // Informational pages where long scrolling, full footer, and marketing CTA are acceptable
+  // Informational pages where long scrolling and marketing CTA are acceptable
   const isInformationalPage = [
     '/how-it-works',
     '/safety',
@@ -57,7 +35,7 @@ export function PublicLayout() {
 
   if (isFullScreenMode) {
     return (
-      <div className="public-layout min-h-screen flex flex-col bg-[#12161A] text-white">
+      <div className="public-layout min-h-screen flex flex-col bg-[#0A0D12] text-white font-sans">
         <main className="public-main flex-1">
           <Outlet />
         </main>
@@ -65,23 +43,11 @@ export function PublicLayout() {
     );
   }
 
-  const getProfilePath = () => {
-    if (!user) return '/login';
-    if (user.role === 'ADMIN') return '/admin/dashboard';
-    if (user.role === 'HELPER') return '/helper/dashboard';
-    return '/rider/profile';
-  };
-
-  const getGaragePath = () => {
-    if (user?.role === 'RIDER') return '/rider/bikes';
-    return '/save-my-bike';
-  };
-
   return (
-    <div className="public-layout min-h-screen flex flex-col bg-[#12161A] text-white selection:bg-[#FFF174] selection:text-[#12161A]">
+    <div className="public-layout min-h-screen flex flex-col bg-[#0A0D12] text-white font-sans selection:bg-[#F5B041] selection:text-black">
       {/* If in Dedicated Emergency Mode, render minimal Emergency Header (Red & White) */}
       {isEmergencyMode ? (
-        <header className="sticky top-0 z-50 bg-red-600 border-b border-red-700 shadow-md backdrop-blur-md px-4 py-3">
+        <header className="sticky top-0 z-50 bg-[#E53935] border-b border-red-700 shadow-md backdrop-blur-md px-4 py-3">
           <div className="max-w-xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping" />
@@ -100,198 +66,57 @@ export function PublicLayout() {
           </div>
         </header>
       ) : !isHomePage ? (
-        <header className="site-header sticky top-0 z-40 bg-[#1A2026]/95 border-b border-[#2E3844] shadow-md backdrop-blur-md">
-          <nav className="nav page-container flex items-center justify-between max-w-7xl mx-auto px-4 py-3" aria-label="Primary navigation">
-            <Link className="brand flex items-center gap-2" to="/" onClick={closeMenu} aria-label="MotoAssist Home">
-              <MotoAssistBrandMark size={34} withText subtext="ROADSIDE RESCUE" />
-            </Link>
-
-            {/* Mobile Hamburger toggle */}
-            <button
-              className="menu-button lg:hidden p-2 min-w-[44px] min-h-[44px] rounded-xl bg-[#242D37] border border-[#2E3844] text-[#94A3B8] hover:text-white flex items-center justify-center cursor-pointer transition-colors hover:border-[#FFF174]"
-              aria-label="Toggle navigation menu"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-
-            {/* CONSOLIDATED PRIMARY RIDER NAVIGATION */}
-            <div className={`nav__links ${menuOpen ? 'nav__links--open' : ''} flex items-center gap-1 sm:gap-2`}>
-              {/* 1. HOME */}
-              <NavLink
-                to="/"
-                end
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                Home
-              </NavLink>
-
-              {/* 2. ROADSIDE RESCUE */}
-              <NavLink
-                to="/im-stranded"
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                Roadside
-              </NavLink>
-
-              {/* 3. SERVICES CATALOGUE */}
-              <NavLink
-                to="/services"
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                Services
-              </NavLink>
-
-              {/* 4. RSA SUBSCRIPTION PLANS */}
-              <NavLink
-                to="/subscriptions"
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                RSA Plans
-              </NavLink>
-
-              {/* 5. NEARBY ASSISTANCE */}
-              <NavLink
-                to="/nearby-services"
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                Nearby
-              </NavLink>
-
-              {/* 6. REMOTE READINESS */}
-              <NavLink
-                to="/remote-readiness"
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                Remote
-              </NavLink>
-
-              {/* 7. SAFE RIDES */}
-              <NavLink
-                to="/safe-ride"
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                Rides
-              </NavLink>
-
-              {/* 8. GARAGE */}
-              <NavLink
-                to={getGaragePath()}
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                Garage
-              </NavLink>
-
-              {/* 9. PROFILE / SIGN IN */}
-              <NavLink
-                to={getProfilePath()}
-                onClick={closeMenu}
-                className={({ isActive }) =>
-                  `px-3 py-2 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center transition-colors ${
-                    isActive ? 'bg-[#242D37] text-[#FFF174] border border-[#FFF174]/40' : 'text-[#94A3B8] hover:text-white'
-                  }`
-                }
-              >
-                {user ? 'Profile' : 'Sign In'}
-              </NavLink>
-
-              {/* PERSISTENT HEADER SOS ACTION */}
-              <Link
-                to="/sos"
-                onClick={closeMenu}
-                className="ml-2 px-3.5 py-2 min-h-[44px] rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(239,68,68,0.45)] border border-red-400/50 transition-all shrink-0 font-display"
-                aria-label="Direct Emergency SOS"
-              >
-                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-                <span>SOS 112</span>
-              </Link>
-
-              {user && (
-                <button
-                  type="button"
-                  className="p-2 min-w-[44px] min-h-[44px] text-gray-400 hover:text-white rounded-xl hover:bg-white/5 border border-transparent hover:border-[#343B42] flex items-center justify-center transition-colors ml-1 cursor-pointer"
-                  onClick={() => {
-                    logout();
-                    navigate('/');
-                    closeMenu();
-                  }}
-                  title="Logout"
-                  aria-label="Logout"
-                >
-                  <LogOut size={16} />
-                </button>
-              )}
-            </div>
-          </nav>
-          {menuOpen && (
-            <div className="nav-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm z-30 lg:hidden" onClick={closeMenu} aria-hidden="true" />
-          )}
-        </header>
+        /* Unified Minimalist Header for all non-home pages: Matches Exact Mobile and Desktop UI */
+        <div className="sticky top-0 z-40 bg-[#0A0D12]/95 backdrop-blur-md border-b border-white/5">
+          <div className="w-full max-w-md md:max-w-4xl lg:max-w-5xl mx-auto px-4 sm:px-6">
+            <MobileAppHeader
+              onOpenMenu={() => setMenuOpen(true)}
+              onOpenNotifications={() => setNotificationsOpen(true)}
+              hasUnreadNotifications={true}
+            />
+          </div>
+        </div>
       ) : null}
 
+      {/* Shared Navigation Drawer & Notifications Modal for Public Pages */}
+      {!isHomePage && (
+        <>
+          <MobileMenuDrawer isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+          <NotificationsModal
+            isOpen={notificationsOpen}
+            onClose={() => setNotificationsOpen(false)}
+          />
+        </>
+      )}
+
       {/* MAIN VIEW */}
-      <main className="public-main flex-1 pb-28 md:pb-8" key={location.pathname}>
+      <main className="public-main flex-1 pb-28 md:pb-16" key={location.pathname}>
         <div className="page-transition">
           <Outlet />
         </div>
       </main>
 
-      {/* MARKETING CTA: Only shown on Informational Pages per Section 2 & 16 */}
+      {/* MARKETING CTA: Only shown on Informational Pages */}
       {isInformationalPage && (
-        <section className="final-cta-section shell py-12 px-4 max-w-5xl mx-auto text-center space-y-4">
-          <div className="final-cta-content bg-[#121212] border border-white/10 rounded-3xl p-8 sm:p-12 space-y-4">
+        <section className="final-cta-section py-12 px-4 max-w-5xl mx-auto text-center space-y-4">
+          <div className="bg-[#181D24] border border-white/10 rounded-3xl p-8 sm:p-12 space-y-4 shadow-xl">
             <h2 className="text-2xl sm:text-3xl font-black text-white">
-              Keep riding. We’ll help you find the next step.
+              Ride Safe. Get Help Anytime.
             </h2>
-            <p className="text-gray-400 text-sm max-w-xl mx-auto">
-              Whether you are commuting or touring Himalayan roads, MotoAssist coordinates transparent roadside rescue.
+            <p className="text-[#9CA3AF] text-sm max-w-xl mx-auto">
+              Whether you are commuting or touring Himalayan corridors, MotoAssist coordinates rapid, transparent roadside rescue.
             </p>
-            <div className="final-cta-actions flex flex-wrap items-center justify-center gap-3 pt-2">
-              <Link to="/im-stranded" className="px-5 py-3 rounded-xl bg-[#FFF174] text-black font-black text-xs uppercase tracking-wider hover:bg-yellow-400">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <Link
+                to="/im-stranded"
+                className="px-5 py-3 rounded-xl bg-[#F5B041] text-black font-black text-xs uppercase tracking-wider hover:bg-[#E5A835] transition-all"
+              >
                 I'm Stranded <ArrowRight size={14} className="inline ml-1" />
               </Link>
-              <Link to="/become-helper" className="px-5 py-3 rounded-xl bg-white/10 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/20">
+              <Link
+                to="/become-helper"
+                className="px-5 py-3 rounded-xl bg-white/10 text-white font-bold text-xs uppercase tracking-wider hover:bg-white/15 border border-white/10 transition-all"
+              >
                 Become a Helper
               </Link>
             </div>
@@ -301,14 +126,17 @@ export function PublicLayout() {
 
       {/* FULL FOOTER: Only shown on Informational Pages */}
       {isInformationalPage ? (
-        <footer className="site-footer bg-[#0c0c0c] border-t border-white/10 py-12 px-4 text-xs text-gray-400">
+        <footer className="site-footer bg-[#0A0D12] border-t border-white/5 py-12 px-4 text-xs text-[#9CA3AF]">
           <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-8">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <MotoAssistBrandMark size={22} withText textClassName="text-white text-base font-display font-black tracking-tight" />
+                <MotoAssistLogoMark size={24} />
+                <span className="text-white font-black text-base tracking-tight">
+                  MOTO<span className="text-[#F5B041]">ASSIST</span>
+                </span>
               </div>
-              <p className="text-xs text-[#B8C0C5]">
-                Roadside assistance & emergency network for Himalayan motorcycle riders.
+              <p className="text-xs text-[#9CA3AF]">
+                Roadside assistance & emergency rescue network for motorcycle riders across India.
               </p>
             </div>
             <div>
@@ -336,14 +164,14 @@ export function PublicLayout() {
               </ul>
             </div>
           </div>
-          <div className="max-w-6xl mx-auto border-t border-white/10 mt-8 pt-6 text-center text-gray-500">
-            <span>© {new Date().getFullYear()} MotoAssist. Engineered for Himalayan motorcycle safety.</span>
+          <div className="max-w-6xl mx-auto border-t border-white/5 mt-8 pt-6 text-center text-[#6B7280]">
+            <span>© {new Date().getFullYear()} MotoAssist • Engineered for Motorcycle Safety & Rescue.</span>
           </div>
         </footer>
       ) : !isEmergencyMode && !isHomePage ? (
-        /* COMPACT 1-LINE FOOTER on Desktop for Task/Utility Pages; Hidden on Mobile per Section 16 */
-        <footer className="hidden md:block py-4 border-t border-white/5 bg-[#090909] text-center text-[11px] text-gray-500">
-          <div className="max-w-4xl mx-auto flex items-center justify-between px-4">
+        /* COMPACT 1-LINE FOOTER on Desktop for Utility Pages; Hidden on Mobile */
+        <footer className="hidden md:block py-4 border-t border-white/5 bg-[#0A0D12] text-center text-[11px] text-[#6B7280]">
+          <div className="max-w-4xl lg:max-w-5xl mx-auto flex items-center justify-between px-4 sm:px-6">
             <span>© {new Date().getFullYear()} MotoAssist • 24/7 Roadside Rescue</span>
             <div className="flex items-center gap-4">
               <Link to="/how-it-works" className="hover:text-gray-300">How It Works</Link>
@@ -354,10 +182,10 @@ export function PublicLayout() {
         </footer>
       ) : null}
 
-      {/* Globally accessible Emergency SOS Floating Action */}
+      {/* Globally accessible Emergency SOS Floating Action (Suppressed on HomePage) */}
       <StickyEmergencySOS />
 
-      {/* Native-style Mobile Bottom Navigation (Home, Help, Rides, Garage, Profile) */}
+      {/* Native-style Mobile Bottom Navigation (Home, Help, Rides, Garage, Account) */}
       <MobileBottomNav />
     </div>
   );

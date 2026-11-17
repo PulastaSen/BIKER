@@ -187,14 +187,14 @@ export function EmergencyServicesPage() {
     : VERIFIED_FACILITIES.filter(f => f.type === filter);
 
   return (
-    <div className="min-h-screen bg-[#12161A] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-[#12161A]">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 sm:pt-6 pb-28 md:pb-16 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-4xl">
         
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-xs text-[#94A3B8] hover:text-white cursor-pointer font-bold"
+            className="flex items-center gap-1.5 text-xs text-[#9CA3AF] hover:text-white cursor-pointer font-bold"
           >
             <ArrowLeft size={16} /> Back
           </button>
@@ -210,7 +210,7 @@ export function EmergencyServicesPage() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-black text-white">EMERGENCY SERVICES</h1>
-              <p className="text-[#94A3B8] text-xs mt-0.5">
+              <p className="text-[#9CA3AF] text-xs mt-0.5">
                 Immediate access to official Indian emergency services, hospitals, ambulances, and verified safe waiting locations.
               </p>
             </div>
@@ -218,12 +218,12 @@ export function EmergencyServicesPage() {
         </div>
 
         {/* Section 11: Official Emergency Helplines Direct Dial */}
-        <div className="p-6 rounded-3xl bg-[#1A2026] border border-[#2E3844] shadow-xl mb-8 space-y-4">
+        <div className="p-6 rounded-3xl bg-[#12161D] border border-[#262D36] shadow-xl mb-8 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-black uppercase tracking-wider text-red-400 flex items-center gap-2">
               <PhoneCall size={14} /> National Emergency Numbers (India)
             </h2>
-            <span className="text-[10px] text-[#94A3B8] font-bold">Toll-Free 24/7</span>
+            <span className="text-[10px] text-[#9CA3AF] font-bold">Toll-Free 24/7</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -237,30 +237,30 @@ export function EmergencyServicesPage() {
 
             <a
               href="tel:100"
-              className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-blue-400 text-center text-white transition-all active:scale-95 shadow-md"
+              className="p-4 rounded-2xl bg-[#181D24] border border-[#262D36] hover:border-blue-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
               <strong className="block text-2xl font-black text-blue-400">100</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block mt-0.5">Police Control</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] block mt-0.5">Police Control</span>
             </a>
 
             <a
               href="tel:108"
-              className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-emerald-400 text-center text-white transition-all active:scale-95 shadow-md"
+              className="p-4 rounded-2xl bg-[#181D24] border border-[#262D36] hover:border-emerald-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
               <strong className="block text-2xl font-black text-emerald-400">108</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block mt-0.5">Govt Ambulance</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] block mt-0.5">Govt Ambulance</span>
             </a>
 
             <a
               href="tel:101"
-              className="p-4 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-orange-400 text-center text-white transition-all active:scale-95 shadow-md"
+              className="p-4 rounded-2xl bg-[#181D24] border border-[#262D36] hover:border-orange-400 text-center text-white transition-all active:scale-95 shadow-md"
             >
               <strong className="block text-2xl font-black text-amber-400">101</strong>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block mt-0.5">Fire & Rescue</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] block mt-0.5">Fire & Rescue</span>
             </a>
           </div>
 
-          <p className="text-[11px] text-[#94A3B8] pt-1">
+          <p className="text-[11px] text-[#9CA3AF] pt-1">
             Note: MotoAssist coordinates motorcycle roadside assistance and does not replace official emergency services. In severe crashes or crime events, always dial 112 first.
           </p>
         </div>
@@ -279,8 +279,8 @@ export function EmergencyServicesPage() {
               onClick={() => setFilter(f.key as typeof filter)}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 filter === f.key
-                  ? 'bg-[#FFF174] text-[#12161A] font-black shadow-md'
-                  : 'bg-[#1E252D] border border-[#2E3844] text-[#94A3B8] hover:text-white hover:border-[#FFF174] shadow-sm'
+                  ? 'bg-[#F5B041] text-[#0A0D12] font-black shadow-md'
+                  : 'bg-[#181D24] border border-[#262D36] text-[#9CA3AF] hover:text-white hover:border-[#F5B041] shadow-sm'
               }`}
             >
               {f.label}
@@ -295,7 +295,7 @@ export function EmergencyServicesPage() {
             return (
               <div
                 key={fac.id}
-                className="p-5 rounded-3xl bg-[#1E252D] border border-[#2E3844] shadow-lg hover:border-[#FFF174] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 rounded-3xl bg-[#181D24] border border-[#262D36] shadow-lg hover:border-[#F5B041] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="flex items-start gap-3.5">
                   <div className={`p-3 rounded-2xl shrink-0 ${
@@ -319,11 +319,11 @@ export function EmergencyServicesPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#94A3B8] mt-0.5">{fac.address}</p>
+                    <p className="text-xs text-[#9CA3AF] mt-0.5">{fac.address}</p>
                     {fac.notes && (
-                      <p className="text-[11px] text-[#94A3B8] mt-1 italic font-medium">{fac.notes}</p>
+                      <p className="text-[11px] text-[#9CA3AF] mt-1 italic font-medium">{fac.notes}</p>
                     )}
-                    <div className="flex items-center gap-3 text-xs text-[#94A3B8] mt-2">
+                    <div className="flex items-center gap-3 text-xs text-[#9CA3AF] mt-2">
                       <span className="font-semibold text-white">
                         {coords ? `~${computeDistanceKm(coords.lat, coords.lng, fac.lat, fac.lng)} km away` : 'Location needed for distance'}
                       </span>
@@ -344,7 +344,7 @@ export function EmergencyServicesPage() {
                     href={mapLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 sm:flex-none py-2.5 px-4 bg-[#242D37] hover:bg-[#2A3440] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all border border-[#2E3844]"
+                    className="flex-1 sm:flex-none py-2.5 px-4 bg-[#1F242C] hover:bg-[#2A3440] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all border border-[#262D36]"
                   >
                     <Navigation size={14} /> Directions
                   </a>

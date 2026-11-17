@@ -221,16 +221,16 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-20 pb-28 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-20 pb-28 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-4xl space-y-7">
         
         {/* Header Block */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-[#FFF174] text-black">
+            <span className="p-2 rounded-xl bg-[#F5B041] text-black">
               <Compass size={20} />
             </span>
-            <span className="text-xs font-black tracking-wider uppercase text-[#FFF174]">
+            <span className="text-xs font-black tracking-wider uppercase text-[#F5B041]">
               REMOTE EXPEDITION RESILIENCE
             </span>
           </div>
@@ -287,14 +287,14 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
         <section className="bg-[#121212] border border-white/10 rounded-3xl p-5 sm:p-7 space-y-4">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
-              <MapPin size={18} className="text-[#FFF174]" />
+              <MapPin size={18} className="text-[#F5B041]" />
               Live GPS Sensor Accuracy & Offline Position
             </h2>
             <button
               type="button"
               onClick={fetchGpsFix}
               disabled={gpsLoading}
-              className="text-xs text-[#FFF174] hover:underline flex items-center gap-1"
+              className="text-xs text-[#F5B041] hover:underline flex items-center gap-1"
             >
               <RefreshCw size={12} className={gpsLoading ? 'animate-spin' : ''} />
               Refresh GPS
@@ -347,7 +347,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
                 value={manualLandmark}
                 onChange={(e) => setManualLandmark(e.target.value)}
                 placeholder="e.g. NH-10 14th Mile, opposite Kali Mandir rock cut"
-                className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#FFF174] outline-none"
+                className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#F5B041] outline-none"
               />
               <button
                 type="button"
@@ -370,7 +370,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
         <section className="bg-[#121212] border border-white/10 rounded-3xl p-5 sm:p-7 space-y-4">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
-              <Clock size={18} className="text-[#FFF174]" />
+              <Clock size={18} className="text-[#F5B041]" />
               Trip Route Check-In & Arrival Time
             </h2>
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
@@ -389,7 +389,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
                   value={tripRoute}
                   onChange={e => setTripRoute(e.target.value)}
                   placeholder="e.g. Siliguri -> Sevoke -> Coronation Bridge -> Teesta"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#FFF174] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#F5B041] outline-none"
                 />
               </div>
 
@@ -402,7 +402,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
                   value={intendedArrival}
                   onChange={e => setIntendedArrival(e.target.value)}
                   placeholder="e.g. 04:30 PM (or within 4 hours)"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#FFF174] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#F5B041] outline-none"
                 />
               </div>
             </div>
@@ -416,14 +416,14 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
                 value={emergencyPhone}
                 onChange={e => setEmergencyPhone(e.target.value)}
                 placeholder="+91 98765 43210"
-                className="w-full sm:w-1/2 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#FFF174] outline-none"
+                className="w-full sm:w-1/2 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:border-[#F5B041] outline-none"
               />
             </div>
 
             <div className="flex items-center gap-3 pt-2">
               <button
                 type="submit"
-                className="px-5 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
                 Save Trip Details
               </button>
@@ -460,7 +460,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
           <div className="grid sm:grid-cols-2 gap-4 text-xs text-gray-300">
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
               <h3 className="font-bold text-white flex items-center gap-1.5 text-xs">
-                <ShieldCheck size={14} className="text-[#FFF174]" />
+                <ShieldCheck size={14} className="text-[#F5B041]" />
                 Crash / Trauma Life Safety Protocol
               </h3>
               <p className="text-gray-400 leading-relaxed">
@@ -487,7 +487,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
         {/* SECTION 3: OFFLINE MAP DOWNLOAD GUIDANCE */}
         <section className="bg-[#121212] border border-white/10 rounded-3xl p-5 sm:p-7 space-y-4">
           <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-            <MapPin size={18} className="text-[#FFF174]" />
+            <MapPin size={18} className="text-[#F5B041]" />
             <h2 className="text-base sm:text-lg font-black text-white">
               Offline Map Preparation Guidance
             </h2>
@@ -505,7 +505,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
                   <li>Open Google Maps app on your phone.</li>
                   <li>Tap your profile avatar (top right).</li>
                   <li>Select <strong className="text-white">Offline maps</strong> → <strong className="text-white">Select your own map</strong>.</li>
-                  <li>Pan rectangle over <strong className="text-[#FFF174]">Siliguri, Sevoke, Teesta, and Darjeeling</strong>.</li>
+                  <li>Pan rectangle over <strong className="text-[#F5B041]">Siliguri, Sevoke, Teesta, and Darjeeling</strong>.</li>
                   <li>Tap <strong className="text-white">Download</strong> before departure.</li>
                 </ol>
               </div>
@@ -555,7 +555,7 @@ VERIFIED 24/7 MOUNTAIN CORRIDOR STOPS:
                     <h3 className="text-sm sm:text-base font-bold text-white mt-1">
                       {stop.name}
                     </h3>
-                    <p className="text-xs text-[#FFF174] font-medium">
+                    <p className="text-xs text-[#F5B041] font-medium">
                       {stop.corridor}
                     </p>
                   </div>

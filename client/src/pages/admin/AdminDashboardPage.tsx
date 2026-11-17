@@ -92,10 +92,10 @@ export function AdminDashboardPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
-            <p className="eyebrow text-xs font-mono font-bold uppercase text-[#FFF174] tracking-widest">OPERATIONS COMMAND CENTRE</p>
+            <p className="eyebrow text-xs font-mono font-bold uppercase text-[#F5B041] tracking-widest">OPERATIONS COMMAND CENTRE</p>
           </div>
           <h1 className="text-2xl sm:text-4xl font-display font-black text-white mt-1 tracking-tight">MotoAssist Platform Command</h1>
-          <p className="text-xs text-[#94A3B8] mt-1">Real-time supervision of dispatches, on-demand services, active subscriptions, and emergency vehicle alerts.</p>
+          <p className="text-xs text-[#9CA3AF] mt-1">Real-time supervision of dispatches, on-demand services, active subscriptions, and emergency vehicle alerts.</p>
         </div>
 
         {user && (
@@ -118,52 +118,52 @@ export function AdminDashboardPage() {
 
       {/* Primary KPI Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#94A3B8] uppercase tracking-wider flex items-center gap-1">
-            <Clock size={13} className="text-[#FFF174]" /> Dispatches
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
+            <Clock size={13} className="text-[#F5B041]" /> Dispatches
           </span>
           <strong className="text-2xl font-display font-black text-white">{openRequests.length}</strong>
-          <span className="text-[10px] text-[#94A3B8] block">Highway & Emergency</span>
+          <span className="text-[10px] text-[#9CA3AF] block">Highway & Emergency</span>
         </div>
 
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#94A3B8] uppercase tracking-wider flex items-center gap-1">
-            <Wrench size={13} className="text-[#FFF174]" /> Bookings
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
+            <Wrench size={13} className="text-[#F5B041]" /> Bookings
           </span>
-          <strong className="text-2xl font-display font-black text-[#FFF174]">{bookings.length}</strong>
-          <span className="text-[10px] text-[#94A3B8] block">On-demand services</span>
+          <strong className="text-2xl font-display font-black text-[#F5B041]">{bookings.length}</strong>
+          <span className="text-[10px] text-[#9CA3AF] block">On-demand services</span>
         </div>
 
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#94A3B8] uppercase tracking-wider flex items-center gap-1">
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
             <CreditCard size={13} className="text-[#10B981]" /> Subscriptions
           </span>
           <strong className="text-2xl font-display font-black text-[#10B981]">{activeSubs.length}</strong>
-          <span className="text-[10px] text-[#94A3B8] block">Active Shield Plans</span>
+          <span className="text-[10px] text-[#9CA3AF] block">Active Shield Plans</span>
         </div>
 
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#94A3B8] uppercase tracking-wider flex items-center gap-1">
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
             <ShieldCheck size={13} className="text-[#F59E0B]" /> Pending
           </span>
           <strong className="text-2xl font-display font-black text-[#F59E0B]">{pendingHelpers.length}</strong>
-          <span className="text-[10px] text-[#94A3B8] block">Awaiting verification</span>
+          <span className="text-[10px] text-[#9CA3AF] block">Awaiting verification</span>
         </div>
 
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#94A3B8] uppercase tracking-wider flex items-center gap-1">
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
             <QrCode size={13} className="text-[#B1D8E3]" /> QR Beacons
           </span>
           <strong className="text-2xl font-display font-black text-[#B1D8E3]">{allQrAlerts.length}</strong>
-          <span className="text-[10px] text-[#94A3B8] block">Vehicle alerts</span>
+          <span className="text-[10px] text-[#9CA3AF] block">Vehicle alerts</span>
         </div>
 
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-4 space-y-1">
-          <span className="text-[11px] font-mono font-bold text-[#94A3B8] uppercase tracking-wider flex items-center gap-1">
-            <Users size={13} className="text-[#94A3B8]" /> Platform Users
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-4 space-y-1">
+          <span className="text-[11px] font-mono font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
+            <Users size={13} className="text-[#9CA3AF]" /> Platform Users
           </span>
           <strong className="text-2xl font-display font-black text-white">{users.length}</strong>
-          <span className="text-[10px] text-[#94A3B8] block">Registered accounts</span>
+          <span className="text-[10px] text-[#9CA3AF] block">Registered accounts</span>
         </div>
       </div>
 
@@ -181,13 +181,13 @@ export function AdminDashboardPage() {
             onClick={() => setActiveTab(tab.id as AdminTab)}
             className={`px-4 py-2.5 rounded-xl text-xs font-display font-bold uppercase tracking-wider whitespace-nowrap transition-all border flex items-center gap-2 min-h-[44px] cursor-pointer ${
               activeTab === tab.id
-                ? 'bg-[#FFF174] text-black border-[#FFF174] shadow-md'
-                : 'bg-[#1E252D] text-[#94A3B8] border-[#2E3844] hover:border-[#FFF174]/40 hover:text-white'
+                ? 'bg-[#F5B041] text-black border-[#F5B041] shadow-md'
+                : 'bg-[#181D24] text-[#9CA3AF] border-[#262D36] hover:border-[#F5B041]/40 hover:text-white'
             }`}
           >
             <span>{tab.label}</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
-              activeTab === tab.id ? 'bg-black text-[#FFF174]' : 'bg-[#242D37] text-[#94A3B8] border border-[#2E3844]'
+              activeTab === tab.id ? 'bg-black text-[#F5B041]' : 'bg-[#1F242C] text-[#9CA3AF] border border-[#262D36]'
             }`}>
               {tab.count}
             </span>
@@ -197,10 +197,10 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: EMERGENCY & DISPATCH QUEUE */}
       {activeTab === 'DISPATCH_QUEUE' && (
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-6 space-y-4">
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-black text-white flex items-center gap-2">
-              <Clock size={18} className="text-[#FFF174]" />
+              <Clock size={18} className="text-[#F5B041]" />
               <span>Live Emergency & Roadside Dispatches ({requests.length})</span>
             </h2>
             <Button variant="secondary" onClick={() => navigate('/admin/requests')}>
@@ -226,7 +226,7 @@ export function AdminDashboardPage() {
               <tbody className="divide-y divide-white/5">
                 {requests.slice(0, 10).map((r) => (
                   <tr key={r.id} className="hover:bg-white/5 transition-colors">
-                    <td className="py-3 px-3 font-mono font-bold text-[#FFF174]">{r.id}</td>
+                    <td className="py-3 px-3 font-mono font-bold text-[#F5B041]">{r.id}</td>
                     <td className="py-3 px-3">
                       <strong className="text-white block">{r.riderName}</strong>
                       <span className="text-gray-400 text-[11px]">{r.riderPhone}</span>
@@ -252,7 +252,7 @@ export function AdminDashboardPage() {
                     <td className="py-3 px-3">
                       <button
                         onClick={() => navigate(`/requests/${r.id}`)}
-                        className="px-3 py-1 bg-white/10 hover:bg-[#FFF174] hover:text-black rounded-lg text-xs font-bold transition-colors"
+                        className="px-3 py-1 bg-white/10 hover:bg-[#F5B041] hover:text-black rounded-lg text-xs font-bold transition-colors"
                       >
                         Inspect
                       </button>
@@ -266,10 +266,10 @@ export function AdminDashboardPage() {
           {/* Mobile 2-Column Responsive Cards */}
           <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
             {requests.slice(0, 10).map((r) => (
-              <div key={r.id} className="p-3 rounded-xl bg-[#1A2026] border border-[#2E3844] flex flex-col justify-between space-y-2">
+              <div key={r.id} className="p-3 rounded-xl bg-[#12161D] border border-[#262D36] flex flex-col justify-between space-y-2">
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-mono font-bold text-[#FFF174]">#{r.id.slice(-4)}</span>
+                    <span className="font-mono font-bold text-[#F5B041]">#{r.id.slice(-4)}</span>
                     <StatusBadge status={r.status} />
                   </div>
                   <strong className="text-xs text-white block truncate">{r.riderName}</strong>
@@ -280,7 +280,7 @@ export function AdminDashboardPage() {
                     </span>
                   </div>
                   <p className="text-[10px] text-gray-400 flex items-center gap-1 mt-1.5 truncate">
-                    <MapPin size={10} className="text-[#FFF174] shrink-0" />
+                    <MapPin size={10} className="text-[#F5B041] shrink-0" />
                     <span className="truncate">{r.approximateLocation || 'Live GPS'}</span>
                   </p>
                 </div>
@@ -290,7 +290,7 @@ export function AdminDashboardPage() {
                   </span>
                   <button
                     onClick={() => navigate(`/requests/${r.id}`)}
-                    className="px-2.5 py-1 bg-white/10 hover:bg-[#FFF174] hover:text-black rounded-lg text-[10px] font-bold transition-colors min-h-[32px]"
+                    className="px-2.5 py-1 bg-white/10 hover:bg-[#F5B041] hover:text-black rounded-lg text-[10px] font-bold transition-colors min-h-[32px]"
                   >
                     Inspect
                   </button>
@@ -303,15 +303,15 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: SERVICE BOOKINGS */}
       {activeTab === 'SERVICE_BOOKINGS' && (
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-6 space-y-4">
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-display font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <Wrench size={18} className="text-[#FFF174]" />
+              <Wrench size={18} className="text-[#F5B041]" />
               <span>Service Catalogue Bookings ({bookings.length})</span>
             </h2>
             <button
               onClick={() => navigate('/services')}
-              className="text-xs text-[#FFF174] font-mono font-bold hover:underline min-h-[44px] flex items-center"
+              className="text-xs text-[#F5B041] font-mono font-bold hover:underline min-h-[44px] flex items-center"
             >
               Open Service Catalogue →
             </button>
@@ -320,7 +320,7 @@ export function AdminDashboardPage() {
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-gray-200 text-[#94A3B8] uppercase tracking-wider font-mono">
+              <thead className="border-b border-gray-200 text-[#9CA3AF] uppercase tracking-wider font-mono">
                 <tr>
                   <th className="py-3 px-3">Booking ID</th>
                   <th className="py-3 px-3">Service Name</th>
@@ -335,21 +335,21 @@ export function AdminDashboardPage() {
               <tbody className="divide-y divide-[#343B42]/50">
                 {bookings.map((b) => (
                   <tr key={b.bookingId} className="hover:bg-gray-50 transition-colors">
-                    <td className="py-3 px-3 font-mono font-bold text-[#FFF174]">{b.bookingId}</td>
+                    <td className="py-3 px-3 font-mono font-bold text-[#F5B041]">{b.bookingId}</td>
                     <td className="py-3 px-3">
                       <strong className="text-white block font-display">{b.serviceName}</strong>
-                      <span className="text-[10px] text-[#94A3B8] uppercase font-mono">{b.serviceType}</span>
+                      <span className="text-[10px] text-[#9CA3AF] uppercase font-mono">{b.serviceType}</span>
                     </td>
                     <td className="py-3 px-3">
                       <span className="text-white block font-bold">{b.riderName}</span>
-                      <span className="text-[#94A3B8] text-[11px] font-mono">{b.riderPhone}</span>
+                      <span className="text-[#9CA3AF] text-[11px] font-mono">{b.riderPhone}</span>
                     </td>
                     <td className="py-3 px-3">
                       <span className="font-bold text-white block">{b.bikeDetails.brand} {b.bikeDetails.model}</span>
-                      <span className="text-[10px] font-mono text-[#94A3B8]">{b.bikeDetails.registrationNumber}</span>
+                      <span className="text-[10px] font-mono text-[#9CA3AF]">{b.bikeDetails.registrationNumber}</span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="font-mono font-bold text-[#FFF174]">₹{b.pricing.totalEstimated}</span>
+                      <span className="font-mono font-bold text-[#F5B041]">₹{b.pricing.totalEstimated}</span>
                       {b.pricing.isCoveredBySubscription && (
                         <span className="block text-[9px] text-[#10B981] font-mono font-bold uppercase">Shield Covered</span>
                       )}
@@ -370,14 +370,14 @@ export function AdminDashboardPage() {
                           Disputed: ₹{b.dispute.amount}
                         </span>
                       ) : (
-                        <span className="text-[#94A3B8] text-[11px]">No disputes</span>
+                        <span className="text-[#9CA3AF] text-[11px]">No disputes</span>
                       )}
                     </td>
                     <td className="py-3 px-3">
                       {b.status === 'REQUESTED' && (
                         <button
                           onClick={() => handleUpdateBooking(b.bookingId, 'ASSIGNED')}
-                          className="px-3 py-1.5 bg-[#FFF174] text-black font-display font-bold text-[11px] uppercase tracking-wider rounded-lg hover:bg-[#ffe83b] min-h-[38px]"
+                          className="px-3 py-1.5 bg-[#F5B041] text-black font-display font-bold text-[11px] uppercase tracking-wider rounded-lg hover:bg-[#ffe83b] min-h-[38px]"
                         >
                           Dispatch Provider
                         </button>
@@ -405,10 +405,10 @@ export function AdminDashboardPage() {
           {/* Mobile 2-Column Responsive Cards */}
           <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
             {bookings.map((b) => (
-              <div key={b.bookingId} className="p-3 rounded-xl bg-[#1A2026] border border-[#2E3844] flex flex-col justify-between space-y-2">
+              <div key={b.bookingId} className="p-3 rounded-xl bg-[#12161D] border border-[#262D36] flex flex-col justify-between space-y-2">
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-mono font-bold text-[#FFF174]">#{b.bookingId.slice(-4)}</span>
+                    <span className="font-mono font-bold text-[#F5B041]">#{b.bookingId.slice(-4)}</span>
                     <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase ${
                       b.status === 'COMPLETED' ? 'bg-[#10B981]/15 text-[#10B981]' :
                       b.status === 'CANCELLED' ? 'bg-[#EF4444]/15 text-[#EF4444]' :
@@ -421,7 +421,7 @@ export function AdminDashboardPage() {
                   <span className="text-[10px] text-gray-400 block truncate">{b.bikeDetails.brand} {b.bikeDetails.model}</span>
                   <div className="mt-1 flex items-center justify-between text-[10px]">
                     <span className="text-gray-400 truncate">{b.riderName}</span>
-                    <span className="font-mono font-bold text-[#FFF174]">₹{b.pricing.totalEstimated}</span>
+                    <span className="font-mono font-bold text-[#F5B041]">₹{b.pricing.totalEstimated}</span>
                   </div>
                 </div>
 
@@ -429,7 +429,7 @@ export function AdminDashboardPage() {
                   {b.status === 'REQUESTED' && (
                     <button
                       onClick={() => handleUpdateBooking(b.bookingId, 'ASSIGNED')}
-                      className="w-full py-1.5 bg-[#FFF174] text-black font-display font-bold text-[10px] uppercase tracking-wider rounded-lg hover:bg-[#ffe83b] min-h-[34px]"
+                      className="w-full py-1.5 bg-[#F5B041] text-black font-display font-bold text-[10px] uppercase tracking-wider rounded-lg hover:bg-[#ffe83b] min-h-[34px]"
                     >
                       Dispatch
                     </button>
@@ -456,15 +456,15 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: SUBSCRIPTIONS */}
       {activeTab === 'SUBSCRIPTIONS' && (
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-6 space-y-4">
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-display font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <CreditCard size={18} className="text-[#FFF174]" />
+              <CreditCard size={18} className="text-[#F5B041]" />
               <span>Active Roadside Assistance Subscriptions ({subscriptions.length})</span>
             </h2>
             <button
               onClick={() => navigate('/subscriptions')}
-              className="text-xs text-[#FFF174] font-mono font-bold hover:underline min-h-[44px] flex items-center"
+              className="text-xs text-[#F5B041] font-mono font-bold hover:underline min-h-[44px] flex items-center"
             >
               View Plan Catalog →
             </button>
@@ -473,7 +473,7 @@ export function AdminDashboardPage() {
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-gray-200 text-[#94A3B8] uppercase tracking-wider font-mono">
+              <thead className="border-b border-gray-200 text-[#9CA3AF] uppercase tracking-wider font-mono">
                 <tr>
                   <th className="py-3 px-3">Subscription ID</th>
                   <th className="py-3 px-3">Plan Tier</th>
@@ -488,14 +488,14 @@ export function AdminDashboardPage() {
               <tbody className="divide-y divide-[#343B42]/50">
                 {subscriptions.map((s) => (
                   <tr key={s.subscriptionId} className="hover:bg-gray-50 transition-colors">
-                    <td className="py-3 px-3 font-mono font-bold text-[#FFF174]">{s.subscriptionId}</td>
+                    <td className="py-3 px-3 font-mono font-bold text-[#F5B041]">{s.subscriptionId}</td>
                     <td className="py-3 px-3">
                       <strong className="text-white block font-display">{s.planName}</strong>
-                      <span className="text-[10px] text-[#94A3B8] uppercase font-mono">{s.planTier}</span>
+                      <span className="text-[10px] text-[#9CA3AF] uppercase font-mono">{s.planTier}</span>
                     </td>
                     <td className="py-3 px-3">
                       <span className="font-bold text-white block">{s.linkedBike.brand} {s.linkedBike.model}</span>
-                      <span className="text-[10px] font-mono text-[#94A3B8]">{s.linkedBike.registrationNumber}</span>
+                      <span className="text-[10px] font-mono text-[#9CA3AF]">{s.linkedBike.registrationNumber}</span>
                     </td>
                     <td className="py-3 px-3">
                       <span className="font-mono font-bold text-[#10B981]">
@@ -505,11 +505,11 @@ export function AdminDashboardPage() {
                     <td className="py-3 px-3 font-mono font-bold text-white">
                       {s.features.towingDistanceLimitKm} km Free
                     </td>
-                    <td className="py-3 px-3 text-[#94A3B8] font-mono">
+                    <td className="py-3 px-3 text-[#9CA3AF] font-mono">
                       {new Date(s.endDate).toLocaleDateString()}
                     </td>
                     <td className="py-3 px-3">
-                      <span className="px-2 py-0.5 rounded bg-gray-50 text-[#94A3B8] border border-gray-200 text-[10px] font-mono">
+                      <span className="px-2 py-0.5 rounded bg-gray-50 text-[#9CA3AF] border border-gray-200 text-[10px] font-mono">
                         {s.paymentDetails.paymentMode} (₹{s.priceInr})
                       </span>
                     </td>
@@ -527,10 +527,10 @@ export function AdminDashboardPage() {
           {/* Mobile 2-Column Responsive Cards */}
           <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2.5 md:hidden">
             {subscriptions.map((s) => (
-              <div key={s.subscriptionId} className="p-3 rounded-xl bg-[#1A2026] border border-[#2E3844] flex flex-col justify-between space-y-2">
+              <div key={s.subscriptionId} className="p-3 rounded-xl bg-[#12161D] border border-[#262D36] flex flex-col justify-between space-y-2">
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-mono font-bold text-[#FFF174]">#{s.subscriptionId.slice(-4)}</span>
+                    <span className="font-mono font-bold text-[#F5B041]">#{s.subscriptionId.slice(-4)}</span>
                     <span className="px-1.5 py-0.5 rounded bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] font-mono font-bold text-[9px] uppercase">
                       {s.status}
                     </span>
@@ -551,7 +551,7 @@ export function AdminDashboardPage() {
 
                 <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[10px] text-gray-400">
                   <span className="truncate">{new Date(s.endDate).toLocaleDateString()}</span>
-                  <span className="font-mono font-bold text-[#FFF174]">₹{s.priceInr}</span>
+                  <span className="font-mono font-bold text-[#F5B041]">₹{s.priceInr}</span>
                 </div>
               </div>
             ))}
@@ -561,29 +561,29 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: VEHICLE QR ALERTS LOG */}
       {activeTab === 'QR_ALERTS' && (
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-6 space-y-4">
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-display font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <QrCode size={18} className="text-[#FFF174]" />
+              <QrCode size={18} className="text-[#F5B041]" />
               <span>Public Vehicle QR Contact Alerts Log ({allQrAlerts.length})</span>
             </h2>
           </div>
 
           <div className="space-y-3">
             {allQrAlerts.map(alert => (
-              <div key={alert.id} className="p-4 bg-[#1A2026] border border-[#2E3844] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div key={alert.id} className="p-4 bg-[#12161D] border border-[#262D36] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-[#FFF174]">{alert.id}</span>
+                    <span className="font-mono font-bold text-[#F5B041]">{alert.id}</span>
                     <span className="px-2 py-0.5 rounded bg-[#B1D8E3]/15 text-[#B1D8E3] border border-[#B1D8E3]/30 font-mono font-bold text-[10px] uppercase">
                       {alert.requestType.replaceAll('_', ' ')}
                     </span>
-                    <span className="text-[#94A3B8] font-mono text-[11px]">
+                    <span className="text-[#9CA3AF] font-mono text-[11px]">
                       {new Date(alert.createdAt).toLocaleString()}
                     </span>
                   </div>
                   <p className="text-white font-medium italic">"{alert.message}"</p>
-                  <div className="flex items-center gap-3 text-[#94A3B8] text-[11px] pt-1">
+                  <div className="flex items-center gap-3 text-[#9CA3AF] text-[11px] pt-1">
                     <span>Target: <strong className="text-white">{alert.bikeInfo}</strong></span>
                     {alert.senderName && <span>Reporter: <strong className="text-white">{alert.senderName}</strong> ({alert.senderPhone || 'No phone'})</span>}
                   </div>
@@ -591,9 +591,9 @@ export function AdminDashboardPage() {
 
                 {alert.locationPin && (
                   <div className="text-right shrink-0">
-                    <span className="text-[10px] text-[#94A3B8] uppercase block font-mono">Landmark</span>
+                    <span className="text-[10px] text-[#9CA3AF] uppercase block font-mono">Landmark</span>
                     <span className="text-xs font-mono font-bold text-white flex items-center gap-1 justify-end">
-                      <MapPin size={12} className="text-[#FFF174]" />
+                      <MapPin size={12} className="text-[#F5B041]" />
                       {alert.locationPin.address || `${alert.locationPin.lat}, ${alert.locationPin.lng}`}
                     </span>
                   </div>
@@ -602,7 +602,7 @@ export function AdminDashboardPage() {
             ))}
 
             {allQrAlerts.length === 0 && (
-              <div className="text-center py-8 text-[#94A3B8]">
+              <div className="text-center py-8 text-[#9CA3AF]">
                 No public vehicle QR alerts logged yet.
               </div>
             )}
@@ -612,10 +612,10 @@ export function AdminDashboardPage() {
 
       {/* TAB CONTENT: HELPERS */}
       {activeTab === 'HELPERS' && (
-        <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-6 space-y-4">
+        <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-display font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <ShieldCheck size={18} className="text-[#FFF174]" />
+              <ShieldCheck size={18} className="text-[#F5B041]" />
               <span>Helper Network & Verification ({helpers.length})</span>
             </h2>
             <Button variant="secondary" onClick={() => navigate('/admin/helpers')}>
@@ -625,7 +625,7 @@ export function AdminDashboardPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-gray-200 text-[#94A3B8] uppercase tracking-wider font-mono">
+              <thead className="border-b border-gray-200 text-[#9CA3AF] uppercase tracking-wider font-mono">
                 <tr>
                   <th className="py-3 px-3">Helper Name</th>
                   <th className="py-3 px-3">Service Type</th>
@@ -641,17 +641,17 @@ export function AdminDashboardPage() {
                   <tr key={h.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-3">
                       <strong className="text-white block font-display">{h.name}</strong>
-                      <span className="text-[#94A3B8] text-[11px] font-mono">{h.email} • {h.phone}</span>
+                      <span className="text-[#9CA3AF] text-[11px] font-mono">{h.email} • {h.phone}</span>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="px-2 py-0.5 rounded bg-[#1A2026] border border-[#2E3844] text-white font-mono font-bold">
+                      <span className="px-2 py-0.5 rounded bg-[#12161D] border border-[#262D36] text-white font-mono font-bold">
                         {h.serviceType}
                       </span>
                     </td>
-                    <td className="py-3 px-3 text-[#94A3B8]">{h.businessName || 'Independent Mechanic'}</td>
-                    <td className="py-3 px-3 text-[#94A3B8]">{h.serviceAreas.join(', ')}</td>
+                    <td className="py-3 px-3 text-[#9CA3AF]">{h.businessName || 'Independent Mechanic'}</td>
+                    <td className="py-3 px-3 text-[#9CA3AF]">{h.serviceAreas.join(', ')}</td>
                     <td className="py-3 px-3">
-                      <strong className="text-[#FFF174]">{h.rating} ★</strong> <span className="text-[#94A3B8]">({h.completedAssists} assists)</span>
+                      <strong className="text-[#F5B041]">{h.rating} ★</strong> <span className="text-[#9CA3AF]">({h.completedAssists} assists)</span>
                     </td>
                     <td className="py-3 px-3">
                       <StatusBadge status={h.verificationStatus} />

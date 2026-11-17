@@ -122,7 +122,7 @@ export function HelperProfilePage() {
     <div className="dashboard-page max-w-4xl mx-auto px-4 py-8 space-y-6">
       <header className="dashboard-header flex flex-wrap justify-between items-start gap-4">
         <div>
-          <p className="eyebrow text-xs font-black uppercase text-[#FFF174] tracking-wider">PROVIDER TRUST PROFILE</p>
+          <p className="eyebrow text-xs font-black uppercase text-[#F5B041] tracking-wider">PROVIDER TRUST PROFILE</p>
           <h1 className="text-2xl sm:text-3xl font-black text-white">Helper Profile & Verification</h1>
           <p className="text-xs text-gray-400 mt-1">Manage workshop credentials, verified trust badges, and active dispatch services.</p>
         </div>
@@ -136,9 +136,9 @@ export function HelperProfilePage() {
       </header>
 
       {/* DEDICATED HELPER VERIFICATION PORTAL BANNER */}
-      <div className="p-4 rounded-2xl bg-[#161616] border border-[#FFF174]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="p-4 rounded-2xl bg-[#161616] border border-[#F5B041]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2.5">
-          <ShieldCheck size={20} className="text-[#FFF174]" />
+          <ShieldCheck size={20} className="text-[#F5B041]" />
           <div>
             <strong className="text-white block font-bold">Provider Verification Portal</strong>
             <span className="text-gray-400 text-[11px] block">Submit Trade License, MSME certificate, and face liveness verification.</span>
@@ -146,7 +146,7 @@ export function HelperProfilePage() {
         </div>
         <Link
           to="/helper/verification"
-          className="px-4 py-2 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider shrink-0 transition-colors"
+          className="px-4 py-2 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider shrink-0 transition-colors"
         >
           Verification Portal
         </Link>
@@ -189,7 +189,7 @@ export function HelperProfilePage() {
       <div className="p-4 rounded-2xl bg-[#111622] border border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
         <div>
           <span className="text-[10px] text-gray-400 font-bold uppercase block">Rider Rating</span>
-          <div className="flex items-center justify-center gap-1 mt-1 text-[#FFF174] font-black text-lg">
+          <div className="flex items-center justify-center gap-1 mt-1 text-[#F5B041] font-black text-lg">
             <Star size={16} fill="currentColor" />
             <span>4.9 / 5.0</span>
           </div>
@@ -204,7 +204,7 @@ export function HelperProfilePage() {
         </div>
         <div>
           <span className="text-[10px] text-gray-400 font-bold uppercase block">Avg Arrival Time</span>
-          <strong className="text-lg text-[#FFF174] font-black block mt-1">8 mins</strong>
+          <strong className="text-lg text-[#F5B041] font-black block mt-1">8 mins</strong>
         </div>
       </div>
 
@@ -225,7 +225,7 @@ export function HelperProfilePage() {
                 type="text"
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
-                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                 required
               />
             </div>
@@ -236,7 +236,7 @@ export function HelperProfilePage() {
                 type="text"
                 value={ownerName}
                 onChange={(e) => setOwnerName(e.target.value)}
-                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                 required
               />
             </div>
@@ -249,7 +249,7 @@ export function HelperProfilePage() {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                 required
               />
             </div>
@@ -260,7 +260,7 @@ export function HelperProfilePage() {
                 type="text"
                 value={tradeLicense}
                 onChange={(e) => setTradeLicense(e.target.value)}
-                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
               />
             </div>
 
@@ -270,7 +270,7 @@ export function HelperProfilePage() {
                 type="text"
                 value={businessReg}
                 onChange={(e) => setBusinessReg(e.target.value)}
-                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
               />
             </div>
           </div>
@@ -281,7 +281,7 @@ export function HelperProfilePage() {
               type="text"
               value={operatingHours}
               onChange={(e) => setOperatingHours(e.target.value)}
-              className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+              className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
             />
           </div>
 
@@ -296,7 +296,7 @@ export function HelperProfilePage() {
                   onClick={() => toggleArea(area)}
                   className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-colors cursor-pointer ${
                     selectedAreas.includes(area)
-                      ? 'bg-[#FFF174] text-black border-[#FFF174]'
+                      ? 'bg-[#F5B041] text-black border-[#F5B041]'
                       : 'bg-[#181818] border-white/10 text-gray-300 hover:text-white'
                   }`}
                 >
@@ -330,7 +330,7 @@ export function HelperProfilePage() {
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-4 bg-[#FFF174] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#FFF174]/15"
+              className="w-full py-4 bg-[#F5B041] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#F5B041]/15"
             >
               <Check size={18} />
               <span>Save & Update Trust Profile</span>

@@ -352,7 +352,7 @@ export function GoogleMapsLocator({
           <button
             type="button"
             onClick={detectLiveGPS}
-            className="px-2.5 py-1 bg-[#FFF174] text-black text-xs font-bold rounded-lg cursor-pointer"
+            className="px-2.5 py-1 bg-[#F5B041] text-black text-xs font-bold rounded-lg cursor-pointer"
           >
             Enable Location
           </button>

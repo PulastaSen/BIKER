@@ -92,7 +92,7 @@ export function RouteCoveragePage() {
   const currentCorridor = CORRIDORS.find(c => c.id === selectedCorridorId) || CORRIDORS[0];
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 sm:pt-6 pb-28 md:pb-16 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-3xl">
         
         {/* Header */}
@@ -116,7 +116,7 @@ export function RouteCoveragePage() {
         </div>
 
         {/* Corridor Selector */}
-        <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 mb-6 space-y-4">
+        <div className="p-6 rounded-3xl bg-[#181D24] border border-white/10 mb-6 space-y-4">
           <label className="block text-xs font-black uppercase tracking-wider text-gray-400">
             Select Planned Route Corridor
           </label>
@@ -128,7 +128,7 @@ export function RouteCoveragePage() {
                 onClick={() => setSelectedCorridorId(corridor.id)}
                 className={`p-3.5 rounded-2xl border text-left transition-all ${
                   selectedCorridorId === corridor.id
-                    ? 'bg-[#FFF174]/15 border-[#FFF174] text-white shadow-md'
+                    ? 'bg-[#F5B041]/15 border-[#F5B041] text-white shadow-md'
                     : 'bg-[#182030] border-white/10 text-gray-300 hover:border-white/20'
                 }`}
               >
@@ -169,7 +169,7 @@ export function RouteCoveragePage() {
           {/* Infrastructure Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
             <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10">
-              <Wrench size={18} className="text-[#FFF174] mx-auto mb-1" />
+              <Wrench size={18} className="text-[#F5B041] mx-auto mb-1" />
               <strong className="text-lg font-black text-white block">{currentCorridor.mechanicsCount}</strong>
               <span className="text-[10px] text-gray-400 uppercase font-bold">Mechanics</span>
             </div>
@@ -200,13 +200,13 @@ export function RouteCoveragePage() {
         </div>
 
         {/* Section 23: Fuel Range Assistant */}
-        <div className="p-6 rounded-3xl bg-gradient-to-br from-[#141C2A] to-[#111622] border border-[#FFF174]/30 space-y-5">
+        <div className="p-6 rounded-3xl bg-gradient-to-br from-[#141C2A] to-[#111622] border border-[#F5B041]/30 space-y-5">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div className="flex items-center gap-2">
-              <Gauge size={20} className="text-[#FFF174]" />
+              <Gauge size={20} className="text-[#F5B041]" />
               <h2 className="text-sm font-black uppercase tracking-wider text-white">Fuel Range Assistant</h2>
             </div>
-            <span className="text-[11px] text-[#FFF174] font-bold">Smart Calculator</span>
+            <span className="text-[11px] text-[#F5B041] font-bold">Smart Calculator</span>
           </div>
 
           <div className="grid grid-cols-3 gap-3 text-xs">
@@ -242,7 +242,7 @@ export function RouteCoveragePage() {
           <div className="p-4 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between text-xs">
             <div>
               <span className="text-gray-400 block text-[11px]">Estimated Riding Range:</span>
-              <strong className="text-2xl font-black text-[#FFF174]">{estimatedRangeKm} km</strong>
+              <strong className="text-2xl font-black text-[#F5B041]">{estimatedRangeKm} km</strong>
             </div>
             <div className="text-right">
               <span className="text-gray-400 block text-[11px]">Nearest Highway Fuel:</span>

@@ -176,8 +176,8 @@ export function SafeRidePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#151515] flex items-center justify-center text-white">
-        <Loader2 size={32} className="animate-spin text-[#FFF174]" />
+      <div className="min-h-screen bg-[#0A0D12] flex items-center justify-center text-white">
+        <Loader2 size={32} className="animate-spin text-[#F5B041]" />
       </div>
     );
   }
@@ -196,7 +196,7 @@ export function SafeRidePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-4 pb-28 md:pb-16 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 pb-28 md:pb-16 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-xl space-y-4">
         
         {/* Header */}
@@ -278,7 +278,7 @@ export function SafeRidePage() {
                 </div>
                 <div>
                   <span className="text-[10px] text-gray-400 font-bold uppercase block">Expected Arrival</span>
-                  <strong className="text-base text-[#FFF174] block mt-0.5">{activeEta}</strong>
+                  <strong className="text-base text-[#F5B041] block mt-0.5">{activeEta}</strong>
                 </div>
               </div>
 
@@ -401,7 +401,7 @@ export function SafeRidePage() {
                   placeholder="Or enter custom town / destination..."
                   value={customDestination}
                   onChange={(e) => setCustomDestination(e.target.value)}
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
             </div>
@@ -434,7 +434,7 @@ export function SafeRidePage() {
                   type="checkbox"
                   checked={sharedWithFamily}
                   onChange={(e) => setSharedWithFamily(e.target.checked)}
-                  className="w-4 h-4 accent-[#FFF174]"
+                  className="w-4 h-4 accent-[#F5B041]"
                 />
                 <span>Share start message with contacts</span>
               </label>
@@ -454,7 +454,7 @@ export function SafeRidePage() {
                     onClick={() => setDurationMins(mins)}
                     className={`py-2.5 rounded-xl border transition-all cursor-pointer ${
                       durationMins === mins
-                        ? 'bg-[#FFF174] text-black border-[#FFF174]'
+                        ? 'bg-[#F5B041] text-black border-[#F5B041]'
                         : 'bg-black/40 border-white/10 text-gray-300 hover:text-white'
                     }`}
                   >

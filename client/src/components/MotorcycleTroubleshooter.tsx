@@ -402,7 +402,7 @@ export function MotorcycleTroubleshooter({
       {/* Header with safety guidance */}
       <div className="flex flex-wrap items-center justify-between border-b border-white/10 pb-4 gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="p-2.5 rounded-xl bg-[#FFF174] text-black">
+          <div className="p-2.5 rounded-xl bg-[#F5B041] text-black">
             <Wrench size={18} />
           </div>
           <div>
@@ -477,7 +477,7 @@ export function MotorcycleTroubleshooter({
             <ul className="space-y-2 mt-4 text-xs sm:text-sm">
               {currentOutcome.instructions.map((inst, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <span className="font-bold text-[#FFF174] shrink-0">•</span>
+                  <span className="font-bold text-[#F5B041] shrink-0">•</span>
                   <span className="leading-relaxed">{inst}</span>
                 </li>
               ))}
@@ -490,7 +490,7 @@ export function MotorcycleTroubleshooter({
               <button
                 type="button"
                 onClick={() => onSelectCategory(currentOutcome.recommendedCategory!)}
-                className="px-5 py-3 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg cursor-pointer"
+                className="px-5 py-3 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg cursor-pointer"
               >
                 <span>Request {currentOutcome.recommendedCategory} Assistance</span>
                 <ArrowRight size={14} />
@@ -518,7 +518,7 @@ export function MotorcycleTroubleshooter({
         /* Question Step View */
         <div className="space-y-4">
           <div className="space-y-1">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#FFF174]">
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#F5B041]">
               {currentNode.category}
             </span>
             <h3 className="text-lg sm:text-xl font-black text-white">
@@ -537,11 +537,11 @@ export function MotorcycleTroubleshooter({
                 key={idx}
                 type="button"
                 onClick={() => handleSelectOption(opt.nextNodeId, opt.outcome)}
-                className="w-full text-left p-4 rounded-2xl bg-white/5 hover:bg-[#FFF174]/10 hover:border-[#FFF174]/50 border border-white/10 transition-all group cursor-pointer"
+                className="w-full text-left p-4 rounded-2xl bg-white/5 hover:bg-[#F5B041]/10 hover:border-[#F5B041]/50 border border-white/10 transition-all group cursor-pointer"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h4 className="font-bold text-sm text-white group-hover:text-[#FFF174] transition-colors">
+                    <h4 className="font-bold text-sm text-white group-hover:text-[#F5B041] transition-colors">
                       {opt.label}
                     </h4>
                     {opt.description && (
@@ -550,7 +550,7 @@ export function MotorcycleTroubleshooter({
                       </p>
                     )}
                   </div>
-                  <ArrowRight size={16} className="text-gray-500 group-hover:text-[#FFF174] shrink-0 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight size={16} className="text-gray-500 group-hover:text-[#F5B041] shrink-0 transition-transform group-hover:translate-x-1" />
                 </div>
               </button>
             ))}

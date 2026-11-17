@@ -258,7 +258,7 @@ export function EmergencyMap({
             onClick={() => setFilter(cat.key as MapFilterCategory)}
             className={`px-3 py-2 rounded-xl font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer shrink-0 border ${
               filter === cat.key
-                ? 'bg-[#FFF174] text-black border-[#FFF174] shadow-md shadow-yellow-500/10'
+                ? 'bg-[#F5B041] text-black border-[#F5B041] shadow-md shadow-yellow-500/10'
                 : 'bg-[#141414] text-gray-300 border-white/10 hover:border-white/20'
             }`}
           >
@@ -297,7 +297,7 @@ export function EmergencyMap({
       <div className="space-y-1.5">
         <div className="flex items-center justify-between text-xs text-gray-400 font-semibold px-1">
           <span>{filteredResources.length} Verified Emergency Points</span>
-          <span className="text-[10px] text-[#FFF174]">Tap for 1-Tap Directions & Call</span>
+          <span className="text-[10px] text-[#F5B041]">Tap for 1-Tap Directions & Call</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -333,7 +333,7 @@ export function EmergencyMap({
                   target="_blank"
                   rel="noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="w-8 h-8 rounded-lg bg-[#FFF174]/15 hover:bg-[#FFF174]/30 text-[#FFF174] flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-lg bg-[#F5B041]/15 hover:bg-[#F5B041]/30 text-[#F5B041] flex items-center justify-center transition-colors"
                   title="Open GPS Directions"
                 >
                   <Navigation size={14} />

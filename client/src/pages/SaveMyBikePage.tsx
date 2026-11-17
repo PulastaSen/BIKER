@@ -73,7 +73,7 @@ export function SaveMyBikePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-2xl">
         
         {/* Header */}
@@ -84,13 +84,13 @@ export function SaveMyBikePage() {
           >
             <ArrowLeft size={16} /> Back
           </button>
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#FFF174]/10 text-[#FFF174] border border-[#FFF174]/20">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#F5B041]/10 text-[#F5B041] border border-[#F5B041]/20">
             Motorcycle Transport Protocol
           </span>
         </div>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#FFF174]/20 border border-[#FFF174]/40 text-[#FFF174] flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-[#F5B041]/20 border border-[#F5B041]/40 text-[#F5B041] flex items-center justify-center shrink-0">
             <Truck size={24} />
           </div>
           <div>
@@ -105,7 +105,7 @@ export function SaveMyBikePage() {
         <div className="flex flex-wrap gap-2 mb-6">
           <button
             type="button"
-            className="px-3 py-1.5 rounded-xl bg-[#FFF174] text-black font-bold text-xs"
+            className="px-3 py-1.5 rounded-xl bg-[#F5B041] text-black font-bold text-xs"
           >
             Towing & Transport
           </button>
@@ -160,7 +160,7 @@ export function SaveMyBikePage() {
                   key={v.id}
                   className={`p-4 rounded-2xl border flex items-center justify-between cursor-pointer transition-all ${
                     towingType === v.id
-                      ? 'bg-[#FFF174]/15 border-[#FFF174] text-white shadow-md'
+                      ? 'bg-[#F5B041]/15 border-[#F5B041] text-white shadow-md'
                       : 'bg-[#182030] border-white/10 text-gray-300 hover:border-white/20'
                   }`}
                 >
@@ -170,14 +170,14 @@ export function SaveMyBikePage() {
                       name="towType"
                       checked={towingType === v.id}
                       onChange={() => setTowingType(v.id)}
-                      className="text-[#FFF174] focus:ring-0"
+                      className="text-[#F5B041] focus:ring-0"
                     />
                     <div>
                       <strong className="text-sm font-bold text-white block">{v.label}</strong>
                       <span className="text-xs text-gray-400 block">{v.desc}</span>
                     </div>
                   </div>
-                  <strong className="text-xs font-black text-[#FFF174]">₹{v.fee}</strong>
+                  <strong className="text-xs font-black text-[#F5B041]">₹{v.fee}</strong>
                 </label>
               ))}
             </div>
@@ -197,11 +197,11 @@ export function SaveMyBikePage() {
                   onClick={() => setDestinationChoice(d.id)}
                   className={`p-4 rounded-2xl border text-left transition-all ${
                     destinationChoice === d.id
-                      ? 'bg-[#FFF174]/15 border-[#FFF174] text-white shadow-md'
+                      ? 'bg-[#F5B041]/15 border-[#F5B041] text-white shadow-md'
                       : 'bg-[#182030] border-white/10 text-gray-300 hover:border-white/20'
                   }`}
                 >
-                  <div className="p-2 rounded-xl bg-white/10 text-[#FFF174] w-fit mb-2">
+                  <div className="p-2 rounded-xl bg-white/10 text-[#F5B041] w-fit mb-2">
                     {d.icon}
                   </div>
                   <strong className="text-xs font-bold text-white block">{d.label}</strong>
@@ -236,7 +236,7 @@ export function SaveMyBikePage() {
           {/* Condition Photos */}
           <div className="p-6 rounded-3xl bg-[#111622] border border-white/10 space-y-3">
             <h2 className="text-xs font-black uppercase tracking-wider text-gray-400 flex items-center gap-2">
-              <Camera size={14} className="text-[#FFF174]" /> Bike Condition Verification
+              <Camera size={14} className="text-[#F5B041]" /> Bike Condition Verification
             </h2>
             <p className="text-xs text-gray-400">
               Pre-pickup inspection photos verify existing scratches and protect you against in-transit damage.
@@ -255,7 +255,7 @@ export function SaveMyBikePage() {
           </div>
 
           {/* Summary & Pricing */}
-          <div className="p-5 rounded-3xl bg-gradient-to-br from-[#161D2C] to-[#111622] border border-[#FFF174]/30 space-y-3 text-xs">
+          <div className="p-5 rounded-3xl bg-gradient-to-br from-[#161D2C] to-[#111622] border border-[#F5B041]/30 space-y-3 text-xs">
             <div className="flex justify-between text-gray-300">
               <span>Towing Base ({selectedVehicle.label}):</span>
               <span>₹{selectedVehicle.fee}</span>
@@ -266,14 +266,14 @@ export function SaveMyBikePage() {
             </div>
             <div className="border-t border-white/10 pt-2 flex justify-between text-sm font-black text-white">
               <span>ESTIMATED TOTAL:</span>
-              <span className="text-[#FFF174]">₹{selectedVehicle.fee + 350}</span>
+              <span className="text-[#F5B041]">₹{selectedVehicle.fee + 350}</span>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-500 to-[#FFF174] text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl cursor-pointer"
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-500 to-[#F5B041] text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl cursor-pointer"
           >
             <span>Dispatch Motorcycle Carrier</span>
             <ArrowRight size={18} />

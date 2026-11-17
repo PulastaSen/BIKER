@@ -73,7 +73,7 @@ export function OfflineNotice() {
           href={`tel:${familyPhone.replace(/[^0-9+]/g, '')}`} 
           className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 border border-white/20"
         >
-          <Users size={12} className="text-[#FFF174]" /> Call Family
+          <Users size={12} className="text-[#F5B041]" /> Call Family
         </a>
         <button 
           type="button"

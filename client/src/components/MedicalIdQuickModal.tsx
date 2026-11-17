@@ -119,7 +119,7 @@ export function MedicalIdQuickModal({ isOpen, onClose }: MedicalIdQuickModalProp
                 {profile?.doctorContact && (
                   <a
                     href={`tel:${profile.doctorContact}`}
-                    className="text-[11px] text-[#FFF174] font-bold mt-1 inline-flex items-center gap-1 hover:underline"
+                    className="text-[11px] text-[#F5B041] font-bold mt-1 inline-flex items-center gap-1 hover:underline"
                   >
                     <PhoneCall size={11} /> Call Doctor
                   </a>

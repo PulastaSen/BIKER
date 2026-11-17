@@ -24,7 +24,7 @@ export function SmartEntryScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white flex flex-col justify-between relative overflow-hidden font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white flex flex-col justify-between relative overflow-hidden font-sans selection:bg-[#F5B041] selection:text-black">
       {/* Background Graphic Elements */}
       <AnimatedRoadLines opacity={0.12} />
       <MountainContourPattern height={180} opacity={0.2} />
@@ -35,11 +35,11 @@ export function SmartEntryScreen() {
       {/* Minimalist Top Bar */}
       <header className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 pt-6 flex items-center justify-between">
         <div className="flex items-center gap-2.5 select-none">
-          <span className="w-9 h-9 rounded-xl bg-[#FFF174] text-black flex items-center justify-center font-black shadow-[0_0_15px_rgba(255,241,116,0.3)]">
+          <span className="w-9 h-9 rounded-xl bg-[#F5B041] text-black flex items-center justify-center font-black shadow-[0_0_15px_rgba(255,241,116,0.3)]">
             <Navigation size={18} />
           </span>
           <span className="font-black text-lg tracking-tight text-white uppercase">
-            MOTO<span className="text-[#FFF174]">ASSIST</span>
+            MOTO<span className="text-[#F5B041]">ASSIST</span>
           </span>
         </div>
 
@@ -60,7 +60,7 @@ export function SmartEntryScreen() {
         
         {/* Subtle Category Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-xs font-semibold text-gray-300 mb-5 sm:mb-6 backdrop-blur-md">
-          <span className="w-2 h-2 rounded-full bg-[#FFF174] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-[#F5B041] animate-pulse" />
           <span>Motorcycle Safety, Emergency Assistance & Roadside Rescue</span>
         </div>
 
@@ -112,16 +112,16 @@ export function SmartEntryScreen() {
           <button
             type="button"
             onClick={handleSelectOk}
-            className="w-full p-4 sm:p-6 rounded-3xl bg-[#141414] hover:bg-[#1A1A1A] active:scale-[0.99] border border-white/15 hover:border-[#FFF174]/50 shadow-md transition-all cursor-pointer group text-left relative min-h-[88px] sm:min-h-[96px]"
+            className="w-full p-4 sm:p-6 rounded-3xl bg-[#141414] hover:bg-[#1A1A1A] active:scale-[0.99] border border-white/15 hover:border-[#F5B041]/50 shadow-md transition-all cursor-pointer group text-left relative min-h-[88px] sm:min-h-[96px]"
             aria-label="NO, I'M OK - Log in, create an account or explore MotoAssist"
           >
             <div className="flex items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-3 sm:gap-5 min-w-0">
-                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/10 text-[#FFF174] flex items-center justify-center shrink-0 group-hover:bg-[#FFF174]/15 border border-white/10 transition-colors">
+                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/10 text-[#F5B041] flex items-center justify-center shrink-0 group-hover:bg-[#F5B041]/15 border border-white/10 transition-colors">
                   <Navigation size={22} className="sm:w-6 sm:h-6" />
                 </div>
                 <div className="min-w-0">
-                  <span className="block text-base sm:text-xl font-black tracking-wide text-white group-hover:text-[#FFF174] transition-colors truncate">
+                  <span className="block text-base sm:text-xl font-black tracking-wide text-white group-hover:text-[#F5B041] transition-colors truncate">
                     NO — I'M OK
                   </span>
                   <span className="block text-[11px] sm:text-sm text-gray-300 font-normal mt-0.5 leading-snug">
@@ -141,10 +141,10 @@ export function SmartEntryScreen() {
             <button
               type="button"
               onClick={() => navigate('/services')}
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#FFF174]/40 text-gray-200 hover:text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer min-h-[44px]"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#F5B041]/40 text-gray-200 hover:text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer min-h-[44px]"
               aria-label="Explore Platform Services and Roadside Assistance Plans"
             >
-              <Navigation size={15} className="text-[#FFF174]" />
+              <Navigation size={15} className="text-[#F5B041]" />
               <span>Explore Platform & Roadside Plans (No Login Required)</span>
               <ArrowRight size={14} className="text-gray-400" />
             </button>
@@ -156,7 +156,7 @@ export function SmartEntryScreen() {
           <button
             type="button"
             onClick={() => navigate('/remote-readiness')}
-            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-[#FFF174] font-bold border border-white/10 transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-[#F5B041] font-bold border border-white/10 transition-colors cursor-pointer"
           >
             🧭 Remote & Mountain Readiness
           </button>
@@ -181,7 +181,7 @@ export function SmartEntryScreen() {
           <button
             type="button"
             onClick={() => navigate('/how-it-works')}
-            className="text-[#FFF174] font-bold hover:underline underline-offset-4 ml-1 cursor-pointer"
+            className="text-[#F5B041] font-bold hover:underline underline-offset-4 ml-1 cursor-pointer"
           >
             Learn about MotoAssist
           </button>

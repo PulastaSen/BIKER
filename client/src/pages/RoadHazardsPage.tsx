@@ -97,7 +97,7 @@ export function RoadHazardsPage() {
     : hazards.filter(h => h.hazardType === filterType);
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-white pt-20 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-4 sm:pt-6 pb-28 md:pb-16 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-3xl">
         
         {/* Header */}
@@ -134,7 +134,7 @@ export function RoadHazardsPage() {
           <button
             onClick={() => setFilterType('ALL')}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-              filterType === 'ALL' ? 'bg-[#FFF174] text-black' : 'bg-[#111622] text-gray-400 border border-white/10'
+              filterType === 'ALL' ? 'bg-[#F5B041] text-black' : 'bg-[#181D24] text-gray-400 border border-white/10'
             }`}
           >
             All Hazards ({hazards.length})
@@ -144,7 +144,7 @@ export function RoadHazardsPage() {
               key={ht.type}
               onClick={() => setFilterType(ht.type)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-                filterType === ht.type ? 'bg-[#FFF174] text-black' : 'bg-[#111622] text-gray-400 border border-white/10'
+                filterType === ht.type ? 'bg-[#F5B041] text-black' : 'bg-[#111622] text-gray-400 border border-white/10'
               }`}
             >
               {ht.label}
@@ -155,7 +155,7 @@ export function RoadHazardsPage() {
         {/* Hazards List */}
         {loading ? (
           <div className="py-12 text-center">
-            <Loader2 size={32} className="animate-spin text-[#FFF174] mx-auto" />
+            <Loader2 size={32} className="animate-spin text-[#F5B041] mx-auto" />
           </div>
         ) : (
           <div className="space-y-3.5">
@@ -192,7 +192,7 @@ export function RoadHazardsPage() {
                       <p className="text-xs text-gray-300 mt-1.5">{hazard.description}</p>
                       <div className="flex items-center gap-3 text-xs text-gray-400 mt-2">
                         <span className="flex items-center gap-1 text-gray-300 font-medium">
-                          <MapPin size={12} className="text-[#FFF174]" /> {hazard.location.landmark || 'Highway Sector'}
+                          <MapPin size={12} className="text-[#F5B041]" /> {hazard.location.landmark || 'Highway Sector'}
                         </span>
                         <span>•</span>
                         <span className="flex items-center gap-1">
@@ -208,7 +208,7 @@ export function RoadHazardsPage() {
                         className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white flex items-center gap-1.5 cursor-pointer active:scale-95"
                         title="Confirm hazard is still present"
                       >
-                        <ThumbsUp size={13} className="text-[#FFF174]" /> Still Present ({hazard.upvotes})
+                        <ThumbsUp size={13} className="text-[#F5B041]" /> Still Present ({hazard.upvotes})
                       </button>
 
                       {hazard.status !== 'RESOLVED' && (

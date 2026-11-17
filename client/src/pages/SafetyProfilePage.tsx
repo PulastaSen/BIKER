@@ -328,7 +328,7 @@ export function SafetyProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-6 pb-24 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-6 pb-24 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="max-w-xl mx-auto px-4 sm:px-6 space-y-6">
         
         {/* TOP BAR */}
@@ -367,7 +367,7 @@ export function SafetyProfilePage() {
           {/* 1. PERSONAL INFORMATION */}
           <section className="p-4 sm:p-5 rounded-3xl bg-[#121212] border border-white/10 space-y-3">
             <div className="flex items-center gap-2 text-white">
-              <User size={18} className="text-[#FFF174]" />
+              <User size={18} className="text-[#F5B041]" />
               <h2 className="text-sm font-bold uppercase tracking-wider">1. Personal Information</h2>
             </div>
 
@@ -378,7 +378,7 @@ export function SafetyProfilePage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                   required
                 />
               </div>
@@ -390,7 +390,7 @@ export function SafetyProfilePage() {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                     required
                   />
                 </div>
@@ -400,7 +400,7 @@ export function SafetyProfilePage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                    className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
               </div>
@@ -421,7 +421,7 @@ export function SafetyProfilePage() {
                   type="text"
                   value={bikeBrand}
                   onChange={(e) => setBikeBrand(e.target.value)}
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                   required
                 />
               </div>
@@ -432,7 +432,7 @@ export function SafetyProfilePage() {
                   type="text"
                   value={bikeModel}
                   onChange={(e) => setBikeModel(e.target.value)}
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                   required
                 />
               </div>
@@ -443,7 +443,7 @@ export function SafetyProfilePage() {
                   type="text"
                   value={bikeYear}
                   onChange={(e) => setBikeYear(e.target.value)}
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
             </div>
@@ -455,7 +455,7 @@ export function SafetyProfilePage() {
                 value={bikeReg}
                 onChange={(e) => setBikeReg(e.target.value)}
                 placeholder="e.g. WB-74-AX-1024"
-                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                 required
               />
             </div>
@@ -506,12 +506,12 @@ export function SafetyProfilePage() {
                   placeholder="Name"
                   value={newContactName}
                   onChange={(e) => setNewContactName(e.target.value)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
                 <select
                   value={newContactRel}
                   onChange={(e) => setNewContactRel(e.target.value as 'PARENT' | 'PARTNER' | 'FRIEND' | 'SIBLING')}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 >
                   <option value="PARENT">Parent</option>
                   <option value="PARTNER">Partner</option>
@@ -523,7 +523,7 @@ export function SafetyProfilePage() {
                   placeholder="Phone"
                   value={newContactPhone}
                   onChange={(e) => setNewContactPhone(e.target.value)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
                 <button
                   type="button"
@@ -574,7 +574,7 @@ export function SafetyProfilePage() {
                   value={allergies}
                   onChange={(e) => setAllergies(e.target.value)}
                   placeholder="e.g. Penicillin, Peanuts, None"
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
 
@@ -585,7 +585,7 @@ export function SafetyProfilePage() {
                   onChange={(e) => setCriticalInfo(e.target.value)}
                   rows={2}
                   placeholder="e.g. Asthma, Diabetic, Pacemaker, None"
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
 
@@ -596,7 +596,7 @@ export function SafetyProfilePage() {
                   value={medications}
                   onChange={(e) => setMedications(e.target.value)}
                   placeholder="e.g. Inhaler, Insulin, None"
-                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="w-full bg-[#181818] border border-white/10 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
             </div>
@@ -623,9 +623,9 @@ export function SafetyProfilePage() {
             </div>
 
             {/* Dedicated Identity Verification Center Link */}
-            <div className="p-3.5 rounded-2xl bg-[#161616] border border-[#FFF174]/30 flex items-center justify-between gap-3 text-xs">
+            <div className="p-3.5 rounded-2xl bg-[#161616] border border-[#F5B041]/30 flex items-center justify-between gap-3 text-xs">
               <div className="flex items-center gap-2.5">
-                <ShieldCheck size={18} className="text-[#FFF174] shrink-0" />
+                <ShieldCheck size={18} className="text-[#F5B041] shrink-0" />
                 <div>
                   <strong className="text-white block font-bold">Dedicated Identity Verification Center</strong>
                   <span className="text-gray-400 text-[11px] block">Upload ID proof & complete selfie biometric challenge.</span>
@@ -634,7 +634,7 @@ export function SafetyProfilePage() {
               <button
                 type="button"
                 onClick={() => navigate('/rider/verification')}
-                className="px-3.5 py-1.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
               >
                 Open Center
               </button>
@@ -696,7 +696,7 @@ export function SafetyProfilePage() {
                 <select
                   value={newDocType}
                   onChange={(e) => setNewDocType(e.target.value as RiderDocumentType)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 >
                   <option value="DRIVING_LICENSE">Driving Licence (Primary)</option>
                   <option value="RC">Vehicle RC</option>
@@ -709,7 +709,7 @@ export function SafetyProfilePage() {
                   placeholder="Document Number (e.g. DL-1420110)"
                   value={newDocNumber}
                   onChange={(e) => setNewDocNumber(e.target.value)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
               </div>
 
@@ -719,14 +719,14 @@ export function SafetyProfilePage() {
                   placeholder="Issuer (e.g. RTO / Acko)"
                   value={newDocIssuer}
                   onChange={(e) => setNewDocIssuer(e.target.value)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
                 <input
                   type="date"
                   placeholder="Expiry Date"
                   value={newDocExpiry}
                   onChange={(e) => setNewDocExpiry(e.target.value)}
-                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#FFF174]"
+                  className="bg-[#181818] border border-white/10 rounded-xl px-2.5 py-2 text-white focus:outline-none focus:border-[#F5B041]"
                 />
                 <button
                   type="button"
@@ -756,7 +756,7 @@ export function SafetyProfilePage() {
                   type="checkbox"
                   checked={shareLocationAuto}
                   onChange={(e) => setShareLocationAuto(e.target.checked)}
-                  className="w-4 h-4 accent-[#FFF174]"
+                  className="w-4 h-4 accent-[#F5B041]"
                 />
               </label>
 
@@ -769,7 +769,7 @@ export function SafetyProfilePage() {
                   type="checkbox"
                   checked={autoEscalate112}
                   onChange={(e) => setAutoEscalate112(e.target.checked)}
-                  className="w-4 h-4 accent-[#FFF174]"
+                  className="w-4 h-4 accent-[#F5B041]"
                 />
               </label>
 
@@ -787,7 +787,7 @@ export function SafetyProfilePage() {
                       onClick={() => setCommChannel(ch.key as any)}
                       className={`p-2.5 rounded-xl border font-bold text-center transition-colors cursor-pointer ${
                         commChannel === ch.key
-                          ? 'bg-[#FFF174]/20 border-[#FFF174] text-[#FFF174]'
+                          ? 'bg-[#F5B041]/20 border-[#F5B041] text-[#F5B041]'
                           : 'bg-[#181818] border-white/10 text-gray-400 hover:text-white'
                       }`}
                     >
@@ -804,7 +804,7 @@ export function SafetyProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full py-4 rounded-2xl bg-[#FFF174] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#FFF174]/15"
+              className="w-full py-4 rounded-2xl bg-[#F5B041] hover:bg-yellow-400 active:scale-98 text-black font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#F5B041]/15"
             >
               <Save size={18} />
               <span>{saving ? 'Saving Safety Profile...' : 'Save Safety Profile'}</span>

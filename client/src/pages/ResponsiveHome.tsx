@@ -120,7 +120,7 @@ export function ResponsiveHome() {
   const riderDisplayName = user?.name ? user.name.split(' ')[0] : 'Pulasta';
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white flex flex-col font-sans relative selection:bg-[#FFF174] selection:text-black pb-28 md:pb-16">
+    <div className="min-h-screen bg-[#0A0D12] text-white flex flex-col font-sans relative selection:bg-[#F5B041] selection:text-black pb-28 md:pb-16">
       
       {/* SECTION 22-25: Crash Detection Modal (10s confirmation dial) */}
       <CrashDetectionModal
@@ -151,11 +151,11 @@ export function ResponsiveHome() {
         <div className="max-w-xl mx-auto flex items-center justify-between gap-3">
           {/* Logo & Brand */}
           <Link to="/" className="flex items-center gap-2 select-none group">
-            <span className="w-8 h-8 rounded-xl bg-[#FFF174] text-black flex items-center justify-center font-black group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(255,241,116,0.3)]">
+            <span className="w-8 h-8 rounded-xl bg-[#F5B041] text-black flex items-center justify-center font-black group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(255,241,116,0.3)]">
               <Navigation size={18} />
             </span>
             <span className="font-black text-lg tracking-tight text-white uppercase">
-              MOTO<span className="text-[#FFF174]">ASSIST</span>
+              MOTO<span className="text-[#F5B041]">ASSIST</span>
             </span>
           </Link>
 
@@ -166,7 +166,7 @@ export function ResponsiveHome() {
               className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-gray-300 flex items-center gap-1.5 transition-colors"
               title="Configure Safety Profile"
             >
-              <User size={14} className="text-[#FFF174]" />
+              <User size={14} className="text-[#F5B041]" />
               <span className="hidden sm:inline">Safety Profile</span>
             </Link>
           </div>
@@ -220,7 +220,7 @@ export function ResponsiveHome() {
                 <button
                   type="button"
                   onClick={() => requestLocation()}
-                  className="text-[#FFF174] hover:underline ml-1 cursor-pointer"
+                  className="text-[#F5B041] hover:underline ml-1 cursor-pointer"
                   title="Enable location"
                 >
                   <RefreshCw size={11} className="inline" />
@@ -238,12 +238,12 @@ export function ResponsiveHome() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search place, town or landmark..."
-              className="flex-1 bg-[#161616] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFF174]"
+              className="flex-1 bg-[#161616] border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#F5B041]"
               autoFocus
             />
             <button
               type="submit"
-              className="px-4 py-2.5 bg-[#FFF174] text-black font-bold text-xs rounded-xl hover:bg-yellow-400 cursor-pointer"
+              className="px-4 py-2.5 bg-[#F5B041] text-black font-bold text-xs rounded-xl hover:bg-yellow-400 cursor-pointer"
             >
               Set Place
             </button>
@@ -287,7 +287,7 @@ export function ResponsiveHome() {
             <button
               type="button"
               onClick={() => navigate('/im-stranded')}
-              className="p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#FFF174] to-[#F2DF42] hover:from-[#FFF69B] hover:to-[#FFF174] active:scale-[0.98] text-black text-left flex flex-col justify-between shadow-[0_0_20px_rgba(255,241,116,0.25)] transition-all cursor-pointer group min-h-[105px]"
+              className="p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#F5B041] to-[#F2DF42] hover:from-[#FFF69B] hover:to-[#F5B041] active:scale-[0.98] text-black text-left flex flex-col justify-between shadow-[0_0_20px_rgba(255,241,116,0.25)] transition-all cursor-pointer group min-h-[105px]"
               aria-label="🆘 I'm Stranded"
             >
               <div className="w-9 h-9 rounded-xl bg-black/15 flex items-center justify-center shrink-0 mb-2">
@@ -360,14 +360,14 @@ export function ResponsiveHome() {
             className="p-4 rounded-2xl bg-[#121212] border border-white/10 hover:border-white/20 flex items-center justify-between transition-colors group block"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#FFF174] shrink-0 border border-white/10">
+              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#F5B041] shrink-0 border border-white/10">
                 <BikeIcon size={20} />
               </div>
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block">
                   MY BIKE
                 </span>
-                <strong className="text-sm font-black text-white group-hover:text-[#FFF174] transition-colors block">
+                <strong className="text-sm font-black text-white group-hover:text-[#F5B041] transition-colors block">
                   {primaryBike ? `${primaryBike.brand} ${primaryBike.model}` : 'KTM Adventure 250'}
                 </strong>
                 <span className="text-[11px] text-emerald-400 font-bold block mt-0.5">
@@ -405,10 +405,10 @@ export function ResponsiveHome() {
           {/* UNIFIED SETUP ONCE BANNER */}
           <Link
             to="/safety-profile"
-            className="p-3.5 rounded-2xl bg-[#161616] border border-white/10 hover:border-[#FFF174]/40 flex items-center justify-between transition-all group block text-xs"
+            className="p-3.5 rounded-2xl bg-[#161616] border border-white/10 hover:border-[#F5B041]/40 flex items-center justify-between transition-all group block text-xs"
           >
             <div className="flex items-center gap-2.5">
-              <ShieldCheck size={18} className="text-[#FFF174] shrink-0" />
+              <ShieldCheck size={18} className="text-[#F5B041] shrink-0" />
               <div>
                 <strong className="text-gray-200 group-hover:text-white block font-bold">
                   My Safety Profile
@@ -418,7 +418,7 @@ export function ResponsiveHome() {
                 </span>
               </div>
             </div>
-            <span className="text-[10px] font-bold text-[#FFF174] bg-[#FFF174]/10 px-2 py-1 rounded-lg">
+            <span className="text-[10px] font-bold text-[#F5B041] bg-[#F5B041]/10 px-2 py-1 rounded-lg">
               Manage
             </span>
           </Link>

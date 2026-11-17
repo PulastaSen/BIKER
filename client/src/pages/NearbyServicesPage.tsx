@@ -186,7 +186,7 @@ export function NearbyServicesPage() {
   const mapSrc = `https://maps.google.com/maps?q=${mapQuery}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white flex flex-col font-sans selection:bg-[#FFF174] selection:text-black pb-28 md:pb-12">
+    <div className="min-h-screen bg-[#0A0D12] text-white flex flex-col font-sans selection:bg-[#F5B041] selection:text-black pb-28 md:pb-12">
       
       {/* Top Header */}
       <header className="sticky top-0 z-30 bg-[#1D1D1D]/95 backdrop-blur-md border-b border-white/10 px-4 py-3">
@@ -205,7 +205,7 @@ export function NearbyServicesPage() {
               type="button"
               onClick={() => setFilter('all')}
               className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                filter === 'all' ? 'bg-[#FFF174] text-black' : 'text-gray-400 hover:text-white'
+                filter === 'all' ? 'bg-[#F5B041] text-black' : 'text-gray-400 hover:text-white'
               }`}
             >
               All Help
@@ -214,7 +214,7 @@ export function NearbyServicesPage() {
               type="button"
               onClick={() => setFilter('mechanic')}
               className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                filter === 'mechanic' ? 'bg-[#FFF174] text-black' : 'text-gray-400 hover:text-white'
+                filter === 'mechanic' ? 'bg-[#F5B041] text-black' : 'text-gray-400 hover:text-white'
               }`}
             >
               Mechanics
@@ -223,7 +223,7 @@ export function NearbyServicesPage() {
               type="button"
               onClick={() => setFilter('oem')}
               className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                filter === 'oem' ? 'bg-[#FFF174] text-black' : 'text-gray-400 hover:text-white'
+                filter === 'oem' ? 'bg-[#F5B041] text-black' : 'text-gray-400 hover:text-white'
               }`}
             >
               OEM Centers
@@ -256,7 +256,7 @@ export function NearbyServicesPage() {
             <button
               type="button"
               onClick={() => requestLocation()}
-              className="px-2 py-0.5 rounded bg-white/10 hover:bg-white/15 text-[11px] font-bold text-[#FFF174] cursor-pointer flex items-center gap-1"
+              className="px-2 py-0.5 rounded bg-white/10 hover:bg-white/15 text-[11px] font-bold text-[#F5B041] cursor-pointer flex items-center gap-1"
             >
               <RefreshCw size={11} /> Enable Location
             </button>
@@ -267,7 +267,7 @@ export function NearbyServicesPage() {
               value={searchPlace}
               onChange={(e) => setSearchPlace(e.target.value)}
               placeholder="Search place / town..."
-              className="bg-black/40 border border-white/10 rounded px-2 py-0.5 text-[11px] text-white focus:outline-none focus:border-[#FFF174]"
+              className="bg-black/40 border border-white/10 rounded px-2 py-0.5 text-[11px] text-white focus:outline-none focus:border-[#F5B041]"
             />
           </form>
         </div>
@@ -296,7 +296,7 @@ export function NearbyServicesPage() {
                   onClick={() => setSelectedProvider(p)}
                   className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#181818] border-[#FFF174] shadow-[0_0_15px_rgba(255,241,116,0.15)]'
+                      ? 'bg-[#181818] border-[#F5B041] shadow-[0_0_15px_rgba(255,241,116,0.15)]'
                       : 'bg-[#121212] border-white/10 hover:border-white/20'
                   }`}
                 >
@@ -316,8 +316,8 @@ export function NearbyServicesPage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 text-xs text-gray-400 mt-1">
-                        <span className="text-[#FFF174] font-bold flex items-center gap-0.5">
-                          <Star size={12} fill="#FFF174" /> {p.rating}
+                        <span className="text-[#F5B041] font-bold flex items-center gap-0.5">
+                          <Star size={12} fill="#F5B041" /> {p.rating}
                         </span>
                         <span>•</span>
                         <span className="text-white font-semibold">{p.distanceStr}</span>
@@ -352,7 +352,7 @@ export function NearbyServicesPage() {
                       target="_blank"
                       rel="noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="py-2 px-3 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs flex items-center justify-center gap-1.5 transition-colors text-center"
+                      className="py-2 px-3 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs flex items-center justify-center gap-1.5 transition-colors text-center"
                     >
                       <Navigation size={13} />
                       <span>Directions</span>
@@ -403,7 +403,7 @@ export function NearbyServicesPage() {
                 <span className="text-[11px] font-bold uppercase tracking-wider text-gray-300">
                   Nearby Repair & OEM Centers
                 </span>
-                <span className="text-[10px] text-[#FFF174] font-bold">Tap to map</span>
+                <span className="text-[10px] text-[#F5B041] font-bold">Tap to map</span>
               </div>
 
               <div className="grid grid-cols-1 min-[340px]:grid-cols-2 gap-2">
@@ -415,7 +415,7 @@ export function NearbyServicesPage() {
                       onClick={() => setSelectedProvider(p)}
                       className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
                         isSelected
-                          ? 'bg-[#181818] border-[#FFF174] shadow-[0_0_10px_rgba(255,241,116,0.15)]'
+                          ? 'bg-[#181818] border-[#F5B041] shadow-[0_0_10px_rgba(255,241,116,0.15)]'
                           : 'bg-black/50 border-white/10 hover:border-white/20'
                       }`}
                     >
@@ -433,8 +433,8 @@ export function NearbyServicesPage() {
                           )}
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] text-gray-400 mt-1">
-                          <span className="text-[#FFF174] font-bold flex items-center gap-0.5">
-                            <Star size={10} fill="#FFF174" /> {p.rating}
+                          <span className="text-[#F5B041] font-bold flex items-center gap-0.5">
+                            <Star size={10} fill="#F5B041" /> {p.rating}
                           </span>
                           <span>•</span>
                           <span className="text-white font-semibold truncate">{p.distanceStr}</span>
@@ -464,7 +464,7 @@ export function NearbyServicesPage() {
                           target="_blank"
                           rel="noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="py-1.5 px-2 rounded-lg bg-[#FFF174] hover:bg-yellow-400 text-black font-bold text-[10px] flex items-center justify-center gap-1 text-center min-h-[36px]"
+                          className="py-1.5 px-2 rounded-lg bg-[#F5B041] hover:bg-yellow-400 text-black font-bold text-[10px] flex items-center justify-center gap-1 text-center min-h-[36px]"
                         >
                           <Navigation size={11} className="shrink-0" />
                           <span>Dir</span>

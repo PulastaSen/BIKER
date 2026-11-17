@@ -149,17 +149,17 @@ export function OperationsQueuePage() {
   const list = getActiveList();
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-20 pb-28 font-sans selection:bg-[#FFF174] selection:text-black">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-20 pb-28 font-sans selection:bg-[#F5B041] selection:text-black">
       <div className="container mx-auto px-4 max-w-6xl space-y-6">
         
         {/* Header Block */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-5">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="p-2 rounded-xl bg-[#FFF174] text-black">
+              <span className="p-2 rounded-xl bg-[#F5B041] text-black">
                 <Radio size={18} />
               </span>
-              <span className="text-xs font-black tracking-wider uppercase text-[#FFF174]">
+              <span className="text-xs font-black tracking-wider uppercase text-[#F5B041]">
                 DISPATCH OPERATIONS DESK
               </span>
             </div>
@@ -193,7 +193,7 @@ export function OperationsQueuePage() {
           <button
             onClick={() => setActiveTab('unassigned')}
             className={`p-4 rounded-2xl border text-left transition-all ${
-              activeTab === 'unassigned' ? 'bg-[#FFF174]/15 border-[#FFF174]' : 'bg-[#121212] border-white/10 hover:border-white/20'
+              activeTab === 'unassigned' ? 'bg-[#F5B041]/15 border-[#F5B041]' : 'bg-[#121212] border-white/10 hover:border-white/20'
             }`}
           >
             <span className="text-[10px] font-bold text-gray-400 uppercase block">Unassigned</span>
@@ -274,7 +274,7 @@ export function OperationsQueuePage() {
                 >
                   <div className="space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-black font-mono text-[#FFF174]">
+                      <span className="text-xs font-black font-mono text-[#F5B041]">
                         #{incident.requestId}
                       </span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
@@ -300,7 +300,7 @@ export function OperationsQueuePage() {
 
                     <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400">
                       <span className="flex items-center gap-1">
-                        <MapPin size={12} className="text-[#FFF174]" />
+                        <MapPin size={12} className="text-[#F5B041]" />
                         {incident.location?.address || 'Location coordinates logged'}
                       </span>
                       <span>•</span>

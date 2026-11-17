@@ -442,7 +442,7 @@ export function SOSPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#12161A] text-white pt-2 pb-28 md:pb-16 font-sans">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-2 pb-28 md:pb-16 font-sans">
       {/* Medical ID Sheet Modal */}
       <MedicalIdQuickModal
         isOpen={showMedicalModal}
@@ -454,12 +454,12 @@ export function SOSPage() {
         {/* ========================================================
             1. CLEAN TOP HEADER (Red & White branding)
             ======================================================== */}
-        <header className="flex items-center justify-between py-2 border-b border-[#2E3844]">
+        <header className="flex items-center justify-between py-2 border-b border-[#262D36]">
           <div className="flex items-center gap-2.5">
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="p-2 rounded-xl bg-[#1E252D] border border-[#2E3844] text-[#94A3B8] hover:text-[#FFF174] hover:border-[#FFF174] shadow-md transition-all cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 rounded-xl bg-[#181D24] border border-[#262D36] text-[#9CA3AF] hover:text-[#F5B041] hover:border-[#F5B041] shadow-md transition-all cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
               aria-label="Return to Home"
             >
               <ArrowLeft size={18} />
@@ -482,7 +482,7 @@ export function SOSPage() {
               className={`p-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center ${
                 voiceEnabled 
                   ? 'bg-red-500/20 text-red-300 border-red-500/40' 
-                  : 'bg-[#1E252D] text-[#94A3B8] border-[#2E3844] hover:text-white shadow-md'
+                  : 'bg-[#181D24] text-[#9CA3AF] border-[#262D36] hover:text-white shadow-md'
               }`}
               aria-label={voiceEnabled ? 'Turn off voice guide' : 'Turn on voice guide'}
               title="Voice Guidance"
@@ -510,9 +510,9 @@ export function SOSPage() {
           <section className="space-y-4 animate-in fade-in duration-200" aria-label="Active Incident Status">
             
             {/* Red & White Active Incident Card */}
-            <div className="p-5 rounded-3xl bg-[#1A2026] border-2 border-red-500 shadow-2xl space-y-4">
+            <div className="p-5 rounded-3xl bg-[#12161D] border-2 border-red-500 shadow-2xl space-y-4">
               
-              <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
+              <div className="flex items-center justify-between border-b border-[#262D36] pb-3">
                 <div className="flex items-center gap-2.5">
                   <span className="w-3.5 h-3.5 rounded-full bg-red-600 animate-ping" />
                   <div>
@@ -528,7 +528,7 @@ export function SOSPage() {
                 <button
                   type="button"
                   onClick={handleCancelSOS}
-                  className="px-3 py-1.5 rounded-xl bg-[#242D37] hover:bg-[#2A3440] text-xs font-bold text-[#94A3B8] hover:text-white transition-colors cursor-pointer min-h-[40px]"
+                  className="px-3 py-1.5 rounded-xl bg-[#1F242C] hover:bg-[#2A3440] text-xs font-bold text-[#9CA3AF] hover:text-white transition-colors cursor-pointer min-h-[40px]"
                 >
                   Cancel SOS
                 </button>
@@ -542,7 +542,7 @@ export function SOSPage() {
               </div>
 
               {/* Clean Progression Tracker */}
-              <div className="p-4 rounded-2xl bg-[#12161A] border border-[#2E3844] space-y-2.5 text-xs">
+              <div className="p-4 rounded-2xl bg-[#0A0D12] border border-[#262D36] space-y-2.5 text-xs">
                 <div className="flex items-center justify-between text-[#10B981] font-bold">
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 size={16} className="text-[#10B981]" /> 1. Alert Logged
@@ -591,7 +591,7 @@ export function SOSPage() {
                   href={whatsAppUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="min-h-[48px] p-3 rounded-2xl bg-[#1E252D] border border-emerald-500/50 text-emerald-300 hover:bg-[#242D37] text-left flex items-center justify-between transition-all active:scale-[0.98] shadow-sm font-bold text-xs"
+                  className="min-h-[48px] p-3 rounded-2xl bg-[#181D24] border border-emerald-500/50 text-emerald-300 hover:bg-[#1F242C] text-left flex items-center justify-between transition-all active:scale-[0.98] shadow-sm font-bold text-xs"
                 >
                   <span className="flex items-center gap-1.5">
                     <MessageCircle size={18} className="text-emerald-600" /> WhatsApp Alert
@@ -601,7 +601,7 @@ export function SOSPage() {
 
                 <a
                   href={smsUrl}
-                  className="min-h-[48px] p-3 rounded-2xl bg-[#1E252D] border border-blue-500/50 text-blue-300 hover:bg-[#242D37] text-left flex items-center justify-between transition-all active:scale-[0.98] shadow-sm font-bold text-xs"
+                  className="min-h-[48px] p-3 rounded-2xl bg-[#181D24] border border-blue-500/50 text-blue-300 hover:bg-[#1F242C] text-left flex items-center justify-between transition-all active:scale-[0.98] shadow-sm font-bold text-xs"
                 >
                   <span className="flex items-center gap-1.5">
                     <Phone size={18} className="text-blue-600" /> Send SMS (Offline)
@@ -611,7 +611,7 @@ export function SOSPage() {
               </div>
 
               {/* Resolve Button: I'm Safe */}
-              <div className="pt-2 border-t border-[#2E3844]">
+              <div className="pt-2 border-t border-[#262D36]">
                 <button
                   type="button"
                   onClick={handleResolveSOS}
@@ -625,11 +625,11 @@ export function SOSPage() {
             </div>
 
             {/* Rider Safety Guidelines Box */}
-            <div className="p-4 rounded-2xl bg-[#1A2026] border border-[#2E3844] shadow-md space-y-2 text-xs">
+            <div className="p-4 rounded-2xl bg-[#12161D] border border-[#262D36] shadow-md space-y-2 text-xs">
               <strong className="text-xs font-black text-white flex items-center gap-1.5 uppercase tracking-wide">
                 <ShieldAlert size={16} className="text-red-600" /> Immediate Safety Guidelines
               </strong>
-              <ul className="space-y-1.5 text-[#94A3B8] text-[11px] leading-relaxed">
+              <ul className="space-y-1.5 text-[#9CA3AF] text-[11px] leading-relaxed">
                 <li className="flex items-start gap-2">
                   <span className="text-red-600 font-bold">•</span>
                   <span><strong>Move off the roadway:</strong> Stand behind the steel crash guardrail on highways.</span>
@@ -655,7 +655,7 @@ export function SOSPage() {
             
             {/* Quick 1-Tap Helpline Cards (Police, Ambulance, Fire) */}
             <section className="space-y-2" aria-label="Official Emergency Call Tiles">
-              <span className="text-xs font-black uppercase tracking-wider text-[#94A3B8] block px-1">
+              <span className="text-xs font-black uppercase tracking-wider text-[#9CA3AF] block px-1">
                 Direct Emergency Lines (1-Tap Dial)
               </span>
 
@@ -663,7 +663,7 @@ export function SOSPage() {
                 {/* 1. Police / National 112 */}
                 <a
                   href="tel:112"
-                  className="p-3.5 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-red-500 shadow-lg flex items-center justify-between transition-all active:scale-[0.98]"
+                  className="p-3.5 rounded-2xl bg-[#181D24] border border-[#262D36] hover:border-red-500 shadow-lg flex items-center justify-between transition-all active:scale-[0.98]"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-red-950/40 text-red-400 flex items-center justify-center shrink-0 border border-red-800">
@@ -671,7 +671,7 @@ export function SOSPage() {
                     </div>
                     <div>
                       <strong className="block text-sm font-black text-white leading-tight">Police & Rescue</strong>
-                      <span className="text-[11px] text-[#94A3B8] font-medium">National Helpline 112</span>
+                      <span className="text-[11px] text-[#9CA3AF] font-medium">National Helpline 112</span>
                     </div>
                   </div>
                   <div className="w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-md">
@@ -682,7 +682,7 @@ export function SOSPage() {
                 {/* 2. Ambulance 108 */}
                 <a
                   href="tel:108"
-                  className="p-3.5 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-red-500 shadow-lg flex items-center justify-between transition-all active:scale-[0.98]"
+                  className="p-3.5 rounded-2xl bg-[#181D24] border border-[#262D36] hover:border-red-500 shadow-lg flex items-center justify-between transition-all active:scale-[0.98]"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-red-950/40 text-red-400 flex items-center justify-center shrink-0 border border-red-800">
@@ -690,7 +690,7 @@ export function SOSPage() {
                     </div>
                     <div>
                       <strong className="block text-sm font-black text-white leading-tight">Ambulance</strong>
-                      <span className="text-[11px] text-[#94A3B8] font-medium">Medical Emergency 108</span>
+                      <span className="text-[11px] text-[#9CA3AF] font-medium">Medical Emergency 108</span>
                     </div>
                   </div>
                   <div className="w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-md">
@@ -701,7 +701,7 @@ export function SOSPage() {
                 {/* 3. Women 1091 / Highway 1033 */}
                 <a
                   href="tel:1091"
-                  className="p-3.5 rounded-2xl bg-[#1E252D] border border-[#2E3844] hover:border-red-500 shadow-lg flex items-center justify-between transition-all active:scale-[0.98]"
+                  className="p-3.5 rounded-2xl bg-[#181D24] border border-[#262D36] hover:border-red-500 shadow-lg flex items-center justify-between transition-all active:scale-[0.98]"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-red-950/40 text-red-400 flex items-center justify-center shrink-0 border border-red-800">
@@ -709,7 +709,7 @@ export function SOSPage() {
                     </div>
                     <div>
                       <strong className="block text-sm font-black text-white leading-tight">Women Safety</strong>
-                      <span className="text-[11px] text-[#94A3B8] font-medium">Safety Helpline 1091</span>
+                      <span className="text-[11px] text-[#9CA3AF] font-medium">Safety Helpline 1091</span>
                     </div>
                   </div>
                   <div className="w-9 h-9 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-md">
@@ -720,12 +720,12 @@ export function SOSPage() {
             </section>
 
             {/* HERO CENTERPIECE: Iconic Red & White Circular SOS Button */}
-            <section className="flex flex-col items-center justify-center py-4 bg-[#1A2026] rounded-3xl border border-[#2E3844] shadow-xl px-4">
+            <section className="flex flex-col items-center justify-center py-4 bg-[#12161D] rounded-3xl border border-[#262D36] shadow-xl px-4">
               <div className="text-center mb-3">
                 <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                   {isSimpleMode ? 'Emergency SOS' : 'Instant Emergency SOS'}
                 </h2>
-                <p className="text-xs text-[#94A3B8] mt-0.5">
+                <p className="text-xs text-[#9CA3AF] mt-0.5">
                   Press and hold for 3 seconds to broadcast emergency coordinates.
                 </p>
               </div>
@@ -738,7 +738,7 @@ export function SOSPage() {
                     cx="50"
                     cy="50"
                     r="45"
-                    className="stroke-[#2E3844]"
+                    className="stroke-[#262D36]"
                     strokeWidth="5"
                     fill="transparent"
                   />
@@ -805,12 +805,12 @@ export function SOSPage() {
                       className={`min-h-[96px] p-3 rounded-2xl border text-left transition-all active:scale-[0.98] flex flex-col justify-between cursor-pointer ${
                         isSelected
                           ? 'bg-red-950/40 border-2 border-red-500 text-white shadow-xl'
-                          : 'bg-[#1E252D] border-[#2E3844] hover:border-[#FFF174] text-white shadow-md'
+                          : 'bg-[#181D24] border-[#262D36] hover:border-[#F5B041] text-white shadow-md'
                       }`}
                     >
                       <div className="flex items-start justify-between">
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                          isSelected ? 'bg-red-600 text-white' : 'bg-[#242D37] text-red-400'
+                          isSelected ? 'bg-red-600 text-white' : 'bg-[#1F242C] text-red-400'
                         }`}>
                           <Icon size={18} />
                         </div>
@@ -821,7 +821,7 @@ export function SOSPage() {
                         <strong className="block text-xs sm:text-sm font-black text-white leading-tight">
                           {isSimpleMode ? prob.simpleTitle : prob.title}
                         </strong>
-                        <p className="text-[10px] text-[#94A3B8] line-clamp-1 mt-0.5">
+                        <p className="text-[10px] text-[#9CA3AF] line-clamp-1 mt-0.5">
                           {prob.description}
                         </p>
                       </div>
@@ -832,11 +832,11 @@ export function SOSPage() {
             </section>
 
             {/* Clean Location Fix Bar */}
-            <section className="p-3.5 rounded-2xl bg-[#1A2026] border border-[#2E3844] shadow-lg space-y-2">
+            <section className="p-3.5 rounded-2xl bg-[#12161D] border border-[#262D36] shadow-lg space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                    lat !== null ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800' : 'bg-[#242D37] text-[#94A3B8] border border-[#2E3844]'
+                    lat !== null ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800' : 'bg-[#1F242C] text-[#9CA3AF] border border-[#262D36]'
                   }`}>
                     <MapPin size={18} />
                   </div>
@@ -844,7 +844,7 @@ export function SOSPage() {
                     <strong className="block text-xs font-black text-white">
                       {lat !== null ? 'GPS Fix Acquired' : gpsLoading ? 'Locating...' : 'GPS Pending'}
                     </strong>
-                    <span className="text-[11px] text-[#94A3B8] font-medium">
+                    <span className="text-[11px] text-[#9CA3AF] font-medium">
                       {lat !== null && accuracy !== null 
                         ? `±${accuracy}m accuracy • Updated ${lastGpsTime}`
                         : 'Tap refresh to update coordinates'}
@@ -856,7 +856,7 @@ export function SOSPage() {
                   <button
                     type="button"
                     onClick={() => setShowLandmarkInput(!showLandmarkInput)}
-                    className="text-xs font-bold text-[#FFF174] hover:underline cursor-pointer"
+                    className="text-xs font-bold text-[#F5B041] hover:underline cursor-pointer"
                   >
                     {landmark ? 'Edit Landmark' : '+ Landmark'}
                   </button>
@@ -864,7 +864,7 @@ export function SOSPage() {
                     type="button"
                     onClick={acquireLocation}
                     disabled={gpsLoading}
-                    className="p-2 rounded-xl bg-[#242D37] hover:bg-[#2E3844] border border-[#2E3844] text-[#94A3B8] hover:text-white cursor-pointer transition-colors"
+                    className="p-2 rounded-xl bg-[#1F242C] hover:bg-[#262D36] border border-[#262D36] text-[#9CA3AF] hover:text-white cursor-pointer transition-colors"
                     title="Refresh GPS"
                     aria-label="Refresh GPS"
                   >
@@ -875,8 +875,8 @@ export function SOSPage() {
 
               {/* Landmark input if toggled or populated */}
               {(showLandmarkInput || landmark) && (
-                <div className="pt-2 border-t border-[#2E3844] space-y-1">
-                  <label htmlFor="landmark-input" className="block text-[11px] font-bold text-[#94A3B8]">
+                <div className="pt-2 border-t border-[#262D36] space-y-1">
+                  <label htmlFor="landmark-input" className="block text-[11px] font-bold text-[#9CA3AF]">
                     Highway milestone / landmark:
                   </label>
                   <input
@@ -885,7 +885,7 @@ export function SOSPage() {
                     value={landmark}
                     onChange={(e) => setLandmark(e.target.value)}
                     placeholder="e.g., NH-10 KM 42 near Sevoke Bridge"
-                    className="w-full min-h-[44px] px-3 py-2 rounded-xl bg-[#12161A] border border-[#2E3844] text-white text-xs placeholder-[#64748B] focus:outline-none focus:border-[#FFF174]"
+                    className="w-full min-h-[44px] px-3 py-2 rounded-xl bg-[#0A0D12] border border-[#262D36] text-white text-xs placeholder-[#64748B] focus:outline-none focus:border-[#F5B041]"
                   />
                 </div>
               )}

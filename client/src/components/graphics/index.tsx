@@ -14,7 +14,7 @@ export function AnimatedRoadLines({ className = '', opacity = 0.25 }: { classNam
       <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="animated-road-lines" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <line x1="0" y1="20" x2="20" y2="20" stroke="#FFF174" strokeWidth="1.5" strokeDasharray="6,6">
+            <line x1="0" y1="20" x2="20" y2="20" stroke="#F5B041" strokeWidth="1.5" strokeDasharray="6,6">
               <animate attributeName="stroke-dashoffset" values="0;12" dur="1.2s" repeatCount="indefinite" />
             </line>
             <line x1="0" y1="0" x2="40" y2="0" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
@@ -57,21 +57,21 @@ export function MountainContourPattern({ className = '', height = 140, opacity =
         {/* Topographic elevation lines */}
         <path
           d="M0 230 Q 360 120 720 190 T 1440 150"
-          stroke="#FFF174"
+          stroke="#F5B041"
           strokeWidth="0.75"
           strokeDasharray="4 4"
           opacity="0.4"
         />
         <path
           d="M0 200 Q 420 80 840 160 T 1440 120"
-          stroke="#FFF174"
+          stroke="#F5B041"
           strokeWidth="0.5"
           strokeDasharray="2 4"
           opacity="0.25"
         />
         <defs>
           <linearGradient id="mountain-contour-grad-1" x1="720" y1="40" x2="720" y2="260" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#FFF174" stopOpacity="0.25" />
+            <stop stopColor="#F5B041" stopOpacity="0.25" />
             <stop offset="1" stopColor="#090909" stopOpacity="0.95" />
           </linearGradient>
           <linearGradient id="mountain-contour-grad-2" x1="720" y1="90" x2="720" y2="260" gradientUnits="userSpaceOnUse">
@@ -92,7 +92,7 @@ export const MountainBackground = MountainContourPattern;
 export function MotorcycleSilhouette({
   className = '',
   size = 48,
-  color = '#FFF174'
+  color = '#F5B041'
 }: {
   className?: string;
   size?: number;
@@ -187,7 +187,7 @@ export function RouteLine({ className = '', animated = true }: { className?: str
       />
       <path
         d="M10 30 C 70 10, 110 50, 170 30 C 220 15, 250 45, 290 30"
-        stroke="#FFF174"
+        stroke="#F5B041"
         strokeWidth="3"
         strokeLinecap="round"
         strokeDasharray="8 6"
@@ -203,7 +203,7 @@ export function RouteLine({ className = '', animated = true }: { className?: str
       </path>
       {/* Waypoint nodes */}
       <circle cx="10" cy="30" r="5" fill="#22C55E" />
-      <circle cx="170" cy="30" r="4" fill="#FFF174" />
+      <circle cx="170" cy="30" r="4" fill="#F5B041" />
       <circle cx="290" cy="30" r="5" fill="#EF4444" />
     </svg>
   );
@@ -216,7 +216,7 @@ export const AnimatedRouteLine = RouteLine;
  */
 export function SafetyShieldGraphic({
   size = 56,
-  color = '#FFF174',
+  color = '#F5B041',
   className = ''
 }: {
   size?: number;
@@ -401,15 +401,15 @@ export function IncidentTimelineGraphic({
             <div
               className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all ${
                 step.completed
-                  ? 'bg-[#FFF174] text-black shadow-[0_0_10px_rgba(255,241,116,0.4)]'
+                  ? 'bg-[#F5B041] text-black shadow-[0_0_10px_rgba(255,241,116,0.4)]'
                   : 'bg-[#181818] border border-white/20 text-gray-500'
-              } ${step.current ? 'ring-4 ring-[#FFF174]/30 scale-110' : ''}`}
+              } ${step.current ? 'ring-4 ring-[#F5B041]/30 scale-110' : ''}`}
             >
               {idx + 1}
             </div>
             <span
               className={`text-[10px] font-bold mt-1.5 whitespace-nowrap ${
-                step.current ? 'text-[#FFF174]' : step.completed ? 'text-white' : 'text-gray-500'
+                step.current ? 'text-[#F5B041]' : step.completed ? 'text-white' : 'text-gray-500'
               }`}
             >
               {step.label}
@@ -439,11 +439,11 @@ export function DocumentPreviewGraphic({
 }) {
   return (
     <div className={`p-3.5 rounded-2xl bg-gradient-to-br from-[#1A1A1A] to-[#121212] border border-white/15 relative overflow-hidden ${className}`}>
-      <div className="absolute top-0 right-0 w-24 h-24 bg-[#FFF174]/10 rounded-full blur-xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-24 h-24 bg-[#F5B041]/10 rounded-full blur-xl pointer-events-none" />
 
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#FFF174] font-bold text-xs">
+          <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#F5B041] font-bold text-xs">
             ID
           </div>
           <div>
@@ -683,9 +683,9 @@ export function ProviderMarker({
 
   return (
     <div className={`relative inline-flex flex-col items-center select-none ${className}`}>
-      <div className="px-2.5 py-1 rounded-xl bg-[#1D1D1D] border border-[#FFF174]/40 shadow-xl flex items-center gap-1.5 text-xs text-white">
+      <div className="px-2.5 py-1 rounded-xl bg-[#1D1D1D] border border-[#F5B041]/40 shadow-xl flex items-center gap-1.5 text-xs text-white">
         <span>{iconEmoji}</span>
-        {rating && <span className="text-[#FFF174] font-black text-[11px]">★ {rating}</span>}
+        {rating && <span className="text-[#F5B041] font-black text-[11px]">★ {rating}</span>}
         {isVerified && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Verified" />}
       </div>
       <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#1D1D1D]" />
@@ -741,20 +741,20 @@ export function BikeBreakdownGraphic({ size = 44, className = '' }: { size?: num
       className={className}
       aria-label="Motorcycle Breakdown Icon"
     >
-      <rect width="48" height="48" rx="14" fill="#FFF174" fillOpacity="0.14" />
-      <rect x="1" y="1" width="46" height="46" rx="13" stroke="#FFF174" strokeWidth="1.5" strokeOpacity="0.5" />
+      <rect width="48" height="48" rx="14" fill="#F5B041" fillOpacity="0.14" />
+      <rect x="1" y="1" width="46" height="46" rx="13" stroke="#F5B041" strokeWidth="1.5" strokeOpacity="0.5" />
       {/* Motorcycle Tyre Outline with Tread */}
-      <circle cx="24" cy="24" r="14" stroke="#FFF174" strokeWidth="2.5" strokeDasharray="5 3" />
-      <circle cx="24" cy="24" r="8" stroke="#FFF174" strokeWidth="1.5" opacity="0.6" />
+      <circle cx="24" cy="24" r="14" stroke="#F5B041" strokeWidth="2.5" strokeDasharray="5 3" />
+      <circle cx="24" cy="24" r="8" stroke="#F5B041" strokeWidth="1.5" opacity="0.6" />
       {/* Precision Mechanic Spanner / Wrench */}
       <path
         d="M17 31L27 21M26 15L29 18M30 14C31.5 12.5 34 12.5 35.5 14C37 15.5 37 18 35.5 19.5L33 17"
-        stroke="#FFF174"
+        stroke="#F5B041"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="15.5" cy="32.5" r="2.5" fill="#FFF174" />
+      <circle cx="15.5" cy="32.5" r="2.5" fill="#F5B041" />
     </svg>
   );
 }
@@ -829,8 +829,8 @@ export function TowingRecoveryGraphic({ size = 44, className = '' }: { size?: nu
       {/* Heavy Wheels */}
       <circle cx="17" cy="33" r="3.5" fill="#38BDF8" />
       <circle cx="34" cy="33" r="3.5" fill="#38BDF8" />
-      <circle cx="17" cy="33" r="1.5" fill="#151515" />
-      <circle cx="34" cy="33" r="1.5" fill="#151515" />
+      <circle cx="17" cy="33" r="1.5" fill="#0A0D12" />
+      <circle cx="34" cy="33" r="1.5" fill="#0A0D12" />
     </svg>
   );
 }
@@ -885,12 +885,12 @@ export function DualEmergencyGraphic({ size = 44, className = '' }: { size?: num
       {/* Right: Motorcycle Spanner in Moto Yellow */}
       <path
         d="M25 32L32 25M31 21L34 24M34 20C35 19 36.5 19 37.5 20C38.5 21 38.5 22.5 37.5 23.5L35.5 22"
-        stroke="#FFF174"
+        stroke="#F5B041"
         strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="24" cy="33" r="1.8" fill="#FFF174" />
+      <circle cx="24" cy="33" r="1.8" fill="#F5B041" />
     </svg>
   );
 }

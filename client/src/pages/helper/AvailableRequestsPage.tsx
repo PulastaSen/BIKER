@@ -110,7 +110,7 @@ export function AvailableRequestsPage() {
     <div className="dashboard-page p-4 sm:p-6 max-w-6xl mx-auto space-y-6">
       <header className="dashboard-header flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <p className="text-[11px] font-black uppercase tracking-wider text-[#FFF174]">FIELD SERVICE & DISPATCH</p>
+          <p className="text-[11px] font-black uppercase tracking-wider text-[#F5B041]">FIELD SERVICE & DISPATCH</p>
           <h1 className="text-2xl sm:text-3xl font-black text-white">Helper & Technician Job Queue</h1>
           <p className="text-sm text-gray-400">Accept roadside breakdowns or scheduled on-demand motorcycle services.</p>
         </div>
@@ -131,7 +131,7 @@ export function AvailableRequestsPage() {
             type="button"
             onClick={() => setTab('BOOKINGS')}
             className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all ${
-              tab === 'BOOKINGS' ? 'bg-[#FFF174] text-black font-extrabold shadow-sm' : 'text-gray-400 hover:text-white'
+              tab === 'BOOKINGS' ? 'bg-[#F5B041] text-black font-extrabold shadow-sm' : 'text-gray-400 hover:text-white'
             }`}
           >
             <Wrench size={14} />
@@ -160,7 +160,7 @@ export function AvailableRequestsPage() {
               <div key={req.id} className="bg-[#1D1D1D] border border-white/10 rounded-2xl p-3.5 sm:p-5 space-y-3 hover:border-white/20 transition-all flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <strong className="text-xs font-mono font-bold text-[#FFF174]">#{req.id}</strong>
+                    <strong className="text-xs font-mono font-bold text-[#F5B041]">#{req.id}</strong>
                     <StatusBadge status={req.status} />
                   </div>
 
@@ -181,7 +181,7 @@ export function AvailableRequestsPage() {
 
                   {req.approximateLocation && (
                     <p className="text-[10px] sm:text-xs text-gray-400 flex items-center gap-1.5 mt-2 bg-black/30 p-1.5 sm:p-2 rounded-xl truncate">
-                      <MapPin size={12} className="text-[#FFF174] shrink-0" /> <span className="truncate">{req.approximateLocation}</span>
+                      <MapPin size={12} className="text-[#F5B041] shrink-0" /> <span className="truncate">{req.approximateLocation}</span>
                     </p>
                   )}
                 </div>
@@ -212,7 +212,7 @@ export function AvailableRequestsPage() {
               <div key={b.bookingId} className="bg-[#1D1D1D] border border-white/10 rounded-2xl p-3.5 sm:p-5 space-y-3 hover:border-white/20 transition-all flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-mono font-bold text-[#FFF174]">{b.bookingId}</span>
+                    <span className="text-xs font-mono font-bold text-[#F5B041]">{b.bookingId}</span>
                     <span className={`text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
                       b.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-300' :
                       b.status === 'ACCEPTED' || b.status === 'DISPATCHED' ? 'bg-blue-500/20 text-blue-300' :
@@ -232,12 +232,12 @@ export function AvailableRequestsPage() {
 
                   <div className="mt-2 bg-black/30 p-2 rounded-xl space-y-1 text-[11px] text-gray-300">
                     <p className="flex items-center gap-1.5 truncate">
-                      <MapPin size={12} className="text-[#FFF174] shrink-0" />
+                      <MapPin size={12} className="text-[#F5B041] shrink-0" />
                       <span className="truncate">{b.location.address}</span>
                     </p>
                     <p className="flex items-center justify-between font-mono font-bold text-white pt-1 border-t border-white/5">
                       <span>Labor:</span>
-                      <span className="text-[#FFF174]">₹{b.pricing.totalEstimated}</span>
+                      <span className="text-[#F5B041]">₹{b.pricing.totalEstimated}</span>
                     </p>
                   </div>
                 </div>

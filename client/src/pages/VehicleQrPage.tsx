@@ -85,9 +85,9 @@ export function VehicleQrPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#151515] text-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0A0D12] text-white flex items-center justify-center p-4">
         <div className="text-center space-y-3">
-          <div className="w-10 h-10 border-2 border-[#FFF174] border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-10 h-10 border-2 border-[#F5B041] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-xs text-gray-400">Verifying secure vehicle token...</p>
         </div>
       </div>
@@ -96,7 +96,7 @@ export function VehicleQrPage() {
 
   if (error || !tagData) {
     return (
-      <div className="min-h-screen bg-[#151515] text-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0A0D12] text-white flex items-center justify-center p-4">
         <div className="bg-[#1D1D1D] border border-white/10 rounded-3xl p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
           <div className="w-14 h-14 rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/30">
             <AlertTriangle size={28} />
@@ -117,12 +117,12 @@ export function VehicleQrPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#151515] text-white pt-16 pb-24 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#0A0D12] text-white pt-16 pb-24 px-4 sm:px-6">
       <div className="max-w-xl mx-auto space-y-6">
 
         {/* Tag Header Bar */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF174]/15 border border-[#FFF174]/30 text-[#FFF174] text-[11px] font-black uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5B041]/15 border border-[#F5B041]/30 text-[#F5B041] text-[11px] font-black uppercase tracking-wider">
             <Lock size={12} />
             <span>MOTOASSIST VERIFIED VEHICLE TAG</span>
           </div>
@@ -136,7 +136,7 @@ export function VehicleQrPage() {
         <div className="bg-[#1D1D1D] border border-white/10 rounded-3xl p-6 space-y-4 shadow-xl">
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#FFF174]">
+              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#F5B041]">
                 <BikeIcon size={24} />
               </div>
               <div>
@@ -147,7 +147,7 @@ export function VehicleQrPage() {
 
             <div className="text-right">
               <span className="text-[10px] font-bold uppercase text-gray-400 tracking-wider block">REGISTRATION PLATE</span>
-              <span className="px-3 py-1 rounded-lg bg-black border border-white/20 font-mono font-black text-xs text-[#FFF174] tracking-wider inline-block">
+              <span className="px-3 py-1 rounded-lg bg-black border border-white/20 font-mono font-black text-xs text-[#F5B041] tracking-wider inline-block">
                 {tagData.registrationNumber}
               </span>
             </div>
@@ -156,7 +156,7 @@ export function VehicleQrPage() {
           {/* Owner Emergency Instructions */}
           {tagData.emergencyInstructions && (
             <div className="p-3.5 bg-white/5 border border-white/5 rounded-2xl space-y-1 text-xs">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#FFF174] block">OWNER EMERGENCY GUIDANCE</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-[#F5B041] block">OWNER EMERGENCY GUIDANCE</span>
               <p className="text-gray-200 text-xs leading-relaxed italic">
                 "{tagData.emergencyInstructions}"
               </p>
@@ -176,7 +176,7 @@ export function VehicleQrPage() {
         {!submittedAlert ? (
           <div className="bg-[#1D1D1D] border border-white/10 rounded-3xl p-6 sm:p-7 space-y-5 shadow-xl">
             <div className="space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#FFF174]">SEND SECURE ALERT</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#F5B041]">SEND SECURE ALERT</span>
               <h2 className="text-xl font-black text-white">Notify the Motorcycle Owner</h2>
               <p className="text-xs text-gray-400">
                 Found an issue with this parked motorcycle or witnessing an emergency? Send an instant notification.
@@ -201,7 +201,7 @@ export function VehicleQrPage() {
                       onClick={() => setRequestType(cat.id as any)}
                       className={`p-2.5 rounded-xl text-left font-bold transition-all border ${
                         requestType === cat.id
-                          ? 'bg-[#FFF174] text-black border-[#FFF174]'
+                          ? 'bg-[#F5B041] text-black border-[#F5B041]'
                           : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                       }`}
                     >
@@ -219,7 +219,7 @@ export function VehicleQrPage() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Describe where the bike is located and what is happening (e.g. parked near shop gate, keys in lock, hazard lights flashing)..."
-                  className="w-full bg-[#252525] border border-white/10 rounded-xl p-3 text-xs text-white focus:border-[#FFF174] focus:outline-none"
+                  className="w-full bg-[#252525] border border-white/10 rounded-xl p-3 text-xs text-white focus:border-[#F5B041] focus:outline-none"
                   required
                 />
               </div>
@@ -234,7 +234,7 @@ export function VehicleQrPage() {
                     value={locationAddress}
                     onChange={(e) => setLocationAddress(e.target.value)}
                     placeholder="e.g. Near City Center Gate 3, Sevoke Road"
-                    className="w-full bg-[#252525] border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white focus:border-[#FFF174] focus:outline-none"
+                    className="w-full bg-[#252525] border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white focus:border-[#F5B041] focus:outline-none"
                   />
                 </div>
               </div>
@@ -267,7 +267,7 @@ export function VehicleQrPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3.5 rounded-xl bg-[#FFF174] text-black font-black text-xs hover:bg-yellow-400 active:scale-95 transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-[#F5B041] text-black font-black text-xs hover:bg-yellow-400 active:scale-95 transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Send size={15} />
                 <span>{submitting ? 'Transmitting Alert...' : 'Send Secure Notification to Owner'}</span>

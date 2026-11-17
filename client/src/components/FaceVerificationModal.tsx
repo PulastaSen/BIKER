@@ -148,7 +148,7 @@ export function FaceVerificationModal({ isOpen, onClose, onSuccess }: FaceVerifi
 
         {/* Header */}
         <div className="text-center space-y-1 pt-2">
-          <div className="w-12 h-12 rounded-2xl bg-[#FFF174]/10 text-[#FFF174] border border-[#FFF174]/30 flex items-center justify-center mx-auto mb-2">
+          <div className="w-12 h-12 rounded-2xl bg-[#F5B041]/10 text-[#F5B041] border border-[#F5B041]/30 flex items-center justify-center mx-auto mb-2">
             <Camera size={24} />
           </div>
           <h3 className="text-xl font-black text-white">Face Verification</h3>
@@ -158,7 +158,7 @@ export function FaceVerificationModal({ isOpen, onClose, onSuccess }: FaceVerifi
         </div>
 
         {/* CAMERA PREVIEW OR CAPTURED PHOTO */}
-        <div className="relative w-64 h-64 mx-auto rounded-full overflow-hidden border-4 border-[#FFF174]/40 bg-black flex items-center justify-center shadow-[0_0_35px_rgba(255,241,116,0.15)]">
+        <div className="relative w-64 h-64 mx-auto rounded-full overflow-hidden border-4 border-[#F5B041]/40 bg-black flex items-center justify-center shadow-[0_0_35px_rgba(255,241,116,0.15)]">
           {capturedImage ? (
             <img src={capturedImage} alt="Captured selfie" className="w-full h-full object-cover" />
           ) : streamActive ? (
@@ -178,7 +178,7 @@ export function FaceVerificationModal({ isOpen, onClose, onSuccess }: FaceVerifi
                 <button
                   type="button"
                   onClick={startCamera}
-                  className="px-3 py-1 bg-white/10 hover:bg-white/20 text-xs rounded-lg text-[#FFF174] font-bold cursor-pointer"
+                  className="px-3 py-1 bg-white/10 hover:bg-white/20 text-xs rounded-lg text-[#F5B041] font-bold cursor-pointer"
                 >
                   Retry Camera
                 </button>
@@ -188,7 +188,7 @@ export function FaceVerificationModal({ isOpen, onClose, onSuccess }: FaceVerifi
 
           {/* Oval face guide overlay when camera is active */}
           {!capturedImage && streamActive && (
-            <div className="pointer-events-none absolute inset-4 rounded-full border-2 border-dashed border-[#FFF174]/60 animate-pulse" />
+            <div className="pointer-events-none absolute inset-4 rounded-full border-2 border-dashed border-[#F5B041]/60 animate-pulse" />
           )}
         </div>
 
@@ -207,7 +207,7 @@ export function FaceVerificationModal({ isOpen, onClose, onSuccess }: FaceVerifi
               type="button"
               onClick={capturePhoto}
               disabled={!streamActive}
-              className="w-full py-3.5 bg-[#FFF174] text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-yellow-400 active:scale-98 transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              className="w-full py-3.5 bg-[#F5B041] text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-yellow-400 active:scale-98 transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer shadow-md"
             >
               <Camera size={18} />
               <span>Capture Selfie</span>
@@ -220,7 +220,7 @@ export function FaceVerificationModal({ isOpen, onClose, onSuccess }: FaceVerifi
                     type="button"
                     onClick={() => handleSubmit(false)}
                     disabled={submitting}
-                    className="w-full py-3.5 bg-[#FFF174] text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-yellow-400 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 shadow-[0_0_20px_rgba(255,241,116,0.3)]"
+                    className="w-full py-3.5 bg-[#F5B041] text-black font-black text-sm uppercase tracking-wider rounded-xl hover:bg-yellow-400 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 shadow-[0_0_20px_rgba(255,241,116,0.3)]"
                   >
                     {submitting ? (
                       <>
@@ -269,7 +269,7 @@ export function FaceVerificationModal({ isOpen, onClose, onSuccess }: FaceVerifi
           <div className="p-3 rounded-2xl bg-[#181818] border border-white/10 text-xs space-y-2">
             <div className="flex items-center justify-between">
               <label htmlFor="demoVerifyToggle" className="font-bold text-gray-300 flex items-center gap-1.5 cursor-pointer">
-                <Sparkles size={14} className="text-[#FFF174]" />
+                <Sparkles size={14} className="text-[#F5B041]" />
                 <span>Development / Demo Simulation Mode</span>
               </label>
               <input
@@ -277,7 +277,7 @@ export function FaceVerificationModal({ isOpen, onClose, onSuccess }: FaceVerifi
                 type="checkbox"
                 checked={isDemoMode}
                 onChange={(e) => setIsDemoMode(e.target.checked)}
-                className="w-4 h-4 accent-[#FFF174] cursor-pointer"
+                className="w-4 h-4 accent-[#F5B041] cursor-pointer"
               />
             </div>
             {isDemoMode && (

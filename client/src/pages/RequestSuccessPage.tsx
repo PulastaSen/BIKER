@@ -12,13 +12,13 @@ export function RequestSuccessPage() {
 
   if (!request) {
     return (
-      <main className="min-h-screen bg-[#151515] text-white flex items-center justify-center p-6 text-center">
+      <main className="min-h-screen bg-[#0A0D12] text-white flex items-center justify-center p-6 text-center">
         <div className="bg-[#1D1D1D] border border-white/10 p-8 rounded-3xl max-w-md w-full space-y-4 shadow-xl">
           <h1 className="text-xl font-bold text-white">No active request found</h1>
           <p className="text-xs text-gray-400">Create a roadside assistance ticket to get started.</p>
           <Link
             to="/im-stranded"
-            className="inline-block px-5 py-2.5 bg-[#FFF174] text-black font-black text-xs uppercase tracking-wider rounded-xl hover:bg-yellow-400"
+            className="inline-block px-5 py-2.5 bg-[#F5B041] text-black font-black text-xs uppercase tracking-wider rounded-xl hover:bg-yellow-400"
           >
             I'm Stranded
           </Link>
@@ -33,7 +33,7 @@ export function RequestSuccessPage() {
   const priceEstimate = '₹350 (Includes Call-out & Diagnosis)';
 
   return (
-    <main className="min-h-screen bg-[#151515] text-white pt-6 pb-28 md:pb-16 font-sans">
+    <main className="min-h-screen bg-[#0A0D12] text-white pt-6 pb-28 md:pb-16 font-sans">
       <div className="max-w-xl mx-auto px-4 space-y-5">
         
         {/* Navigation */}
@@ -89,14 +89,14 @@ export function RequestSuccessPage() {
             </div>
             <div className="p-3 rounded-2xl bg-black/40 border border-white/5">
               <span className="text-gray-400 uppercase text-[10px] font-bold block">Estimated Arrival</span>
-              <strong className="text-[#FFF174] text-sm mt-0.5 block">{providerEta}</strong>
+              <strong className="text-[#F5B041] text-sm mt-0.5 block">{providerEta}</strong>
             </div>
           </div>
 
           {/* 5. Price Estimate */}
           <div className="p-3 rounded-2xl bg-black/40 border border-white/5 text-xs flex items-center justify-between">
             <span className="text-gray-400 uppercase text-[10px] font-bold">Price Estimate</span>
-            <strong className="text-[#FFF174] text-sm font-black">{priceEstimate}</strong>
+            <strong className="text-[#F5B041] text-sm font-black">{priceEstimate}</strong>
           </div>
 
           {/* Actions: Track Live or Call */}
@@ -111,7 +111,7 @@ export function RequestSuccessPage() {
             <button
               type="button"
               onClick={() => navigate(`/requests/${request.id}`)}
-              className="py-3 px-4 rounded-xl bg-[#FFF174] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="py-3 px-4 rounded-xl bg-[#F5B041] hover:bg-yellow-400 text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
               <Navigation size={14} />
               <span>Track Live</span>

@@ -8,8 +8,8 @@ const ONBOARDING_KEY = 'motoassist_onboarding_completed_v1';
 const SCREENS = [
   {
     icon: Shield,
-    color: 'text-[#FFF174]',
-    bgBadge: 'bg-[#FFF174]/15 border-[#FFF174]/30',
+    color: 'text-[#F5B041]',
+    bgBadge: 'bg-[#F5B041]/15 border-[#F5B041]/30',
     tag: 'WELCOME TO MOTOASSIST',
     title: 'Your roadside companion.',
     desc: 'Never ride alone on Himalayan corridors or highway turns. Transparent breakdown help & verified mechanics at your fingertips.',
@@ -88,7 +88,7 @@ export function OnboardingFlow() {
                 key={i}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   i === currentIndex
-                    ? 'w-7 bg-[#FFF174]'
+                    ? 'w-7 bg-[#F5B041]'
                     : i < currentIndex
                     ? 'w-3 bg-white/40'
                     : 'w-3 bg-white/15'
@@ -121,7 +121,7 @@ export function OnboardingFlow() {
               </div>
 
               <div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#FFF174] block mb-1">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#F5B041] block mb-1">
                   {current.tag}
                 </span>
                 <h2 className="text-2xl font-black text-white leading-tight">
@@ -144,7 +144,7 @@ export function OnboardingFlow() {
           <button
             type="button"
             onClick={handleNext}
-            className="px-6 py-3.5 rounded-2xl bg-[#FFF174] hover:bg-[#FCEB50] text-black font-black text-sm tracking-wide flex items-center gap-2 active:scale-95 transition-all shadow-[0_0_25px_rgba(255,241,116,0.3)]"
+            className="px-6 py-3.5 rounded-2xl bg-[#F5B041] hover:bg-[#FCEB50] text-black font-black text-sm tracking-wide flex items-center gap-2 active:scale-95 transition-all shadow-[0_0_25px_rgba(255,241,116,0.3)]"
           >
             {isLast ? (
               <>

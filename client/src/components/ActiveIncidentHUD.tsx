@@ -56,44 +56,44 @@ export function ActiveIncidentHUD({
     ? 'text-red-400'
     : isAccepted
     ? 'text-[#10B981]'
-    : 'text-[#FFF174]';
+    : 'text-[#F5B041]';
 
   return (
     <div
-      className={`rounded-2xl sm:rounded-3xl bg-[#1A2026] border-2 ${
-        isUnfulfilled ? 'border-red-500/50' : isAccepted ? 'border-[#FFF174]/70' : 'border-[#2E3844]'
+      className={`rounded-2xl sm:rounded-3xl bg-[#12161D] border-2 ${
+        isUnfulfilled ? 'border-red-500/50' : isAccepted ? 'border-[#F5B041]/70' : 'border-[#262D36]'
       } p-4 sm:p-5 shadow-2xl text-white space-y-3.5 sm:space-y-4 ${className}`}
       role="region"
       aria-label="Active Assistance Incident Status"
     >
       {/* Top Header & Incident ID */}
-      <div className="flex items-center justify-between border-b border-[#2E3844] pb-3">
+      <div className="flex items-center justify-between border-b border-[#262D36] pb-3">
         <div className="flex items-center gap-2.5">
-          <span className={`w-3 h-3 rounded-full ${isAccepted ? 'bg-[#10B981] animate-ping' : isUnfulfilled ? 'bg-red-500' : 'bg-[#FFF174] animate-pulse'}`} />
+          <span className={`w-3 h-3 rounded-full ${isAccepted ? 'bg-[#10B981] animate-ping' : isUnfulfilled ? 'bg-red-500' : 'bg-[#F5B041] animate-pulse'}`} />
           <h2 className={`text-xs sm:text-sm font-black tracking-wider uppercase ${bannerColor}`}>
             {bannerTitle}
           </h2>
         </div>
-        <span className="text-[10px] font-mono font-bold text-[#94A3B8] bg-[#242D37] px-2.5 py-1 rounded-full border border-[#2E3844]">
+        <span className="text-[10px] font-mono font-bold text-[#9CA3AF] bg-[#1F242C] px-2.5 py-1 rounded-full border border-[#262D36]">
           #{requestId}
         </span>
       </div>
 
       {/* Agicent Inspiration: Arrival ETA Badge */}
       {isAccepted && (
-        <div className="flex items-center justify-between bg-[#12161A] border border-[#2E3844] rounded-xl px-3.5 py-2.5">
+        <div className="flex items-center justify-between bg-[#0A0D12] border border-[#262D36] rounded-xl px-3.5 py-2.5">
           <div className="flex items-center gap-2">
-            <Clock size={16} className="text-[#FFF174]" />
+            <Clock size={16} className="text-[#F5B041]" />
             <span className="text-xs sm:text-sm font-bold text-white">Your Tow Vehicle Is Arriving In</span>
           </div>
-          <span className="px-2.5 py-1 rounded-lg bg-[#FFF174] text-[#12161A] font-black text-xs sm:text-sm shadow-md animate-pulse">
+          <span className="px-2.5 py-1 rounded-lg bg-[#F5B041] text-[#0A0D12] font-black text-xs sm:text-sm shadow-md animate-pulse">
             {eta}
           </span>
         </div>
       )}
 
       {/* 3-Step Live Progress Indicator */}
-      <div className="grid grid-cols-3 gap-2 text-xs bg-[#12161A] p-2.5 rounded-xl border border-[#2E3844]">
+      <div className="grid grid-cols-3 gap-2 text-xs bg-[#0A0D12] p-2.5 rounded-xl border border-[#262D36]">
         {/* Step 1: Request received */}
         <div className="flex items-center gap-1.5 text-[#10B981] font-bold">
           <CheckCircle2 size={15} className="shrink-0" />
@@ -105,13 +105,13 @@ export function ActiveIncidentHUD({
         {/* Step 2: Helper accepted */}
         <div
           className={`flex items-center gap-1.5 font-bold ${
-            isAccepted ? 'text-[#10B981]' : isSearching ? 'text-[#FFF174]' : 'text-gray-400'
+            isAccepted ? 'text-[#10B981]' : isSearching ? 'text-[#F5B041]' : 'text-gray-400'
           }`}
         >
           {isAccepted ? (
             <CheckCircle2 size={15} className="shrink-0" />
           ) : isSearching ? (
-            <span className="w-2.5 h-2.5 rounded-full bg-[#FFF174] animate-pulse ml-0.5 shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F5B041] animate-pulse ml-0.5 shrink-0" />
           ) : (
             <Clock size={14} className="shrink-0 text-gray-500" />
           )}
@@ -136,22 +136,22 @@ export function ActiveIncidentHUD({
       </div>
 
       {/* Provider Snapshot Card (Agicent Phone 3 Driver Card layout) */}
-      <div className="bg-[#1E252D] border border-[#2E3844] rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+      <div className="bg-[#181D24] border border-[#262D36] rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
         <div className="flex items-center gap-3">
           {/* Driver Avatar with Star */}
           {isAccepted && (
             <div className="relative shrink-0">
-              <div className="w-12 h-12 rounded-full bg-[#2E3844] border-2 border-[#FFF174] flex items-center justify-center font-black text-white text-base">
+              <div className="w-12 h-12 rounded-full bg-[#262D36] border-2 border-[#F5B041] flex items-center justify-center font-black text-white text-base">
                 {(providerName || 'Joseph Gonzalez').charAt(0)}
               </div>
-              <span className="absolute -bottom-1 -right-1 bg-[#12161A] border border-[#2E3844] text-[#FFF174] px-1.5 py-0.5 rounded-full text-[9px] font-bold flex items-center gap-0.5 shadow">
-                <Star size={9} className="fill-[#FFF174] text-[#FFF174]" /> {providerRating}
+              <span className="absolute -bottom-1 -right-1 bg-[#0A0D12] border border-[#262D36] text-[#F5B041] px-1.5 py-0.5 rounded-full text-[9px] font-bold flex items-center gap-0.5 shadow">
+                <Star size={9} className="fill-[#F5B041] text-[#F5B041]" /> {providerRating}
               </span>
             </div>
           )}
 
           <div>
-            <span className="text-[10px] font-black uppercase text-[#94A3B8] tracking-wider block">
+            <span className="text-[10px] font-black uppercase text-[#9CA3AF] tracking-wider block">
               {issueCategory}
             </span>
 
@@ -160,7 +160,7 @@ export function ActiveIncidentHUD({
                 <strong className="text-sm sm:text-base font-bold text-white block">
                   {providerName}
                 </strong>
-                <p className="text-xs text-[#94A3B8] font-mono mt-0.5">
+                <p className="text-xs text-[#9CA3AF] font-mono mt-0.5">
                   {providerVehicle} {distance ? `• ${distance}` : ''}
                 </p>
               </>
@@ -174,8 +174,8 @@ export function ActiveIncidentHUD({
                 <span>No provider accepted in this sector. Direct 112 calling advised.</span>
               </div>
             ) : (
-              <div className="mt-1 text-xs text-[#94A3B8] flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-[#FFF174] animate-pulse" />
+              <div className="mt-1 text-xs text-[#9CA3AF] flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-[#F5B041] animate-pulse" />
                 <span>Querying verified recovery trucks within service radius...</span>
               </div>
             )}
@@ -188,7 +188,7 @@ export function ActiveIncidentHUD({
             <>
               <a
                 href={`tel:${providerPhone}`}
-                className="w-10 h-10 rounded-xl bg-[#12161A] hover:bg-[#242D37] active:scale-95 text-[#10B981] border border-[#2E3844] flex items-center justify-center transition-all shadow shrink-0"
+                className="w-10 h-10 rounded-xl bg-[#0A0D12] hover:bg-[#1F242C] active:scale-95 text-[#10B981] border border-[#262D36] flex items-center justify-center transition-all shadow shrink-0"
                 aria-label={`Call helper at ${providerPhone}`}
                 title="Call Rescue Provider"
               >
@@ -199,7 +199,7 @@ export function ActiveIncidentHUD({
                 href={`https://wa.me/${providerPhone.replace(/[^0-9]/g, '')}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-[#12161A] hover:bg-[#242D37] active:scale-95 text-emerald-400 border border-[#2E3844] flex items-center justify-center transition-all shadow shrink-0"
+                className="w-10 h-10 rounded-xl bg-[#0A0D12] hover:bg-[#1F242C] active:scale-95 text-emerald-400 border border-[#262D36] flex items-center justify-center transition-all shadow shrink-0"
                 aria-label="Chat on WhatsApp"
                 title="WhatsApp Rescue Provider"
               >
@@ -220,7 +220,7 @@ export function ActiveIncidentHUD({
           <button
             type="button"
             onClick={() => navigate(`/requests/${requestId}`)}
-            className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#FFF174] hover:bg-yellow-400 active:scale-95 text-[#12161A] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow min-h-[40px] cursor-pointer"
+            className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#F5B041] hover:bg-yellow-400 active:scale-95 text-[#0A0D12] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow min-h-[40px] cursor-pointer"
           >
             <Navigation size={14} />
             <span>Map & Track</span>
