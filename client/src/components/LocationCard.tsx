@@ -21,7 +21,7 @@ export function LocationCard({
 }: LocationCardProps) {
   return (
     <div
-      className={`w-full flex items-center justify-between px-5 py-1 ${className}`}
+      className={`w-full flex items-center justify-between px-1 py-1 ${className}`}
       aria-label="Current Sector & Geolocation Telemetry"
     >
       {/* Left: Location Pin & Sector Name */}

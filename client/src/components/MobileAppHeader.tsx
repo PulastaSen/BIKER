@@ -1,5 +1,7 @@
 import { Bell, Menu } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import { MotoAssistLogoMark } from './MotoAssistLogoMark';
+import { useAuth } from '../context/AuthContext';
 
 interface MobileAppHeaderProps {
   onOpenMenu?: () => void;
@@ -14,9 +16,23 @@ export function MobileAppHeader({
   hasUnreadNotifications = true,
   className = '',
 }: MobileAppHeaderProps) {
+  const { user } = useAuth();
+
+  const getProfilePath = () => {
+    if (!user) return '/login';
+    if (user.role === 'ADMIN') return '/admin/dashboard';
+    if (user.role === 'HELPER') return '/helper/profile';
+    return '/rider/profile';
+  };
+
+  const getGaragePath = () => {
+    if (user?.role === 'RIDER') return '/rider/bikes';
+    return '/save-my-bike';
+  };
+
   return (
     <header
-      className={`w-full flex items-center justify-between px-5 py-2.5 z-20 ${className}`}
+      className={`w-full flex items-center justify-between px-1 py-2.5 z-20 ${className}`}
       aria-label="App Header"
     >
       {/* Left: Logo & Branding */}
@@ -32,6 +48,74 @@ export function MobileAppHeader({
           </span>
         </div>
       </div>
+
+      {/* Center: Desktop Navigation Links (Visible on desktop only) */}
+      <nav
+        className="hidden md:flex items-center gap-1 lg:gap-2 bg-[#12161A]/80 border border-white/5 rounded-2xl px-3 py-1.5 shadow-sm"
+        aria-label="Desktop Primary Navigation"
+      >
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) =>
+            `px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              isActive
+                ? 'bg-[#181D24] text-[#F5B041] border border-[#F5B041]/40 shadow-[0_0_8px_rgba(245,176,65,0.2)]'
+                : 'text-[#8E98A4] hover:text-white hover:bg-white/5'
+            }`
+          }
+        >
+          Home
+        </NavLink>
+        <NavLink
+          to="/services"
+          className={({ isActive }) =>
+            `px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              isActive
+                ? 'bg-[#181D24] text-[#F5B041] border border-[#F5B041]/40 shadow-[0_0_8px_rgba(245,176,65,0.2)]'
+                : 'text-[#8E98A4] hover:text-white hover:bg-white/5'
+            }`
+          }
+        >
+          Help
+        </NavLink>
+        <NavLink
+          to="/safe-ride"
+          className={({ isActive }) =>
+            `px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              isActive
+                ? 'bg-[#181D24] text-[#F5B041] border border-[#F5B041]/40 shadow-[0_0_8px_rgba(245,176,65,0.2)]'
+                : 'text-[#8E98A4] hover:text-white hover:bg-white/5'
+            }`
+          }
+        >
+          Rides
+        </NavLink>
+        <NavLink
+          to={getGaragePath()}
+          className={({ isActive }) =>
+            `px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              isActive
+                ? 'bg-[#181D24] text-[#F5B041] border border-[#F5B041]/40 shadow-[0_0_8px_rgba(245,176,65,0.2)]'
+                : 'text-[#8E98A4] hover:text-white hover:bg-white/5'
+            }`
+          }
+        >
+          Garage
+        </NavLink>
+        <NavLink
+          to={getProfilePath()}
+          className={({ isActive }) =>
+            `px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              isActive
+                ? 'bg-[#181D24] text-[#F5B041] border border-[#F5B041]/40 shadow-[0_0_8px_rgba(245,176,65,0.2)]'
+                : 'text-[#8E98A4] hover:text-white hover:bg-white/5'
+            }`
+          }
+        >
+          Account
+        </NavLink>
+      </nav>
 
       {/* Right: Notification & Menu Action Buttons */}
       <div className="flex items-center gap-2.5">

@@ -91,13 +91,13 @@ export function HomePage() {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col font-sans selection:bg-[#F5B041] selection:text-black">
-      {/* 1. Mobile Status Bar: 9:41, Dynamic Island, 5G / Signal / Battery */}
-      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto">
+      {/* 1. Mobile Status Bar: 9:41, Dynamic Island, 5G / Signal / Battery (Visible on Mobile only) */}
+      <div className="w-full max-w-md mx-auto md:hidden">
         <MobileStatusBar />
       </div>
 
-      {/* 2. Top Header: Logo, MOTOASSIST, ROADSIDE RESCUE, Notification, Menu */}
-      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto">
+      {/* 2. Top Header: Logo, MOTOASSIST, ROADSIDE RESCUE, Desktop Navigation, Notification, Menu */}
+      <div className="w-full max-w-md md:max-w-6xl mx-auto px-4 sm:px-6">
         <MobileAppHeader
           onOpenMenu={() => setMenuOpen(true)}
           onOpenNotifications={() => setNotificationsOpen(true)}
@@ -105,43 +105,51 @@ export function HomePage() {
         />
       </div>
 
-      {/* Main Content Area (Restricted to mobile width or centered proportionally) */}
-      <main className="w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto px-4 pt-1 pb-28 space-y-3.5">
-        {/* 3. Location Section */}
-        <LocationCard
-          locationText={displayLocation}
-          accuracyText={displayAccuracy}
-          isGpsActive={Boolean(coords || locStatus === 'active')}
-          onRefreshLocation={() => requestLocation()}
-        />
+      {/* Main Content Area: Responsive grid adapting seamlessly for desktop view */}
+      <main className="w-full max-w-md md:max-w-6xl mx-auto px-4 sm:px-6 pt-1 pb-28 md:pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5 md:gap-6 items-start">
+          {/* Left Column: Location, Hero Banner, SOS Button, Assistance Grid */}
+          <div className="md:col-span-7 space-y-3.5 sm:space-y-4">
+            {/* 3. Location Section */}
+            <LocationCard
+              locationText={displayLocation}
+              accuracyText={displayAccuracy}
+              isGpsActive={Boolean(coords || locStatus === 'active')}
+              onRefreshLocation={() => requestLocation()}
+            />
 
-        {/* 4. Hero Banner */}
-        <HeroBanner onClick={() => navigate('/services')} />
+            {/* 4. Hero Banner */}
+            <HeroBanner onClick={() => navigate('/services')} />
 
-        {/* 5. SOS Button */}
-        <SOSButton onTriggerSOS={() => navigate('/sos')} />
+            {/* 5. SOS Button */}
+            <SOSButton onTriggerSOS={() => navigate('/sos')} />
 
-        {/* 6. Assistance Grid (2x2) */}
-        <AssistanceGrid
-          onSelectBikeHelp={() => navigate('/emergency?cat=BIKE_PROBLEM')}
-          onSelectMedicalHelp={() => navigate('/emergency?cat=MEDICAL')}
-          onSelectSafety={() => navigate('/safety-circle')}
-          onSelectTowing={() => navigate('/emergency?cat=TOWING')}
-          onViewAll={() => navigate('/services')}
-        />
+            {/* 6. Assistance Grid (2x2) */}
+            <AssistanceGrid
+              onSelectBikeHelp={() => navigate('/emergency?cat=BIKE_PROBLEM')}
+              onSelectMedicalHelp={() => navigate('/emergency?cat=MEDICAL')}
+              onSelectSafety={() => navigate('/safety-circle')}
+              onSelectTowing={() => navigate('/emergency?cat=TOWING')}
+              onViewAll={() => navigate('/services')}
+            />
+          </div>
 
-        {/* 7. Active Rescue Card */}
-        <ActiveRescueCard
-          request={activeRequest}
-          onTrackOnMap={() => {
-            if (activeRequest) {
-              navigate(`/requests/${activeRequest.id}`);
-            } else {
-              navigate('/nearby-services');
-            }
-          }}
-          onRequestHelp={() => navigate('/emergency')}
-        />
+          {/* Right Column: Active Rescue Card (In desktop view, pinned alongside for instant command overview) */}
+          <div className="md:col-span-5 space-y-4 md:sticky md:top-4">
+            {/* 7. Active Rescue Card */}
+            <ActiveRescueCard
+              request={activeRequest}
+              onTrackOnMap={() => {
+                if (activeRequest) {
+                  navigate(`/requests/${activeRequest.id}`);
+                } else {
+                  navigate('/nearby-services');
+                }
+              }}
+              onRequestHelp={() => navigate('/emergency')}
+            />
+          </div>
+        </div>
       </main>
 
       {/* Navigation Drawers & Overlay Modals */}
